@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>实例管理</title>
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+
+     <!-- ace code -->
+    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
+    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
+
+    <style>
+        #example{
+            width: 100% !important;
+        }
+        .modal-lg-detail {
+            width:45%;
+            height:60%;
+            margin-left:500px;
+            margin-top:50px;
+        }
+        .modal-log {
+            width:85%;
+            height:80%;
+            /*height:500px;*/
+            /*margin-left:250px;*/
+            /*margin-top:100px;*/
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+    <div class="col-md-12">
+       <div class="col-md-3 input-group">
+            <span class="input-group-addon"><i class="mdi mdi-server"></i></span>
+            <input type="text" id="inst_name" class="form-control" placeholder="请输入实例名">
+            <span class="input-group-btn">
+               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+            </span>
+      </div>
+      <p></p>
+      <div id="div-tab">
+           <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+      </div>
+      <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+           <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+      </div>
+    </div>
+
+    <!--新增实例窗口 -->
+    <div id="con-modal-inst-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增实例</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_add_inst_name">*</span>实例名称：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="add_inst_name"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label"><span id="s_add_inst_server">*</span>数据库服务器：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="add_inst_server" >
+                                    <option value='' selected = "selected">......</option>
+                                    {% for var in dm_db_server %}
+                                     <option value={{var[0]}} >{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_ip">*</span>数据库地址：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_ip"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_port">*</span>数据库端口：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_port"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">数据库映射端口：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_mapping_port"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_ver">*</span>实例版本：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="add_inst_ver">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_ver %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_cfg">*</span>配置模板：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="add_inst_cfg">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_cfg %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_type">*</span>实例类型：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="add_inst_type">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_type %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_env">*</span>实例环境：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="add_inst_env">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_env %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_rds">*</span>是否RDS：</label>
+                                </div>
+                               <div class="col-md-9">
+                                    <select class="form-control select" id="add_rds" name="add_rds">
+                                        <option value="Y">是</option>
+                                        <option value="N" selected>否</option>
+                                    </select>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_add_mgr_user">*</span>管理员账号：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input id='add_mgr_user' type="text"   class="form-control">
+                           </div>
+                       </div>
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_add_mgr_pass">*</span>管理员密码：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input id='add_mgr_pass' type="password" class="form-control">
+                            </div>
+                       </div>
+                       <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_api_server">*</span>API服务器：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_api_server"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_python3_home">*</span>PYTHON3目录：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_python3_home"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_script_path">*</span>脚本目录：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_script_path"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_inst_script_file">*</span>脚本名称：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_inst_script_file"  class="form-control" readonly value="db_creator.py">
+                           </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="inst_save_btn" >保存</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+    <!--实例详情窗口 -->
+    <div id="con-modal-inst-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">实例详情</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >实例名称：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="detail_inst_name"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">数据库服务器：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_server_ip"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">数据库地址：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_ip" readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">实例端口：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_port"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">数据库映射端口：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_mapping_port" readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">实例版本：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" disabled id="detail_inst_ver">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_ver %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">配置模板：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" disabled id="detail_inst_cfg">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_cfg %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">实例类型：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" disabled id="detail_inst_type">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_type %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">实例环境：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" disabled id="detail_inst_env">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_env %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">是否RDS：</label>
+                                </div>
+                               <div class="col-md-9">
+                                    <select class="form-control select" disabled id="detail_rds" name="detail_rds">
+                                        <option value="Y">是</option>
+                                        <option value="N" selected>否</option>
+                                    </select>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >管理员账号：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input id='detail_mgr_user' type="text"   readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >管理员密码：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input id='detail_mgr_pass' type="password" readonly class="form-control">
+                            </div>
+                       </div>
+                       <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">API服务器：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_api_server"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">PYTHON3目录：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_python3_home"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">脚本目录：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_script_path"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">>脚本名称：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="detail_inst_script_file"  class="form-control" readonly value="db_creator.py">
+                           </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+    <!--变更实例窗口 -->
+    <div id="con-modal-inst-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">实例变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_upd_inst_name">*</span>实例名称：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="hidden" id="upd_inst_id">
+                                <input type="text" id="upd_inst_name"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_server">*</span>数据库服务器：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_inst_server" >
+                                    <option value='' selected = "selected">......</option>
+                                    {% for var in dm_db_server %}
+                                     <option value={{var[0]}} >{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_ip">*</span>数据库地址：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_ip"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_port">*</span>实例端口：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_port"  class="form-control">
+                           </div>
+                        </div>
+                       <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">数据库映射端口：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_mapping_port"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_ver">*</span>实例版本：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_inst_ver">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_ver %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_cfg">*</span>配置模板：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_inst_cfg">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_cfg %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_type">*</span>实例类型：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_inst_type">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_type %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_env">*</span>实例环境：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_inst_env">
+                                    <option value='' selected = "selected">...</option>
+                                     {% for var in dm_inst_env %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_rds">*</span>是否RDS：</label>
+                                </div>
+                               <div class="col-md-9">
+                                    <select class="form-control select" id="upd_rds" name="upd_rds">
+                                        <option value="Y">是</option>
+                                        <option value="N" selected>否</option>
+                                    </select>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_upd_mgr_user">*</span>管理员账号：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input id='upd_mgr_user' type="text"   class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_upd_mgr_pass">*</span>管理员密码：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input id='upd_mgr_pass' type="password" class="form-control">
+                            </div>
+                       </div>
+                       <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_api_server">*</span>API服务器：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_api_server"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_python3_home">*</span>PYTHON3目录：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_python3_home"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_script_path">*</span>脚本目录：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_script_path"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_inst_script_file">*</span>脚本名称：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_inst_script_file"  class="form-control"  value="db_creator.py">
+                           </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="inst_upd_btn">变更</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+    <!--实例创建日志 -->
+    <div id="con-modal-inst-log" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-log">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">实例日志</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div id='ace-editor' class="col-md-12"></div>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button id='btn-inst-log' type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+   <input id="g_inst_id" type="hidden">
+
+   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+   <script>
+
+       timer='';
+
+       function set_selected(){
+            document.all['s_add_inst_server'].style.color="#ff0000";
+            document.all['s_add_inst_ver'].style.color="#ff0000";
+            document.all['s_add_inst_cfg'].style.color="#ff0000";
+            document.all['s_add_inst_name'].style.color="#ff0000";
+            document.all['s_add_inst_port'].style.color="#ff0000";
+            document.all['s_add_inst_type'].style.color="#ff0000";
+            document.all['s_add_inst_env'].style.color="#ff0000";
+            document.all['s_add_mgr_user'].style.color="#ff0000";
+            document.all['s_add_mgr_pass'].style.color="#ff0000";
+            document.all['s_add_rds'].style.color="#ff0000";
+            document.all['s_add_inst_api_server'].style.color="#ff0000";
+            document.all['s_add_inst_python3_home'].style.color="#ff0000";
+            document.all['s_add_inst_script_path'].style.color="#ff0000";
+            document.all['s_add_inst_script_file'].style.color="#ff0000";
+
+            document.all['s_upd_inst_server'].style.color="#ff0000";
+            document.all['s_upd_inst_ver'].style.color="#ff0000";
+            document.all['s_upd_inst_cfg'].style.color="#ff0000";
+            document.all['s_upd_inst_name'].style.color="#ff0000";
+            document.all['s_upd_inst_port'].style.color="#ff0000";
+            document.all['s_upd_inst_type'].style.color="#ff0000";
+            document.all['s_upd_inst_env'].style.color="#ff0000";
+            document.all['s_upd_mgr_user'].style.color="#ff0000";
+            document.all['s_upd_mgr_pass'].style.color="#ff0000";
+            document.all['s_upd_inst_api_server'].style.color="#ff0000";
+            document.all['s_upd_inst_python3_home'].style.color="#ff0000";
+            document.all['s_upd_inst_script_path'].style.color="#ff0000";
+            document.all['s_upd_inst_script_file'].style.color="#ff0000";
+
+        }
+
+       $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+        });
+
+        $("#inst_name").bind("input propertychange",function(){
+           $("#query_btn").click();
+        });
+
+       function centerModals() {
+          $('.modal').each(function(i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+          });
+        }
+
+       function init_inst(){
+             $('#add_inst_server').val('')
+             $('#add_inst_ip').val('');
+             $('#add_inst_ver').val('')
+             $('#add_inst_cfg').val('')
+             $('#add_inst_name').val('')
+             $('#add_inst_port').val('')
+             $('#add_inst_type').val('')
+             $('#add_inst_env').val('')
+             $('#add_mgr_user').val('')
+             $('#add_mgr_pass').val('')
+             $('#add_inst_mapping_port').val('')
+             $('#add_inst_server').attr("disabled",false);
+             $('#add_inst_ip').attr('disabled',true);
+             $('#add_rds').val('N');
+             $('#add_inst_api_server').val('')
+             $('#s_add_inst_python3_home').val('')
+             $('#s_add_inst_script_path').val('')
+        }
+
+       $('#add-btn').click(function(){
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-modal-inst-add').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+            init_inst()
+        })
+
+       function showDetail_win(p_inst_id){
+            $.ajax({
+                  url: "/db/inst/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      inst_id  :p_inst_id
+                  },
+                  success: function (instObj) {
+                        console.log('showDetail_win=>instObj=',instObj,instObj['id'],instObj['inst_name']);
+                        $('#detail_inst_name').val(instObj['inst_name'])
+                        $('#detail_server_ip').val(instObj['server_desc'])
+                        $('#detail_inst_ip').val(instObj['inst_ip'])
+                        $('#detail_inst_port').val(instObj['inst_port'])
+                        $('#detail_inst_type').val(instObj['inst_type'])
+                        $('#detail_inst_env').val(instObj['inst_env'])
+                        $('#detail_rds').val(instObj['is_rds'])
+                        $('#detail_mgr_user').val(instObj['mgr_user'])
+                        $('#detail_mgr_pass').val(instObj['mgr_pass'])
+                        $('#detail_inst_ver').val(instObj['inst_ver'])
+                        $('#detail_inst_cfg').val(instObj['templete_id'])
+                        $('#detail_inst_api_server').val(instObj['api_server'])
+                        $('#detail_inst_python3_home').val(instObj['python3_home'])
+                        $('#detail_inst_script_path').val(instObj['script_path'])
+                        $('#detail_inst_script_file').val(instObj['script_file'])
+                        $('#detail_inst_mapping_port').val(instObj['inst_mapping_port'])
+
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-modal-inst-detail').modal({
+                              keyboard: false,
+                              backdrop:false
+                         });
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+
+             })
+       }
+
+       function showUpd_win(p_inst_id){
+            $.ajax({
+                  url: "/db/inst/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      inst_id  :p_inst_id
+                  },
+                  success: function (instObj) {
+                        console.log('showUpd_win=>instObj=',instObj,instObj['id'],instObj['inst_name']);
+                        $('#upd_inst_id').val(instObj['id'])
+                        $('#upd_inst_name').val(instObj['inst_name'])
+                        $('#upd_inst_server').val(instObj['server_id'])
+                        $('#upd_inst_ip').val(instObj['inst_ip'])
+                        $('#upd_inst_port').val(instObj['inst_port'])
+                        $('#upd_inst_type').val(instObj['inst_type'])
+                        $('#upd_inst_env').val(instObj['inst_env'])
+                        $('#upd_mgr_user').val(instObj['mgr_user'])
+                        $('#upd_mgr_pass').val(instObj['mgr_pass'])
+                        $('#upd_inst_ver').val(instObj['inst_ver'])
+                        $('#upd_inst_cfg').val(instObj['templete_id'])
+                        $('#upd_rds').val(instObj['is_rds'])
+
+                        if ($('#upd_rds').val()=='Y') {
+                            $('#upd_inst_server').attr("disabled",true);
+                            $('#upd_inst_ip').attr('disabled',false)
+                        } else {
+                            $('#upd_inst_ip').attr('disabled',true);
+                            $('#upd_inst_server').attr("disabled",false);
+                            // $('#upd_inst_ip').val('');
+                        }
+                        $('#upd_inst_api_server').val(instObj['api_server'])
+                        $('#upd_inst_python3_home').val(instObj['python3_home'])
+                        $('#upd_inst_script_path').val(instObj['script_path'])
+                        $('#upd_inst_script_file').val(instObj['script_file'])
+
+                        $('#upd_inst_mapping_port').val(instObj['inst_mapping_port'])
+
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-modal-inst-upd').modal({
+                               keyboard: false,
+                               backdrop:false
+                         });
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+       }
+
+       function query_log_inst(p_inst_id) {
+            $.ajax({
+                    type: 'post',
+                    url: '/db/inst/log',
+                    data: {
+                        "inst_id": p_inst_id
+                    },
+                    success: function (dataSet) {
+                        $('#g_inst_id').val(p_inst_id)
+                        var editor = ace.edit("ace-editor");
+                        editor.setValue('')
+                        editor.insert(dataSet.message);
+                        editor.setReadOnly(true);
+                        console.log('get_inst_log 1 :'+dataSet.message)
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-modal-inst-log').modal({
+                            keyboard: false,
+                            backdrop:false
+                        });
+                    }
+            })
+       }
+
+       function query_log_inst_timer() {
+            $.ajax({
+                    type: 'post',
+                    url: '/db/inst/log',
+                    data: {
+                        "inst_id":$('#g_inst_id').val(),
+                        "type"   :'create'
+                    },
+                    success: function (dataSet) {
+                        var editor = ace.edit("ace-editor");
+                        const position = editor.getCursorPosition();
+                        editor.setValue('')
+                        editor.insert(dataSet.message);
+                        editor.setReadOnly(true);
+                        // editor.moveCursorTo(0,0);
+                        editor.moveCursorToPosition(position);
+
+                    }
+            })
+       }
+
+       function create_inst(p_inst_row) {
+            var v_inst_id   = p_inst_row.split(',')[0]
+            var v_inst_name = p_inst_row.split(',')[1]
+            $.ajax({
+                  url: "/db/inst/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      inst_id  :v_inst_id
+                  },
+                  success: function (instObj) {
+                        $.ajax({
+                            url: "/db/inst/create",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                 inst_id   : v_inst_id,
+                                 api_server:instObj['api_server']
+                            },
+                            beforeSend: function () {
+                                  swal({
+                                        title: "正在启动远程任务...",
+                                        text: "实例["+v_inst_name+"]正在启动中...",
+                                        type: "info",
+                                        showConfirmButton: false
+                                   });
+                             },
+                            success: function (dataSet) {
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal(dataSet.message, "", "success")
+                                    $("#query_btn").click()
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+                  }
+             })
+       }
+
+       function destroy_inst(p_inst_row) {
+            var v_inst_id   = p_inst_row.split(',')[0]
+            var v_inst_name = p_inst_row.split(',')[1]
+            $.ajax({
+                  url: "/db/inst/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      inst_id  :v_inst_id
+                  },
+                  success: function (instObj) {
+                        $.ajax({
+                            url: "/db/inst/destroy",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                 inst_id   : v_inst_id,
+                                 api_server:instObj['api_server']
+                            },
+                            beforeSend: function () {
+                                          swal({
+                                                title: "正在启动远程任务...",
+                                                text: "实例["+v_inst_name+"]正在销毁中...",
+                                                type: "info",
+                                                showConfirmButton: false
+                                           });
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal(dataSet.message, "", "success")
+                                    $("#query_btn").click()
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+                  }
+                })
+       }
+
+       function del_inst(p_inst_row) {
+           var v_inst_id   = p_inst_row.split(',')[0]
+           var v_inst_name = p_inst_row.split(',')[1]
+
+           swal({
+                title: "确认要删除吗?",
+                text: "实例["+v_inst_name+"]无法再使用了！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                            url: "/db/inst/del?inst_id="+v_inst_id,
+                            type: "post",
+                            datatype: "json",
+                            success: function (dataSet) {
+                                if (dataSet.code=='0') {
+                                    swal("已注销!", "实例["+v_inst_name+"]已删除!", "success");
+                                    $("#query_btn").click();
+                                } else {
+                                    swal("删除失败!", "实例["+v_inst_name+"]"+dataSet.message+"!", "error");
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=',jqXHR.responseText);
+                                console.log('jqXHR.status=',jqXHR.status);
+                                console.log('jqXHR.readyState=',jqXHR.readyState);
+                                console.log('jqXHR.statusText=',jqXHR.statusText);
+                                console.log('textStatus=',textStatus);
+                                console.log('errorThrown=',errorThrown);
+                                if (jqXHR.status==403){
+                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                                    setTimeout(" window.location.href='/login'",3000);
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                       });
+
+                } else {
+                    swal("已取消", "实例["+v_inst_name+"]未删除！", "error");
+                }
+            });
+       }
+
+       $('#inst_save_btn').click(function(){
+
+             if ($('#add_inst_server').val() == '') {
+                     $.ajax({
+                            url: "/db/inst/save",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                 inst_name         :$('#add_inst_name').val(),
+                                 server_id         :$('#add_inst_server').val(),
+                                 inst_ip           :$('#add_inst_ip').val(),
+                                 inst_port         :$('#add_inst_port').val(),
+                                 inst_ver          :$('#add_inst_ver').val(),
+                                 templete_id       :$('#add_inst_cfg').val(),
+                                 inst_type         :$('#add_inst_type').val(),
+                                 inst_env          :$('#add_inst_env').val(),
+                                 is_rds            :$('#add_rds').val(),
+                                 mgr_user          :$('#add_mgr_user').val(),
+                                 mgr_pass          :$('#add_mgr_pass').val(),
+                                 api_server        :$('#add_inst_api_server').val(),
+                                 python3_home      :$('#add_inst_python3_home').val(),
+                                 script_path       :$('#add_inst_script_path').val(),
+                                 script_file       :$('#add_inst_script_file').val(),
+                                 inst_mapping_port :$('#add_inst_mapping_port').val(),
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal("保存成功", "", "success")
+                                    $("#query_btn").click()
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+
+             } else {
+                 $.ajax({
+                  url: "/get/server/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      server_id  :$('#add_inst_server').val(),
+                  },
+                  success: function (svrObj) {
+                       console.log('svrObj=',svrObj)
+                       $.ajax({
+                            url: "/db/inst/save",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                 inst_name         :$('#add_inst_name').val(),
+                                 server_id         :$('#add_inst_server').val(),
+                                 inst_ip           :svrObj['server_ip'],
+                                 inst_port         :$('#add_inst_port').val(),
+                                 inst_ver          :$('#add_inst_ver').val(),
+                                 templete_id       :$('#add_inst_cfg').val(),
+                                 inst_type         :$('#add_inst_type').val(),
+                                 inst_env          :$('#add_inst_env').val(),
+                                 is_rds            :$('#add_rds').val(),
+                                 mgr_user          :$('#add_mgr_user').val(),
+                                 mgr_pass          :$('#add_mgr_pass').val(),
+                                 api_server        :$('#add_inst_api_server').val(),
+                                 python3_home      :$('#add_inst_python3_home').val(),
+                                 script_path       :$('#add_inst_script_path').val(),
+                                 script_file       :$('#add_inst_script_file').val(),
+                                 inst_mapping_port :$('#add_inst_mapping_port').val(),
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal("保存成功", "", "success")
+                                    $("#query_btn").click()
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+                  }
+             })
+             }
+
+        })
+
+       $('#inst_upd_btn').click(function(){
+           $.ajax({
+                url: "/db/inst/update",
+                type: "post",
+                datatype: "json",
+                data: {
+                     inst_id           :$('#upd_inst_id').val(),
+                     inst_name         :$('#upd_inst_name').val(),
+                     server_id         :$('#upd_inst_server').val(),
+                     inst_ip           :$('#upd_inst_ip').val(),
+                     inst_port         :$('#upd_inst_port').val(),
+                     inst_ver          :$('#upd_inst_ver').val(),
+                     templete_id       :$('#upd_inst_cfg').val(),
+                     inst_type         :$('#upd_inst_type').val(),
+                     inst_env          :$('#upd_inst_env').val(),
+                     is_rds            :$('#upd_rds').val(),
+                     mgr_user          :$('#upd_mgr_user').val(),
+                     mgr_pass          :$('#upd_mgr_pass').val(),
+                     api_server        :$('#upd_inst_api_server').val(),
+                     python3_home      :$('#upd_inst_python3_home').val(),
+                     script_path       :$('#upd_inst_script_path').val(),
+                     script_file       :$('#upd_inst_script_file').val(),
+                     inst_mapping_port :$('#upd_inst_mapping_port').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
+                        $("#query_btn").click()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                }
+            })
+        })
+
+       $('#add_rds').change(function() {
+          if ($('#add_rds').val()=='Y') {
+              $('#add_inst_server').val('');
+              $('#add_inst_ip').val('');
+              $('#add_inst_server').attr("disabled",true);
+              $('#add_inst_ip').attr('disabled',false)
+          } else {
+              $('#add_inst_server').val('');
+              $('#add_inst_ip').val('');
+              $('#add_inst_server').attr("disabled",false);
+              $('#add_inst_ip').attr('disabled',true);
+          }
+       });
+
+       $('#upd_rds').change(function() {
+          if ($('#upd_rds').val()=='Y') {
+              $('#upd_inst_server').val('');
+              $('#upd_inst_ip').val('');
+              $('#upd_inst_server').attr("disabled",true);
+              $('#upd_inst_ip').attr('disabled',false)
+          } else {
+              $('#upd_inst_server').val('');
+              $('#upd_inst_ip').val('');
+              $('#upd_inst_server').attr("disabled",false);
+              $('#upd_inst_ip').attr('disabled',true);
+          }
+       });
+
+       $(document).ready(function() {
+            //ace editor
+            var editor = ace.edit("ace-editor");
+            editor.setTheme("ace/theme/xcode");
+            editor.getSession().setMode("ace/mode/mysql");
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(16);
+            editor.getSession().setUseSoftTabs(true);
+            editor.setReadOnly(true);
+
+            set_selected()
+
+            $("#query_btn").click(function() {
+              $.ajax({
+                  url: "/db/inst/crt/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      inst_name: $('#inst_name').val()
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      scrollY    :"600px",
+                      scrollX    :true,
+                      scrollCollapse: true,
+                      paging:     true,
+                      ordering   :false,
+                      iDisplayLength: 16,
+                      data: dataSet,
+                      columns: [
+                        { "title": "实例ID","width":"5%"},
+                        { "title": "实例名称" },
+                        { "title": "实例地址" },
+                        { "title": "实例端口" },
+                        { "title": "实例类型dm","visible":false},
+                        { "title": "实例类型" },
+                        { "title": "实例环境dm","visible":false},
+                        { "title": "实例环境" },
+                        { "title": "实例状态dm","visible":false},
+                        { "title": "实例状态" },
+                        { "title": "实例版本" },
+                        { "title": "是否RDS","width":"5%"},
+                        { "title": "自启动标记","visible":false},
+                        { "title": "创建时间" },
+                        { "title": "操作"},
+                      ],
+                      columnDefs: [
+                        {
+                            targets: 14,
+                            render: function(data, type, row, meta){
+
+                                var inst_status= row[8]
+                                var rds_flag = row[11]
+                                var btn = '';
+
+                                var create_enable   = '<input class="btn btn-xs btn-primary"  type="button"  value="创建" onclick="create_inst(\''+row+'\');"/>' +'&nbsp;'
+                                var create_disable  = '<input class="btn btn-xs btn-primary"  type="button"  value="创建" disabled onclick="create_inst(\''+row+'\');"/>' +'&nbsp;'
+
+                                var destroy_enable  = '<input class="btn btn-xs btn-primary"  type="button"  value="销毁" onclick="destroy_inst(\''+row+'\');"/>' +'&nbsp;'
+                                var destroy_disable = '<input class="btn btn-xs btn-primary"  type="button"  value="销毁" disabled onclick="destroy_inst(\''+row+'\');"/>' +'&nbsp;'
+
+                                var alter_enable    = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showUpd_win(\''+row[0]+'\');"/>' +'&nbsp;'
+                                var alter_disable   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" disabled onclick="showUpd_win(\''+row[0]+'\');"/>' +'&nbsp;'
+
+                                var del_enable      = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_inst(\''+row+'\');"/>' +'&nbsp;'
+                                var del_disable     = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" disabled onclick="del_inst(\''+row+'\');"/>' +'&nbsp;'
+
+
+                                var inst_detail     = '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showDetail_win(\''+row[0]+'\');"/>' +'&nbsp;'
+                                var inst_log        = '<input class="btn btn-xs btn-primary"  type="button"  value="日志" onclick="query_log_inst(\''+row[0]+'\');"/>' +'&nbsp;'
+
+                                if (inst_status == '2') {
+                                     btn = '&nbsp;'+create_disable + destroy_enable + alter_disable + del_disable+inst_detail+inst_log
+                                } else if (inst_status == '3') {
+                                     btn = '&nbsp;'+create_disable + destroy_enable + alter_enable + del_disable+inst_detail+inst_log
+                                } else if (inst_status == '4') {
+                                     btn = '&nbsp;'+create_disable + destroy_enable + alter_enable + del_disable+inst_detail+inst_log
+                                } else if (inst_status == '5' || inst_status == '1') {
+                                     btn = '&nbsp;'+create_enable + destroy_disable + alter_enable + del_enable+inst_detail+inst_log
+                                } else {
+                                     btn = '&nbsp;'+create_disable + destroy_disable + alter_disable + del_disable+inst_detail+inst_log
+                                }
+
+                                if (rds_flag =='是') {
+                                    btn = '&nbsp;'+create_disable + destroy_disable + alter_disable + del_disable+inst_detail+inst_log
+                                }
+
+                                return btn
+                            }
+                         }
+                      ],
+
+                      "language": {
+                             "search"       : "在表格中搜索:",
+                             "sProcessing"  : "处理中...",
+                             "sLengthMenu"  : "显示 _MENU_ 项结果",
+                             "sZeroRecords" : "没有匹配结果",
+                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                             "sInfoPostFix" : "",
+                             "sSearch"      : "搜索:",
+                             "sUrl"         : "",
+                             "sEmptyTable"  : "表中数据为空",
+                             "sLoadingRecords": "载入中...",
+                             "sInfoThousands": ",",
+                             "oPaginate": {
+                                 "sFirst"   : "首页",
+                                 "sPrevious": "上页",
+                                 "sNext"    : "下页",
+                                 "sLast"    : "末页"
+                             },
+                             "oAria": {
+                                 "sSortAscending" : ": 以升序排列此列",
+                                 "sSortDescending": ": 以降序排列此列"
+                             }
+                         }
+                     });
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+              });
+            });
+
+            $("#query_btn").click();
+
+            $('#con-modal-inst-log').on('show.bs.modal', function () {
+                console.log('con-modal-inst-log timer start!')
+                timer = setInterval(query_log_inst_timer,3000);
+            })
+
+            $('#con-modal-inst-log').on('hide.bs.modal', function () {
+                console.log('con-modal-inst-log closed,timer stop!')
+                clearTimeout(timer)
+            })
+        });
+
+   </script>
+</body>
+
+</html>

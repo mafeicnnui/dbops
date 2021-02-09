@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>功能新增</title>
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+</head>
+<body>
+   <p></p>
+   <div class="col-md-6">
+       <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_priv_id">*</span>模块名称</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control" id="priv_id" >
+                       <option value='' selected = "selected">......</option>
+                        {% for var in menus %}
+                           <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+           </div>
+
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_func_name">*</span>功能名称</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="func_name"  type="text" class="form-control" placeholder="请输入功能名称">
+                </div>
+           </div>
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_func_url">*</span>功能URL</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="func_url"  type="text" class="form-control" placeholder="请输入功能URL">
+                </div>
+           </div>
+
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_func_status">*</span>功能状态</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="func_status" >
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+               </div>
+            </div>
+
+
+           <br>
+           <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                  <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                </div>
+           </div>
+       </form>
+    </div>
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script>
+
+        function set_selected(){
+            document.all['s_priv_id'].style.color="#ff0000";
+            document.all['s_func_name'].style.color="#ff0000";
+            document.all['s_func_url'].style.color="#ff0000";
+            document.all['s_func_status'].style.color="#ff0000";
+        }
+
+        $(document).ready(function() {
+          set_selected()
+          $("#add").click(function () {
+            $.ajax({
+                url: "/func/add/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                     priv_id:      $('#priv_id').val(),
+                     func_name:    $('#func_name').val(),
+                     func_url:     $('#func_url').val(),
+                     status:       $('#func_status').val()
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code==0) {
+                       swal("保存成功", "", "success")
+                    } else {
+                       swal(dataSet.message, "", "error")
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+          });
+
+        });
+
+   </script>
+</body>
+
+</html>

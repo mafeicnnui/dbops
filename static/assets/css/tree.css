@@ -1,0 +1,46 @@
+html, body {height:100%; margin: 0; padding: 0; }
+
+html>body {
+	font-size: 16px; 
+	font-size: 68.75%;
+
+}
+
+body {
+	font-family: Verdana, helvetica, arial, sans-serif;
+	font-size: 68.75%;
+	background: #fff;
+	color: #333;
+}
+
+h1, h2 { 
+	font-family: 'trebuchet ms',
+	verdana, arial; 
+	padding: 10px; 
+	margin: 0 
+}
+
+h1 { font-size: large }
+
+#banner {padding: 15px;
+		  font-size: 15px; 
+		  text-align: left;
+		  border-bottom: 1px solid #ccc;
+		  }		  
+
+
+#main { padding: 1em;
+        border:20px;
+        border-color:blue;		
+        width:150px;
+	}
+
+a img { border: none; }
+
+.menu_title{
+	font-size: 13px;
+	font-weight:bold;
+	padding-left:19px;
+	background-image: url(images/folder.gif ); 
+	background-repeat:no-repeat;
+}

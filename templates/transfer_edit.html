@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>传输维护</title>
+    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <p></p>
+    <form class="form-horizontal" role="form">
+       <input  id="transfer_id" type="hidden"  value={{transfer_id}} >
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_transfer_tag">*</span>传输标识号</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="transfer_tag"  type="text" class="form-control" placeholder="请输入传输标识号" value="{{transfer_tag}}">
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述" value="{{task_desc}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_transfer_server">*</span>传输服务器</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="transfer_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in transfer_server %}
+                               {%  if var[0]==server_id %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_transfer_type">*</span>数据传输类型</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="transfer_type" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_transfer_type %}
+                               {%  if var[0]==transfer_db_type %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                  <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源数据库实例</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="sour_db_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in db_server %}
+                               {%  if var[0]==sour_db_id %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sour_db_name">*</span>源数据库名称</label>
+                    </div>
+                   <div class="col-md-10">
+                        <input id="sour_db_name"  type="text" class="form-control" placeholder="请输入源数据库名称" value="{{sour_schema}}">
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
+                    </div>
+                   <div class="col-md-10">
+                        <input id="sour_tab_name"  type="text" class="form-control" placeholder="请输入源数据库表名" value="{{sour_table}}">
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                          <button type="button" tabindex="0" class="btn btn-xs waves-effect waves-light" role="button" data-toggle="popover" data-trigger="focus" title="" data-content="支持多表传输，表间用逗号隔开！" data-original-title="小提示">
+                            <i class="ion-help"></i>
+                         </button>
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label">源数据库表条件</label>
+                    </div>
+                   <div class="col-md-10">
+                        <input id="sour_tab_where"  type="text" class="form-control" placeholder="请输入源数据库表条件" value="{{sour_where}}">
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                          <button type="button" tabindex="0" class="btn btn-xs waves-effect waves-light" role="button" data-toggle="popover" data-trigger="focus" title="" data-content="单表支持按条件传输，多表不支持！" data-original-title="小提示">
+                            <i class="ion-help"></i>
+                         </button>
+                    </div>
+               </div>
+           </div>
+       </div>
+        <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_dest_db_server">*</span>目标数据库实例</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="dest_db_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in db_server %}
+                               {%  if var[0]==dest_db_id %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_dest_db_name">*</span>目标数据库名称</label>
+                    </div>
+                   <div class="col-md-10">
+                        <input id="dest_db_name"  type="text" class="form-control" placeholder="请输入目标数据库名称" value="{{dest_schema}}">
+                   </div>
+               </div>
+           </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home"  type="text" class="form-control" placeholder="PYTHON3主目录" value="{{python3_home}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>传输主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_base"  type="text" class="form-control" placeholder="请输入传输主目录" value="{{script_path}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>传输脚本名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_name" type="text" class="form-control" placeholder="请输入传输脚本名" value="{{script_name}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_batch_size">*</span>传输批大小</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="batch_size" type="text" class="form-control" placeholder="请输入传输批大小" value="{{batch_size}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器" value="{{api_server}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="status" name="status">
+                        {% if status=='1' %}
+                           <option value="1" selected = "selected">启用</option>
+                           <option value="0">禁用</option>
+                        {% end %}
+
+                        {% if status=='0' %}
+                            <option value='0' selected = "selected">禁用</option>
+                            <option value="1">启用</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+          </div>
+       </div>
+       <br>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                  <button id="save" type="button"   class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                  <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+                </div>
+           </div>
+          </div>
+       </div>
+    </form>
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+    <!-- Tooltipster js -->
+    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
+    <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
+    <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
+
+    <script>
+
+        function set_selected(){
+            document.all['s_transfer_tag'].style.color="#ff0000";
+            document.all['s_task_desc'].style.color="#ff0000";
+            document.all['s_transfer_server'].style.color="#ff0000";
+            document.all['s_transfer_type'].style.color="#ff0000";
+            document.all['s_sour_db_server'].style.color="#ff0000";
+            document.all['s_sour_db_name'].style.color="#ff0000";
+            document.all['s_sour_tab_name'].style.color="#ff0000";
+            document.all['s_dest_db_server'].style.color="#ff0000";
+            document.all['s_dest_db_name'].style.color="#ff0000";
+            document.all['s_python3_home'].style.color="#ff0000";
+            document.all['s_script_base'].style.color="#ff0000";
+            document.all['s_script_name'].style.color="#ff0000";
+            document.all['s_batch_size'].style.color="#ff0000";
+            document.all['s_api_server'].style.color="#ff0000";
+            document.all['s_status'].style.color="#ff0000";
+        }
+
+        $("#sour_tab_name").bind("input propertychange",function(){
+           var s=$("#sour_tab_name").val()
+           if (s.indexOf(",") >=0 ) {
+                $("#sour_tab_where").val('')
+                $('#sour_tab_where').attr("readonly",true);
+           } else {
+               $('#sour_tab_where').attr("readonly",false);
+           }
+        });
+
+        $(document).ready(function() {
+            set_selected();
+        });
+
+        $('#return').on('click', function() {
+           $('#main-container-div').load('/transfer/change');
+        });
+
+        $("#save").click(function () {
+          console.log(" status:",$('#status').val())
+          $.ajax({
+            url: "/transfer/edit/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                    transfer_id          : $('#transfer_id').val(),
+                    transfer_tag         : $('#transfer_tag').val(),
+                    task_desc            : $('#task_desc').val(),
+                    transfer_server      : $('#transfer_server').val(),
+                    transfer_type        : $('#transfer_type').val(),
+                    sour_db_server       : $('#sour_db_server').val(),
+                    sour_db_name         : $('#sour_db_name').val(),
+                    sour_tab_name        : $('#sour_tab_name').val(),
+                    sour_tab_where       : $('#sour_tab_where').val(),
+                    dest_db_server       : $('#dest_db_server').val(),
+                    dest_db_name         : $('#dest_db_name').val(),
+                    python3_home         : $('#python3_home').val(),
+                    script_base          : $('#script_base').val(),
+                    script_name          : $('#script_name').val(),
+                    batch_size           : $('#batch_size').val(),
+                    api_server           : $('#api_server').val(),
+                    status               : $('#status').val()
+            },
+            success: function (dataSet) {
+                console.log(dataSet.code, dataSet.message);
+                if (dataSet.code==0) {
+                   swal("变更成功", "", "success")
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR.responseText=',jqXHR.responseText);
+                console.log('jqXHR.status=',jqXHR.status);
+                console.log('jqXHR.readyState=',jqXHR.readyState);
+                console.log('jqXHR.statusText=',jqXHR.statusText);
+                console.log('textStatus=',textStatus);
+                console.log('errorThrown=',errorThrown);
+                if (jqXHR.status==403){
+                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                    setTimeout(" window.location.href='/login'",3000);
+                } else if (jqXHR.status==502){
+                    swal("用户无权访问权限此功能!", "", "error")
+                } else {
+                    swal("系统不可用,请稍后重试!", "", "error")
+                }
+            }
+         });
+      });
+
+   </script>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="python@sftp://root@10.168.1.80:22/usr/bin/python">
+          <settings>
+            <list>
+              <mapping local-root="$PROJECT_DIR$" remote-root="/home/dbops" />
+            </list>
+          </settings>
+        </remote-mappings>
+        <remote-mappings server-id="python@sftp://hopson@10.2.39.18:65508/usr/local/python3.6/bin/python3" />
+        <remote-mappings server-id="python@sftp://hopson@39.97.190.61:65508/usr/local/python3.6.0/bin/python3">
+          <settings>
+            <list>
+              <mapping local-root="C:/syncer" remote-root="/home/hopson/apps/usr/webserver/dba/syncer" />
+            </list>
+          </settings>
+        </remote-mappings>
+        <remote-mappings server-id="python@sftp://hopson@10.2.39.17:65508/home/hopson/apps/usr/webserver/dba/python3.6.0/bin/python3" />
+      </list>
+    </list>
+  </component>
+</project>

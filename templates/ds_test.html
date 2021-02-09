@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- App title -->
+    <title>数据源测试</title>
+    <!-- DataTables -->
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/buttons.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+
+    <style>
+        #example{
+            width: 100% !important;
+        }
+       #warning {
+           position: fixed;
+           z-index: 99;
+           filter:alpha(opacity=50);
+            -moz-opacity:0.5;
+            -khtml-opacity: 0.5;
+            opacity: 0.5;
+       }
+    </style>
+</head>
+<body>
+    <p></p>
+    <div class="col-md-12">
+       <div class="row">
+           <div class="col-md-2">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
+                <input type="text" id="dsname"  class="form-control" placeholder="请输入数据源名">
+              </div>
+           </div>
+           <div class="col-md-3">
+                 <div class="input-group">
+                     <span class="input-group-addon">项目名称</span>
+                     <select class="form-control select" id="market_id" >
+                        <option value='' selected = "selected">.....</option>
+                        {% for var in dm_proj_type %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                 </div>
+           </div>
+           <div class="col-md-2">
+             <div class="input-group">
+                 <span class="input-group-addon">数据库环境</span>
+                 <select class="form-control select" id="db_env" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_env_type %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                </select>
+             </div>
+           </div>
+           <div class="col-md-2">
+             <div class="input-group">
+                 <span class="input-group-addon">数据源类型</span>
+                 <select class="form-control select" id="ds_type" >
+                    <option value='' selected = "selected">.....</option>
+                    <option value='backup' >备份数据源</option>
+                    <option value='sync' >同步数据源</option>
+                </select>
+             </div>
+          </div>
+           <div class="col-md-1">
+             <div class="input-group">
+                <span class="input-group-btn">
+                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                </span>
+           </div>
+        </div>
+      </div>
+      <p></p>
+      <div class="row">
+          <div id="div-tab">
+               <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+          </div>
+          <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+               <input  id='dstest' type='button' class="btn waves-effect waves-light btn-primary" value="测试"/>
+          </div>
+     </div>
+    </div>
+
+   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script>
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+         });
+
+        $("#dsname").bind("input propertychange",function(){
+           $('#dstest').attr("disabled",true);
+           $("#query_btn").click();
+        });
+
+        function isSelect() {
+            var rec = 0;
+            $("#example tbody tr td input:checked").each(function () {
+                rec = rec + 1;
+            });
+            if (rec == 1) {
+                $('#dstest').attr("disabled", false);
+            } else {
+                $('#dstest').attr("disabled", true);
+            }
+        }
+
+        $("#query_btn").click(function() {
+              $.ajax({
+                  url: "/ds/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      dsname   : $('#dsname').val(),
+                      market_id: $('#market_id').val(),
+                      db_env   : $('#db_env').val(),
+                      ds_type  : $('#ds_type').val(),
+
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          scrollY    :false,
+                          scrollX    :true,
+                          scrollCollapse: false,
+                          paging:     true,
+                          iDisplayLength: 15,
+                          data: dataSet,
+                          columns: [
+                             { "title": "标识符" },
+                             { "title": "数据源描述" },
+                             { "title": "数据源环境" },
+                             { "title": "数据源定义" },
+                             { "title": "用户"},
+                             { "title": "是否启用"},
+                             { "title": "更新人"},
+                             { "title": "更新日期"},
+                             {
+                                "title":"选择",
+                                "width": "25px",
+                                "render": function(data,type,row){
+                                     console.log('row[0]=',row[0],row[1])
+                                     return '<input type="radio" name="userid" onclick="isSelect();" >'; }
+                             },
+                          ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                         });
+                      $('#dstest').attr("disabled",true);
+                 } ,
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+              });
+        });
+
+        $('#dstest').on('click', function() {
+            var rec = 0;
+            var ds = '';
+            $("#example tbody tr td input:checked").each(function () {
+                var row = $(($(this).parent().parent().html()));
+                ds = row[0].innerHTML;
+                rec = 1;
+            });
+            if (rec == 0) {
+                swal("请选择数据源!", "", "success");
+            }
+            $('#dstest').attr("disabled", true);
+            $.ajax({
+                url: "/ds/check/valid",
+                type: "post",
+                datatype: "json",
+                data: {
+                    id: ds
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("数据源测试通过!", "", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("数据源测试失败!", dataSet.message + "!", "error");
+                    }
+                    $('#dstest').attr("disabled", false);
+                } ,
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#warning').hide();
+            $("#query_btn").click();
+        });
+
+        $("#dsname").bind("input propertychange",function(){
+           $("#query_btn").click();
+        });
+
+        $("#market_id").bind("input propertychange",function(){
+           $("#query_btn").click();
+        });
+
+        $("#db_env").bind("input propertychange",function(){
+           $("#query_btn").click();
+        });
+
+   </script>
+</body>
+
+</html>

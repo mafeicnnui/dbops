@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增慢查询</title>
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <p></p>
+    <div class="row">
+      <div class="col-md-6">
+       <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_inst_name">*</span>数据库实例</label>
+                </div>
+                <div class="col-md-10">
+                      <select class="form-control select" id="inst_name" >
+                          <option value='' selected = "selected">.....</option>
+                          {% for var in dm_inst_names %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                          {% end %}
+                      </select>
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_inst_server">*</span>采集服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="inst_server" >
+                        <option value='' selected = "selected">......</option>
+                        {% for var in dm_db_server %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_slow_time">*</span>慢查询时长</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="slow_time"  type="text" class="form-control" placeholder="请输入慢查询时长">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_slow_log_name">*</span>慢日志文件名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="slow_log_name"  type="text" class="form-control" readonly value="slow_log_YYYYMMDD.log" placeholder="请输入慢查询日志名">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home"  type="text" class="form-control" placeholder="PYTHON3主目录">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="run_time"  type="text" class="form-control" placeholder="运行时间">
+                </div>
+           </div>
+          <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_exec_time">*</span>执行时长</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="exec_time"  type="text" class="form-control" placeholder="执行时长">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_path">*</span>脚本路径</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_path"  type="text" class="form-control" placeholder="请输入脚本路径">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_file">*</span>采集脚本</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_file"  type="text" class="form-control" readonly  value="gather_slow.py" placeholder="请输入采集脚本">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_slow_status">*</span>是否开启</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="slow_status" >
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+       </form>
+      </div>
+    </div>
+    <p></p>
+    <div class="row">
+        <div class="col-md-offset-3 col-lg-offset-5col-xl-offset-3">
+             <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="保存"/>
+        </div>
+    </div>
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script>
+        function set_selected(){
+            document.all['s_inst_name'].style.color="#ff0000";
+            document.all['s_inst_server'].style.color="#ff0000";
+            document.all['s_slow_time'].style.color="#ff0000";
+            document.all['s_slow_log_name'].style.color="#ff0000";
+            document.all['s_python3_home'].style.color="#ff0000";
+            document.all['s_run_time'].style.color="#ff0000";
+            document.all['s_exec_time'].style.color="#ff0000";
+            document.all['s_script_path'].style.color="#ff0000";
+            document.all['s_script_file'].style.color="#ff0000";
+            document.all['s_api_server'].style.color="#ff0000";
+            document.all['s_slow_status'].style.color="#ff0000";
+        }
+
+        $('#inst_name').change(function() {
+
+           $.ajax({
+              url: "/db/inst/query/id",
+              type: "post",
+              datatype: "json",
+              data: {
+                  inst_id  :$('#inst_name').val()
+              },
+              success: function (instObj) {
+                    console.log('inst_log=>instObj=',instObj);
+                    if (instObj['is_rds']=='N') {
+                       $('#inst_server').val(instObj['server_id'])
+                       $('#inst_server').attr('disabled',false)
+
+                    } else {
+                        $('#inst_server').val('')
+                        $('#inst_server').attr('disabled',false)
+                    }
+               }
+             })
+        });
+
+        $(document).ready(function() {
+
+          set_selected()
+
+          $("#add-btn").click(function () {
+            $.ajax({
+                url: "/slow/add/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                     inst_id       : $('#inst_name').val(),
+                     server_id     : $('#inst_server').val(),
+                     slow_time     : $('#slow_time').val(),
+                     slow_log_name : $('#slow_log_name').val(),
+                     python3_home  : $('#python3_home').val(),
+                     run_time      : $('#run_time').val(),
+                     exec_time     : $('#exec_time').val(),
+                     script_path   : $('#script_path').val(),
+                     script_file   : $('#script_file').val(),
+                     api_server    : $('#api_server').val(),
+                     slow_status   : $('#slow_status').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code==0) {
+                       swal("保存成功", "", "success")
+                    } else {
+                       swal(dataSet.message, "", "error")
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+          });
+
+        });
+
+   </script>
+</body>
+
+</html>

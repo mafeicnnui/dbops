@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- App title -->
+    <title>备份维护</title>
+    <!-- DataTables -->
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+
+    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+
+    <style>
+        #example{
+            width: 100% !important;
+        }
+        .modal-lg-detail {
+            width:65%;
+            height:80%;
+        }
+        #ace-editor {
+            color: #59aed5;
+            overflow:auto;
+            height: 400px;
+        }
+        .warning {
+            color: #d54c15;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+    <div class="col-md-12">
+         <div class="row">
+             <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
+                 </div>
+             </div>
+             <div class="col-md-2">
+                 <div class="input-group">
+                     <span class="input-group-addon">数据库环境</span>
+                     <select class="form-control select" id="db_env" >
+                        <option value='' selected = "selected">.....</option>
+                        {% for var in dm_env_type %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                 </div>
+             </div>
+             <div class="col-md-2">
+                 <div class="input-group">
+                     <span class="input-group-addon">数据库类型</span>
+                     <select class="form-control select" id="db_type" >
+                        <option value='' selected = "selected">.....</option>
+                        {% for var in dm_db_type %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                 </div>
+             </div>
+             <div class="col-md-1">
+                 <div class="input-group">
+                  <span class="input-group-btn">
+                    <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                  </span>
+                </div>
+             </div>
+          </div>
+         <p></p>
+         <div class="row">
+             <div class="col-md-12">
+                  <div id="div-tab">
+                       <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+                  </div>
+             </div>
+         </div>
+         <p></p>
+         <div class="row">
+              <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
+                   <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
+                   <input  id='dsdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
+                   <input  id='push' type='button' class="btn waves-effect waves-light btn-primary"  value="推送"/>
+                   <input  id='run' type='button' class="btn waves-effect waves-light btn-primary"   value="启动"/>
+                   <input  id='stop' type='button' class="btn waves-effect waves-light btn-primary"  value="停止"/>
+             </div>
+         </div>
+    </div>
+
+    <!--远程任务详情 -->
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">任务详情</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div id='ace-editor' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div><!-- /.modal -->
+
+    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script>
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+         });
+
+         function centerModals() {
+              $('.modal').each(function(i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 50 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top - 50);
+              });
+         }
+
+        $("#tagname").bind("input propertychange",function(){
+           $('#dsupd').attr("disabled",true);
+           $('#dsdel').attr("disabled",true);
+           $('#push').attr("disabled",true);
+           $('#run').attr("disabled",true);
+           $('#stop').attr("disabled",true);
+           $("#query_btn").click();
+        });
+
+        $("#db_env").bind("input propertychange",function(){
+           $('#dsupd').attr("disabled",true);
+           $('#dsdel').attr("disabled",true);
+           $('#push').attr("disabled",true);
+           $('#run').attr("disabled",true);
+           $('#stop').attr("disabled",true);
+           $("#query_btn").click();
+        });
+
+        $("#db_type").bind("input propertychange",function(){
+           $('#dsupd').attr("disabled",true);
+           $('#dsdel').attr("disabled",true);
+           $('#push').attr("disabled",true);
+           $('#run').attr("disabled",true);
+           $('#stop').attr("disabled",true);
+           $("#query_btn").click();
+        });
+
+        function isSelect() {
+           var rec=0;
+           $("#example tbody tr td input:checked").each( function() {
+              rec=rec+1;
+           });
+           if ( rec==1 ){
+              $('#dsupd').attr("disabled",false);
+              $('#dsdel').attr("disabled",false);
+              $('#push').attr("disabled",false);
+              $('#run').attr("disabled",false);
+              $('#stop').attr("disabled",false);
+           } else {
+              $('#dsupd').attr("disabled",true);
+              $('#dsdel').attr("disabled",true);
+              $('#push').attr("disabled",true);
+              $('#run').attr("disabled",true);
+              $('#stop').attr("disabled",true);
+           }
+        }
+
+        $("#query_btn").click(function() {
+              $.ajax({
+                  url: "/backup/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      tagname   : $('#tagname').val(),
+                      db_env    : $('#db_env').val(),
+                      db_type   : $('#db_type').val(),
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :false,
+                          scrollX    :true,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 16,
+                          data: dataSet,
+                          columns: [
+                            { "title": "标识符"},
+                            { "title": "任务描述"},
+                            { "title": "标签名" },
+                            { "title": "备份有效期" },
+                            { "title": "运行时间" },
+                            { "title": "备份服务器" },
+                            { "title": "接口服务器"},
+                            { "title": "备份状态"},
+                            { "title": "任务状态"},
+                            {
+                                "title":"选择",
+                                "width": "25px",
+                                "render": function(data,type,row){
+                                     return '<input type="radio" name="userid" onclick="isSelect();" >'; }
+                            },
+                          ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                         });
+                      $('#dsupd').attr("disabled",true);
+                      $('#dsdel').attr("disabled",true);
+                      $('#push').attr("disabled",true);
+                      $('#run').attr("disabled",true);
+                      $('#stop').attr("disabled",true);
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+            });
+
+        $("#push").click(function() {
+              var v_tag='';
+              var v_desc='';
+              $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  v_desc=row[1].innerHTML;
+                  v_tag=row[2].innerHTML;
+                  v_api=row[6].innerHTML;
+                  console.log("v_tag=",v_tag)
+                  $.ajax({
+                          url: "/backup/edit/push",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              tag: v_tag,
+                              api: v_api
+                          },
+                          beforeSend: function () {
+                              swal({
+                                    title: "正在推送中...",
+                                    text: "任务["+v_desc+"]正在推送中...",
+                                    type: "info",
+                                    showConfirmButton: false
+                               });
+                          },
+                          success: function (dataSet) {
+                              if (dataSet['code']== 200) {
+                                     swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
+                                     $('#ace-editor').html(dataSet['msg']['crontab'])
+                                     $('.modal').on('show.bs.modal', centerModals);
+                                     $(window).on('resize', centerModals);
+                                     $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+
+                                     $("#query_btn").click();
+                              } else {
+                                  swal("推送失败!", "任务["+v_desc+"]推送失败!", "error");
+                              }
+                              $('#dsupd').attr("disabled",true);
+                              $('#dsdel').attr("disabled",true);
+                              $('#push').attr("disabled",true);
+                              $('#run').attr("disabled",true);
+                          },
+                         error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                        }
+                  });
+              });
+
+        });
+
+        $("#run").click(function() {
+              var v_tag='';
+              var v_desc='';
+              $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  v_desc = row[1].innerHTML;
+                  v_tag  = row[2].innerHTML;
+                  v_api  = row[6].innerHTML;
+                  console.log("v_tag=",v_tag)
+                  $.ajax({
+                          url: "/backup/edit/run",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              tag: v_tag,
+                              api: v_api
+                          },
+                          success: function (dataSet) {
+                              console.log(dataSet.code, dataSet.message);
+                              if (dataSet.code=='0') {
+                                     swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
+                                 $("#query_btn").click();
+                              } else {
+                                  swal("运行失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
+                              }
+                              $('#dsupd').attr("disabled",true);
+                              $('#dsdel').attr("disabled",true);
+                              $('#push').attr("disabled",true);
+                              $('#run').attr("disabled",true);
+                          },
+                         error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                        }
+                  });
+              });
+
+        });
+
+        $("#stop").click(function() {
+              var v_tag='';
+              var v_desc='';
+              $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  v_desc = row[1].innerHTML;
+                  v_tag  = row[2].innerHTML;
+                  v_api  = row[6].innerHTML;
+                  console.log("v_tag=",v_tag)
+                  $.ajax({
+                          url: "/backup/edit/stop",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              tag: v_tag,
+                              api: v_api
+                          },
+                          success: function (dataSet) {
+                              console.log(dataSet.code, dataSet.message);
+                              if (dataSet.code=='0') {
+                                     swal("停止成功!", "任务["+v_desc+"]已运行成功!", "success");
+                                 $("#query_btn").click();
+                              } else {
+                                  swal("停止失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
+                              }
+                              $('#dsupd').attr("disabled",true);
+                              $('#dsdel').attr("disabled",true);
+                              $('#push').attr("disabled",true);
+                              $('#run').attr("disabled",true);
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=',jqXHR.responseText);
+                                console.log('jqXHR.status=',jqXHR.status);
+                                console.log('jqXHR.readyState=',jqXHR.readyState);
+                                console.log('jqXHR.statusText=',jqXHR.statusText);
+                                console.log('textStatus=',textStatus);
+                                console.log('errorThrown=',errorThrown);
+                                if (jqXHR.status==403){
+                                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                                    window.location.href='/login'
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                  });
+              });
+
+        });
+
+        $('#dsupd').on('click', function() {
+             var backupid='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  backupid=row[0].innerHTML;
+                  console.log("backupid=",backupid)
+             });
+
+             $.ajax({
+                url: "/backup/edit",
+                type: "get",
+                datatype: "html",
+                data: {
+                    backupid:backupid
+                },
+                success: function () {
+                   $('#main-container-div').load("/backup/edit?backupid="+backupid);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             })
+
+        });
+
+        $('#dsdel').on('click', function() {
+             var backupid='';
+             var backupdesc='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  backupid=row[0].innerHTML;
+                  backupdesc=row[1].innerHTML;
+                  console.log("backupid=",backupid,"backupdesc=",backupdesc)
+             });
+            swal({
+                title: "确认要删除吗?",
+                text: "数据源["+backupdesc+"]将被删除了！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 撤销!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                            url: "/backup/edit/del?backupid="+backupid,
+                            type: "post",
+                            datatype: "json",
+                            success: function (dataSet) {
+                                if (dataSet.code=='0') {
+                                    swal("已删除!", "数据源["+backupdesc+"]已删除!", "success");
+                                    $("#query_btn").click();
+                                } else {
+                                    swal("删除失败!", "用户["+backupdesc+"]"+dataSet.message+"!", "error");
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=',jqXHR.responseText);
+                                console.log('jqXHR.status=',jqXHR.status);
+                                console.log('jqXHR.readyState=',jqXHR.readyState);
+                                console.log('jqXHR.statusText=',jqXHR.statusText);
+                                console.log('textStatus=',textStatus);
+                                console.log('errorThrown=',errorThrown);
+                                if (jqXHR.status==403){
+                                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                                    window.location.href='/login'
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                       });
+
+                } else {
+                    swal("已取消", "数据源["+backupdesc+"]未删除！", "error");
+                }
+            });
+        });
+
+        $(document).ready(function() {
+              $("#query_btn").click();
+        });
+
+   </script>
+</body>
+
+</html>

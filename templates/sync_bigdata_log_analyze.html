@@ -1,0 +1,258 @@
+  <head>
+        <meta charset="utf-8">
+        <!--Morris Chart CSS -->
+		<link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
+        <link href="{{static_url('assets/css/core.css')}}"       rel="stylesheet" type="text/css" />
+        <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" >
+        <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
+ </head>
+ <body>
+    <br>
+    <div class="container">
+      <div class="row">
+         <div class="col-md-2">
+             <div class="input-group">
+                 <span class="input-group-addon">大数据环境</span>
+                 <select class="form-control select" id="sync_env" >
+                     <option value='' selected = "selected">.....</option>
+                     <option  value='prod' >大数据生产</option>
+                     <option value='dev' >大数据开发</option>
+                     <option value='uat'>大数据测试</option>
+                </select>
+             </div>
+         </div>
+         <div class="col-md-3">
+             <div class="input-group">
+                <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
+                <select class="form-control select" id="tagname" >
+                        <option value='' selected = "selected">请选择任务..</option>
+                </select>
+             </div>
+         </div>
+         <div class="col-md-2">
+             <div class="input-group">
+              <span class="input-group-addon">同步日期起</span>
+              <input  id="begin_date"  type="text" class="form-control datepicker" placeholder="同步日期起" value="{{begin_date}}">
+              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+         </div>
+         <div class="col-md-2">
+             <div class="input-group">
+              <span class="input-group-addon">同步日期止</span>
+              <input  id="end_date"  type="text" class="form-control datepicker" placeholder="同步日期止" value="{{end_date}}" >
+              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+        </div>
+         <div class="col-md-1">
+             <div class="input-group">
+              <span class="input-group-btn">
+                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+        </div>
+      </div>
+    </div>
+     <p></p>
+
+    <!-- db-backup-time row -->
+    <div id='backup-container' class="container">
+        <div class="row">
+             <div class="col-lg-12">
+                <div class="card-box">
+                    <h6 class="header-title m-t-0"><small>同步时长[秒]</small></h6>
+                    <div id="db-sync-time" style="height: 280px;"></div>
+                </div>
+            </div><!-- end col -->
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-box">
+                    <h6 class="header-title m-t-0"><small>同步记录[条]</small></h6>
+                    <div id="db-sync-amount" style="height: 280px;"></div>
+                </div>
+            </div><!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+
+    <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+
+    <!--Morris Chart-->
+	<script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
+
+    <script>
+         $(document).ready(function() {
+              $('#backup-container').hide()
+              function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
+                Morris.Bar({
+                    element: element,
+                    data: data,
+                    xkey: xkey,
+                    ykeys: ykeys,
+                    labels: labels,
+                    hideHover: 'auto',
+                    resize: true, //defaulted to true
+                    gridLineColor: '#65d9b2',
+                    barSizeRatio: 0.6,
+                    barColors: lineColors,
+                    postUnits: 'Mb'
+                });
+              }
+              function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors,p_postUnits) {
+                Morris.Line({
+                      element: element,
+                      data: data,
+                      xkey: xkey,
+                      ykeys: ykeys,
+                      labels: labels,
+                      fillOpacity: opacity,
+                      pointFillColors: Pfillcolor,
+                      pointStrokeColors: Pstockcolor,
+                      behaveLikeLine: true,
+                      gridLineColor: '#8b9285',
+                      hideHover: 'auto',
+                      resize: true, //defaulted to true
+                      pointSize: 0,
+                      lineColors: lineColors,
+                      postUnits: p_postUnits,
+                      lineWidth:2
+                });
+              }
+
+              $('#begin_date').attr("readonly", "readonly");
+              $('#end_date').attr("readonly", "readonly");
+
+              $("#query_btn").click(function() {
+
+                if ($('#sync_env').val()==''){
+                    swal("请选择环境!", "", "info");
+                    return false;
+                }
+
+                if ($('#tagname').val()==''){
+                    swal("请选择同步任务!", "", "info");
+                    return false;
+                }
+
+                if ($('#begin_date').val()==''){
+                    swal("请输入同步日期起!", "", "info");
+                    return false;
+                }
+
+                if ($('#end_date').val()==''){
+                    swal("请输入同步日期止!", "", "info");
+                    return false;
+                }
+
+                $.ajax({
+                      url: "/bigdata/log/_analyze",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          sync_env   : $('#sync_env').val(),
+                          tagname    : $('#tagname').val(),
+                          begin_date : $('#begin_date').val(),
+                          end_date   : $('#end_date').val()
+                      },
+                      beforeSend: function () {
+                          swal({title: "正在加载中...",type: "info",showConfirmButton: false});
+                      },
+                      complete: function () {
+                          swal({title: "正在加载中...",type: "info",timer: 1000,showConfirmButton: false});
+                      },
+                      success: function (dataSet) {
+                         $('#db-sync-time').html('')
+                         $('#db-sync-amount').html('')
+                         $('#backup-container').show()
+
+                         var $barData_db_sync_time = new Array(dataSet['data1'].length);
+                         var $barData_db_sync_amount = new Array(dataSet['data2'].length);
+
+                         for (i=0;i<dataSet['data1'].length;i++){
+                             $barData_db_sync_time[i]={'y':dataSet['data1'][i][0],'a':dataSet['data1'][i][1]}
+                         }
+
+                         for (i=0;i<dataSet['data2'].length;i++){
+                             $barData_db_sync_amount[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1]}
+                         }
+
+                         createLineChart('db-sync-time', $barData_db_sync_time, 'y', ['a'], ['同步时长'],['0.9'],['#ffbeba'],['#999999'], ['#ffbeba'],'s');
+                         createLineChart('db-sync-amount', $barData_db_sync_amount, 'y', ['a'], ['同步记录'],['0.9'],['#ffc353'],['#999999'], ['#FFBD33'],'');
+                      },
+                      error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                        }
+                 });
+
+              });
+
+              $("#query_btn").click();
+          })
+
+         $("#tagname").bind("input propertychange",function(){
+           $("#query_btn").click();
+         });
+
+         $("#begin_date").bind("input propertychange",function(){
+           $("#query_btn").click();
+         });
+
+         $("#end_date").bind("input propertychange",function(){
+           $("#query_btn").click();
+         });
+
+         $('#sync_env').change(function() {
+            console.log('sync_env=',$('#sync_env').val());
+            $.ajax({
+                      url: "/get/bigdata/sync/task",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          sync_env : $('#sync_env').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#tagname").empty();
+                         $("#tagname").append("<option value=''>请选择任务...</option>");
+                         for(i=0;i<dataSet['data'].length;i++){
+                             console.log('i=',i)
+                              var val  = dataSet['data'][i][0];
+                              var text = dataSet['data'][i][1];
+                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
+                              $("#tagname").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      },
+                      error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                      }
+                 });
+         });
+    </script>
+
+ </body>

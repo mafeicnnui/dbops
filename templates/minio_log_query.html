@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>日志查询</title>
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <style>
+        #example{
+            width: 100% !important;
+        }
+
+        .modal-lg {
+            width:86%;
+            height:80%;
+            margin-left:240px;
+            margin-right:50px;
+            margin-top:80px;
+        }
+
+    </style>
+</head>
+<body>
+    <p></p>
+    <div class="col-md-12">
+     <div class="row">
+         <div class="col-md-2">
+             <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
+             </div>
+         </div>
+         <div class="col-md-2">
+             <div class="input-group">
+              <span class="input-group-addon">同步日期起</span>
+              <input  id="begin_date"  type="text" class="form-control datepicker"  placeholder="同步日期起" value="{{begin_date}}">
+              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+         </div>
+        <div class="col-md-2">
+             <div class="input-group">
+              <span class="input-group-addon">同步日期止</span>
+              <input  id="end_date"  type="text" class="form-control datepicker"  placeholder="同步日期止" value="{{end_date}}" >
+              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+        </div>
+        <div class="col-md-1">
+             <div class="input-group">
+              <span class="input-group-btn">
+                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+        </div>
+      </div>
+      <p></p>
+     <div class="row">
+         <div class="col-md-12">
+              <div id="div-tab">
+                   <table id="example" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+              </div>
+         </div>
+     </div>
+   </div>
+
+   <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+   <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+
+   <script>
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+         });
+
+        $(document).ready(function() {
+            $('#begin_date').attr("readonly", "readonly");
+            $('#end_date').attr("readonly", "readonly");
+            $('#backup_date_detail').attr("readonly", "readonly");
+
+            $("#query_btn").click(function() {
+
+              $.ajax({
+                  url: "/minio/log/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      tagname   : $('#tagname').val(),
+                      db_env    : $('#db_env').val(),
+                      begin_date: $('#begin_date').val(),
+                      end_date  : $('#end_date').val()
+                  },
+                  success: function (dataSet) {
+                       $.ajax({
+                              url: "/minio/log/_query",
+                              type: "post",
+                              datatype: "json",
+                              data:{
+                                  tagname   : $('#tagname').val(),
+                                  db_env    : $('#db_env').val(),
+                                  begin_date: $('#begin_date').val(),
+                                  end_date  : $('#end_date').val()
+                              },
+                              beforeSend: function () {
+                                   swal({title: "正在查询中...",showConfirmButton: false});
+                              },
+                              complete: function () {
+                                   swal({title: "正在查询中...",timer: 1000,showConfirmButton: false});
+                              },
+                              success: function (dataSet) {
+                                  $('#example').DataTable( {
+                                  "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                                  "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                  destroy    :true,
+                                  async      :true,
+                                  scrollY    :false,
+                                  ordering   :false,
+                                  scrollX    :false,
+                                  scrollCollapse: true,
+                                  paging      : true,
+                                  iDisplayLength: 16,
+                                  data: dataSet,
+                                  columns: [
+                                    { "title": "标识符"},
+                                    { "title": "任务描述"},
+                                    { "title": "同步天数" },
+                                    { "title": "下载时间" },
+                                    { "title": "上传时间" },
+                                    { "title": "合计时间" },
+                                    { "title": "文件数量" },
+                                    { "title": "创建时间" },
+                                  ],
+                                  "language": {
+                                         "search"       : "在表格中搜索:",
+                                         "sProcessing"  : "处理中...",
+                                         "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                         "sZeroRecords" : "没有匹配结果",
+                                         "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                         "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                         "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                         "sInfoPostFix" : "",
+                                         "sSearch"      : "搜索:",
+                                         "sUrl"         : "",
+                                         "sEmptyTable"  : "表中数据为空",
+                                         "sLoadingRecords": "载入中...",
+                                         "sInfoThousands": ",",
+                                         "oPaginate": {
+                                             "sFirst"   : "首页",
+                                             "sPrevious": "上页",
+                                             "sNext"    : "下页",
+                                             "sLast"    : "末页"
+                                         },
+                                         "oAria": {
+                                             "sSortAscending" : ": 以升序排列此列",
+                                             "sSortDescending": ": 以降序排列此列"
+                                         }
+                                     }
+                                 });
+                              }
+                       });
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+
+            });
+            $("#query_btn").click();
+        });
+
+        $("#query_btn2").click(function() {
+              $.ajax({
+                  url: "/backup/log/_query/detail",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      tagname    : $('#tagname_detail').val(),
+                      backup_date: $('#backup_date_detail').val(),
+                  },
+                  success: function (dataSet) {
+                      $('#con-close-modal').modal({
+                          keyboard: false,
+                          backdrop:false
+                      });
+                      $('#example2').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          scrollY    :false,
+                          ordering   :false,
+                          bAutoWidth :true,
+                          scrollX    :true,
+                          paging:     true,
+                          iDisplayLength: 14,
+                          data: dataSet,
+                          columns: [
+                                { "title": "任务描述"},
+                                { "title": "标签名" },
+                                { "title": "数据库名"  },
+                                { "title": "文件名"    },
+                                { "title": "文件路径"  },
+                                { "title": "备份日期"  },
+                                { "title": "开始时间"  },
+                                { "title": "结束时间"  },
+                                { "title": "备份大小"  },
+                                { "title": "备份耗时"  },
+                                { "title": "压缩耗时"  },
+                                { "title": "状态"     }
+                          ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                     });
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+            });
+
+        function isSelect(v) {
+            console.log('isSelect=',v)
+            console.log('isSelect=',v,v.split(','),v.split(',')[0])
+            $('#tagname_detail').val(v.split(',')[0])
+            $('#backup_date_detail').val(v.split(',')[1])
+            $("#query_btn2").click()
+        }
+
+   </script>
+</body>
+
+</html>

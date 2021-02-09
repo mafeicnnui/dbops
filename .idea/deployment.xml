@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="hopson@10.2.39.17:65508_dbops">
+    <serverData>
+      <paths name="hopson@10.2.39.17:65508_dba_syncer">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.17:65508_dba_tools">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.17:65508_dbops">
+        <serverdata>
+          <mappings>
+            <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.17:65508_easebase">
+        <serverdata>
+          <mappings>
+            <mapping deploy="easebase" local="C:/easebase" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.18:65508_dbapi">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.18:65508_dbops">
+        <serverdata>
+          <mappings>
+            <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.18:65508_easebase">
+        <serverdata>
+          <mappings>
+            <mapping deploy="easebase" local="C:/easebase" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.20:65508_dbapi">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.20:65508_dbops">
+        <serverdata>
+          <mappings>
+            <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.21:65508_dbapi">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.21:65508_dbops">
+        <serverdata>
+          <mappings>
+            <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>

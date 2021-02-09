@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>归档克隆</title>
+    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+    <style>
+        .modal-lg {
+            width:65%;
+            height:40%;
+            margin-left:320px;
+            margin-right:50px;
+            margin-top:80px;
+        }
+
+        table{
+            table-layout:fixed;
+        }
+        th, td {
+            word-break: keep-all;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -moz-text-overflow: ellipsis;
+        }
+
+    </style>
+</head>
+<body>
+    <p></p>
+    <form class="form-horizontal" role="form">
+       <input  id="archive_id" type="hidden"  value={{archive_id}} >
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_archive_tag">*</span>归档标识号</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="archive_tag"  type="text" class="form-control" placeholder="请输入归档标识号" value="{{archive_tag}}">
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述" value="{{task_desc}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_archive_server">*</span>归档服务器</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="archive_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_archive_server %}
+                               {%  if var[0]==archive_server %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_archive_db_type">*</span>数据库类型</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="archive_db_type" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_db_type %}
+                               {%  if var[0]==archive_db_type %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                  <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源数据库实例</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="sour_db_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_archive_instance %}
+                               {%  if var[0]==sour_db_id %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sour_db_name">*</span>源数据库名称</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="sour_db_name" >
+                                <option value={{sour_schema}} selected = "selected">{{sour_schema}}</option>
+                         </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="sour_tab_name" >
+                            <option value={{sour_table}} selected = "selected">{{sour_table}}</option>
+                        </select>
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-1">
+               <div class="form-group">
+                    <div>
+                        <button type="button" id='mdi-view-list' class="btn btn-xs waves-effect waves-light"   onclick=showTabDetail()><i class="mdi mdi-view-list"></i></button>
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label"><span id="s_archive_time_col">*</span>归档时间列</label>
+                        </div>
+                       <div class="col-md-10">
+                            <select class="form-control select" id="archive_time_col" >
+                                <option value={{archive_time_col}} selected = "selected">{{archive_time_col}}</option>
+                            </select>
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                              <button type="button" tabindex="0" class="btn btn-xs waves-effect waves-light" role="button" data-toggle="popover" data-trigger="focus" title="" data-content="普通表显示所有时间列，分区表显示分区键且必须按日期进行分区!" data-original-title="小提示">
+                                <i class="ion-help"></i>
+                             </button>
+                        </div>
+                   </div>
+               </div>
+       </div>
+
+       <div class="row">
+           <div class="col-md-6">
+              <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_archive_rentition">*</span>保留策略</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="archive_rentition" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_archive_rentition %}
+                               {%  if var[0]==archive_rentition %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+            </div>
+       </div>
+
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_rentition_time">*</span>保留时间</label>
+                    </div>
+                   <div class="col-md-10">
+                        <input id="rentition_time"  type="text" class="form-control" value="{{rentition_time}}" placeholder="请输入保留策略">
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                          <button type="button" tabindex="0" class="btn btn-xs waves-effect waves-light" role="button" data-toggle="popover" data-trigger="focus" title="" data-content="保留最近几(小时、日、月)的数据" data-original-title="小提示">
+                            <i class="ion-help"></i>
+                         </button>
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+              <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_archive_time_type">*</span>时间类型</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="rentition_time_type" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_archive_time_type %}
+                               {%  if var[0]==rentition_time_type %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+            </div>
+        </div>
+        <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_if_cover">*</span>是否覆盖</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="if_cover" name="status">
+                        {% if if_cover=='1' %}
+                           <option value="1" selected = "selected">是</option>
+                           <option value="0">否</option>
+                        {% else %}
+                            <option value='0' selected = "selected">禁用</option>
+                            <option value="1">启用</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+          </div>
+       </div>
+
+        <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_dest_db_server">*</span>目标数据库实例</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="dest_db_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_archive_instance %}
+                               {%  if var[0]==dest_db_id %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_dest_db_name">*</span>目标数据库名称</label>
+                    </div>
+                   <div class="col-md-10">
+                        <input id="dest_db_name"  type="text" class="form-control" placeholder="请输入目标数据库名称" value="{{dest_schema}}">
+                   </div>
+               </div>
+           </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home"  type="text" class="form-control" placeholder="PYTHON3主目录" value="{{python3_home}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>传输主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_base"  type="text" class="form-control" placeholder="请输入传输主目录" value="{{script_path}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>传输脚本名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_name" type="text" class="form-control" placeholder="请输入传输脚本名" value="{{script_name}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="run_time" type="text" class="form-control" placeholder="请输入运行时间" value="{{run_time}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_batch_size">*</span>传输批大小</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="batch_size" type="text" class="form-control" placeholder="请输入传输批大小" value="{{batch_size}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器" value="{{api_server}}">
+                </div>
+           </div>
+          </div>
+       </div>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="status" name="status">
+                        {% if status=='1' %}
+                           <option value="1" selected = "selected">启用</option>
+                           <option value="0">禁用</option>
+                        {% end %}
+
+                        {% if status=='0' %}
+                            <option value='0' selected = "selected">禁用</option>
+                            <option value="1">启用</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+          </div>
+       </div>
+       <br>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                  <button id="save" type="button"   class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                  <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+                </div>
+           </div>
+          </div>
+       </div>
+    </form>
+
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">表结构:<span id='tab_stru'></span></h4>
+            </div>
+            <div class="modal-body">
+                <p></p>
+                <div class="row">
+                     <div class="col-md-12">
+                          <div id="div-tab">
+                               <table id="example_detail" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" ></table>
+                          </div>
+                     </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+    <!-- Tooltipster js -->
+    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
+    <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
+    <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
+
+    <script>
+
+        function set_selected(){
+            document.all['s_archive_tag'].style.color="#ff0000";
+            document.all['s_task_desc'].style.color="#ff0000";
+            document.all['s_archive_server'].style.color="#ff0000";
+            document.all['s_archive_db_type'].style.color="#ff0000";
+            document.all['s_sour_db_server'].style.color="#ff0000";
+            document.all['s_sour_db_name'].style.color="#ff0000";
+            document.all['s_sour_tab_name'].style.color="#ff0000";
+            document.all['s_archive_time_col'].style.color="#ff0000";
+            document.all['s_archive_rentition'].style.color="#ff0000";
+            document.all['s_rentition_time'].style.color="#ff0000";
+            document.all['s_archive_time_type'].style.color="#ff0000";
+            document.all['s_if_cover'].style.color="#ff0000";
+            document.all['s_dest_db_server'].style.color="#ff0000";
+            document.all['s_dest_db_name'].style.color="#ff0000";
+            document.all['s_python3_home'].style.color="#ff0000";
+            document.all['s_script_base'].style.color="#ff0000";
+            document.all['s_script_name'].style.color="#ff0000";
+            document.all['s_run_time'].style.color="#ff0000";
+            document.all['s_batch_size'].style.color="#ff0000";
+            document.all['s_api_server'].style.color="#ff0000";
+            document.all['s_status'].style.color="#ff0000";
+        }
+
+        function set_archive_tag(){
+            var db_type =  $("#archive_db_type").find("option:selected").text()
+            var sour_db =  $("#sour_db_name").val()
+            var sour_tab = $("#sour_tab_name").val()
+            if (db_type == null) {
+                db_type=''
+            }
+             if (sour_db == null) {
+                sour_db=''
+            }
+             if (sour_tab == null) {
+                sour_tab=''
+            }
+            $('#archive_tag').val('archive_'+db_type+'_'+sour_db+'_'+sour_tab)
+            $('#task_desc').val('归档任务['+db_type+'_'+sour_db+'_'+sour_tab+']')
+        }
+
+        $("#sour_tab_name").bind("input propertychange",function(){
+           var s=$("#sour_tab_name").val()
+           if (s.indexOf(",") >=0 ) {
+                $("#sour_tab_where").val('')
+                $('#sour_tab_where').attr("readonly",true);
+           } else {
+               $('#sour_tab_where').attr("readonly",false);
+           }
+        });
+
+        $(document).ready(function() {
+            set_selected();
+        });
+
+        $('#return').on('click', function() {
+           $('#main-container-div').load('/archive/change');
+        });
+
+        $("#save").click(function () {
+          $.ajax({
+            url: "/archive/clone/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                    archive_id           : $('#archive_id').val(),
+                    archive_tag          : $('#archive_tag').val(),
+                    task_desc            : $('#task_desc').val(),
+                    archive_server       : $('#archive_server').val(),
+                    archive_db_type      : $('#archive_db_type').val(),
+                    sour_db_server       : $('#sour_db_server').val(),
+                    sour_db_name         : $('#sour_db_name').val(),
+                    sour_tab_name        : $('#sour_tab_name').val(),
+                    archive_time_col     : $('#archive_time_col').val(),
+                    archive_rentition    : $('#archive_rentition').val(),
+                    rentition_time       : $('#rentition_time').val(),
+                    rentition_time_type  : $('#rentition_time_type').val(),
+                    if_cover             : $('#if_cover').val(),
+                    dest_db_server       : $('#dest_db_server').val(),
+                    dest_db_name         : $('#dest_db_name').val(),
+                    python3_home         : $('#python3_home').val(),
+                    script_base          : $('#script_base').val(),
+                    script_name          : $('#script_name').val(),
+                    run_time             : $('#run_time').val(),
+                    batch_size           : $('#batch_size').val(),
+                    api_server           : $('#api_server').val(),
+                    status               : $('#status').val()
+            },
+            success: function (dataSet) {
+                console.log(dataSet.code, dataSet.message);
+                if (dataSet.code==0) {
+                   swal("克隆成功", "", "success")
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('jqXHR.responseText=',jqXHR.responseText);
+                console.log('jqXHR.status=',jqXHR.status);
+                console.log('jqXHR.readyState=',jqXHR.readyState);
+                console.log('jqXHR.statusText=',jqXHR.statusText);
+                console.log('textStatus=',textStatus);
+                console.log('errorThrown=',errorThrown);
+                if (jqXHR.status==403){
+                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                    window.location.href='/login'
+                } else if (jqXHR.status==502){
+                    swal("用户无权访问权限此功能!", "", "error")
+                } else {
+                    swal("系统不可用,请稍后重试!", "", "error")
+                }
+            }
+         });
+      });
+
+     function showTabDetail(){
+
+            if ($('#sour_db_name').val() =='') {
+                return false
+            }
+
+            $('#con-close-modal').modal({
+                keyboard: false,
+                backdrop:false
+            });
+
+            $('#tab_stru').text($('#sour_db_name').val())
+
+            if ($('#sour_db_name').val()!='') {
+
+                $.ajax({
+                    url: "/get_tab_stru",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        dbid    : $('#sour_db_server').val(),
+                        db_name : $('#sour_db_name').val(),
+                        tab_name: $('#sour_tab_name').val()
+                    },
+                    success: function (dataSet) {
+                        console.log('get_tab_stru=', dataSet)
+                        $('#example_detail').DataTable({
+                            "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                            "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                            destroy: true,
+                            async: true,
+                            scrollY: "350px",
+                            ordering: false,
+                            bAutoWidth: true,
+                            scrollX: true,
+                            paging: false,
+                            iDisplayLength: 10,
+                            data: dataSet,
+                            responsive: false,
+                            columns: [
+                                {"title": "列名"},
+                                {"title": "列描述"},
+                                {"title": "列类型"},
+                                {"title": "是否自增"},
+                                {"title": "是否主键"},
+                                {"title": "是否非空"},
+                            ],
+                            "language": {
+                                "search": "在表格中搜索:",
+                                "sProcessing": "处理中...",
+                                "sLengthMenu": "显示 _MENU_ 项结果",
+                                "sZeroRecords": "没有匹配结果",
+                                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                "sInfoPostFix": "",
+                                "sSearch": "搜索:",
+                                "sUrl": "",
+                                "sEmptyTable": "表中数据为空",
+                                "sLoadingRecords": "载入中...",
+                                "sInfoThousands": ",",
+                                "oPaginate": {
+                                    "sFirst": "首页",
+                                    "sPrevious": "上页",
+                                    "sNext": "下页",
+                                    "sLast": "末页"
+                                },
+                                "oAria": {
+                                    "sSortAscending": ": 以升序排列此列",
+                                    "sSortDescending": ": 以降序排列此列"
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+     $('#sour_tab_name').change(function() {
+            console.log('sour_tab_name=',$('#sour_tab_name').val());
+            set_archive_tag()
+            if ($('#sour_tab_name').val()!=''){
+                $.ajax({
+                      url: "/get_incr_col",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid     : $('#sour_db_server').val(),
+                          db_name  : $('#sour_db_name').val(),
+                          tab_name : $('#sour_tab_name').val()
+                      },
+                      success: function (dataSet) {
+                         console.log(dataSet)
+                         $("#archive_time_col").empty();
+                         $("#archive_time_col").append("<option value=''>......</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i][0];
+                              var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
+                              $("#archive_time_col").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      }
+                });
+
+            } else {
+                 $("#sour_incr_col").empty();
+                 $("#sour_incr_col").append("<option value=''>...</option>");
+            }
+        });
+
+     $('#archive_db_type').change(function() {
+             if ($('#sour_db_server').val()!='...') {
+                 $.ajax({
+                     url: "/ds/get/db/type",
+                     type: "post",
+                     datatype: "json",
+                     async: false,
+                     data: {
+                         db_type: $('#archive_db_type').val(),
+                     },
+                     success: function (dataSet) {
+                         set_archive_tag()
+                         $("#sour_db_server").empty();
+                         $("#dest_db_server").empty();
+                         $("#sour_db_name").empty();
+                         $("#sour_db_server").append("<option value=''>...</option>");
+                         $("#dest_db_server").append("<option value=''>...</option>");
+                         for (i = 0; i < dataSet['message'].length; i++) {
+                             var val = dataSet['message'][i][0];
+                             var text = dataSet['message'][i][1];
+                             $("#sour_db_server").append("<option value='" + val + "'>" + text + "</option>");
+                             $("#dest_db_server").append("<option value='" + val + "'>" + text + "</option>");
+                         }
+                     }
+                 })
+             } else {
+                 $("#sour_db_server").empty();
+                 $("#sour_db_name").empty();
+                 $("#dest_db_server").empty();
+                 $("#sour_db_server").append("<option value=''>...</option>");
+                 $("#sour_db_name").append("<option value=''>...</option>");
+                 $("#dest_db_server").append("<option value=''>...</option>");
+             }
+        });
+
+     $('#sour_db_server').change(function() {
+        console.log('sour_db_server=',$('#sour_db_server').val());
+        if ($('#sour_db_server').val()!=''){
+            $.ajax({
+                  url: "/get_database",
+                  type: "post",
+                  datatype: "json",
+                  async:false,
+                  data:{
+                      dbid : $('#sour_db_server').val(),
+                  },
+                  success: function (dataSet) {
+                     $("#sour_db_name").empty();
+                     $("#sour_db_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['message'].length;i++){
+                          var val  = dataSet['message'][i];
+                          var text = dataSet['message'][i];
+                          $("#sour_db_name").append("<option value='"+val+"'>"+text+"</option>");
+                     }
+                  }
+            })
+        } else {
+             $("#sour_db_name").empty();
+        }
+    });
+
+     $('#dest_db_server').change(function() {
+        console.log('dest_db_server=',$('#dest_db_server').val());
+        if ($('#dest_db_server').val()!=''){
+            $.ajax({
+                  url: "/get_database",
+                  type: "post",
+                  datatype: "json",
+                  async:false,
+                  data:{
+                      dbid : $('#dest_db_server').val(),
+                  },
+                  success: function (dataSet) {
+                     $("#dest_db_name").empty();
+                     $("#dest_db_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['message'].length;i++){
+                          var val  = dataSet['message'][i];
+                          var text = dataSet['message'][i];
+                          $("#dest_db_name").append("<option value='"+val+"'>"+text+"</option>");
+                     }
+                  }
+            })
+        } else {
+             $("#dest_db_name").empty();
+        }
+    });
+
+     $('#sour_db_name').change(function() {
+        console.log('sour_db_server=',$('#sour_db_server').val());
+        console.log('sour_db_name=',$('#sour_db_name').val());
+
+        $("#sour_tab_name").empty();
+        $("#sour_tab_cols").empty();
+        $("#sele_sour_tab_cols").empty();
+        $('#hbase_table').val('');
+        set_archive_tag()
+
+        if ($('#sour_db_name').val()!=''){
+            $.ajax({
+                  url: "/get_tables",
+                  type: "post",
+                  datatype: "json",
+                  async:false,
+                  data:{
+                      dbid    : $('#sour_db_server').val(),
+                      db_name : $('#sour_db_name').val(),
+                  },
+                  success: function (dataSet) {
+                     console.log(dataSet)
+                     $("#sour_tab_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['message'].length;i++){
+                          var val  = dataSet['message'][i];
+                          var text = dataSet['message'][i];
+                          $("#sour_tab_name").append("<option value='"+val+"'>"+text+"</option>");
+                     }
+                  }
+            });
+        } else {
+            $("#sour_tab_name").append("<option value=''>......</option>");
+            $("#sour_incr_col").append("<option value=''>......</option>");
+        }
+    });
+
+     $('#sour_tab_name').change(function() {
+            console.log('sour_tab_name=',$('#sour_tab_name').val());
+            set_archive_tag()
+            if ($('#sour_tab_name').val()!=''){
+                $.ajax({
+                      url: "/get_incr_col",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid     : $('#sour_db_server').val(),
+                          db_name  : $('#sour_db_name').val(),
+                          tab_name : $('#sour_tab_name').val()
+                      },
+                      success: function (dataSet) {
+                         console.log(dataSet)
+                         $("#archive_time_col").empty();
+                         $("#archive_time_col").append("<option value=''>......</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i][0];
+                              var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
+                              $("#archive_time_col").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      }
+                });
+
+            } else {
+                 $("#sour_incr_col").empty();
+                 $("#sour_incr_col").append("<option value=''>...</option>");
+            }
+        });
+
+   </script>
+</body>
+
+</html>

@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>同步变更</title>
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <style>
+       #example{
+            width: 100% !important;
+            font-size:13px;
+       }
+      .modal-lg {
+            width:75%;
+            height:65%;
+            margin-left:350px;
+            margin-top:40px;
+       }
+       #sync_tab_col,#sync_sele_col {
+            height: 220px;
+            max-height: 220px;
+       }
+       .xyz {
+           padding-top:70px;
+       }
+    </style>
+</head>
+<body>
+    <p></p>
+
+    <form class="form-horizontal" role="form">
+       <input  id="sync_id" type="hidden"  value={{sync_id}} >
+       <div class="row">
+          <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="sync_server" >
+                             {% for var in sync_server %}
+                                   {%  if var[0]==server_id %}
+                                      <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                   {% else %}
+                                       <option value={{var[0]}}>{{var[1]}}</option>
+                                   {% end %}
+                             {% end %}
+                        </select>
+                   </div>
+               </div>
+          </div>
+       </div>
+
+       <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源端数据库</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="sour_db_server" >
+                        {% for var in db_server %}
+                               {%  if var[0]==sour_db_server %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                        {% end %}
+                    </select>
+               </div>
+            </div>
+          </div>
+       </div>
+
+       <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_desc_db_server">*</span>目标数据库</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="desc_db_server" >
+                        {% for var in db_server %}
+                               {%  if var[0]==desc_db_server %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                        {% end %}
+                    </select>
+               </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+          <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_tag"  type="text" class="form-control" placeholder="请输入同步标识号" value="{{sync_tag}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>同步业务类型</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="sync_ywlx" >
+                        {% for var in dm_sync_ywlx %}
+                               {%  if var[0]==sync_ywlx %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                        {% end %}
+                    </select>
+               </div>
+            </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>同步数据方向</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="sync_data_type" >
+                        {% for var in dm_sync_data_type %}
+                               {%  if var[0]==sync_data_type %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                        {% end %}
+                    </select>
+               </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>同步主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_base"  type="text" class="form-control" placeholder="请输入同步主目录" value="{{script_base}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>同步脚本名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_name"  type="text" class="form-control" placeholder="请输入备份脚本名" value="{{script_name}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="run_time"  type="text" class="form-control" placeholder="请输入备份运行时间" value="{{run_time}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述" value="{{task_desc}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3主目录" value="{{python3_home}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_schema">*</span>源数据库名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_schema"  type="text" class="form-control" placeholder="请输入源数据库名" value="{{sync_schema}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">目标数据库名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_schema_dest"  type="text" class="form-control" placeholder="请输入目标数据库名"  value="{{sync_schema_dest}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_tables">*</span>同步表列表</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_tables"  type="text" class="form-control" readonly placeholder="请输入同步表" value="{{sync_tables}}">
+                </div>
+           </div>
+         </div>
+         <div class="col-md-1">
+            <div class="form-group">
+                <div>
+                    <button type="button" id='mdi-view-list' class="btn btn-xs waves-effect waves-light"  onclick=showTabDetail()><i class="mdi mdi-view-list"></i></button>
+                </div>
+            </div>
+          </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_batch_size">*</span>全量批大小</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_batch_size"  type="text" class="form-control" placeholder="请输入全量批大小" value="{{sync_batch_size}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_batch_size_incr">*</span>增量批大小</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_batch_size_incr"  type="text" class="form-control" placeholder="请输入增量批大小" value="{{sync_batch_size_incr}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_gap"  type="text" class="form-control" placeholder="请输入同步间隔"  value="{{sync_gap}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_col_name">*</span>新增列名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_col_name"  type="text" class="form-control" placeholder="请输入新增列名" value="{{sync_col_name}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_col_val">*</span>新增列值</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_col_val"  type="text" class="form-control" placeholder="请输入新增列值"  value="{{sync_col_val}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_time_type">*</span>同步时间类型</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="sync_time_type" >
+                        {% for var in dm_sync_time_type %}
+                               {%  if var[0]==sync_time_type %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                               {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                               {% end %}
+                        {% end %}
+                    </select>
+               </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+               <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_repair_day">*</span>同步修复天数</label>
+                </div>
+               <div class="col-md-10">
+                   <input id="sync_repair_day"  type="text" class="form-control" placeholder="请输入同步修复天数" value="{{sync_repair_day}}">
+               </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器" value="{{api_server}}">
+                </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="status" name="status">
+                        {% if status=='1' %}
+                           <option value="1" selected = "selected">启用</option>
+                           <option value="0">禁用</option>
+                        {% end %}
+
+                        {% if status=='0' %}
+                            <option value='0' selected = "selected">禁用</option>
+                            <option value="1">启用</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+         </div>
+       </div>
+
+       <br>
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                  <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                  <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+                </div>
+           </div>
+         </div>
+       </div>
+
+    </form>
+
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4   id='ds_query_title' class="modal-title">同步表配置</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                     <div class="col-md-6">
+                         <div class="input-group">
+                            <input  id="ds_user_id" type="hidden"  >
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" id="query_sync_tab_name"   class="form-control" placeholder="请输入表名">
+                             <span class="input-group-btn">
+                               <button type="button"  id='query_btn_sync_tab' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                            </span>
+                         </div>
+                     </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div id='div-tab-panal' class="panel panel-border panel-primary" >
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                                <table id="example" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" ></table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div id='div-add-panal' class="panel panel-border panel-primary" >
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                   <input type="hidden"  id="sync_tab_id" />
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_sync_tab_name">*</span>表名称</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="form-control select" id="sync_tab_name" >
+                                                <option value='' selected = "selected">......</option>
+                                            </select>
+                                       </div>
+                                       <div class="col-md-1">
+                                           <div class="form-group">
+                                                <div>
+                                                    <button type="button" id='btn-sync-tab-add' class="btn btn-xs waves-effect waves-light"   onclick=syn_tab_add()><i class="ion-android-add"></i></button>
+                                                </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_sync_tab_time">*</span>同时长</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text"  class="form-control" id="sync_tab_time" value="1"/>
+                                       </div>
+                                   </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>&nbsp;</span>增量列</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select  class="form-control select" id="sync_tab_incr_col" >
+                                                <option value='' selected = "selected">......</option>
+                                            </select>
+                                       </div>
+                                   </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_sync_tab_col">*</span>同步列</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select multiple="multiple" class="form-control select" id="sync_tab_col" >
+                                            </select>
+                                       </div>
+                                        <div class="col-md-1 xyz">
+                                            <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light" onclick=selectSysAll()><i class="ion-arrow-right-a"></i></button>
+                                            <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"   onclick=cancelSysAll()><i class="ion-arrow-left-a"></i></button>
+                                       </div>
+                                        <div class="col-md-4">
+                                            <select multiple="multiple" class="form-control select" id="sync_sele_col" >
+                                            </select>
+                                       </div>
+
+                                   </div>
+                                </div>
+                                <br>
+                                <div class="col-sm-offset-5 col-sm-5">
+                                     <input  id='save_sync_tab_config' class="btn btn-custom waves-effect waves-light btn-md" type='button' value="保存"/>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+
+    <script>
+        var sour_ds='';
+        var vUrl='';
+
+        String.prototype.format = function () {
+            var values = arguments;
+            return this.replace(/\{(\d+)\}/g, function (match, index) {
+                if (values.length > index) {
+                    return values[index];
+                } else {
+                    return "";
+                }
+            });
+        };
+
+        function set_selected(){
+            document.all['s_sync_server'].style.color="#ff0000";
+            document.all['s_sour_db_server'].style.color="#ff0000";
+            document.all['s_desc_db_server'].style.color="#ff0000";
+            document.all['s_sync_tag'].style.color="#ff0000";
+            document.all['s_sync_ywlx'].style.color="#ff0000";
+            document.all['s_sync_data_type'].style.color="#ff0000";
+            document.all['s_script_base'].style.color="#ff0000";
+            document.all['s_script_name'].style.color="#ff0000";
+            document.all['s_sync_schema'].style.color="#ff0000";
+            document.all['s_sync_tables'].style.color="#ff0000";
+            document.all['s_run_time'].style.color="#ff0000";
+            document.all['s_task_desc'].style.color="#ff0000";
+            document.all['s_python3_home'].style.color="#ff0000";
+            document.all['s_api_server'].style.color="#ff0000";
+            document.all['s_status'].style.color="#ff0000";
+            document.all['s_sync_batch_size'].style.color="#ff0000";
+            document.all['s_sync_batch_size_incr'].style.color="#ff0000";
+            document.all['s_sync_gap'].style.color="#ff0000";
+            document.all['s_sync_col_name'].style.color="#ff0000";
+            document.all['s_sync_col_val'].style.color="#ff0000";
+            document.all['s_sync_time_type'].style.color="#ff0000";
+            document.all['s_sync_repair_day'].style.color="#ff0000";
+            document.all['s_sync_tab_name'].style.color="#ff0000";
+            document.all['s_sync_tab_col'].style.color="#ff0000";
+        }
+
+        $('#return').on('click', function() {
+           $('#main-container-div').load('/sync/change');
+        });
+
+        $("#db_server").bind("input propertychange",function(){
+            $("#task_desc").val($("#db_server").find("option:selected").text()+'备份')
+        });
+
+        $("#save").click(function () {
+          console.log(" status:",$('#status').val())
+          $.ajax({
+            url: "/sync/edit/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                    sync_id              : $('#sync_id').val(),
+                    sync_server          : $('#sync_server').val(),
+                    sour_db_server       : $('#sour_db_server').val(),
+                    desc_db_server       : $('#desc_db_server').val(),
+                    sync_tag             : $('#sync_tag').val(),
+                    sync_ywlx            : $('#sync_ywlx').val(),
+                    sync_data_type       : $('#sync_data_type').val(),
+                    script_base          : $('#script_base').val(),
+                    script_name          : $('#script_name').val(),
+                    run_time             : $('#run_time').val(),
+                    task_desc            : $('#task_desc').val(),
+                    python3_home         : $('#python3_home').val(),
+                    sync_schema          : $('#sync_schema').val(),
+                    sync_schema_dest     : $('#sync_schema_dest').val(),
+                    sync_tables          : $('#sync_tables').val(),
+                    sync_batch_size      : $('#sync_batch_size').val(),
+                    sync_batch_size_incr : $('#sync_batch_size_incr').val(),
+                    sync_gap             : $('#sync_gap').val(),
+                    sync_col_name        : $('#sync_col_name').val(),
+                    sync_col_val         : $('#sync_col_val').val(),
+                    sync_time_type       : $('#sync_time_type').val(),
+                    sync_repair_day      : $('#sync_repair_day').val(),
+                    api_server           : $('#api_server').val(),
+                    status               : $('#status').val()
+            },
+            success: function (dataSet) {
+                console.log(dataSet.code, dataSet.message);
+                if (dataSet.code==0) {
+                   swal("变更成功", "", "success")
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+            },
+           error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status==403){
+                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                    window.location.href='/login'
+                } else if (jqXHR.status==502){
+                    swal("用户无权访问权限此功能!", "", "error")
+                } else {
+                    swal("系统不可用,请稍后重试!", "", "error")
+                }
+            }
+         });
+      });
+
+        function centerModals() {
+          $('.modal').each(function(i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+          });
+        }
+
+        function init_tab_config(){
+             $('#sync_tab_name').val('...');
+             $("#sync_tab_col").empty();
+             $("#sync_sele_col").empty();
+             $("#sync_tab_incr_col").empty();
+             $("#sync_tab_time").val('');
+
+             //设置显示项为只读
+             $('#sync_tab_name').attr("disabled","disabled");
+             $('#sync_tab_incr_col').attr("disabled","disabled");
+             $('#sync_tab_time').attr("readonly","readonly");
+             $('#sync_sele_col').attr("disabled","disabled");
+             $('#sync_tab_col').attr("disabled","disabled");
+             $('#ion-arrow-down').attr("disabled","disabled");
+             $('#ion-arrow-up').attr("disabled","disabled");
+
+        }
+
+        function get_ds() {
+           console.log('get_ds====>',$('#sour_db_server').val())
+           $.ajax({
+                  url: "/ds/query/id",
+                  type: "post",
+                  datatype: "json",
+                  async   :false,
+                  data:{
+                      dsid  :$('#sour_db_server').val(),
+                  },
+                  success: function (dataSet) {
+                      sour_ds = dataSet;
+                      console.log('sour_ds=',sour_ds);
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+
+                }
+             });
+
+            if (sour_ds['proxy_status'] == '0') {
+                swal("数据库代理未启用!", "", "error")
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function set_sync_tabs() {
+
+           if (sour_ds['db_type'] == '2') {
+               vUrl = "http://{0}/get_mssql_tables".format(sour_ds['proxy_server'])
+           }
+
+           if (sour_ds['db_type'] == '0') {
+              vUrl = "http://{0}/get_mysql_tables".format(sour_ds['proxy_server'])
+              sour_ds['service'] = $('#sync_schema').val()
+           }
+
+           $.ajax({
+                  url : vUrl,
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      db_ip     : sour_ds['ip'],
+                      db_port   : sour_ds['port'],
+                      db_service: sour_ds['service'],
+                      db_user   : sour_ds['user'],
+                      db_pass   : sour_ds['password'],
+                      timeout   : 1000
+                  },
+                  success: function (dataSet) {
+                     $("#sync_tab_name").empty();
+                     $("#sync_tab_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['msg'].length;i++){
+                         if (sour_ds['db_type'] == '2') {
+                             var val  = dataSet['msg'][i][0] + '.' + dataSet['msg'][i][1] + '.' + dataSet['msg'][i][2];
+                             var text = dataSet['msg'][i][1] + '.' + dataSet['msg'][i][2];
+                             $("#sync_tab_name").append("<option value='" + val + "'>" + text + "</option>");
+                         }
+
+                         if (sour_ds['db_type'] == '0') {
+                             var val  = dataSet['msg'][i][0] + '.' + dataSet['msg'][i][1] + '.' + dataSet['msg'][i][2];
+                             var text = dataSet['msg'][i][2];
+                             $("#sync_tab_name").append("<option value='" + val + "'>" + text + "</option>");
+                         }
+                     }
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                         swal("数据库代理服务异常!", "", "error")
+                    }
+                }
+             })
+        }
+
+        function set_sync_tab_cols() {
+
+             if (sour_ds['db_type'] == '2') {
+                  vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
+             } else if (sour_ds['db_type'] == '0') {
+                  vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
+                  sour_ds['service'] = $('#sync_schema').val()
+             }
+             console.log('vUrl=',vUrl)
+             console.log('set_sync_tab_cols=',$('#sync_tab_name').val(),sour_ds['service'])
+
+             $.ajax({
+                  url : vUrl,
+                  type: "post",
+                  datatype: "json",
+                  async   :false,
+                  data:{
+                      db_ip     : sour_ds['ip'],
+                      db_port   : sour_ds['port'],
+                      db_service: sour_ds['service'],
+                      db_user   : sour_ds['user'],
+                      db_pass   : sour_ds['password'],
+                      db_tab    : $('#sync_tab_name').val(),
+                      timeout   : 1000
+                  },
+                  success: function (dataSet) {
+                         $("#sync_tab_col").empty();
+                         $("#sync_sele_col").empty();
+                         $("#sync_tab_incr_col").empty();
+                         for(i=0;i<dataSet['msg'].length;i++){
+                              var val  = dataSet['msg'][i][0];
+                              var text = dataSet['msg'][i][0];
+                              $("#sync_tab_col").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("数据库代理服务异常!", "", "error")
+                    }
+                }
+             });
+        }
+
+        function set_sync_tab_incr_col() {
+
+             if (sour_ds['db_type'] == '2') {
+                  vUrl = "http://{0}/get_mssql_incr_columns".format(sour_ds['proxy_server'])
+             } else if (sour_ds['db_type'] == '0') {
+                  vUrl = "http://{0}/get_mysql_incr_columns".format(sour_ds['proxy_server'])
+                  sour_ds['service'] = $('#sync_schema').val()
+             }
+             console.log('vUrl=',vUrl)
+
+             $.ajax({
+                  url : vUrl,
+                  type: "post",
+                  datatype: "json",
+                  async   :false,
+                  data:{
+                      db_ip     : sour_ds['ip'],
+                      db_port   : sour_ds['port'],
+                      db_service: sour_ds['service'],
+                      db_user   : sour_ds['user'],
+                      db_pass   : sour_ds['password'],
+                      db_tab    :$('#sync_tab_name').val(),
+                      timeout   : 1000
+                  },
+                  success: function (dataSet) {
+                         $("#sync_tab_incr_col").empty();
+                         $("#sync_tab_incr_col").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['msg'].length;i++){
+                              var val  = dataSet['msg'][i][0];
+                              var text = dataSet['msg'][i][0];
+                              $("#sync_tab_incr_col").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("数据库代理服务异常!", "", "error")
+                    }
+                }
+             });
+        }
+
+        function syn_tab_query(row){
+           v =unescape(row).split(',')
+           console.log('syn_tab_query='+v);
+
+           //设置显示项为只读
+           $('#sync_tab_name').attr("disabled","disabled");
+           $('#sync_tab_incr_col').attr("disabled","disabled");
+           $('#sync_tab_time').attr("readonly","readonly");
+           $('#sync_sele_col').attr("disabled","disabled");
+           $('#sync_tab_col').attr("disabled","disabled");
+           $('#ion-arrow-down').attr("disabled","disabled");
+           $('#ion-arrow-up').attr("disabled","disabled");
+
+           //显示项赋值
+           $('#sync_tab_id').val('-1');
+           console.log('syn_tab_query=>...',v[1]+'.'+v[2]+'.'+v[3])
+           $('#sync_tab_name').val(v[1]+'.'+v[2]+'.'+v[3]);
+           $('#sync_tab_incr_col').empty();
+           $('#sync_tab_incr_col').append("<option value='"+v[5]+"'>"+v[5]+"</option>");
+           $('#sync_tab_time').val(v[6]);
+           set_tab_cols(v[4]);
+
+           //按钮设置为不可用
+           $('#save_sync_tab_config').attr("disabled","disabled");
+
+        }
+
+        function syn_tab_edit(row){
+           v =unescape(row).split(',')
+           console.log('syn_tab_query='+v);
+
+           //设置显示项为只读
+           $('#sync_tab_name').attr("disabled",false);
+           $('#sync_tab_incr_col').attr("disabled",false);
+           $('#sync_tab_time').attr("readonly",false);
+           $('#sync_sele_col').attr("disabled",false);
+           $('#sync_tab_col').attr("disabled",false);
+           $('#ion-arrow-down').attr("disabled",false);
+           $('#ion-arrow-up').attr("disabled",false);
+
+           //显示项赋值
+           $('#sync_tab_id').val(v[0]);
+           $('#sync_tab_name').val(v[1]+'.'+v[2]+'.'+v[3]);
+           set_sync_tab_incr_col();
+           $('#sync_tab_incr_col').val(v[5]);
+           $('#sync_tab_time').val(v[6]);
+           set_tab_cols(v[4]);
+           //按钮设置为可用
+           $('#save_sync_tab_config').attr("disabled",false);
+        }
+
+        function syn_tab_add(){
+           //设置显示项为只读
+           $('#sync_tab_name').attr("disabled",false);
+           $('#sync_tab_incr_col').attr("disabled",false);
+           $('#sync_tab_time').attr("readonly",false);
+           $('#sync_sele_col').attr("disabled",false);
+           $('#sync_tab_col').attr("disabled",false);
+           $('#ion-arrow-down').attr("disabled",false);
+           $('#ion-arrow-up').attr("disabled",false);
+
+           //显示项赋值
+           $('#sync_tab_id').val('-1');
+           set_sync_tabs();
+           //set_sync_tab_incr_col();
+           $('#sync_tab_time').val('1');
+
+           //按钮设置为可用
+           $('#save_sync_tab_config').attr("disabled",false);
+        }
+
+        function syn_tab_del(row){
+             v =unescape(row).split(',')
+             var tab = v[1]+'.'+v[2]+'.'+v[3]
+             console.log('syn_tab_del='+v);
+             swal({
+                title: "确认要删除吗?",
+                text: "表["+tab+"]删除后无法进行数据同步了！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d93030",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                          url: "/sync/add/del/tab",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              'sync_id' : v[0],
+                          },
+                          success: function (dataSet) {
+                                if (dataSet.code==0) {
+                                   swal("删除成功", "", "success")
+                                   init_tab_config();
+                                   query_tab_sync();
+                                } else {
+                                   swal(dataSet.message, "", "error")
+                                }
+                          },
+                          error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                        }
+                    })
+
+                } else {
+                    swal("已取消", "表["+tab+"]未删除！", "error");
+                }
+            });
+        }
+
+        function query_tab_sync(){
+            $.ajax({
+                  url: "/sync/_query/tab",
+                  type: "post",
+                  async   :false,
+                  datatype: "json",
+                  data:{
+                      'sync_tag' : $('#sync_tag').val(),
+                      'sync_tab' : $('#query_sync_tab_name').val()
+                  },
+                  success: function (dataSet) {
+                         $('#example').DataTable( {
+                              "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                              destroy    :true,
+                              async      :false,
+                              scrollY    :"500px",
+                              scrollX    :false,
+                              scrollCollapse: true,
+                              paging     :true,
+                              iDisplayLength: 8,
+                              responsive: true,
+                              data: dataSet,
+                              columns: [
+                                   { "title": "标识","width":"5%" },
+                                   { "title": "库名","width":"10%" },
+                                   { "title": "模式名","width":"15%" },
+                                   { "title": "表名","width":"15%" },
+                                   { "title": "同步列","width":"15%","visible":false},
+                                   { "title": "增量列","width":"15%","visible":false},
+                                   { "title": "时间","width":"15%","visible":false},
+                                   {
+                                        "title":"操作",
+                                        "width":"10%",
+                                         "render": function(data,type,row,meta) {
+                                           var query = '&nbsp;'+'<button class="btn btn-xs btn-icon waves-effect btn-default m-b-5"  onclick="syn_tab_query(\''+escape(row)+'\');"> <i class="ion-search"></i> </button> ' + '&nbsp;'
+                                           var edit  = '&nbsp;'+'<button class="btn btn-xs btn-icon waves-effect btn-default m-b-5"  onclick="syn_tab_edit(\''+escape(row)+'\');" > <i class="ion-edit"></i> </button> ' + '&nbsp;'
+                                           var del   = '&nbsp;'+'<button class="btn btn-xs btn-icon waves-effect btn-default m-b-5"  onclick="syn_tab_del(\''+escape(row)+'\');"> <i class="ion-close"></i> </button> ' + '&nbsp;'
+                                           return query+edit+del;
+                                        }
+                                   },
+                              ],
+                              "language": {
+                                     "search"       : "在表格中搜索:",
+                                     "sProcessing"  : "处理中...",
+                                     "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                     "sZeroRecords" : "没有匹配结果",
+                                     "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                     "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                     "sInfoPostFix" : "",
+                                     "sSearch"      : "搜索:",
+                                     "sUrl"         : "",
+                                     "sEmptyTable"  : "表中数据为空",
+                                     "sLoadingRecords": "载入中...",
+                                     "sInfoThousands": ",",
+                                     "oPaginate": {
+                                         "sFirst"   : "首页",
+                                         "sPrevious": "上页",
+                                         "sNext"    : "下页",
+                                         "sLast"    : "末页"
+                                     },
+                                     "oAria": {
+                                         "sSortAscending" : ": 以升序排列此列",
+                                         "sSortDescending": ": 以降序排列此列"
+                                     }
+                                 }
+                         });
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             })
+        }
+
+        function showTabDetail() {
+
+             if ($('#sync_tag').val()=='') {
+                  swal("同步标识不能为空!", "", "error")
+                  $('#sync_tag').focus();
+                  return;
+             }
+             if (!get_ds()) {
+                 return;
+             }
+
+             $('.modal').on('show.bs.modal', centerModals);
+             $(window).on('resize', centerModals);
+             $('#con-close-modal').modal({
+                 keyboard: false,
+                 backdrop:false
+             });
+             set_sync_tabs();
+             query_tab_sync();
+             init_tab_config();
+
+        }
+
+        function selectSysAll() {
+            try {
+               options=$('#sync_tab_col option');
+               if(options.length>0){
+                    for (var i=0;i<options.length;i++){
+                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
+                          value=$(options[i]).val();
+                          text =$(options[i]).text();
+                          $('#sync_sele_col').append("<option value='"+value+"'>"+text+"</option>");
+                    }
+                    $('#sync_tab_col option').remove();
+               }
+            } catch(err){
+                console.log(err)
+                console.log(err.message);
+            }
+         }
+
+         function isInArray(arr,value){
+            for(var i = 0; i < arr.length; i++){
+                if(value === arr[i]){
+                    return true;
+                }
+            }
+            return false;
+          }
+
+        function set_tab_cols(p_cols){
+               console.log('set_tab_cols=',p_cols)
+               v_col_list = p_cols.split('#');
+
+               if (sour_ds['db_type'] == '2') {
+                   vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
+               } else if (sour_ds['db_type'] == '0') {
+                   vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
+                   sour_ds['service'] = $('#sync_schema').val()
+               }
+               console.log('vUrl=',vUrl)
+
+               $.ajax({
+                  url : vUrl,
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      db_ip     : sour_ds['ip'],
+                      db_port   : sour_ds['port'],
+                      db_service: sour_ds['service'],
+                      db_user   : sour_ds['user'],
+                      db_pass   : sour_ds['password'],
+                      db_tab    : $('#sync_tab_name').val(),
+                      timeout   : 1000
+                  },
+                  success: function (dataSet) {
+                      //设置未同步列选择框
+                      $("#sync_tab_col").empty();
+                      for(i=0;i<dataSet['msg'].length;i++){
+                          var val  = dataSet['msg'][i][0];
+                          var text = dataSet['msg'][i][0];
+                          if (!isInArray(v_col_list,val)) {
+                             $("#sync_tab_col").append("<option value='"+val+"'>"+text+"</option>");
+                          }
+                      }
+
+                      //设置同步列选择框
+                      $("#sync_sele_col").empty();
+                      for (var i=0;i<v_col_list.length;i++){
+                           $('#sync_sele_col').append("<option value='"+v_col_list[i]+"'>"+v_col_list[i]+"</option>");
+                      }
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("数据库代理服务异常!", "", "error")
+                    }
+                }
+             });
+         }
+
+        function cancelSysAll() {
+               options=$('#sync_sele_col option');
+               if(options.length>0){
+                    for (var i=0;i<options.length;i++){
+                          value=$(options[i]).val();
+                          text =$(options[i]).text();
+                          $('#sync_tab_col').append("<option value='"+value+"'>"+text+"</option>");
+                    }
+                    $('#sync_sele_col option').remove();
+               }
+        }
+
+        function get_tab_cols(){
+             var tmp='';
+             var val='';
+             $('#sync_sele_col option').each(function(){
+               val=$(this).val();
+               tmp=tmp+'#'+val;
+             });
+             return tmp.substr(1);
+         }
+
+        $('#sync_tab_name').change(function() {
+            set_sync_tab_cols();
+            set_sync_tab_incr_col();
+        });
+
+        $('#save_sync_tab_config').click(function(){
+
+                if ($('#sync_tab_name').val()=='') {
+                      swal("同步表名不能为空!", "", "error")
+                      return;
+                }
+
+                if ($('#sync_sele_col').val()=='') {
+                      swal("同步列名不能为空!", "", "error")
+                      return;
+                }
+
+                if ($('#sync_tab_incr_col').val()!='') {
+                    if ($('#sync_tab_time').val()=='') {
+                          swal("同步时长不能为空!", "", "error")
+                          return;
+                    }
+                }
+
+                console.log('a=',$('#sync_tag').val());
+                console.log('b=',$('#sync_tab_name').val().split('.')[0]);
+                console.log('c=',$('#sync_tab_name').val().split('.')[1]);
+                console.log('d=',$('#sync_tab_name').val().split('.')[2]);
+                console.log('e=',get_tab_cols());
+                console.log('f=',$('#sync_tab_incr_col').val());
+                console.log('g=',$('#sync_tab_time').val());
+
+                $.ajax({
+                      url: "/sync/add/save/tab",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          'sync_id'      :$('#sync_tab_id').val(),
+                          'sync_tag'     : $('#sync_tag').val(),
+                          'db_name'      : $('#sync_tab_name').val().split('.')[0],
+                          'schema_name'  : $('#sync_tab_name').val().split('.')[1],
+                          'tab_name'     : $('#sync_tab_name').val().split('.')[2],
+                          'sync_cols'    : get_tab_cols(),
+                          'sync_incr_col': $('#sync_tab_incr_col').val(),
+                          'sync_time'    : $('#sync_tab_time').val(),
+                  },
+                  success: function (dataSet) {
+                    if (dataSet.code==0) {
+                       swal("保存成功", "", "success")
+                       init_tab_config();
+                       query_tab_sync();
+                    } else {
+                       swal(dataSet.message, "", "error")
+                    }
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             })
+
+        });
+
+        $('#query_btn_sync_tab').click(function(){
+            query_tab_sync();
+        });
+
+        $("#query_sync_tab_name").bind("input propertychange",function(){
+            query_tab_sync();
+        });
+
+        $('#sour_db_server').change(function() {
+            if ($('#sour_db_server').val()!='') {
+                $('#mdi-view-list').attr('disabled',false);
+            }
+        });
+
+        $('#sync_tab_incr_col').change(function(){
+             if ($('#sync_tab_incr_col').val()!='') {
+                document.all['s_sync_tab_time'].style.color="#ff0000";
+             } else {
+                document.all['s_sync_tab_time'].style.color="#000000";
+             }
+         });
+
+        $("#sync_tab_col").click(function () {
+               options=$('#sync_tab_col option:selected');
+               if(options.length>0){
+                for (var i=0;i<options.length;i++){
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      $('#sync_sele_col').append("<option value='"+value+"'>"+text+"</option>");
+                }
+                $('#sync_tab_col option:selected').remove();
+               }
+          });
+
+        $("#sync_sele_col").click(function () {
+               options=$('#sync_sele_col option:selected');
+               if(options.length>0){
+                for (var i=0;i<options.length;i++){
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      $('#sync_tab_col').append("<option value='"+value+"'>"+text+"</option>");
+                }
+                $('#sync_sele_col option:selected').remove();
+               }
+          });
+
+        $('.modal').on('hidden.bs.modal', function () {
+              $.ajax({
+                  url: "/sync/_query/sync/tabs",
+                  type: "post",
+                  datatype: "json",
+                  async   :false,
+                  data:{
+                      sync_tag  : $('#sync_tag').val()
+
+                  },
+                  success: function (dataSet) {
+                      console.log('/sync/_query/sync/tabs=',dataSet)
+                      if (dataSet=='None') {
+                          $('#sync_tables').val('')
+                      } else {
+                          $('#sync_tables').val(dataSet)
+                      }
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+
+        });
+
+        $(document).ready(function() {
+           set_selected();
+        });
+
+   </script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>工单附件查看</title>
+    <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/core.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/pages.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+         img{
+		 max-width: 300px;
+		 vertical-align:middle;
+	 }
+    </style>
+</head>
+
+<body>
+    <p></p>
+    {% for var in order_attachments %}
+        <div class="row">
+            <div class="col-md-12">
+                 <span>附件:{{var[0]}}</span>
+                 <image class='img' width="100%" src='{{var[1]}}' alt=''></image>
+             </div>
+        </div>
+    {% end %}
+</body>
+
+ <script src="{{static_url('assets/js/bootstrap.min.js')}}"></script>
+ <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
+ <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
+
+ <script type="text/javascript">
+     $(document).ready(function() {
+
+     });
+</script>
+
+
+</html>

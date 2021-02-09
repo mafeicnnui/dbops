@@ -1,0 +1,710 @@
+<html>
+<head>
+    <title>模板管理</title>
+    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        .modal-lg-order {
+            width:40%;
+            height:45%;
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+    </style>
+
+</head>
+
+<body>
+  <p></p>
+  <!--查询条件 -->
+  <div class="row">
+        <div class="col-md-12">
+           <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+               </div>
+            </div>
+             <div class="col-md-1">
+               <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+               </div>
+            </div>
+
+        </div>
+    </div>
+    <p></p>
+
+    <!--指标情况 -->
+    <div class="row">
+         <div class="col-md-12">
+              <div id="div-tab">
+                   <table id="monitor_templete_table" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+              </div>
+         </div>
+    </div>
+
+    <div class="row">
+          <div class="col-md-offset-5 col-lg-offset-5 col-xl-offset-5">
+               <input  id='templete_add_win' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+               <input  id='templete_upd_win' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
+               <input  id='templete_del_btn' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
+         </div>
+    </div>
+
+    <!--新增模板窗口 -->
+    <div id="con-close-modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增模板</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                            <div class="form-group" >
+                                <div>
+                                    <label class="col-md-3 control-label" ><span id="s_add_templete_name">*</span>模板名称：</label>
+                                </div>
+                                <div class="col-md-9" >
+                                    <input type="text" id="add_templete_name"   class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label"><span id="s_add_templete_code">*</span>模板代码：</label>
+                                </div>
+                                <div class="col-md-9" >
+                                    <input type="text" id="add_templete_code"   class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label"><span id="s_add_templete_type">*</span>模板类型：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="add_templete_type">
+                                        <option value='' selected = "selected">...</option>
+                                        {% for var in templete_types %}
+                                          <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                               </div>
+                           </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label"><span id="s_add_templete_status">*</span>模板状态：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="add_templete_status">
+                                         <option value='' selected = "selected">...</option>
+                                         <option value="1">启用</option>
+                                         <option value="0">禁用</option>
+                                    </select>
+                               </div>
+                            </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label">监控指标：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select multiple="multiple" class="form-control select"  id="add_monitor_index">
+                                        {% for var in monitor_indexes %}
+                                          <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                               </div>
+                            </div>
+                           <div class="form-group">
+                             <div class="col-md-12">
+                               <div class="form-group m-b-0">
+                                    <div class="col-sm-offset-6 col-sm-9">
+                                        <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"   onclick=add_selectSysAll()><i class="ion-arrow-down-a"></i></button>
+                                        <button type="button" id='ion-arrow-up'   class="btn btn-xs waves-effect waves-light"   onclick=add_cancelSysAll()><i class="ion-arrow-up-a"></i></button>
+                                    </div>
+                               </div>
+                              </div>
+                           </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label"><span id="s_add_templete_index">*</span>模板指标：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select multiple="multiple" class="form-control select" id="add_templete_index">
+                                    </select>
+                               </div>
+                            </div>
+
+                       </form>
+                    </div>
+               </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="templete_save_btn" >保存</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+    <!--指标变更窗口 -->
+    <div id="con-close-modal-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">模板变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                  <form class="form-horizontal" role="form">
+                    <div class="panel-body">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_upd_templete_name">*</span>模板名称：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="upd_templete_name"  readonly  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_templete_code">*</span>模板代码：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="upd_templete_code"   class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_templete_type">*</span>模板类型：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_templete_type">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in templete_types %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_templete_status">*</span>模板状态：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="upd_templete_status">
+                                     <option value="1">启用</option>
+                                     <option value="0">禁用</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label">监控指标：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select multiple="multiple"  class="form-control select" id="upd_monitor_index">
+                                    </select>
+                               </div>
+                        </div>
+                        <div class="form-group">
+                             <div class="col-md-12">
+                               <div class="form-group m-b-0">
+                                    <div class="col-sm-offset-6 col-sm-9">
+                                        <button type="button" id='ion-arrow-down_upd' class="btn btn-xs waves-effect waves-light"   onclick=upd_selectSysAll()><i class="ion-arrow-down-a"></i></button>
+                                        <button type="button" id='ion-arrow-up_upd'   class="btn btn-xs waves-effect waves-light"   onclick=upd_cancelSysAll()><i class="ion-arrow-up-a"></i></button>
+                                    </div>
+                               </div>
+                              </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_templete_index">*</span>模板指标：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select multiple="multiple" class="form-control select" id="upd_templete_index">
+                                </select>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="templete_upd_btn" >变更</button>
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+          </div>
+         </div>
+      </div>
+     </div>
+</body>
+
+<!-- Sweet-Alert  -->
+<script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
+
+<script>
+
+    function set_selected(){
+        document.all['s_add_templete_name'].style.color="#ff0000";
+        document.all['s_add_templete_code'].style.color="#ff0000";
+        document.all['s_add_templete_type'].style.color="#ff0000";
+        document.all['s_add_templete_index'].style.color="#ff0000";
+        document.all['s_add_templete_status'].style.color="#ff0000";
+        document.all['s_upd_templete_name'].style.color="#ff0000";
+        document.all['s_upd_templete_code'].style.color="#ff0000";
+        document.all['s_upd_templete_type'].style.color="#ff0000";
+        document.all['s_upd_templete_status'].style.color="#ff0000";
+        document.all['s_upd_templete_index'].style.color="#ff0000";
+    }
+
+    function centerModals() {
+              $('.modal').each(function(i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 50 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top - 50);
+              });
+         }
+
+    function isSelect() {
+           var rec=0;
+           $("#monitor_templete_table tbody tr td input:checked").each( function() {
+              rec=rec+1;
+           });
+           if ( rec==1 ){
+              $('#templete_upd_win').attr("disabled",false);
+              $('#templete_del_btn').attr("disabled",false);
+           } else {
+              $('#templete_upd_win').attr("disabled",true);
+              $('#templete_del_btn').attr("disabled",true); }
+         }
+
+    //add windows event
+    function get_add_templete_indexes(){
+         var tmp='';
+         var val='';
+         $('#add_templete_index option').each(function(){
+           val=$(this).val();
+           tmp=tmp+','+val;
+         });
+         return tmp.substr(1);
+    }
+
+    $("#add_monitor_index").click(function () {
+           options=$('#add_monitor_index option:selected');
+           if(options.length>0){
+            for (var i=0;i<options.length;i++){
+                  value=$(options[i]).val();
+                  text =$(options[i]).text();
+                  $('#add_templete_index').append("<option value='"+value+"'>"+text+"</option>");
+            }
+            $('#add_monitor_index option:selected').remove();
+           }
+    });
+
+    $("#add_templete_index").click(function () {
+           options=$('#add_templete_index option:selected');
+           if(options.length>0){
+            for (var i=0;i<options.length;i++){
+                  value=$(options[i]).val();
+                  text =$(options[i]).text();
+                  $('#add_monitor_index').append("<option value='"+value+"'>"+text+"</option>");
+            }
+            $('#add_templete_index option:selected').remove();
+           }
+     });
+
+    function add_selectSysAll() {
+           options=$('#add_monitor_index option');
+           if(options.length>0){
+                for (var i=0;i<options.length;i++){
+                      console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      $('#add_templete_index').append("<option value='"+value+"'>"+text+"</option>");
+                }
+                $('#add_monitor_index option').remove();
+           }
+    }
+
+    function add_cancelSysAll() {
+           options=$('#add_templete_index option');
+           if(options.length>0){
+                for (var i=0;i<options.length;i++){
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      $('#add_monitor_index').append("<option value='"+value+"'>"+text+"</option>");
+                }
+                $('#add_templete_index option').remove();
+           }
+     }
+
+    //update windows event
+    function get_upd_templete_indexes(){
+         var tmp='';
+         var val='';
+         $('#upd_templete_index option').each(function(){
+           val=$(this).val();
+           tmp=tmp+','+val;
+         });
+         return tmp.substr(1);
+    }
+
+    $("#upd_monitor_index").click(function () {
+           options=$('#upd_monitor_index option:selected');
+           if(options.length>0){
+            for (var i=0;i<options.length;i++){
+                  value=$(options[i]).val();
+                  text =$(options[i]).text();
+                  $('#upd_templete_index').append("<option value='"+value+"'>"+text+"</option>");
+            }
+            $('#upd_monitor_index option:selected').remove();
+           }
+    });
+
+    $("#upd_templete_index").click(function () {
+           options=$('#upd_templete_index option:selected');
+           if(options.length>0){
+            for (var i=0;i<options.length;i++){
+                  value=$(options[i]).val();
+                  text =$(options[i]).text();
+                  $('#upd_monitor_index').append("<option value='"+value+"'>"+text+"</option>");
+            }
+            $('#upd_templete_index option:selected').remove();
+           }
+     });
+
+    function upd_selectSysAll() {
+           options=$('#upd_monitor_index option');
+           if(options.length>0){
+                for (var i=0;i<options.length;i++){
+                      console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      $('#upd_templete_index').append("<option value='"+value+"'>"+text+"</option>");
+                }
+                $('#upd_monitor_index option').remove();
+           }
+    }
+
+    function upd_cancelSysAll() {
+           options=$('#upd_templete_index option');
+           if(options.length>0){
+                for (var i=0;i<options.length;i++){
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      $('#upd_monitor_index').append("<option value='"+value+"'>"+text+"</option>");
+                }
+                $('#upd_templete_index option').remove();
+           }
+     }
+
+    $(document).ready(function() {
+
+        function query_templete(){
+           $.ajax({
+                  url: "/monitor/templete/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      templete_code : $("#name").val(),
+                  },
+                  success: function (dataSet) {
+                      $('#monitor_templete_table').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :"400px",
+                          scrollX    :false,
+                          scrollCollapse: true,
+                          paging:     false,
+                          iDisplayLength: 14,
+                          data: dataSet,
+                          columns: [
+                             { "title": "模板代码" },
+                             { "title": "模板名称" },
+                             { "title": "模板类型" },
+                             { "title": "模板状态" },
+                             { "title": "创建人"   },
+                             { "title": "创建日期" },
+                             { "title": "更新人"   },
+                             { "title": "更新日期" },
+                             {
+                                    "title":"选择",
+                                    "width": "25px",
+                                    "render": function(data,type,row){
+                                         return '<input type="radio" name="templeteid" onclick="isSelect();" >'; }
+                              },
+                           ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                         });
+                      $('#templete_upd_win').attr("disabled",true);
+                      $('#templete_del_btn').attr("disabled",true);
+                   }
+             })
+        }
+
+        $('#templete_add_win').click(function(){
+            $('#add_templete_name').val('')
+            $('#add_templete_code').val('')
+            $('#add_templete_index').val('')
+            $('#add_templete_status').val('')
+
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal-add').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+        })
+
+        $('#templete_upd_win').click(function(){
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal-upd').modal({
+                   keyboard :false,
+                   backdrop :false
+            });
+
+             $("#monitor_templete_table tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  console.log("row=",row[0].innerHTML,row[1].innerHTML,row[2].innerHTML)
+                  $('#upd_templete_code').val(row[0].innerHTML)
+                  $('#upd_templete_name').val(row[1].innerHTML)
+
+                  var options=$('#upd_templete_type option');
+                  console.log('options=',options)
+                  $("#upd_templete_type").empty();
+                  for(i=0;i<options.length;i++){
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      if (text == row[2].innerHTML){
+                          $("#upd_templete_type").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
+                      } else {
+                          $("#upd_templete_type").append("<option value='"+value+"'>"+text+"</option>");
+                      }
+                  }
+
+                  // var options=$('#upd_templete_index option');
+                  // $("#upd_templete_index").empty();
+                  // for(i=0;i<options.length;i++){
+                  //     value=$(options[i]).val();
+                  //     text =$(options[i]).text();
+                  //     if (text == row[2].innerHTML){
+                  //         $("#upd_templete_index").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
+                  //     } else {
+                  //         $("#upd_templete_index").append("<option value='"+value+"'>"+text+"</option>");
+                  //     }
+                  // }
+
+                  var options=$('#upd_templete_status option');
+                  console.log('options=',options)
+                  $("#upd_templete_status").empty();
+                  for(i=0;i<options.length;i++){
+                      value=$(options[i]).val();
+                      text =$(options[i]).text();
+                      if (text == row[3].innerHTML){
+                          $("#upd_templete_status").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
+                      } else {
+                          $("#upd_templete_status").append("<option value='"+value+"'>"+text+"</option>");
+                      }
+                  }
+
+                  //get sys indexes
+                  $.ajax({
+                      url: "/monitor/sys/indexes",
+                      type: "post",
+                      datatype: "json",
+                      data: {
+                            templete_code  : $('#upd_templete_code').val(),
+                       },
+                      success: function (dataSet) {
+                          var  obj = JSON.parse(dataSet)
+                          console.log('upd_monitor_index=', obj);
+                          $("#upd_monitor_index").empty();
+                           for(i=0;i<obj.length;i++){
+                              console.log(obj[i])
+                              value= obj[i][0];
+                              text = obj[i][1];
+                              $("#upd_monitor_index").append("<option value='"+value+"'>"+text+"</option>");
+                           }
+                      }
+                  });
+
+                  //get teplete indexes
+                  $.ajax({
+                      url: "/monitor/templete/indexes",
+                      type: "post",
+                      datatype: "json",
+                      data: {
+                            templete_code  : $('#upd_templete_code').val(),
+                       },
+                      success: function (dataSet) {
+                          var  obj = JSON.parse(dataSet)
+                          $("#upd_templete_index").empty();
+                          for(i=0;i<obj.length;i++){
+                              console.log(obj[i])
+                              value= obj[i][0];
+                              text = obj[i][1];
+                              $("#upd_templete_index").append("<option value='"+value+"'>"+text+"</option>");
+                          }
+                      }
+                  });
+
+             });
+        })
+
+        $('#templete_save_btn').click(function(){
+            $.ajax({
+                url: "/monitor/templete/add/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    templete_name      : $('#add_templete_name').val(),
+                    templete_code      : $('#add_templete_code').val(),
+                    templete_type      : $('#add_templete_type').val(),
+                    templete_indexes   : get_add_templete_indexes(),
+                    templete_status    : $('#add_templete_status').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
+                        query_templete()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                }
+            })
+        })
+
+        $('#templete_upd_btn').click(function(){
+            $.ajax({
+                    url: "/monitor/templete/edit/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                       templete_name      : $('#upd_templete_name').val(),
+                       templete_code      : $('#upd_templete_code').val(),
+                       templete_type      : $('#upd_templete_type').val(),
+                       templete_indexes   : get_upd_templete_indexes(),
+                       templete_status    : $('#upd_templete_status').val(),
+                    },
+                    success: function (dataSet) {
+                        console.log(dataSet.code, dataSet.message);
+                        if (dataSet.code == 0) {
+                            swal("更新成功", "", "success")
+                            query_templete()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    }
+            })
+
+        })
+
+        $('#templete_del_btn').click(function(){
+             var templete_code='';
+             var templete_name='';
+             $("#monitor_templete_table tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  templete_code=row[0].innerHTML;
+                  templete_name=row[1].innerHTML;
+                  console.log("templete_code=",templete_code,"templete_name=",templete_name)
+             });
+
+             swal({
+                    title: "确认要删除吗?",
+                    text: "指标["+templete_name+"]将被删除！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是, 删除!",
+                    cancelButtonText:  "否, 取消!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                   }, function (isConfirm) {
+                       if (isConfirm) {
+                             $.ajax({
+                                    url: "/monitor/templete/edit/del",
+                                    type: "post",
+                                    datatype: "json",
+                                    data:{templete_code: templete_code},
+                                    success: function (dataSet) {
+                                        if (dataSet.code=='0') {
+                                             swal("已删除!", "指标["+templete_name+"]已删除!", "success");
+                                             query_templete()
+                                        } else {
+                                             swal("已取消!", "指标["+templete_name+"]"+dataSet.message+"!", "error");
+                                        }
+                                    }
+                                });
+
+                      } else {
+                          swal("已取消", "问题单[" + templete_name + "]已取消删除！", "error");
+                      }
+              })
+        })
+
+        $("#query_btn").click(function() {
+             query_templete()
+        });
+
+        set_selected()
+        $("#query_btn").click()
+    });
+
+
+</script>
+
+</html>

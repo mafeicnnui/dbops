@@ -1,0 +1,95 @@
+<!--<html>-->
+<!--<head>-->
+    <!--<meta charset="utf-8">-->
+    <!--<title>测试页面</title>-->
+    <!--<style>-->
+        <!--#div1{-->
+            <!--.border:2px;-->
+            <!--height:200px;-->
+            <!--width:200px;-->
+            <!--background:red;-->
+        <!--}-->
+    <!--</style>-->
+     <!--<script type="text/javascript">-->
+
+            <!--function load() {-->
+                <!--console.log('body loaded................')-->
+            <!--}-->
+
+     <!--</script>-->
+<!--<body onload="load()">-->
+    <!--<p></p>-->
+    <!--<div id="div1">-->
+
+    <!--</div>-->
+
+   <!--<script type="text/javascript">-->
+
+        <!--function set_screen_size(){-->
+            <!--n_height = $(document.body).height()+30-->
+            <!--console.log('n_height=',n_height)-->
+        <!--}-->
+
+
+        <!--//当浏览器大小变化时-->
+        <!--$(window).resize(function () {-->
+            <!--set_screen_size()-->
+        <!--})-->
+
+
+        <!--// $(document).ready(function() {-->
+        <!--//       console.log('windows_main=>n_height=',$('#windows_main').height())-->
+        <!--// });-->
+
+
+ <!--</script>-->
+
+<!--</body>-->
+
+<!--</html>-->
+
+
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>测试页面</title>
+    <style>
+        #div1{
+            .border:2px;
+            height:200px;
+            width:200px;
+            background:red;
+        }
+    </style>
+     <script type="text/javascript">
+           function load() {
+              set_screen_size()
+              console.log('body loaded...')
+           }
+     </script>
+<body onload="load()">
+    <p></p>
+    <div id="div1">
+
+    </div>
+
+   <script type="text/javascript">
+
+        function set_screen_size(){
+            console.log('set_screen_size....')
+        }
+
+
+      //  $(document).ready(function() {
+//
+       //       console.log('windows_main')
+//
+     //   });
+
+
+ </script>
+
+</body>
+
+</html>

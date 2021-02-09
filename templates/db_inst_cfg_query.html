@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>数据库配置查询</title>
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+    <style>
+        #example{
+            width: 100% !important;
+        }
+       .modal-lg {
+            width:40%;
+            height:35%;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+    <div class="col-md-12">
+       <div class="row">
+           <div class="col-md-3">
+               <div class="input-group">
+                 <span class="input-group-addon">数据库环境</span>
+                 <select class="form-control select" id="inst_env" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_env_type %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                 </select>
+               </div>
+           </div>
+           <div class="col-md-3">
+               <div class="input-group">
+                 <span class="input-group-addon">数据库实例</span>
+                 <select class="form-control select" id="inst_name" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_inst_names %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                 </select>
+               </div>
+           </div>
+           <div class="col-md-1">
+               <div class="input-group">
+                   <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+           </div>
+        </div>
+     </div>
+     <p></p>
+     <br>
+     <div id="div-tab">
+         <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+     </div>
+
+   <!--用户变更窗口 -->
+   <div id="con-modal-inst-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">配置变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                            <input id="para_id" type="hidden">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label" >参数描述：</label>
+                                </div>
+                                <div class="col-md-9" >
+                                    <input id='para_desc' type="text" readonly class="form-control">
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label" ></label>
+                               </div>
+                            </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-2 control-label">参数名称：</label>
+                                </div>
+                                <div class="col-md-9">
+                                   <input type="text" id="para_name"  readonly class="form-control">
+                               </div>
+                               <div>
+                                    <label class="col-md-1 control-label" ></label>
+                               </div>
+                            </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-2 control-label">参数值：</label>
+                                </div>
+                                <div class="col-md-9">
+                                   <input type="text" id="para_val"  class="form-control">
+                               </div>
+                               <div>
+                                    <label class="col-md-1 control-label" ></label>
+                               </div>
+                            </div>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-2 control-label">参数类型：</label>
+                                </div>
+                                <div class="col-md-9">
+                                   <input type="text" id="para_type"  readonly class="form-control">
+                               </div>
+                               <div>
+                                    <label class="col-md-1 control-label" ></label>
+                               </div>
+                            </div>
+                     </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="para_upd_btn" >更新</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+   <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
+
+   <script>
+
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+         });
+
+        function centerModals() {
+          $('.modal').each(function(i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+          });
+        }
+
+        $("#user_name").bind("input propertychange",function(){
+           $("#query_btn").click();
+        });
+
+        function showUpd_win(p_row) {
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-modal-inst-upd').modal({
+                  keyboard: false,
+                  backdrop:false
+            });
+
+            $('#para_id').val(unescape(p_row).split(',')[0])
+            $('#para_name').val(unescape(p_row).split(',')[1])
+            $('#para_val').val(unescape(p_row).split(',')[2])
+            $('#para_type').val(unescape(p_row).split(',')[3])
+            $('#para_desc').val(unescape(p_row).split(',')[4])
+        }
+
+        $('#para_upd_btn').click(function() {
+           console.log('para_upd_btn');
+           $.ajax({
+                url: "/db/inst/cfg/update",
+                type: "post",
+                datatype: "json",
+                data: {
+                     para_id    : $('#para_id').val(),
+                     para_name  : $('#para_name').val(),
+                     para_val   : $('#para_val').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("更新成功", "", "success")
+                        $("#query_btn").click()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                }
+            })
+        })
+
+        $(document).ready(function() {
+
+            $("#query_btn").click(function() {
+
+              if ( $('#inst_name').val()=='') {
+                  swal("请选择数据库实例！", "", "info")
+                  return
+              }
+              $.ajax({
+                  url: "/db/inst/cfg/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      user_name: $('#user_name').val(),
+                      inst_env: $('#inst_env').val(),
+                      inst_id : $('#inst_name').val()
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      scrollY    :"600px",
+                      scrollX    :true,
+                      scrollCollapse: true,
+                      paging:     true,
+                      iDisplayLength: 15,
+                      data: dataSet,
+                      columns: [
+                        { "title": "标识号","width":"8%" },
+                        { "title": "参数名","width":"20%" },
+                        { "title": "参数值","width":"20%" },
+                        { "title": "参数类型","width":"8%"},
+                        { "title": "参数描述","width":"20%" },
+                        { "title": "创建时间","width":"14%"},
+                        { "title": "操作","width":"10%"},
+                      ],
+                      columnDefs: [
+                        {
+                            targets: 6,
+                            render: function(data, type, row, meta){
+                                var btn ='&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showUpd_win(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                return btn
+                            }
+                         }
+                      ],
+                      "language": {
+                             "search"       : "在表格中搜索:",
+                             "sProcessing"  : "处理中...",
+                             "sLengthMenu"  : "显示 _MENU_ 项结果",
+                             "sZeroRecords" : "没有匹配结果",
+                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                             "sInfoPostFix" : "",
+                             "sSearch"      : "搜索:",
+                             "sUrl"         : "",
+                             "sEmptyTable"  : "表中数据为空",
+                             "sLoadingRecords": "载入中...",
+                             "sInfoThousands": ",",
+                             "oPaginate": {
+                                 "sFirst"   : "首页",
+                                 "sPrevious": "上页",
+                                 "sNext"    : "下页",
+                                 "sLast"    : "末页"
+                             },
+                             "oAria": {
+                                 "sSortAscending" : ": 以升序排列此列",
+                                 "sSortDescending": ": 以降序排列此列"
+                             }
+                         }
+                     });
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+            });
+
+            $("#query_btn").click();
+        });
+
+   </script>
+</body>
+
+</html>

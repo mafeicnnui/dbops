@@ -1,0 +1,1405 @@
+<html>
+<head>
+    <title>工单查询</title>
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <!-- ace code -->
+    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
+    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
+    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
+
+     <!-- Notification css (Toastr) -->
+    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
+
+    <style>
+        .modal-lg-detail {
+            width:60%;
+            height:30%;
+            /*margin-left:550px;*/
+            /*margin-top:200px;*/
+        }
+        .modal-lg-err {
+            width:40%;
+            height:40%;
+            /*margin-left:500px;*/
+            /*margin-top:200px;*/
+        }
+        .modal-lg-order {
+            width:40%;
+            height:45%;
+            /*margin-left:500px;*/
+            /*margin-top:100px;*/
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+        .jFiler-theme-default .jFiler-input {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 35px;
+            font-size: 12px;
+            font-family: sans-serif;
+            color: rgb(136, 136, 136);
+            cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 4px 5px -5px inset;
+            margin: 0px 0px 15px;
+            background: rgb(254, 254, 254);
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(206, 206, 206);
+            border-image: initial;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .erh{
+            margin-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+         function query_order(){
+                 $.ajax({
+                  url: "/order/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      qname : $("#name").val(),
+                      dsid  : $("#db_audit_source").val(),
+                      ver   : $("#db_ver").val()
+                  },
+                  success: function (dataSet) {
+                      $('#tab-sql').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :"400px",
+                          scrollX    :false,
+                          scrollCollapse: true,
+                          paging:     false,
+                          iDisplayLength: 14,
+                          data: dataSet,
+                          columns: [
+                             { "title": "工单编号" },
+                             { "title": "工单描述" },
+                             { "title": "工单状态" },
+                             { "title": "工单类型" },
+                             { "title": "数据库环境" },
+                             { "title": "版本号"},
+                             { "title": "发布人" },
+                             { "title": "发布时间" },
+                             { "title": "审核人"},
+                             { "title": "审核时间"},
+                             { "title": "错误","visible":false},
+                             { "title": "操作"},
+                           ],
+                          columnDefs: [
+                            {
+                                targets: 11,
+                                render: function(data, type, row, meta){
+                                     console.log('row[0]='+row[0]);
+                                     var id=row[0]
+                                     var err=escape(row[10])
+                                     msg ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="错误" onclick="showErr(\''+err+'\');"/>' +'&nbsp;'
+                                     return msg;
+
+                                }
+                             }
+                           ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                         });
+                   }
+               })
+              }
+
+         function query_wtd(){
+                 $.ajax({
+                  url: "/wtd/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      qname : $("#name").val(),
+                      dsid  : $("#db_audit_source").val(),
+                      ver   : $("#db_ver").val()
+                  },
+                  success: function (dataSet) {
+                      $('#curr_userid').val(dataSet['userid'])
+                      $('#tab-wtd').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :"400px",
+                          scrollX    :false,
+                          scrollCollapse: true,
+                          paging:     false,
+                          iDisplayLength: 14,
+                          data: dataSet,
+                          columns: [
+                             { "title": "工单编号" },
+                             { "title": "工单环境" },
+                             { "title": "工单类型" },
+                             { "title": "工单状态" },
+                             { "title": "发布人" },
+                             { "title": "发布时间" },
+                             { "title": "处理人"},
+                             { "title": "处理时间"},
+                             { "title": "操作"},
+                           ],
+                          columnDefs: [
+                            {
+                                targets: 8,
+                                render: function(data, type, row, meta){
+                                     console.log('row[0]='+row[0]);
+                                     var id=row[0]
+                                     var status = row[3]
+                                     var wtd_creator = row[4]
+                                     var wtd_release
+                                     var wtd_update
+                                     var wtd_delete
+                                     var wtd_detail
+
+                                     if(status=='已新增') {
+                                        wtd_release = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="发布" onclick="wtd_release(\''+id+'\');"/>' +'&nbsp;'
+                                        wtd_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showWtd_upd(\''+id+'\');"/>' +'&nbsp;'
+                                        wtd_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+
+                                     } else {
+                                        wtd_release = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="发布" onclick="wtd_release(\''+id+'\');"/>' +'&nbsp;'
+                                        wtd_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="变更" onclick="showWtd_upd(\''+id+'\');"/>' +'&nbsp;'
+                                        wtd_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="删除" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+
+                                     }
+                                     wtd_detail= '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showWtd(\''+id+'\');"/>' +'&nbsp;'
+                                     msg = wtd_release+wtd_update+wtd_delete+wtd_detail
+                                     return msg;
+
+                                }
+                             }
+                           ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                         });
+                   }
+               })
+              }
+
+         function wtd_release(p_wtd_no){
+            $.ajax({
+                    url: "/wtd/release",
+                    type: "post",
+                    datatype: "json",
+                    data:{wtd_no: p_wtd_no},
+                    success: function (dataSet) {
+                        console.log(dataSet.code, dataSet.message);
+                        swal(dataSet.message);
+                        query_wtd()
+                    }
+             })
+          }
+
+         $(document).ready(function() {
+              //ace editor
+              var editor = ace.edit("ace-editor");
+              editor.setTheme("ace/theme/xcode");
+              editor.getSession().setMode("ace/mode/sql");
+              editor.setShowPrintMargin(false);
+              editor.setFontSize(16);
+              editor.getSession().setUseSoftTabs(true);
+              editor.setReadOnly(true);
+
+              var editor2 = ace.edit("ace-editor2");
+              editor2.setTheme("ace/theme/xcode");
+              editor2.getSession().setMode("ace/mode/sql");
+              editor2.setShowPrintMargin(false);
+              editor2.setFontSize(16);
+              editor2.getSession().setUseSoftTabs(true);
+              editor2.setReadOnly(true);
+
+              $("#query_btn").click(function() {
+                    query_order()
+                    query_wtd()
+              });
+
+              $("#query_btn").click()
+
+              $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+                    var activeTab = $(e.target).text();
+                    var previousTab = $(e.relatedTarget).text();
+                    console.log(activeTab, previousTab)
+
+                    if (activeTab == 'SQL工单') {
+                        query_order()
+                    }
+
+                    if (activeTab == '问题单') {
+                       query_wtd()
+                    }
+              })
+
+         });
+
+         function showSql(row){
+            $.ajax({
+                    url: "/sql/audit/detail",
+                    type: "post",
+                    datatype: "json",
+                    data:{id: row},
+                    success: function (dataSet) {
+                        var sql = dataSet.message
+                        console.log('sql=',sql)
+                        $.ajax({
+                            type: 'post',
+                            url: '/sql/_format',
+                            data: {"sql":sql},
+                            success: function (dataSet) {
+                                console.log('sql2=',dataSet);
+                                var editor = ace.edit("ace-editor");
+                                editor.setValue('')
+                                editor.insert(dataSet.message);
+                                editor.setReadOnly(true);
+                                $('.modal').on('show.bs.modal', centerModals);
+                                $(window).on('resize', centerModals);
+                                $('#con-close-modal').modal({
+                                   keyboard: false,
+                                   backdrop:false
+                                });
+
+                             }
+                        })
+                    }
+            });
+        }
+
+         function showErr(err){
+            var editor2 = ace.edit("ace-editor2");
+            editor2.setValue('')
+            editor2.insert(unescape(err));
+            editor2.setReadOnly(true);
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal3').modal({
+                keyboard: false,
+                backdrop:false
+            });
+        }
+
+         function showWtd(p_wtd_no){
+            $.ajax({
+                    url: "/wtd/detail",
+                    type: "post",
+                    datatype: "json",
+                    data:{wtd_no: p_wtd_no},
+                    success: function (dataSet) {
+                        var wtd = dataSet
+                        console.log('wtd=',wtd,wtd['order_no'])
+                         $('#order_number_detail') .val(wtd['order_no'])
+
+                         $("#order_env_detail").empty();
+                         $("#order_env_detail").append("<option value='"+wtd['order_env']+"'>"+wtd['order_env_name']+"</option>");
+
+                         $("#order_type_detail").empty();
+                         $("#order_type_detail").append("<option value='"+wtd['order_type']+"'>"+wtd['order_type_name']+"</option>");
+
+                         $("#order_status_detail").empty();
+                         $("#order_status_detail").append("<option value='"+wtd['order_status']+"'>"+wtd['order_status_name']+"</option>");
+
+                         $("#order_handle_detail").empty();
+                         $("#order_handle_detail").append("<option value='"+wtd['order_handler']+"'>"+wtd['order_handler_name']+"</option>");
+
+                         $('#order_desc_detail') .val(wtd['order_desc'])
+
+                         $('.modal').on('show.bs.modal', centerModals);
+                         $(window).on('resize', centerModals);
+                         $('#con-close-modal5').modal({
+                            keyboard: false,
+                            backdrop:false
+                         });
+                    }
+            });
+        }
+
+         function showWtd_upd(p_wtd_no){
+            init_order_upd()
+            $.ajax({
+                    url: "/wtd/detail",
+                    type: "post",
+                    datatype: "json",
+                    data:{wtd_no: p_wtd_no},
+                    success: function (dataSet) {
+                        var wtd = dataSet
+                        $('#order_number_upd') .val(wtd['order_no'])
+                        $("#order_env_upd").empty();
+                        $.ajax({
+                              url: "/get_order_env",
+                              type: "post",
+                              datatype: "json",
+                              async:false,
+                              success: function (dataSet) {
+                                 $("#order_env_upd").append("<option value=''>...</option>");
+                                 for(i=0;i<dataSet['message'].length;i++){
+                                      var val  = dataSet['message'][i][0];
+                                      var text = dataSet['message'][i][1];
+                                      if (wtd['order_env'] == val) {
+                                          $("#order_env_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                      } else {
+                                          $("#order_env_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                      }
+
+                                 }
+                              }
+                         });
+
+                        $("#order_type_upd").empty();
+                        $.ajax({
+                              url: "/get_order_type",
+                              type: "post",
+                              datatype: "json",
+                              async:false,
+                              success: function (dataSet) {
+                                 $("#order_type_upd").append("<option value=''>...</option>");
+                                 for(i=0;i<dataSet['message'].length;i++){
+                                      var val  = dataSet['message'][i][0];
+                                      var text = dataSet['message'][i][1];
+                                      if (wtd['order_type'] == val) {
+                                          $("#order_type_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                      } else {
+                                          $("#order_type_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                      }
+
+                                 }
+                              }
+                         });
+
+                        $("#order_status_upd").empty();
+                        $.ajax({
+                              url: "/get_order_status",
+                              type: "post",
+                              datatype: "json",
+                              async:false,
+                              success: function (dataSet) {
+                                 console.log(dataSet)
+                                 $("#order_status_upd").append("<option value=''>...</option>");
+                                 for(i=0;i<dataSet['message'].length;i++){
+                                      var val  = dataSet['message'][i][0];
+                                      var text = dataSet['message'][i][1];
+                                      console.log('order_status_upd=',wtd,wtd['creator'],wtd['curr_user'])
+                                      if (wtd['creator'] = wtd['curr_user'] ) {
+                                          if  (val == '1' || val=='7'){
+                                              if (wtd['order_status'] == val) {
+                                                 $("#order_status_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                              } else {
+                                                 $("#order_status_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                              }
+                                          }
+                                      } else {
+                                          if  (val == '2' || val == '3' || val=='4' ||val == '5' || val=='6'){
+                                              if (wtd['order_status'] == val) {
+                                                 $("#order_status_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                              } else {
+                                                 $("#order_status_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                              }
+                                         }
+                                      }
+                                 }
+                              }
+                         });
+
+                        $("#order_handle_upd").empty();
+                        $.ajax({
+                              url: "/get_order_handler",
+                              type: "post",
+                              datatype: "json",
+                              async:false,
+                              success: function (dataSet) {
+                                 console.log('order_handle_upd=>dataSet=',dataSet['message'][0],dataSet['message'][0].length)
+                                 data = dataSet['message'][0]
+                                 $("#order_handle_upd").append("<option value=''>...</option>");
+                                 for(i=0;i<data.length;i++){
+                                      var val  = data[i][0];
+                                      var text = data[i][1];
+                                      console.log('order_handle_upd=',val,text,wtd['order_handler'])
+                                      if (wtd['order_handler'] == val) {
+                                          $("#order_handle_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                      } else {
+                                          $("#order_handle_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                      }
+
+                                 }
+                              }
+                         });
+
+                        $('#order_desc_upd') .val(wtd['order_desc'])
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-close-modal6').modal({
+                           keyboard: false,
+                           backdrop:false
+                        });
+
+                    }
+            });
+        }
+
+         function showWtd_del(p_wtd_no){
+              swal({
+                    title: "确认要删除吗?",
+                    text: "问题单["+p_wtd_no+"]将被删除！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是, 删除!",
+                    cancelButtonText:  "否, 取消!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                   }, function (isConfirm) {
+                           if (isConfirm) {
+                                 $.ajax({
+                                        url: "/wtd/delete",
+                                        type: "post",
+                                        datatype: "json",
+                                        data:{wtd_no: p_wtd_no},
+                                        success: function (dataSet) {
+                                            if (dataSet.code=='0') {
+                                                 swal("已删除!", "问题单["+p_wtd_no+"]已注销!", "success");
+                                                 query_wtd()
+                                            } else {
+                                                 swal("已取消!", "问题单["+p_wtd_no+"]"+dataSet.message+"!", "error");
+                                            }
+                                        }
+                                    });
+
+                          } else {
+                              swal("已取消", "问题单[" + p_wtd_no + "]已取消删除！", "error");
+                          }
+              })
+        }
+
+     </script>
+</head>
+
+<body>
+    <p></p>
+    <div class="row">
+        <div class="col-md-12">
+           <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+               </div>
+            </div>
+            <div class="col-md-3">
+                 <div class="input-group">
+                     <span class="input-group-addon">工单环境</span>
+                       <select class="form-control select" id="db_audit_source">
+                            <option value='' selected = "selected">...</option>
+                            {% for var in order_dss %}
+                              <option value={{var[0]}}>{{var[1]}}</option>
+                            {% end %}
+                       </select>
+                 </div>
+            </div>
+            <div class="col-md-3">
+                <div>
+                    <label class="col-md-4 control-label"><span id="s_sql_ver">*</span>版本:</label>
+                </div>
+                <div class="col-md-8">
+                    <select class="form-control select" id="db_ver">
+                        <option value='' selected = "selected">...</option>
+                        {% for var in vers %}
+                          <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+
+                </div>
+             </div>
+             <div class="col-md-1">
+               <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+               </div>
+            </div>
+
+        </div>
+     </div>
+    <p></p>
+
+     <!--当前用户ID -->
+     <input  id="curr_userid" type="hidden" >
+
+     <!--工单情况 -->
+     <div class="panel panel-default">
+        <div class="panel-body">
+            <ul class="nav nav-pills m-b-30 pull-left">
+                <li id='id_sql' class="active">
+                    <a href="#hopsonone-sql" data-toggle="tab" aria-expanded="true">SQL工单</a>
+                </li>
+                <li id='id_wtd' class="">
+                    <a href="#hopsonone-wtd" data-toggle="tab" aria-expanded="false">问题单</a>
+                </li>
+            </ul>
+            <div class="tab-content br-n pn">
+                <div id="hopsonone-sql" class="tab-pane active">
+                    <div class="row">
+                     <div class="col-md-12">
+                          <div id="div-tab">
+                               <table id="tab-sql" class="table table-striped table-bordered" cellspacing="0" width="100%"  height="100%" ></table>
+                          </div>
+                          <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                             <input  id='exp-btn' type='button' class="btn waves-effect waves-light btn-primary" value="导出"/>
+                          </div>
+                      </div>
+                     </div>
+                </div>
+                <div id="hopsonone-wtd" class="tab-pane">
+                    <div class="row">
+                         <div id="div-tab2">
+                              <table id="tab-wtd" class="table table-striped table-bordered" cellspacing="0" width="100%"  height="100%" ></table>
+                         </div>
+                         <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                              <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     </div>
+
+     <!--发布语句详情 -->
+     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">发布语句</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div id='ace-editor' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+     <!--错误消息窗口 -->
+     <div id="con-close-modal3" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-err">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">运行错误</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div id='ace-editor2' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+     <!--新增工单窗口 -->
+     <div id="con-close-modal4" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增工单</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >工单编号：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="order_number"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单环境：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="order_env">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_dss %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单类型：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="order_type">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_types %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单状态：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="order_status">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_status %}
+                                         {% if var[0] == '1' %}
+                                             <option value={{var[0]}}>{{var[1]}}</option>
+                                         {% end %}
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >处理人员：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                 <select class="form-control select" id="order_handle">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_handles %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                       </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >工单附件：</label>
+                            </div>
+                            <div class="col-md-9" id="order_attachment">
+                                <input type="file" name="order_files[]" id="file_order"  multiple="multiple">
+                            </div>
+                       </div>
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >问题描述：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <textarea class="form-control"  rows="3" style="min-width: 90%" id="order_desc"></textarea>
+                           </div>
+                       </div>
+                   </form>
+
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="order_save_btn" >保存</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+     <!--工单详情窗口 -->
+     <div id="con-close-modal5" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">工单详情</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >工单编号：</label>
+                            </div>
+                            <div class="col-md-8" >
+                                <input type="text" id="order_number_detail"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单环境：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control select" id="order_env_detail">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单类型：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control select" id="order_type_detail">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单状态：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control select" id="order_status_detail">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >处理人员：</label>
+                            </div>
+                            <div class="col-md-8" >
+                                 <select class="form-control select" id="order_handle_detail">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                       </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >工单附件：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="file" disabled name="order_files[]" id="file_order_detail"  multiple="multiple">
+                            </div>
+                             <div class="col-md-1">
+                               <div class="form-group">
+                                    <div>
+                                        <span class="input-group-btn">
+                                           <button type="button" id='order_attach_detail' class="btn btn-icon waves-effect btn-default m-b-5"><i class="ion-images"></i></button>
+                                        </span>
+                                    </div>
+                               </div>
+                           </div>
+                       </div>
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >问题描述：</label>
+                            </div>
+                            <div class="col-md-8" >
+                                <textarea class="form-control" readonly rows="3" style="min-width: 90%" id="order_desc_detail"></textarea>
+                           </div>
+                       </div>
+                   </form>
+
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+     <!--工单变更窗口 -->
+     <div id="con-close-modal6" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">工单变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >工单编号：</label>
+                            </div>
+                            <div class="col-md-8" >
+                                <input type="text" id="order_number_upd"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单环境：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control select" id="order_env_upd">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单类型：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control select" id="order_type_upd">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">工单状态：</label>
+                            </div>
+                            <div class="col-md-8">
+                                <select class="form-control select" id="order_status_upd">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >处理人员：</label>
+                            </div>
+                            <div class="col-md-8" >
+                                 <select class="form-control select" id="order_handle_upd">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                       </div>
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >工单附件：</label>
+                            </div>
+                            <div class="col-md-8" id="order_attachment_upd">
+                                <input type="file" name="order_files[]" id="file_order_upd"  multiple="multiple">
+                            </div>
+                            <div class="col-md-1">
+                               <div class="form-group">
+                                    <div>
+                                        <span class="input-group-btn">
+                                           <button type="button" id='order_attach_upd' class="btn btn-icon waves-effect btn-default m-b-5"><i class="ion-images"></i></button>
+                                        </span>
+                                    </div>
+                               </div>
+                           </div>
+
+                       </div>
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label" >问题描述：</label>
+                            </div>
+                            <div class="col-md-8" >
+                                <textarea class="form-control"  rows="3" style="min-width: 90%" id="order_desc_upd"></textarea>
+                           </div>
+                       </div>
+                   </form>
+
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="order_upd_btn" >变更</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+</body>
+
+<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
+<!-- File Upload js -->
+<script src="{{static_url('plugins/jquery.filer/js/jquery.filer.js')}}"></script>
+
+ <!-- Toastr js -->
+<script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
+
+<script>
+
+    function showtips(flag,title,content){
+                toastr.options = {
+                      "closeButton": false,
+                      "debug": false,
+                      "newestOnTop": false,
+                      "progressBar": true,
+                      "positionClass": "toast-top-right",
+                      "preventDuplicates": false,
+                      "onclick": null,
+                      "showDuration": "3000",
+                      "hideDuration": "1000",
+                      "timeOut": "5000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                    }
+                    toastr[flag](content,title)
+     }
+
+    $('#order_attach_upd').click(function(){
+            $.ajax({
+                  url: "/wtd/attachment/number",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      wtd_no : $('#order_number_upd').val()
+                  },
+                  success: function (dataSet) {
+                     console.log('attachment_number=',dataSet)
+                     if (dataSet==0 ){
+                         showtips('info','','该问题单无附件!');
+                     } else {
+                         window.open("/wtd/attachment?wtd_no="+$('#order_number_upd').val());
+                     }
+
+                  }
+            })
+    })
+
+    $('#order_attach_detail').click(function(){
+         $.ajax({
+                  url: "/wtd/attachment/number",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      wtd_no : $('#order_number_detail').val()
+                  },
+                  success: function (dataSet) {
+                     console.log('attachment_number2=',dataSet)
+                     if (dataSet==0 ){
+                         showtips('info','','该问题单无附件!');
+                     } else {
+                         window.open("/wtd/attachment?wtd_no="+$('#order_number_detail').val());
+                     }
+                  }
+            });
+
+    })
+
+    function centerModals() {
+          $('.modal').each(function(i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+          });
+     }
+
+    $('#db_source').change(function() {
+        console.log('db_source=',$('#db_source').val());
+        if ($('#db_source').val()!=''){
+            $.ajax({
+                  url: "/get_database",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      dbid : $('#db_source').val(),
+                  },
+                  success: function (dataSet) {
+                     $("#db_name").empty();
+                     $("#db_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['message'].length;i++){
+                          var val  = dataSet['message'][i];
+                          var text = dataSet['message'][i];
+                          $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
+                     }
+                  }
+            });
+        } else {
+            $("#db_name").empty();
+            $("#db_name").append("<option value=''>...</option>");
+        }
+     });
+
+    $('#add-btn').click(function(){
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-modal4').modal({
+               keyboard: false,
+               backdrop:false
+         });
+        init_order()
+    })
+
+    $('#file_order').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
+
+    $('#file_order_detail').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
+
+    $('#file_order_upd').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
+
+
+    function init_order(){
+         $('#order_number').val('')
+         $('#order_env').val('')
+         $('#order_type').val('')
+         $('#order_status').val('')
+         $('#order_handle').val('')
+         $('#order_desc').val('')
+         $('#order_attachment').val('')
+         $('#order_attachment').html('<input type="file" name="order_files[]" id="file_order"  multiple="multiple">')
+         $('#file_order').filer({
+                limit: 3,
+                maxSize: 3,
+                extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+                changeInput: true,
+                showThumbs: true,
+                addMore: true
+         })
+    }
+
+    function init_order_upd(){
+         $('#order_number_upd').val('')
+         $('#order_env_upd').val('')
+         $('#order_type_upd').val('')
+         $('#order_status_upd').val('')
+         $('#order_handle_upd').val('')
+         $('#order_desc_upd').val('')
+         $('#order_attachment_upd').val('')
+         $('#order_attachment_upd').html('<input type="file" name="order_files[]" id="file_order_upd"  multiple="multiple">')
+         $('#file_order_upd').filer({
+                limit: 3,
+                maxSize: 3,
+                extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+                changeInput: true,
+                showThumbs: true,
+                addMore: true
+         })
+    }
+
+    function get_order_type(p_order_type){
+        var order_name=''
+        if (p_order_type == '1'){
+            order_name = 'transfer'
+        } else if (p_order_type == '2'){
+            order_name = 'sync'
+        } else if (p_order_type == '3'){
+            order_name = 'user'
+        } else if (p_order_type == '4'){
+            order_name = 'migrate'
+        } else if (p_order_type == '5'){
+            order_name = 'repl'
+        } else if (p_order_type == '6'){
+            order_name = 'backup'
+        } else if (p_order_type == '7'){
+            order_name = 'sql'
+        } else if (p_order_type == '8'){
+            order_name = 'optimizer'
+        } else {
+            order_name = 'other'
+        }
+        return order_name
+    }
+
+    function get_order_env(p_order_env){
+        var order_name=''
+        if (p_order_env.indexOf('mysql') != -1){
+            order_name = 'mysql'
+        } else if  (p_order_env.indexOf('mongo') != -1){
+            order_name = 'mongo'
+        } else if (p_order_env.indexOf('redis') != -1){
+            order_name = 'redis'
+        } else if (p_order_env.indexOf('elasticsearch') != -1){
+            order_name = 'elasticsearch'
+        } else {
+            order_name = 'other'
+        }
+        return order_name
+    }
+
+    $('#order_save_btn').click(function(){
+
+        if ($("#file_order").get(0).files.length>0) {
+            var fd = new FormData();
+            files = $("#file_order").get(0).files;
+            console.log('files=',files,$("#file_order").get(0).files.length)
+            for (i=0;i<$("#file_order").get(0).files.length;i++) {
+               console.log('i=',i)
+               fd.append("file", files[i]);
+            }
+            fd.append("order_number", $('#order_number').val());
+            $.ajax({
+                url: "/wtd/save/uploadImage",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: fd,
+                async: false,
+                dataType: 'JSON',
+                success: function (dataSet) {
+                    if (dataSet.code == 0) {
+                        console.log('/wtd/save/uploadImage=', dataSet);
+                        $.ajax({
+                            url: "/wtd/save",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                order_number: $('#order_number').val(),
+                                order_env: $('#order_env').val(),
+                                order_type: $('#order_type').val(),
+                                order_status: $('#order_status').val(),
+                                order_handle: $('#order_handle').val(),
+                                order_desc: $('#order_desc').val(),
+                                attachment_path:dataSet.file_path,
+                                attachment_name:dataSet.file_name
+                            },
+                            success: function (dataSet) {
+                                $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal("保存成功", "", "success")
+                                    query_wtd()
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+
+                    }
+                }
+            })
+        } else {
+            $.ajax({
+                    url: "/wtd/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        order_number: $('#order_number').val(),
+                        order_env: $('#order_env').val(),
+                        order_type: $('#order_type').val(),
+                        order_status: $('#order_status').val(),
+                        order_handle: $('#order_handle').val(),
+                        order_desc: $('#order_desc').val(),
+                        attachment_path:'',
+                        attachment_name:''
+                    },
+                    success: function (dataSet) {
+                        $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
+                        console.log(dataSet.code, dataSet.message);
+                        if (dataSet.code == 0) {
+                            swal("保存成功", "", "success")
+                            query_wtd()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    }
+                })
+        }
+     })
+
+    $('#order_upd_btn').click(function(){
+
+        if ($("#file_order_upd").get(0).files.length>0) {
+            var fd = new FormData();
+            files = $("#file_order_upd").get(0).files;
+            console.log('files=',files,$("#file_order_upd").get(0).files.length)
+            for (i=0;i<$("#file_order_upd").get(0).files.length;i++) {
+                console.log('i=',i)
+                fd.append("file", files[i]);
+            }
+            fd.append("order_number", $('#order_number_upd').val());
+            $.ajax({
+                url: "/wtd/save/uploadImage",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: fd,
+                async: false,
+                dataType: 'JSON',
+                success: function (dataSet) {
+                    if (dataSet.code == 0) {
+                        console.log('/wtd/save/uploadImage=', dataSet);
+                        $.ajax({
+                            url: "/wtd/update",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                order_number: $('#order_number_upd').val(),
+                                order_env   : $('#order_env_upd').val(),
+                                order_type  : $('#order_type_upd').val(),
+                                order_status: $('#order_status_upd').val(),
+                                order_handle: $('#order_handle_upd').val(),
+                                order_desc  : $('#order_desc_upd').val(),
+                                attachment_path:dataSet.file_path,
+                                attachment_name:dataSet.file_name
+                            },
+                            success: function (dataSet) {
+                                $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal("保存成功", "", "success")
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+
+                    }
+                }
+            })
+        } else {
+            $.ajax({
+                    url: "/wtd/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        order_number: $('#order_number').val(),
+                        order_env: $('#order_env').val(),
+                        order_type: $('#order_type').val(),
+                        order_status: $('#order_status').val(),
+                        order_handle: $('#order_handle').val(),
+                        order_desc: $('#order_desc').val(),
+                    },
+                    success: function (dataSet) {
+                        $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
+                        console.log(dataSet.code, dataSet.message);
+                        if (dataSet.code == 0) {
+                            swal("保存成功", "", "success")
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    }
+                })
+        }
+     })
+
+
+    $("#order_env").bind("input propertychange",function(){
+        if ($("#order_env").val()!='' && $("#order_type").val()!=''){
+            var order_env = get_order_env($("#order_env").find("option:selected").text())
+            var order_type =get_order_type($("#order_type").val())
+            var order_no;
+            $.ajax({
+                  url: "/get/order/no",
+                  async:false,
+                  type: "post",
+                  datatype: "text",
+                  success: function (dataSet) {
+                     console.log('order_env=>order_no=',dataSet)
+                     order_no=dataSet
+                  }
+            });
+            console.log('order_env=',order_env,order_type,$("#order_env").find("option:selected").text())
+            $('#order_number').val('wtd_'+order_env+'_'+order_type+'_'+order_no)
+        }
+     });
+
+    $("#order_type").bind("input propertychange",function(){
+        if ($("#order_env").val()!='' && $("#order_type").val()!=''){
+           var order_env = get_order_env($("#order_env").find("option:selected").text())
+           var order_type =get_order_type($("#order_type").val())
+           var order_no;
+           $.ajax({
+                  url: "/get/order/no",
+                  async:false,
+                  type: "post",
+                  datatype: "text",
+                  success: function (dataSet) {
+                     console.log('order_type=>order_no=',dataSet)
+                     order_no=dataSet
+                  }
+           });
+           console.log('order_type=',order_env,order_type,$("#order_env").find("option:selected").text())
+           $('#order_number').val('wtd_'+order_env+'_'+order_type+'_'+order_no)
+        }
+    });
+
+</script>
+
+</html>

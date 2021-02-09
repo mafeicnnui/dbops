@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ static_url('assets/images/favicon.ico')}}">
+    <!-- App title -->
+    <title>新增备份</title>
+    <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+</head>
+<body>
+   <p></p>
+   <div class="col-md-6">
+       <form class="form-horizontal" role="form">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_backup_server">*</span>备份服务器</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="backup_server" >
+                        <option value='' selected = "selected">......</option>
+                        {% for var in backup_server %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+               </div>
+           </div>
+
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_db_server">*</span>数据库服务</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="db_server" >
+                        <option value='' selected = "selected">......</option>
+                        {% for var in db_server %}
+                          <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+               </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_db_type">*</span>数据库类型</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="db_type" >
+                          <option value='' selected = "selected">......</option>
+                           {% for var in dm_db_type %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                           {% end %}
+                    </select>
+               </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_backup_tag">*</span>备份标识号</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="backup_tag"  type="text" class="form-control" placeholder="请输入备份标识号">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_backup_expire">*</span>备份有效期</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="backup_expire" type="text" class="form-control" placeholder="请输入备份有效期">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_backup_base">*</span>备份主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="backup_base"  type="text" class="form-control" placeholder="请输入备份主目录">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>脚本主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_base"  type="text" class="form-control" placeholder="请输入脚本主目录">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>备份脚本名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_name"  type="text" class="form-control" placeholder="请输入备份脚本名">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_cmd_name">*</span>备份命令名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="cmd_name"  type="text" class="form-control" placeholder="请输入备份命令名">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc"  type="text" class="form-control" disabled placeholder="请输入任务描述">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3主目录">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">备份数据库</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="backup_databases"  type="text" class="form-control" placeholder="请输入备份数据库">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="status" name="status">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+
+           <br>
+           <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                  <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                </div>
+           </div>
+       </form>
+    </div>
+
+    <!-- Counter js  -->
+    <script src="{{static_url('plugins/counterup/jquery.counterup.min.js')}}"></script>
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script>
+        $("#db_server").bind("input propertychange",function(){
+            $("#task_desc").val($("#db_server").find("option:selected").text()+'备份')
+        });
+
+        function set_selected(){
+            document.all['s_backup_server'].style.color="#ff0000";
+            document.all['s_db_server'].style.color="#ff0000";
+            document.all['s_db_type'].style.color="#ff0000";
+            document.all['s_backup_tag'].style.color="#ff0000";
+            document.all['s_backup_expire'].style.color="#ff0000";
+            document.all['s_backup_base'].style.color="#ff0000";
+            document.all['s_script_base'].style.color="#ff0000";
+            document.all['s_script_name'].style.color="#ff0000";
+            document.all['s_cmd_name'].style.color="#ff0000";
+            document.all['s_run_time'].style.color="#ff0000";
+            document.all['s_task_desc'].style.color="#ff0000";
+            document.all['s_python3_home'].style.color="#ff0000";
+            document.all['s_api_server'].style.color="#ff0000";
+            document.all['s_status'].style.color="#ff0000";
+        }
+
+        $(document).ready(function() {
+           set_selected();
+
+          $("#add").click(function () {
+            $.ajax({
+                url: "/backup/add/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    backup_server    : $('#backup_server').val(),
+                    db_server        : $('#db_server').val(),
+                    db_type          : $('#db_type').val(),
+                    backup_tag       : $('#backup_tag').val(),
+                    backup_expire    : $('#backup_expire').val(),
+                    backup_base      : $('#backup_base').val(),
+                    script_base      : $('#script_base').val(),
+                    script_name      : $('#script_name').val(),
+                    cmd_name         : $('#cmd_name').val(),
+                    run_time         : $('#run_time').val(),
+                    task_desc        : $('#task_desc').val(),
+                    python3_home     : $('#python3_home').val(),
+                    backup_databases : $('#backup_databases').val(),
+                    api_server       : $('#api_server').val(),
+                    task_desc        : $('#task_desc').val(),
+                    status           : $('#status').val()
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code==0) {
+                       swal("保存成功", "", "success")
+                    } else {
+                       swal(dataSet.message, "", "error")
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal("登陆信息已过期，请重新登陆!", "", "error")
+                        window.location.href='/login'
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             });
+          });
+
+        });
+
+   </script>
+</body>
+
+</html>

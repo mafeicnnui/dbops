@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>慢日志维护</title>
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/buttons.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+    <style>
+        #example{
+            width: 100% !important;
+        }
+
+       .modal-lg-detail {
+           width: 35%;
+           height: 65%;
+       }
+        .modal-lg-detail {
+            width:65%;
+            height:80%;
+        }
+        #ace-editor {
+            color: #59aed5;
+            overflow:auto;
+            height: 400px;
+        }
+        .warning {
+            color: #d54c15;
+        }
+
+    </style>
+</head>
+<body>
+      <p></p>
+      <div class="row">
+           <div class="col-md-3">
+               <div class="input-group">
+                 <span class="input-group-addon">数据库环境</span>
+                 <select class="form-control select" id="inst_env" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_env_type %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                 </select>
+               </div>
+           </div>
+           <div class="col-md-3">
+               <div class="input-group">
+                 <span class="input-group-addon">数据库实例</span>
+                 <select class="form-control select" id="inst_name" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_inst_names %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                 </select>
+               </div>
+           </div>
+           <div class="col-md-1">
+               <div class="input-group">
+                   <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+           </div>
+        </div>
+      <p></p>
+      <div class="row">
+          <div class="col-md-12">
+              <div id="div-tab">
+                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+              </div>
+          </div>
+      </div>
+
+      <!--慢日志详情窗口 -->
+      <div id="con-modal-slow-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">慢日志详情</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">数据库实例</label>
+                                </div>
+                                <div class="col-md-9">
+                                      <select class="form-control select" disabled id="detail_inst_name" >
+                                          <option value='' selected = "selected">.....</option>
+                                          {% for var in dm_inst_names %}
+                                             <option value={{var[0]}} >{{var[1]}}</option>
+                                          {% end %}
+                                      </select>
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">采集服务器</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" disabled id="detail_inst_server" >
+                                        <option value='' selected = "selected">......</option>
+                                        {% for var in dm_db_server %}
+                                         <option value={{var[0]}} >{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
+                           </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">慢查询时长</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_slow_time"  type="text" readonly class="form-control" placeholder="请输入慢查询时长">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">慢日志文件名</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_slow_log_name"  type="text" readonly class="form-control" readonly value="slow_log_YYYYMMDD.log" placeholder="请输入慢查询日志名">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">PYTHON3目录</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_python3_home"  type="text" readonly class="form-control" placeholder="PYTHON3主目录">
+                                </div>
+                           </div>
+
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">运行时间</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_run_time"  type="text" class="form-control" placeholder="运行时间">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">执行时长</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_exec_time"  type="text" class="form-control" placeholder="执行时长">
+                                </div>
+                           </div>
+
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">脚本路径</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_script_path"  type="text" readonly class="form-control" placeholder="请输入脚本路径">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">采集脚本</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_script_file"  type="text" readonly class="form-control" readonly  value="gather_slow.py" placeholder="请输入采集脚本">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">API服务器</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="detail_api_server"  type="text" readonly class="form-control" placeholder="请输入API服务器">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">是否开启</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" disabled id="detail_slow_status" >
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                       </form>
+                    </div>
+               </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+      <!--用户变更窗口 -->
+      <div id="con-modal-slow-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">慢日志变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                       <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <input type="hidden" id="upd_slow_id">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_inst_name">*</span>数据库实例</label>
+                                </div>
+                                <div class="col-md-9">
+                                      <select class="form-control select" id="upd_inst_name" >
+                                          <option value='' selected = "selected">.....</option>
+                                          {% for var in dm_inst_names %}
+                                             <option value={{var[0]}} >{{var[1]}}</option>
+                                          {% end %}
+                                      </select>
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_inst_server">*</span>采集服务器</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="upd_inst_server" >
+                                        <option value='' selected = "selected">......</option>
+                                        {% for var in dm_db_server %}
+                                         <option value={{var[0]}} >{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
+                           </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_slow_time">*</span>慢查询时长</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_slow_time"  type="text" class="form-control" placeholder="请输入慢查询时长">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_slow_log_name">*</span>慢日志文件名</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_slow_log_name"  type="text" class="form-control" readonly value="slow_log_YYYYMMDD.log" placeholder="请输入慢查询日志名">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_python3_home">*</span>PYTHON3目录</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_python3_home"  type="text" class="form-control" placeholder="PYTHON3主目录">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_run_time">*</span>运行时间</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_run_time"  type="text" class="form-control" placeholder="运行时间">
+                                </div>
+                           </div>
+                          <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_exec_time">*</span>执行时长</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_exec_time"  type="text" class="form-control" placeholder="请输入执行时长[分]">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_script_path">*</span>脚本路径</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_script_path"  type="text" class="form-control" placeholder="请输入脚本路径">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_script_file">*</span>采集脚本</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_script_file"  type="text" class="form-control" readonly  value="gather_slow.py" placeholder="请输入采集脚本">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_api_server">*</span>API服务器</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="upd_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_slow_status">*</span>是否开启</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="upd_slow_status" >
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                       </form>
+                    </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="slow_upd_btn" >更新</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+      <!--远程任务详情 -->
+      <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">任务详情</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div id='ace-editor' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div><!-- /.modal -->
+
+   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+
+   <script>
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+        });
+
+        $("#rolename").bind("input propertychange",function(){
+           $("#query_btn").click();
+        })
+
+        function set_selected(){
+            document.all['s_upd_inst_name'].style.color="#ff0000";
+            document.all['s_upd_inst_server'].style.color="#ff0000";
+            document.all['s_upd_slow_time'].style.color="#ff0000";
+            document.all['s_upd_slow_log_name'].style.color="#ff0000";
+            document.all['s_upd_python3_home'].style.color="#ff0000";
+            document.all['s_upd_run_time'].style.color="#ff0000";
+            document.all['s_upd_exec_time'].style.color="#ff0000";
+            document.all['s_upd_script_path'].style.color="#ff0000";
+            document.all['s_upd_script_file'].style.color="#ff0000";
+            document.all['s_upd_api_server'].style.color="#ff0000";
+            document.all['s_upd_slow_status'].style.color="#ff0000";
+        }
+
+        function centerModals() {
+          $('.modal').each(function(i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+          });
+        }
+
+        function detail_slow(p_slow_id){
+            $.ajax({
+                  url: "/slow/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      slow_id  :p_slow_id
+                  },
+                  success: function (instObj) {
+                        console.log('detail_slow=>instObj=',instObj);
+                        $('#detail_inst_name').val(instObj['inst_id'])
+                        $('#detail_inst_server').val(instObj['server_id'])
+                        $('#detail_slow_time').val(instObj['query_time'])
+                        $('#detail_slow_log_name').val(instObj['log_file'])
+                        $('#detail_python3_home').val(instObj['python3_home'])
+                        $('#detail_run_time').val(instObj['run_time'])
+                        $('#detail_exec_time').val(instObj['exec_time'])
+                        $('#detail_script_path').val(instObj['script_path'])
+                        $('#detail_script_file').val(instObj['script_file'])
+                        $('#detail_api_server').val(instObj['api_server'])
+                        $('#detail_slow_status').val(instObj['status'])
+
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-modal-slow-detail').modal({
+                              keyboard: false,
+                              backdrop:false
+                        });
+
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+             })
+        }
+
+        function upd_slow(p_slow_id){
+            $.ajax({
+                  url: "/slow/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      slow_id  :p_slow_id
+                  },
+                  success: function (instObj) {
+                        console.log('upd_slow=>instObj=',instObj);
+                        $('#upd_inst_name').val(instObj['inst_id'])
+                        $('#upd_inst_server').val(instObj['server_id'])
+                        $('#upd_slow_time').val(instObj['query_time'])
+                        $('#upd_slow_log_name').val(instObj['log_file'])
+                        $('#upd_python3_home').val(instObj['python3_home'])
+                        $('#upd_run_time').val(instObj['run_time'])
+                        $('#upd_exec_time').val(instObj['exec_time'])
+                        $('#upd_script_path').val(instObj['script_path'])
+                        $('#upd_script_file').val(instObj['script_file'])
+                        $('#upd_api_server').val(instObj['api_server'])
+                        $('#upd_slow_status').val(instObj['status'])
+                        $('#upd_slow_id').val(p_slow_id)
+
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-modal-slow-upd').modal({
+                              keyboard: false,
+                              backdrop:false
+                        });
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                }
+
+             })
+        }
+
+        $('#slow_upd_btn').click(function(){
+           $.ajax({
+                url: "/slow/edit/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                     slow_id       : $('#upd_slow_id').val(),
+                     inst_id       : $('#upd_inst_name').val(),
+                     server_id     : $('#upd_inst_server').val(),
+                     slow_time     : $('#upd_slow_time').val(),
+                     slow_log_name : $('#upd_slow_log_name').val(),
+                     python3_home  : $('#upd_python3_home').val(),
+                     run_time      : $('#upd_run_time').val(),
+                     exec_time     : $('#upd_exec_time').val(),
+                     script_path   : $('#upd_script_path').val(),
+                     script_file   : $('#upd_script_file').val(),
+                     api_server    : $('#upd_api_server').val(),
+                     slow_status   : $('#upd_slow_status').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("更新成功", "", "success")
+                        $("#query_btn").click()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                }
+            })
+        })
+
+        function del_slow(p_slow) {
+            console.log('del_slowr=',unescape(p_slow))
+            var slow_id=unescape(p_slow).split(',')[0];
+            var inst_name=unescape(p_slow).split(',')[1];
+            console.log('slow_id=',slow_id,'inst_name=',inst_name)
+            swal({
+                title: "确认要删除吗?",
+                text: "实例["+inst_name+"]慢日志配置将删除！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                            url: "/slow/edit/del?slow_id="+slow_id,
+                            type: "post",
+                            datatype: "json",
+                            success: function (dataSet) {
+                                if (dataSet.code=='0') {
+                                    swal("已删除!", "实例["+inst_name+"]慢日志配置已删除!", "success");
+                                    $("#query_btn").click();
+                                } else {
+                                    swal("删除失败!", "实例["+inst_name+"]"+dataSet.message+"!", "error");
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=',jqXHR.responseText);
+                                console.log('jqXHR.status=',jqXHR.status);
+                                console.log('jqXHR.readyState=',jqXHR.readyState);
+                                console.log('jqXHR.statusText=',jqXHR.statusText);
+                                console.log('textStatus=',textStatus);
+                                console.log('errorThrown=',errorThrown);
+                                if (jqXHR.status==403){
+                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                                    setTimeout(" window.location.href='/login'",3000);
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                       });
+
+                } else {
+                    swal("已取消", "实例["+inst_name+"]未删除！", "error");
+                }
+            });
+
+        }
+
+        function push_slow(p_slow_row) {
+            console.log('push_slow=',unescape(p_slow_row))
+            var v_slow_id    = unescape(p_slow_row).split(',')[0]
+            var v_inst_name  = unescape(p_slow_row).split(',')[1]
+            var v_api_server = unescape(p_slow_row).split(',')[6]
+
+            $.ajax({
+                url: "/slow/edit/push",
+                type: "post",
+                datatype: "json",
+                data: {
+                    slow_id   : v_slow_id,
+                    api_server: v_api_server
+                },
+                beforeSend: function () {
+                    swal({
+                        title: "正在启动远程任务...",
+                        text: "实例[" + v_inst_name + "]慢日志配置正在推送中...",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                },
+                success: function (dataSet) {
+                   if (dataSet['code']== 200) {
+                         swal("推送成功!", "任务["+v_inst_name+"]已推送成功!", "success");
+                         $('#ace-editor').html(dataSet['msg']['crontab'])
+                         $('.modal').on('show.bs.modal', centerModals);
+                         $(window).on('resize', centerModals);
+                         $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+                         $("#query_btn").click();
+                   } else {
+                      swal("推送失败!", "任务["+v_inst_name+"]推送失败!", "error");
+                   }
+                }
+            })
+        }
+
+        $(document).ready(function() {
+
+            set_selected();
+
+            $("#query_btn").click(function() {
+              $.ajax({
+                  url: "/slow/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      inst_id: $('#inst_name').val(),
+                      inst_env: $('#inst_env').val(),
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          scrollY    :true,
+                          scrollX    :true,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 16,
+                          data: dataSet,
+                          columns: [
+                                { "title": "慢日志ID" },
+                                { "title": "实例名称" },
+                                { "title": "实例环境"},
+                                { "title": "日志名称" },
+                                { "title": "慢查询时长" },
+                                { "title": "脚本名称" },
+                                { "title": "API服务器" },
+                                { "title": "是否开启"},
+                                { "title": "创建日期"},
+                                { "title": "操作"},
+                          ],
+                          columnDefs: [
+                            {
+                                targets: 9,
+                                render: function(data, type, row, meta){
+                                    var btn ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="推送" onclick="push_slow(\''+escape(row)+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="detail_slow(\''+row[0]+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="upd_slow(\''+row[0]+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_slow(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                    return btn
+                                }
+                             }
+                          ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
+                                 }
+                             }
+                         });
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                  }
+             });
+            });
+
+            $("#query_btn").click();
+
+        });
+
+   </script>
+</body>
+
+</html>

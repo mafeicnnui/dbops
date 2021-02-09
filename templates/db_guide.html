@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- App title -->
+    <title>备份向导</title>
+    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="{{static_url('assets/css/nifty.min.css')}}" rel="stylesheet">
+
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="{{static_url('assets/css/nifty-demo-icons.min.css')}}" rel="stylesheet">
+
+    <!--Demo [ DEMONSTRATION ]-->
+    <link href="{{static_url('assets/css/nifty-demo.min.css')}}" rel="stylesheet">
+
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="{{static_url('assets/css/magic-check.min.css')}}" rel="stylesheet">
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <link href="{{static_url('assets/css/bootstrapvalidator.min.css')}}" rel="stylesheet">
+</head>
+
+<body>
+  <div id="page-content">
+     <div class="panel">
+        <div class="eq-height clearfix">
+            <div class="col-md-12 eq-box-md eq-no-panel">
+
+                <!-- Main Form Wizard -->
+                <!--===================================================-->
+                <div id="demo-main-wz">
+
+                    <!--nav-->
+                    <ul class="row wz-step wz-icon-bw wz-nav-off mar-top">
+                        <li class="col-xs-3">
+                            <a data-toggle="tab" href="#demo-main-tab1">
+                                <span class="text-danger"><i class="mdi mdi-monitor icon-2x"></i></span>
+                                <p class="text-semibold mar-no">备份服务器</p>
+                            </a>
+                        </li>
+                        <li class="col-xs-3">
+                            <a data-toggle="tab" href="#demo-main-tab2">
+                                <span class="text-warning"><i class="mdi mdi-database icon-2x"></i></span>
+                                <p class="text-semibold mar-no">数据库服务器</p>
+                            </a>
+                        </li>
+                        <li class="col-xs-3">
+                            <a data-toggle="tab" href="#demo-main-tab3">
+                                <span class="text-info"><i class="mdi mdi-format-list-bulleted icon-2x"></i></span>
+                                <p class="text-semibold mar-no">选择库或表</p>
+                            </a>
+                        </li>
+                        <li class="col-xs-3">
+                            <a data-toggle="tab" href="#demo-main-tab4">
+                                <span class="text-success"><i class="mdi mdi-timer icon-2x"></i></span>
+                                <p class="text-semibold mar-no">设置运行时间</p>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!--progress bar-->
+                    <div class="progress progress-xs">
+                        <div class="progress-bar progress-bar-primary"></div>
+                    </div>
+
+                    <!--form-->
+                    <form class="form-horizontal">
+                        <div class="panel-body">
+                            <div class="tab-content">
+
+                                <!--First tab-->
+                                <div id="demo-main-tab1" class="tab-pane">
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">备份服务器</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="backup_server" placeholder="选择备份服务器">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">备份脚本路径</label>
+                                        <div class="col-lg-9">
+                                            <input type="email" class="form-control" name="backup_script_path" placeholder="备份脚本路径">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">备份数据路径</label>
+                                        <div class="col-lg-9">
+                                            <input type="email" class="form-control" name="backup_data_path" placeholder="备份数据路径">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">PYTHON3路径</label>
+                                        <div class="col-lg-9">
+                                            <input type="email" class="form-control" name="python3_path" placeholder="PYTHON3路径">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Second tab-->
+                                <div id="demo-main-tab2" class="tab-pane fade">
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">数据库服务器</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="db_server" placeholder="选择数据库服务器">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">备份工具名称</label>
+                                        <div class="col-lg-9">
+                                            <input type="text" class="form-control" id="db_backup_cmd" placeholder="备份工具名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">备份数据类型</label>
+                                        <div class="col-lg-9">
+                                            <select class="form-control select" id="db_backup_type" >
+                                                <option value="0">数据库</option>
+                                                <option value="1">表</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Third tab-->
+                                <div id="demo-main-tab3" class="tab-pane">
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">系统数据库：</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select multiple="multiple" class="form-control" id="sys_database" >
+                                                <option value="0">hopsonone_cms</option>
+                                                <option value="1">hopsonone_games</option>
+                                            </select>
+                                        </div>
+                                   </div>
+
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">备份数据库：</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select multiple="multiple" class="form-control" id="backup_database" >
+                                            </select>
+                                        </div>
+                                   </div>
+                                </div>
+
+                                <!--Third tab-->
+                                <div id="demo-main-tab3_2" class="tab-pane">
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">选择数据库：</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select multiple="multiple" class="form-control" id="sys_database2" >
+                                                 <option value="0">hopsonone_cms</option>
+                                                 <option value="1">hopsonone_games</option>
+                                            </select>
+                                        </div>
+                                   </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">系统表：</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select multiple="multiple" class="form-control" id="sys_tables" >
+                                                <option value="0">hopsonone_cms</option>
+                                                <option value="1">hopsonone_games</option>
+                                            </select>
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">选择表：</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select multiple="multiple" class="form-control" id="backup_tables" >
+                                                <option value="0">sales_report_day</option>
+                                                <option value="1">sales_report_details</option>
+                                                <option value="2">sales_report_month</option>
+                                            </select>
+                                        </div>
+                                   </div>
+                                </div>
+
+                                <!--Fourth tab-->
+                                <div id="demo-main-tab4" class="tab-pane">
+                                    <label class="control-label">运行频率:</label>
+                                    <div class="row card-box">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="timing" name="setTime"  value="timing"  checked>
+                                            <label for="timing">定时</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" id="realtime" name="setTime" value="realtime" checked>
+                                            <label for="realtime">实时</label>
+                                        </div>
+                                    </div>
+                                    <p></p>
+
+                                    <label class="control-label">定时:</label>
+                                    <div class="row card-box">
+                                          <div class="form-group">
+                                                <div class="col-md-2">
+                                                    <label class="control-label">运行时间：</label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <select class="form-control select" id="hour" >
+                                                        <option value='' selected = "selected">请选择...</option>
+                                                        <option value='24' >24</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="control-label">点</label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <select class="form-control select" id="min" >
+                                                        <option value='' selected = "selected">请选择...</option>
+                                                        <option value='60' >24</option>
+                                                    </select>
+                                                </div>
+
+                                           </div>
+                                    </div>
+                                    <p></p>
+
+                                    <label class="control-label">实时:</label>
+                                    <div class="row card-box">
+
+                                    </div>
+
+                                </div>
+
+                        <!--Footer buttons-->
+                        <div class="pull-right pad-rgt mar-btm">
+                            <button type="button" class="previous btn btn-primary">上一步</button>
+                            <button type="button" class="next btn btn-primary">下一步</button>
+                            <button type="button" class="finish btn btn-success" disabled>完成</button>
+                        </div>
+
+                    </form>
+                </div>
+                <!--===================================================-->
+                <!-- End of Main Form Wizard -->
+
+            </div>
+        </div>
+     </div>
+   </div>
+
+    <!--JAVASCRIPT-->
+    <!--Pace - Page Load Progress Par [OPTIONAL]-->
+    <link href="{{static_url('assets/css/pace.min.css')}}"  rel="stylesheet">
+    <script src="{{static_url('assets/js/pace.min.js')}}"></script>
+
+    <!--jQuery [ REQUIRED ]-->
+    <script src="{{static_url('assets/js/jquery-2.2.4.min.js')}}"></script>
+
+    <!--BootstrapJS [ RECOMMENDED ]-->
+    <script src="{{static_url('assets/js/bootstrap.min.js')}}"></script>
+
+    <!--NiftyJS [ RECOMMENDED ]-->
+    <script src="{{static_url('assets/js/nifty.min.js')}}"></script>
+
+    <!--Demo script [ DEMONSTRATION ]-->
+    <script src="{{static_url('assets/js/nifty-demo.min.js')}}"></script>
+
+    <!--Bootstrap Wizard [ OPTIONAL ]-->
+    <script src="{{static_url('assets/js/jquery.bootstrap.wizard.min.js')}}"></script>
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <script src="{{static_url('assets/js/bootstrapvalidator.min.js')}}"></script>
+
+    <!--Form Wizard [ SAMPLE ]-->
+    <script src="{{static_url('assets/js/form-wizard.js')}}"></script>
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+    <script>
+        $(document).ready(function() {
+
+        });
+
+   </script>
+</body>
+
+</html>

@@ -1,0 +1,3 @@
+*/1 * * * *  /home/hopson/apps/usr/webserver/dba/crontab/proc_tj_service.sh &>>/tmp/proc_tj_service.log
+0 */1 * * *  /home/hopson/apps/usr/webserver/dba/crontab/proc_clear_log.sh &>>/tmp/proc_clear_log.log
+0 0 * * 6    /home/hopson/apps/usr/webserver/dba/crontab/proc_trunc_log.sh &>>/tmp/proc_trunc_log.log

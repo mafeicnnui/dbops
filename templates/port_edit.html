@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="{{ static_url('assets/images/favicon.ico')}}">
+    <title>端口变更</title>
+    <link rel="stylesheet" href="{{static_url('plugins/morris/morris.css')}}">
+    <link href="{{static_url('plugins/timepicker/bootstrap-timepicker.min.css')}}" rel="stylesheet">
+    <link href="{{static_url('plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css')}}" rel="stylesheet">
+    <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet">
+    <link href="{{static_url('plugins/clockpicker/css/bootstrap-clockpicker.min.css')}}" rel="stylesheet">
+    <link href="{{static_url('plugins/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
+    <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+     <style>
+        #develper {
+            height: 200px;
+            max-height: 290px;
+        }
+        #app_dev {
+            height: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+   <div class="col-md-6">
+       <form class="form-horizontal" role="form">
+           <input  id="port_id" type="hidden" name="userid" value={{p_port['id']}} >
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_ds_market_id">*</span>项目名</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="market_id" >
+                         {% for var in dm_proj_type %}
+                           {% if p_port['market_id']==var[0] %}
+                              <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                           {% else %}
+                              <option value={{var[0]}} >{{var[1]}}</option>
+                           {% end  %}
+                         {% end %}
+                    </select>
+               </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_app_desc">*</span>项目描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="app_desc"  type="text" class="form-control" placeholder="请输入应用名" value={{p_port['app_desc']}}>
+                </div>
+           </div>
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_local_ip">*</span>本地IP</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="local_ip"  type="text" class="form-control" placeholder="请输入本地IP" value={{p_port['local_ip']}}>
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_local_port">*</span>本地PORT</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="local_port"  type="text" class="form-control" placeholder="请输入本地PORT" value={{p_port['local_port']}}>
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_mapping_port">*</span>映射PORT</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="mapping_port"  type="text" class="form-control" placeholder="请输映射PORT" value={{p_port['mapping_port']}}>
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_mapping_domain">*</span>映射域名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="mapping_domain"  type="text" class="form-control" placeholder="请输入映射域名" value={{p_port['mapping_domain']}}>
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_mapping_type">*</span>映射类型</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="mapping_type" >
+                         <option value=''>......</option>
+                         {% for var in dm_mapping_type %}
+                           {% if p_port['mapping_type']==var[0] %}
+                              <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                           {% else %}
+                              <option value={{var[0]}} >{{var[1]}}</option>
+                           {% end  %}
+                         {% end %}
+                    </select>
+               </div>
+           </div>
+           <br>
+           <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                  <button id="port_save" type="button" class="btn btn-custom waves-effect waves-light btn-md">更新</button>
+                  <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+                </div>
+           </div>
+       </form>
+    </div>
+
+    <!-- Sweet-Alert  -->
+    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+    <script>
+         function set_selected(){
+            document.all['s_ds_market_id'].style.color="#ff0000";
+            document.all['s_app_desc'].style.color="#ff0000";
+            document.all['s_local_ip'].style.color="#ff0000";
+            document.all['s_local_port'].style.color="#ff0000";
+            document.all['s_mapping_port'].style.color="#ff0000";
+            //document.all['s_mapping_type'].style.color="#ff0000";
+         }
+
+        $(document).ready(function() {
+            set_selected()
+
+            $('#return').on('click', function () {
+                $('#main-container-div').load('/port/change');
+            });
+
+            $("#port_save").click(function () {
+                $.ajax({
+                    url: "/port/edit/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        port_id        : $('#port_id').val(),
+                        market_id      : $('#market_id').val(),
+                        market_name    : $("#market_id").find("option:selected").text(),
+                        app_desc       : $('#app_desc').val(),
+                        local_ip       : $('#local_ip').val(),
+                        local_port     : $('#local_port').val(),
+                        mapping_port   : $('#mapping_port').val(),
+                        mapping_domain : $('#mapping_domain').val(),
+                        mapping_type   : $('#mapping_type').val(),
+                    },
+                    success: function (dataSet) {
+                        console.log(dataSet.code, dataSet.message);
+                        if (dataSet.code == 0) {
+                            swal("变更成功", "", "success")
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status==403){
+                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                            setTimeout(" window.location.href='/login'",3000);
+                        } else if (jqXHR.status==502){
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                    }
+                });
+            });
+        });
+
+        $("#local_ip").bind("input propertychange",function(){
+            $("#mapping_domain").val($("#local_ip").val())
+        });
+
+        $("#local_port").bind("input propertychange",function(){
+           $("#mapping_port").val($("#local_port").val())
+        });
+
+        $("#market_id").bind("input propertychange",function(){
+            if ($("#market_id").val()!='') {
+                if ($("#mapping_type").val()!='') {
+                    $("#app_desc").val($("#market_id").find("option:selected").text()+'代理服务')
+                } else {
+                     $("#app_desc").val($("#market_id").find("option:selected").text())
+                }
+           }  else {
+                $("#app_desc").val('')
+           }
+        });
+
+        $("#mapping_type").bind("input propertychange",function(){
+           if ($("#mapping_type").val()!='') {
+                 $("#app_desc").val($("#market_id").find("option:selected").text()+'代理服务')
+                 $("#app_desc").attr("disabled",true);
+           }  else {
+                $("#app_desc").val($("#market_id").find("option:selected").text())
+                $("#app_desc").attr("disabled",false);
+           }
+        });
+
+
+   </script>
+</body>
+
+</html>

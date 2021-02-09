@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>慢日志分析</title>
+    <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
+
+    <!-- DataTables -->
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+
+    <!-- ace code -->
+    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
+    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
+
+    <!-- Sweet Alert -->
+    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+
+    <style>
+        #example{
+            width: 100% !important;
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+        .modal-lg-detail {
+            width:60%;
+            height:50%;
+            margin-left:500px;
+            margin-top:120px;
+        }
+        #sp1,#sp2{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+   <p></p>
+   <div class="row">
+       <div class="col-md-2">
+           <div class="input-group">
+             <span class="input-group-addon">实例</span>
+             <select class="form-control select" id="inst_name" >
+                <option value='' selected = "selected">.....</option>
+                {% for var in dm_inst_names %}
+                     <option value={{var[0]}} >{{var[1]}}</option>
+                {% end %}
+             </select>
+           </div>
+       </div>
+       <div class="col-md-2">
+             <div class="input-group">
+                  <span class="input-group-addon">日期起</span>
+                  <input  id="begin_date"  type="text" class="form-control datetimepicker"  readonly value="{{begin_date}}">
+                  <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+       </div>
+       <div class="col-md-2">
+          <div class="input-group">
+              <span class="input-group-addon">止</span>
+              <input  id="end_date"  type="text" class="form-control datetimepicker"  readonly  value="{{end_date}}" >
+              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+          </div>
+       </div>
+       <div class="col-md-2">
+           <div class="input-group">
+             <span class="input-group-addon">数据库</span>
+             <select class="form-control select" id="db_name" >
+             </select>
+           </div>
+       </div>
+       <div class="col-md-2">
+           <div class="input-group">
+             <span class="input-group-addon">用户</span>
+             <select class="form-control select" id="db_user" >
+             </select>
+           </div>
+       </div>
+       <div class="col-md-2">
+           <div class="input-group">
+             <span class="input-group-addon">地址</span>
+             <input id="db_host"  type="text" class="form-control" placeholder="请输入IP地址">
+             <span class="input-group-btn">
+               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+            </span>
+           </div>
+       </div>
+   </div>
+   <br>
+   <div id='sp1' class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default panel-border">
+                <div class="panel-heading">
+                    <h3 class="panel-title">IP分析</h3>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                   <div class="row" >
+                        <div  class="col-md-1"></div>
+                        <div id='div-host' class="col-md-10" ></div>
+                        <div class="col-md-1"></div>
+                   </div>
+                </div>
+           </div>
+      </div>
+      <div class="col-lg-6">
+            <div class="panel panel-default panel-border">
+                <div class="panel-heading">
+                    <h3 class="panel-title">DB分析</h3>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                   <div class="row" >
+                        <div  class="col-md-1"></div>
+                        <div id='div-db' class="col-md-10" ></div>
+                        <div class="col-md-1"></div>
+                   </div>
+                </div>
+           </div>
+      </div>
+    </div>
+
+   <div id='sp2' class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default panel-border">
+                <div class="panel-heading">
+                    <h3 class="panel-title">用户分析</h3>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                   <div class="row" >
+                        <div  class="col-md-1"></div>
+                        <div id='div-user' class="col-md-10" ></div>
+                        <div class="col-md-1"></div>
+                   </div>
+                </div>
+           </div>
+      </div>
+      <div class="col-lg-6">
+            <div class="panel panel-default panel-border">
+                <div class="panel-heading">
+                    <h3 class="panel-title">慢查询TOP10</h3>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                   <div class="row" >
+                        <div id='div-top10' class="col-md-12" >
+                            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+                        </div>
+                   </div>
+                </div>
+           </div>
+      </div>
+    </div>
+
+    <!--慢查询预览 -->
+   <div id="con-slow-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">慢查询预览</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="nav nav-pills m-b-30 pull-left">
+                            <li id='slow_sql' class="active">
+                                <a href="#slowlog-sql" data-toggle="tab" aria-expanded="true">查询语句</a>
+                            </li>
+                            <li id='slow_detail' class="">
+                                <a href="#slowlog-detail" data-toggle="tab" aria-expanded="false">查询详情</a>
+                            </li>
+                            <li id='slow_plan' class="">
+                                <a href="#slowlog-plan" data-toggle="tab" aria-expanded="false">执行计划</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content br-n pn">
+                            <div id="slowlog-sql" class="tab-pane active">
+                                 <div class="row">
+                                    <div id='ace-editor' class="col-md-12"></div>
+                                 </div>
+                            </div>
+                            <div id="slowlog-detail" class="tab-pane">
+                                <div class="row"></div>
+                                <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">用户</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_user" readonly style="width:60%;display:none;" />
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">IP地址</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_host" readonly style="width:60%;display:none;" />
+                                    </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">数据库</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_db" readonly style="width:60%;display:none;" />
+                                    </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">最短查询时长范围</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_min_time" readonly style="width:60%;display:none;" />
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">最长查询时长范围</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_max_time" readonly style="width:60%;display:none;" />
+                                    </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">查询时间开始范围</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_min_rq" readonly style="width:60%;display:none;" />
+                                    </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">查询时间结束范围</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_max_rq" readonly style="width:60%;display:none;" />
+                                    </div>
+                                 </div>
+                                 <br>
+                                 <div class="row">
+                                    <div class="col-md-2 text-right">
+                                       <label class="control-label text-left">执行次数范围</label>
+                                    </div>
+                                    <div class="col-md-10 text-left">
+                                        <input type="text" id="v_sql_exe_times" readonly style="width:60%;display:none;" />
+                                    </div>
+                                 </div>
+                            </div>
+                            <div id="slowlog-plan" class="tab-pane">
+                                 <div class="row">
+                                    <div id='ace-editor-plan' class="col-md-12"></div>
+                                 </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+   <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
+   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+   <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+   <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
+   <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+
+   <!-- Sweet-Alert  -->
+   <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
+   <script>
+
+        function centerModals() {
+              $('.modal').each(function(i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 50 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top - 50);
+              });
+        }
+
+        function get_slowlog_detail(p_sqlid){
+            console.log('p_sqlid=',p_sqlid);
+            $.ajax({
+                  url: "/slow/log/detail/id",
+                  type: "post",
+                  datatype: "json",
+                  async:false,
+                  data: {
+                      sql_id  : p_sqlid
+                  },
+                  beforeSend: function () {
+
+                     swal({title: "加载中...",type: "info",showConfirmButton: false});
+                  },
+                  complete: function () {
+                          swal({title: "加载中...",type: "info",timer: 1000,showConfirmButton: false});
+                  },
+                  success: function (obj) {
+                        console.log('get_slowlog_detail=>obj=',obj);
+                        $('#v_sql_user').val(obj['user'])
+                        $('#v_sql_host').val(obj['host'])
+                        $('#v_sql_db').val(obj['db'])
+                        $('#v_sql_min_time').val(obj['min_query_time'])
+                        $('#v_sql_max_time').val(obj['max_query_time'])
+                        $('#v_sql_min_rq').val(obj['min_finish_time'])
+                        $('#v_sql_max_rq').val(obj['max_finish_time'])
+                        $('#v_sql_exe_times').val(obj['exec_time'])
+
+                        $('#v_sql_user').show();
+                        $('#v_sql_host').show();
+                        $('#v_sql_db').show();
+                        $('#v_sql_min_time').show();
+                        $('#v_sql_max_time').show();
+                        $('#v_sql_min_rq').show();
+                        $('#v_sql_max_rq').show();
+                        $('#v_sql_exe_times').show();
+
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-slow-modal').modal({
+                              keyboard: false,
+                              backdrop:false
+                        });
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('jqXHR.responseText=',jqXHR.responseText);
+                        console.log('jqXHR.status=',jqXHR.status);
+                        console.log('jqXHR.readyState=',jqXHR.readyState);
+                        console.log('jqXHR.statusText=',jqXHR.statusText);
+                        console.log('textStatus=',textStatus);
+                        console.log('errorThrown=',errorThrown);
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            $('#v_sql_user').hide();
+                            $('#v_sql_host').hide();
+                            $('#v_sql_db').hide();
+                            $('#v_sql_min_time').hide();
+                            $('#v_sql_max_time').hide();
+                            $('#v_sql_min_rq').hide();
+                            $('#v_sql_max_rq').hide();
+                            $('#v_sql_exe_times').hide();
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                  }
+             });
+        }
+
+        function showlog_plan(p_sqlid){
+            console.log('p_sqlid=',p_sqlid);
+            var editor = ace.edit("ace-editor-plan");
+            $.ajax({
+                  url: "/slow/log/plan/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      sql_id  : p_sqlid
+                  },
+                  beforeSend: function () {
+                     editor.setValue('')
+                     swal({title: "加载中...",type: "info",showConfirmButton: false});
+                  },
+                  complete: function () {
+                          swal({title: "加载中...",type: "info",timer: 1000,showConfirmButton: false});
+                  },
+                  success: function (obj) {
+                        console.log('showlog_plan=>obj=',obj);
+                        var editor = ace.edit("ace-editor-plan");
+                        editor.setTheme("ace/theme/xcode");
+                        editor.getSession().setMode("ace/mode/mysql");
+                        editor.setShowPrintMargin(false);
+                        editor.setFontSize(16);
+                        editor.getSession().setUseSoftTabs(true);
+                        editor.setReadOnly(true);
+                        editor.setOption("wrap", "free")
+                        editor.moveCursorTo(0, 0);
+                        editor.setValue('')
+                        editor.insert(obj);
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('jqXHR.responseText=',jqXHR.responseText);
+                        console.log('jqXHR.status=',jqXHR.status);
+                        console.log('jqXHR.readyState=',jqXHR.readyState);
+                        console.log('jqXHR.statusText=',jqXHR.statusText);
+                        console.log('textStatus=',textStatus);
+                        console.log('errorThrown=',errorThrown);
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            editor.insert('' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '');
+                            swal("用户无权访问权限此功能!", "", "error")
+
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                  }
+             });
+        }
+
+        function showlog_text(p_sqlid){
+            console.log('p_sqlid=',p_sqlid);
+            var editor = ace.edit("ace-editor");
+            $.ajax({
+                  url: "/slow/log/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      sql_id  : p_sqlid
+                  },
+                  beforeSend: function () {
+                     editor.setValue('')
+                     swal({title: "加载中...",type: "info",showConfirmButton: false});
+                  },
+                  complete: function () {
+                     swal({title: "加载中...",type: "info",timer: 1000,showConfirmButton: false});
+                  },
+                  success: function (obj) {
+                        console.log('showlog=>obj=',obj);
+                        editor.setTheme("ace/theme/xcode");
+                        editor.getSession().setMode("ace/mode/mysql");
+                        editor.setShowPrintMargin(false);
+                        editor.setFontSize(16);
+                        editor.getSession().setUseSoftTabs(true);
+                        editor.setReadOnly(true);
+                        editor.setOption("wrap", "free")
+                        editor.moveCursorTo(0, 0);
+                        editor.setValue('')
+                        editor.insert(obj['sql_text']);
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('jqXHR.responseText=',jqXHR.responseText);
+                        console.log('jqXHR.status=',jqXHR.status);
+                        console.log('jqXHR.readyState=',jqXHR.readyState);
+                        console.log('jqXHR.statusText=',jqXHR.statusText);
+                        console.log('textStatus=',textStatus);
+                        console.log('errorThrown=',errorThrown);
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            editor.insert('' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '' +
+                                '');
+                            swal("用户无权访问权限此功能!", "", "error")
+
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                  }
+             });
+        }
+
+        function showlog(p_sqlid) {
+            console.log('p_sqlid=',p_sqlid);
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-slow-modal').modal({
+                  keyboard: false,
+                  backdrop:false
+            });
+
+            $('#slow_sql').addClass("active");
+            $('#slow_detail').removeClass("active");
+            $('#slow_plan').removeClass("active");
+
+            showlog_text(p_sqlid);
+
+            //标签页事件监听
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+               var activeTab = $(e.target).text();
+               var previousTab = $(e.relatedTarget).text();
+               $('#current_tab_hidden').val(activeTab)
+               console.log(activeTab,previousTab)
+               if (activeTab=='查询语句') {
+                  console.log('查询语句')
+                  showlog_text(p_sqlid)
+               }
+
+              if (activeTab=='查询详情') {
+                 console.log('查询详情')
+                 get_slowlog_detail(p_sqlid)
+              }
+
+              if (activeTab=='执行计划') {
+                 console.log('执行计划')
+                 showlog_plan(p_sqlid)
+              }
+
+            })
+
+        }
+
+        function get_top10(p_data){
+             $('#example').DataTable( {
+                  "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                  "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                  destroy    :true,
+                  async      :true,
+                  scrollY    :"500px",
+                  scrollX    :false,
+                  ordering   :false,
+                  scrollCollapse: true,
+                  paging:     false,
+                  iDisplayLength: 10,
+                  data: p_data,
+                  columns: [
+                        { "title": "序号","width":"10%" },
+                        { "title": "SQL标识","width":"40%"},
+                        { "title": "平均时长(s)","width":"20%"},
+                        { "title": "执行次数","width":"20%"},
+                        {
+                            "title":"详情",
+                            "width": "25px",
+                            "render": function(data,type,row)
+                                {
+                                   return  '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog("'+row[1]+'")><i class="ion-skip-forward"></i></button>'
+                                }
+                        },
+                  ],
+                  "language": {
+                         "search"       : "在表格中搜索:",
+                         "sProcessing"  : "处理中...",
+                         "sLengthMenu"  : "显示 _MENU_ 项结果",
+                         "sZeroRecords" : "没有匹配结果",
+                         "sInfo"        : "",
+                         "sInfoEmpty"   : "",
+                         "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                         "sInfoPostFix" : "",
+                         "sSearch"      : "搜索:",
+                         "sUrl"         : "",
+                         "sEmptyTable"  : "表中数据为空",
+                         "sLoadingRecords": "载入中...",
+                         "sInfoThousands": ",",
+                         "oPaginate": {
+                             "sFirst"   : "首页",
+                             "sPrevious": "上页",
+                             "sNext"    : "下页",
+                             "sLast"    : "末页"
+                         },
+                         "oAria": {
+                             "sSortAscending" : ": 以升序排列此列",
+                             "sSortDescending": ": 以降序排列此列"
+                         }
+                     }
+                 });
+           }
+
+        function get_charts(p_item,p_data) {
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init($('#'+p_item)[0]);
+
+              // 指定图表的配置项和数据
+              var option = {
+                    series : [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            roseType: 'angle',
+                            data:p_data
+                        }
+                    ]
+              };
+              //使用刚指定的配置项和数据显示图表。
+              myChart.setOption(option);
+        }
+
+        $('#query_btn').click(function () {
+
+             if ($('#inst_name').val()==''){
+               swal("请选择实例", "", "info");
+               return false;
+             }
+
+             $.ajax({
+                  url: "/slow/log/_analyze",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      inst_id   : $('#inst_name').val(),
+                      db_name   : $('#db_name').val(),
+                      db_user   : $('#db_user').val(),
+                      db_host   : $('#db_host').val(),
+                      begin_date: $('#begin_date').val(),
+                      end_date  : $('#end_date').val(),
+                  },
+                  success: function (dataSet) {
+                         console.log('analyze=',dataSet)
+                         $('#sp1').css('display','block');
+                         $('#sp2').css('display','block');
+                         $('#div-host').css('height','500px');
+                         $('#div-db').css('height','500px');
+                         $('#div-user').css('height','500px');
+                         $('#div-top10').css('height','500px');
+                         get_charts('div-host',dataSet['host'])
+                         get_charts('div-db',dataSet['db'])
+                         get_charts('div-user',dataSet['user'])
+                         get_top10(dataSet['top10']);
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('jqXHR.responseText=',jqXHR.responseText);
+                        console.log('jqXHR.status=',jqXHR.status);
+                        console.log('jqXHR.readyState=',jqXHR.readyState);
+                        console.log('jqXHR.statusText=',jqXHR.statusText);
+                        console.log('textStatus=',textStatus);
+                        console.log('errorThrown=',errorThrown);
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                  }
+
+
+             });
+        });
+
+        function get_db_users(){
+            console.log('inst_id=',$('#inst_name').val());
+            $.ajax({
+                      url: "/get/inst/db",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          inst_id    : $('#inst_name').val(),
+                      },
+                      success: function (dataSet) {
+                         console.log('/get/inst/db=',dataSet)
+                         $("#db_name").empty();
+                         $("#db_name").append("<option value=''>请选择数据库...</option>");
+                         for(i=0;i<dataSet['data'].length;i++){
+                             console.log('i=',i)
+                              var val  = dataSet['data'][i]
+                              var text = dataSet['data'][i]
+                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
+                              $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      },
+                      error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                      }
+             });
+
+             $.ajax({
+                      url: "/get/inst/user",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          inst_id : $('#inst_name').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#db_user").empty();
+                         $("#db_user").append("<option value=''>请选择用户...</option>");
+                         for(i=0;i<dataSet['data'].length;i++){
+                             console.log('i=',i)
+                              var val  = dataSet['data'][i]
+                              var text = dataSet['data'][i]
+                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
+                              $("#db_user").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      },
+                      error: function (jqXHR, textStatus, errorThrown) {
+                            console.log('jqXHR.responseText=',jqXHR.responseText);
+                            console.log('jqXHR.status=',jqXHR.status);
+                            console.log('jqXHR.readyState=',jqXHR.readyState);
+                            console.log('jqXHR.statusText=',jqXHR.statusText);
+                            console.log('textStatus=',textStatus);
+                            console.log('errorThrown=',errorThrown);
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                      }
+             });
+
+         }
+
+        $('#inst_name').change(function() {
+            get_db_users();
+         });
+
+        $(document).ready(function() {
+           if ($('#inst_name').val()==''){
+               swal("请选择实例", "", "info");
+               return false;
+           }
+        });
+
+   </script>
+</body>
+
+</html>
