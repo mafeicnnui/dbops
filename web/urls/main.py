@@ -12,7 +12,6 @@ from web.services.sync         import db_active_num,db_slow_num,sys_stats_num,sy
 
 # 功能：主页面API
 main = [
-        # 功能：主面板API
         (r"/backup_case", backup_case),
         (r"/sync_case", sync_case),
         (r"/sync_case_log", sync_case_log),
