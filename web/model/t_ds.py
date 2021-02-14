@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/6/30 15:46
-# @Author  : 马飞
+# @Author  : ma.fei
 # @File    : t_user.py
 # @Software: PyCharm
 
 import re
-from web.utils.common     import exception_info,current_rq,aes_encrypt,aes_decrypt,format_sql
-from web.utils.common     import get_connection_ds,get_connection_ds_sqlserver,get_connection_ds_oracle
-from web.utils.common     import get_connection_ds_pg,get_connection_ds_mongo,get_connection_ds_redis,get_connection_ds_es
-from web.model.t_user     import get_user_by_loginame
-from web.utils.mysql_async import query_list,query_one,query_dict_one,exec_sql
+from web.utils.common      import exception_info,current_rq,aes_encrypt,aes_decrypt,format_sql
+from web.utils.common      import get_connection_ds,get_connection_ds_sqlserver,get_connection_ds_oracle
+from web.utils.common      import get_connection_ds_pg,get_connection_ds_mongo,get_connection_ds_redis,get_connection_ds_es
+from web.model.t_user      import get_user_by_loginame
+from web.utils.mysql_async import async_processer
 
 def check_ds(p_ds,p_flag):
     result = {}
@@ -65,7 +65,7 @@ async def query_ds(dsname,market_id,db_env,ds_type):
     if ds_type == 'sync':
         v_where = v_where + " and a.user!='puppet'\n"
 
-    sql ="""select  a.id,
+    sql = """select  a.id,
                     d.dmmc as market_name,
                     a.db_desc,
                     c.dmmc as db_env,
@@ -78,9 +78,8 @@ async def query_ds(dsname,market_id,db_env,ds_type):
             and a.db_env=c.dmm  and c.dm='03' 
             and a.market_id=d.dmm  and d.dm='05' 
             {0}
-        order by a.db_desc
-        """.format(v_where)
-    return await query_list(sql)
+        order by a.db_desc""".format(v_where)
+    return await async_processer.query_list(sql)
 
 async def query_project(p_name,p_userid,is_grants):
     if is_grants=='false':
@@ -134,19 +133,19 @@ async def query_project(p_name,p_userid,is_grants):
                   AND (binary concat(a.ip,':',a.port,'/',a.service)  like '%{5}%'  or a.db_desc like '%{6}%')
                   {7}
                 order by a.ip,port,a.service""".format(p_userid,p_userid,p_userid,p_userid,p_userid,p_name,p_name,v_where)
-    return await query_list(sql)
+    return await async_processer.query_list(sql)
 
 async def get_dsid():
     sql="select ifnull(max(id),0)+1 from t_db_source"
-    return await query_one(sql)
+    return await async_processer.query_one(sql)
 
 async def check_ds_repeat(p_ds):
     result = {}
     sql = """select count(0)  from t_db_source where ip='{0}'  and port='{1}' and service='{2}' and user='{3}'
           """.format(p_ds["ip"],p_ds["port"], p_ds["service"], p_ds["user"])
-    rs1 = await query_one(sql)
+    rs1 = await async_processer.query_one(sql)
     sql = """select count(0) from t_db_source where db_desc='{0}' """.format(p_ds["db_desc"])
-    rs2 = await query_one(sql)
+    rs2 = await async_processer.query_one(sql)
     if rs1[0]>0:
         result['code'] = True
         result['message'] = '数据源不能重复!'
@@ -168,9 +167,9 @@ async def get_ds_by_dsid(p_dsid):
                   user,
                   password,
                   status,
-                  creation_date,
+                  date_format(creation_date,'%Y-%m-%d %H:%i:%s') as creation_date,
                   creator,
-                  last_update_date,
+                  date_format(last_update_date,'%Y-%m-%d %H:%i:%s') as last_update_date,
                   updator ,
                   db_env,
                   inst_type,
@@ -178,7 +177,7 @@ async def get_ds_by_dsid(p_dsid):
                   proxy_status,
                   proxy_server
            from t_db_source where id={0}""".format(p_dsid)
-    ds = await query_dict_one(sql)
+    ds = await async_processer.query_dict_one(sql)
     ds['password'] = await aes_decrypt(ds['password'],ds['user'])
     ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])
     return ds
@@ -195,30 +194,9 @@ async def get_ds_by_dsid_by_cdb(p_dsid,p_cdb):
                   db_env,inst_type,market_id
            from t_db_source where id={1}
         """.format(p_cdb,p_dsid)
-    # cr.execute(sql)
-    # rs = cr.fetchall()
-    # cr.close()
-    # db.commit()
-
-    ds = await query_dict_one(sql)
-    ds['password'] = aes_decrypt(ds['password'], ds['user'])
+    ds = await async_processer.query_dict_one(sql)
+    ds['password'] = await aes_decrypt(ds['password'], ds['user'])
     ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])
-
-    # d_ds={}
-    # d_ds['dsid']        = rs[0][0]
-    # d_ds['db_type']     = rs[0][1]
-    # d_ds['db_desc']     = rs[0][2]
-    # d_ds['ip']          = rs[0][3]
-    # d_ds['port']        = rs[0][4]
-    # d_ds['service']     = rs[0][5]
-    # d_ds['user']        = rs[0][6]
-    # d_ds['password']    = aes_decrypt(rs[0][7],rs[0][6])
-    # d_ds['status']      = rs[0][8]
-    # d_ds['db_env']      = rs[0][13]
-    # d_ds['inst_type']   = rs[0][14]
-    # d_ds['market_id']   = rs[0][15]
-    # d_ds['url']         = 'MySQL://{0}:{1}/{2}'.format(d_ds['ip'],d_ds['port'],d_ds['service'])
-    # print(d_ds)
     return ds
 
 async def get_dss(p_server_id):
@@ -236,40 +214,36 @@ async def get_dss(p_server_id):
                         and a.market_id=(select market_id from t_server where id='{0}')
                         order by a.db_desc
               """.format(p_server_id)
-    return await query_list(sql)
+    return await async_processer.query_list(sql)
 
 async def get_dss_sql_query(logon_name):
     d_user= await get_user_by_loginame(logon_name)
     sql="""select cast(id as char) as id,a.db_desc as name
-                  -- concat(b.dmmc,':/',ip,':',port,'/',service) as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
-               -- and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='1')
                AND a.id IN(SELECT proj_id FROM t_user_proj_privs WHERE user_id='{0}' AND priv_id='1')
                order by a.db_desc
         """.format(d_user['userid'])
-    return  await query_list(sql)
+    return  await async_processer.query_list(sql)
 
 async def get_dss_sql_release(logon_name):
     d_user = await get_user_by_loginame(logon_name)
     sql="""select cast(id as char) as id,a.db_desc as name 
-                  -- concat(b.dmmc,':/',ip,':',port,'/',service) as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
                and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='2')
         """.format(d_user['userid'])
-    return await query_list(sql)
+    return await async_processer.query_list(sql)
 
 async def get_dss_sql_audit(logon_name):
     d_user = await get_user_by_loginame(logon_name)
     sql="""select cast(id as char) as id,a.db_desc as name
-                  -- concat(b.dmmc,':/',ip,':',port,'/',service) as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
                and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='3')
                order by a.db_desc
         """.format(d_user['userid'])
-    return await query_list(sql)
+    return await async_processer.query_list(sql)
 
 async def get_dss_sql_run(logon_name):
     d_user=await get_user_by_loginame(logon_name)
@@ -279,18 +253,17 @@ async def get_dss_sql_run(logon_name):
                and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='4')
                order by a.db_desc
         """.format(d_user['userid'])
-    return await query_list(sql)
+    return await async_processer.query_list(sql)
 
 async def get_dss_order(logon_name):
     d_user = await get_user_by_loginame(logon_name)
-
     sql="""select cast(id as char) as id,a.db_desc as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
                and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='5')
                order by a.db_desc
         """.format(d_user['userid'])
-    return await query_list(sql)
+    return await async_processer.query_list(sql)
 
 async def save_ds(p_ds):
     result = {}
@@ -312,7 +285,7 @@ async def save_ds(p_ds):
         ds_proxy_server = p_ds['proxy_server']
 
         if p_ds['pass'] != '':
-            ds_pass    = aes_encrypt(p_ds['pass'], ds_user)
+            ds_pass    = await aes_encrypt(p_ds['pass'], ds_user)
         else:
             ds_pass    = p_ds['pass']
         status         = p_ds['status']
@@ -323,7 +296,7 @@ async def save_ds(p_ds):
             """.format(ds_id,ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
                        ds_user,ds_pass,status,current_rq(),'DBA',current_rq(),'DBA',ds_market_id,ds_inst_type,
                        ds_proxy_status,ds_proxy_server)
-        await exec_sql(sql)
+        await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
         result['message']='保存成功！'
@@ -381,7 +354,7 @@ async def upd_ds(p_ds):
                                           ds_user,ds_pass,status,current_rq(),'DBA',ds_market_id,ds_inst_type,
                                           ds_proxy_status,ds_proxy_server,ds_id)
 
-        await exec_sql(sql)
+        await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
         result['message']='更新成功！'
@@ -394,7 +367,7 @@ async def del_ds(p_dsid):
     result={}
     try:
         sql="delete from t_db_source  where id='{0}'".format(p_dsid)
-        await exec_sql(sql)
+        await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
         result['message']='删除成功！'

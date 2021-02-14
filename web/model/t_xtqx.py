@@ -13,7 +13,6 @@ from web.model.t_sql       import get_mysql_proxy_result_dict,get_sqlserver_prox
 from web.utils.mysql_async import async_processer
 
 async def upd_menu(p_menu):
-    result={}
     try:
         menuid       = p_menu['menuid']
         name         = p_menu['name']
@@ -29,15 +28,17 @@ async def upd_menu(p_menu):
                        updator='{5}'
                 where id='{6}'""".format(name,status,url,parent_id,current_rq(),'DBA',menuid)
         await async_processer.exec_sql(sql)
-        result['code']='0'
-        result['message']='更新成功！'
+        res = {}
+        res['code']='0'
+        res['message']='更新成功!'
+        return res
     except :
-        result['code'] = '-1'
-        result['message'] = '更新失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '更新失败!'
+        return res
 
 async def upd_func(p_func):
-    result={}
     try:
         funcid       = p_func['funcid']
         func_name    = p_func['func_name']
@@ -53,12 +54,15 @@ async def upd_func(p_func):
                        updator='{5}'
                 where id='{6}'""".format(func_name,func_url,priv_id,status,current_rq(),'DBA',funcid)
         await async_processer.exec_sql(sql)
-        result['code']='0'
-        result['message']='更新成功！'
+        res = {}
+        res['code']='0'
+        res['message']='更新成功!'
+        return res
     except :
-        result['code'] = '-1'
-        result['message'] = '更新失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '更新失败!'
+        return res
 
 async def get_child_count(menuid):
     sql="select count(0) from t_xtqx  where parent_id='{0}'".format(menuid)
@@ -66,46 +70,42 @@ async def get_child_count(menuid):
     return rs[0]
 
 async def del_menu(menuid):
-    result={}
     try:
+        res = {}
         if await get_child_count(menuid)>0:
-            result['code'] = '-1'
-            result['message'] = '父菜单下有子菜单，不能删除!'
-            return result
-        sql="delete from t_xtqx  where id='{0}'".format(menuid)
-        await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-        return result
+            res['code'] = '-1'
+            res['message'] = '父菜单下有子菜单，不能删除!'
+            return res
+        await async_processer.exec_sql("delete from t_xtqx  where id='{0}'".format(menuid))
+        res['code']='0'
+        res['message']='删除成功！'
+        return res
     except :
-        result['code'] = '-1'
-        result['message'] = '删除失败！'
-        return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '删除失败！'
+        return res
 
 async def del_func(funcid):
-    result={}
     try:
-        sql="delete from t_func  where id='{0}'".format(funcid)
-        await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-        return result
+        await async_processer.exec_sql("delete from t_func  where id='{0}'".format(funcid))
+        res={}
+        res['code']='0'
+        res['message']='删除成功!'
+        return res
     except :
-        result['code'] = '-1'
-        result['message'] = '删除失败！'
-        return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '删除失败!'
+        return res
 
 async def get_menu_by_menuid(p_menuid):
     sql="select id as menuid,name,status,url,parent_id,creation_date,creator,last_update_date,updator from t_xtqx where id={0}".format(p_menuid)
-    menu = await async_processer.query_dict_one(sql)
-    return menu
+    return await async_processer.query_dict_one(sql)
 
 async def get_func_by_funcid(p_funcid):
     sql="select id as funcid,func_name,func_url,priv_id,status from t_func where id={0}".format(p_funcid)
-    func = await async_processer.query_dict_one(sql)
-    return func
+    return await async_processer.query_dict_one(sql)
 
 async def get_url_by_userid(p_userid):
     sql ="""SELECT url
@@ -134,7 +134,7 @@ async def get_url_by_userid(p_userid):
 
 async def check_url(userid,uri):
     uuri = await get_url_by_userid(userid)
-    user =  await get_user_by_userid(userid)
+    user = await get_user_by_userid(userid)
     if user['loginname'] =='admin':
        return True
     if uri not in uuri:
@@ -164,7 +164,6 @@ async def get_menuid(p_parent_id):
         return rs[1]
 
 async def save_menu(p_menu):
-    result = {}
     try:
         name      = p_menu['name']
         url       = p_menu['url']
@@ -175,18 +174,19 @@ async def save_menu(p_menu):
                     values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')
             """.format(menu_id,name,url,status,parent_id,current_rq(),'DBA',current_rq(),'DBA')
         await async_processer.exec_sql(sql)
-        result['code']='0'
-        result['message']='保存成功！'
-        return result
+        res = {}
+        res['code']='0'
+        res['message']='保存成功！'
+        return res
     except:
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '保存失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '保存失败！'
+        return res
 
 async def save_func(p_func):
-    result = {}
-    val    = check_func(p_func)
+    val = check_func(p_func)
     if val['code'] == '-1':
         return val
     try:
@@ -194,14 +194,16 @@ async def save_func(p_func):
                     values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')
             """.format(p_func['func_name'],p_func['func_url'],p_func['priv_id'],p_func['status'],current_rq(),'DBA',current_rq(),'DBA')
         await async_processer.exec_sql(sql)
-        result['code']='0'
-        result['message']='保存成功！'
-        return result
+        res = {}
+        res['code']='0'
+        res['message']='保存成功！'
+        return res
     except:
+        res = {}
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '保存失败！'
-    return result
+        res['code'] = '-1'
+        res['message'] = '保存失败！'
+        return res
 
 async def get_privs():
     sql="""select cast(a.id as char) as id,
@@ -218,8 +220,7 @@ async def get_privs_sys(p_roleid):
                   CONCAT((SELECT NAME FROM t_xtqx c WHERE c.id=a.parent_id),'=>',NAME) AS NAME  
            from t_xtqx a
            where a.status='1' AND a.url !=''
-             and a.id not in(select priv_id from t_role_privs b where b.role_id='{0}')      
-        """.format(p_roleid)
+             and a.id not in(select priv_id from t_role_privs b where b.role_id='{0}')""".format(p_roleid)
     return await async_processer.query_list(sql)
 
 async def get_privs_role(p_roleid):
@@ -227,24 +228,19 @@ async def get_privs_role(p_roleid):
                   CONCAT((SELECT NAME FROM t_xtqx c WHERE c.id=a.parent_id),'=>',NAME) AS NAME  
            from t_xtqx a
             where a.status='1'  AND url !=''
-              AND a.id in(select priv_id from t_role_privs b where b.role_id='{0}')
-        """.format(p_roleid)
+              AND a.id in(select priv_id from t_role_privs b where b.role_id='{0}')""".format(p_roleid)
     return await async_processer.query_list(sql)
 
 async def get_privs_func(p_roleid):
     sql="""SELECT  id,func_name AS NAME 
             FROM t_func a
             WHERE a.status='1'
-            and a.id not in(select func_id from t_role_func_privs b where b.role_id='{0}')
-        """.format(p_roleid)
+            and a.id not in(select func_id from t_role_func_privs b where b.role_id='{0}')""".format(p_roleid)
     return await async_processer.query_list(sql)
 
 async def get_privs_func_role(p_roleid):
-    sql="""SELECT  id,func_name AS NAME 
-            FROM t_func a
-            WHERE a.status='1'
-            and a.id  in(select func_id from t_role_func_privs b where b.role_id='{0}')
-        """.format(p_roleid)
+    sql="""SELECT  id,func_name AS NAME FROM t_func a WHERE a.status='1'
+            and a.id  in(select func_id from t_role_func_privs b where b.role_id='{0}')""".format(p_roleid)
     return await async_processer.query_list(sql)
 
 async def get_parent_menus():
@@ -256,18 +252,15 @@ async def get_tree_by_userid(p_username):
         result = {}
         v_html = ""
         d_user = await get_user_by_loginame(p_username)
-        sql1 = """select id,name,icon
-                from t_xtqx 
-                 where parent_id ='0' and status='1'
-                  and  id in(select distinct parent_id from t_xtqx 
-                             where id in(select b.priv_id 
-                                        from t_user_role a ,t_role_privs b,t_role c
-                                         where a.role_id=b.role_id                                          
-                                           and a.role_id=c.id and c.status='1'
-                                           and a.user_id='{0}' 
-                                         ))
-                order by id""".format(d_user['userid'])
-
+        sql1   = """select id,name,icon
+                     from t_xtqx 
+                     where parent_id ='0' and status='1'
+                      and  id in(select distinct parent_id from t_xtqx 
+                                 where id in(select b.priv_id 
+                                            from t_user_role a ,t_role_privs b,t_role c
+                                             where a.role_id=b.role_id                                          
+                                               and a.role_id=c.id and c.status='1'
+                                               and a.user_id='{0}' )) order by id""".format(d_user['userid'])
         sql2 = """select id,name,url 
                     from t_xtqx 
                        where parent_id ='{0}' and status='1'
@@ -275,11 +268,8 @@ async def get_tree_by_userid(p_username):
                                    from t_user_role a ,t_role_privs b,t_role c
                                    where a.role_id=b.role_id
                                      and a.role_id=c.id and c.status='1'
-                                     and a.user_id='{1}')
-                        order by id"""
-
+                                     and a.user_id='{1}')  order by id"""
         rs1 = await async_processer.query_list(sql1)
-
         v_menu_header="""
                       <li class="has_sub">
                          <a href="javascript:void(0);" class="waves-effect"><i class="{0}"></i><span>{1}</span> <span class="menu-arrow"></span></a>
@@ -296,7 +286,6 @@ async def get_tree_by_userid(p_username):
                 v_node = """<li><a id="{0}" class="file" href="#">{1}</a></li>""".format(rs2[j][2],rs2[j][1])
                 v_html = v_html + "\n" + v_node;
             v_html=v_html+"\n"+v_menu_footer+"\n"
-
         result['code'] = '0'
         result['message'] = v_html
     except:
@@ -306,95 +295,97 @@ async def get_tree_by_userid(p_username):
 
 async def get_tab_ddl_by_tname(dbid,tab,cur_db):
     try:
-        result = {}
-        p_ds   = await get_ds_by_dsid(dbid)
-        p_ds['service'] = cur_db
+        res = {}
+        pds = await get_ds_by_dsid(dbid)
+        pds['service'] = cur_db
         sql    = """show create table {0}""".format(tab)
-        rs = await async_processer.query_one_by_ds(p_ds,sql)
-        result['code'] = '0'
-        result['message'] = rs[1]
+        rs = await async_processer.query_one_by_ds(pds,sql)
+        res['code'] = '0'
+        res['message'] = rs[1]
+        return res
     except :
+        res = {}
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取表定义失败！'
-    return result
+        res['code'] = '-1'
+        res['message'] = '获取表定义失败！'
+        return res
 
 async def get_db_name(dbid):
     try:
-        result = {}
-        p_ds   = await get_ds_by_dsid(dbid)
-        sql    = """SELECT schema_name FROM information_schema.`SCHEMATA` 
+        res = {}
+        pds = await get_ds_by_dsid(dbid)
+        sql = """SELECT schema_name FROM information_schema.`SCHEMATA` 
                        WHERE schema_name NOT IN('information_schema','mysql','performance_schema')
                      ORDER BY schema_name"""
-        result['code'] = '0'
-        result['message'] = await async_processer.query_list_by_ds(p_ds, sql)
+        res['code'] = '0'
+        res['message'] = await async_processer.query_list_by_ds(pds,sql)
+        return res
     except:
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取数据库名失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '获取数据库名失败！'
+        return res
 
 async def get_tab_name(dbid,db_name):
     try:
-        result = {}
-        p_ds   = await get_ds_by_dsid(dbid)
-        sql    = """SELECT table_name FROM information_schema.tables  WHERE table_schema='{0}' ORDER BY table_name""".format(db_name)
-        result['code'] = '0'
-        result['message'] = await async_processer.query_list_by_ds(p_ds, sql)
+        res = {}
+        pds = await get_ds_by_dsid(dbid)
+        sql = """SELECT table_name FROM information_schema.tables  WHERE table_schema='{0}' ORDER BY table_name""".format(db_name)
+        res['code'] = '0'
+        res['message'] = await async_processer.query_list_by_ds(pds,sql)
+        return res
     except :
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取数据库名失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '获取数据库名失败！'
+        return res
 
 async def get_tab_columns(dbid,db_name,tab_name):
     try:
-        result = {}
-        p_ds   = await get_ds_by_dsid(dbid)
-        sql    = """
-                    SELECT column_name,column_comment 
+        res = {}
+        pds = await get_ds_by_dsid(dbid)
+        sql = """SELECT column_name,column_comment 
                      FROM information_schema.columns
                     WHERE table_schema='{0}'  AND table_name='{1}'
-                      ORDER BY ordinal_position
-                 """.format(db_name,tab_name)
-        result['code'] = '0'
-        result['message'] = await async_processer.query_list_by_ds(p_ds, sql)
-    except Exception as e:
+                      ORDER BY ordinal_position""".format(db_name,tab_name)
+        res['code'] = '0'
+        res['message'] = await async_processer.query_list_by_ds(pds,sql)
+        return res
+    except:
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取数据库列名失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '获取数据库列名失败！'
+        return res
 
 async def get_tab_keys(dbid,db_name,tab_name):
     try:
-        result = {}
-        p_ds   = await get_ds_by_dsid(dbid)
-        sql    = """
-                    SELECT GROUP_CONCAT(column_name)
+        res = {}
+        pds = await get_ds_by_dsid(dbid)
+        sql = """SELECT GROUP_CONCAT(column_name)
                      FROM information_schema.columns
                     WHERE table_schema='{0}'  AND table_name='{1}'
                        AND column_key='PRI'
-                      ORDER BY ordinal_position
-                 """.format(db_name,tab_name)
-        rs = await async_processer.query_one_by_ds(p_ds, sql)
-        result['code'] = '0'
-        result['message'] = rs[0]
-    except :
+                      ORDER BY ordinal_position""".format(db_name,tab_name)
+        rs = await async_processer.query_one_by_ds(pds,sql)
+        res['code'] = '0'
+        res['message'] = rs[0]
+        return res
+    except:
         traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取数据库列名失败！'
-    return result
+        res = {}
+        res['code'] = '-1'
+        res['message'] = '获取数据库列名失败！'
+        return res
 
 async def query_ds(dsid):
     try:
-        result = {}
-        result['code'] = '0'
-        result['message'] = await get_ds_by_dsid(dsid)
+       return {"code":"0","message":await get_ds_by_dsid(dsid)}
     except Exception as e:
-        traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取数据源信息失败！'
-    return result
+       traceback.print_exc()
+       return {"code":"-1","message":"获取数据源信息失败!"}
 
 async def get_tab_incr_col(dbid,db_name,tab_name):
     try:

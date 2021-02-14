@@ -1,49 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/6/30 15:46
-# @Author  : 马飞
+# @Author  : ma.fei
 # @File    : t_user.py
 # @Software: PyCharm
 
-from web.utils.common     import exception_info,format_sql
-from web.utils.common     import get_connection,get_connection_dict
-from web.model.t_ds       import get_ds_by_dsid
-from web.model.t_user     import get_user_by_loginame
-import re
-import os,json
 import traceback
+import requests
 
-def query_archive(sync_tag):
-    db = get_connection()
-    cr = db.cursor()
+from web.utils.mysql_async import async_processer
+
+async def query_archive(sync_tag):
     v_where=' and  1=1 '
     if sync_tag != '':
         v_where = v_where + " and a.archive_tag='{0}'\n".format(sync_tag)
-
     sql = """SELECT  a.id,
-                 CONCAT(SUBSTR(a.archive_tag,1,40),'...') AS archive_tag,
-                 a.archive_tag,
-                 a.comments,
-                 b.server_desc,
-                 -- CONCAT(SUBSTR(CONCAT(sour_schema,'.',sour_table),1,40),'...') AS archive_obj,
-                 a.api_server,
-                 CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
+                     CONCAT(SUBSTR(a.archive_tag,1,40),'...') AS archive_tag,
+                     a.archive_tag,
+                     a.comments,
+                     b.server_desc,
+                     a.api_server,
+                     CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
                 FROM t_db_archive_config a,t_server b 
                 WHERE a.server_id=b.id AND b.status='1' 
                  {0}
           """.format(v_where)
-    print(sql)
-    cr.execute(sql)
-    v_list = []
-    for r in cr.fetchall():
-        v_list.append(list(r))
-    cr.close()
-    db.commit()
-    return v_list
+    return await async_processer.query_list(sql)
 
-def query_archive_detail(archive_id):
-    db = get_connection_dict()
-    cr = db.cursor()
+async def query_archive_detail(archive_id):
     sql = """SELECT   a.archive_tag,
                       a.comments,
                       b.server_desc,
@@ -72,31 +56,18 @@ def query_archive_detail(archive_id):
                 AND a.id='{0}'
             ORDER BY a.id
              """.format(archive_id)
-    print(sql)
-    cr.execute(sql)
-    rs=cr.fetchone()
-    print('query_archive_detail=>rs=',rs)
-    # v_list=list(rs)
-    cr.close()
-    db.commit()
-    return rs
+    return await async_processer.query_one(sql)
 
-def query_archive_log(transfer_tag,begin_date,end_date):
-    db = get_connection()
-    cr = db.cursor()
-
+async def query_archive_log(transfer_tag,begin_date,end_date):
     v_where=' and 1=1 '
     if transfer_tag != '':
         v_where = v_where + " and a.archive_tag='{0}'\n".format(transfer_tag)
-
     if begin_date != '':
         v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date+' 0:0:0')
     else:
         v_where = v_where + " and a.create_date>=DATE_ADD(NOW(),INTERVAL -1 hour)\n"
-
     if end_date != '':
         v_where = v_where + " and a.create_date<='{0}'\n".format(end_date+' 23:59:59')
-
     sql = """SELECT 
                   a.id,
                   CONCAT(SUBSTR(a.archive_tag,1,40),'...'),
@@ -107,32 +78,17 @@ def query_archive_log(transfer_tag,begin_date,end_date):
                   CAST(a.duration AS CHAR),
                   a.message,
                   CAST(a.percent AS CHAR) 
-                FROM
-                  t_db_archive_log a,
-                  t_db_archive_config b 
-                WHERE a.archive_tag = b.archive_tag 
-                 AND b.status='1'
-                  {0}
-                ORDER BY a.create_date DESC,a.archive_tag 
+             FROM t_db_archive_log a, t_db_archive_config b 
+             WHERE a.archive_tag = b.archive_tag 
+               AND b.status='1' {0} ORDER BY a.create_date DESC,a.archive_tag 
          """.format(v_where)
-    print(sql)
-    cr.execute(sql)
-    v_list = []
-    for r in cr.fetchall():
-        v_list.append(list(r))
-    cr.close()
-    db.commit()
-    return v_list
+    return await async_processer.query_list(sql)
 
-def save_archive(p_archive):
-    result = {}
-    val=check_archive(p_archive)
+async def save_archive(p_archive):
+    val = check_archive(p_archive)
     if val['code']=='-1':
         return val
     try:
-        db      = get_connection()
-        cr      = db.cursor()
-        result  = {}
         sql="""insert into t_db_archive_config(
                          archive_tag,comments,archive_db_type,
                          server_id,sour_db_id,sour_schema,
@@ -151,29 +107,17 @@ def save_archive(p_archive):
                        p_archive['dest_db_name'],p_archive['python3_home'],p_archive['script_base'],
                        p_archive['script_name'], p_archive['batch_size'], p_archive['api_server'],p_archive['status'],
                        p_archive['if_cover'], p_archive['run_time'])
-        print(sql)
-        cr.execute(sql)
-        cr.close()
-        db.commit()
-        result['code']='0'
-        result['message']='保存成功！'
-        return result
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '保存成功!'}
     except:
-        e_str = exception_info()
-        print(e_str)
-        result['code'] = '-1'
-        result['message'] = '保存失败！'
-    return result
+        traceback.print_exc()
+        return {'code': '-1', 'message': '保存失败!'}
 
-def upd_archive(p_archive):
-    result={}
+async def upd_archive(p_archive):
     val = check_archive(p_archive)
     if  val['code'] == '-1':
         return val
     try:
-        db   = get_connection()
-        cr   = db.cursor()
-
         sql="""update t_db_archive_config 
                   set  
                       archive_tag         ='{0}',
@@ -205,36 +149,20 @@ def upd_archive(p_archive):
                        p_archive['dest_db_name'],p_archive['python3_home'],p_archive['script_base'],
                        p_archive['script_name'], p_archive['batch_size'], p_archive['api_server'],p_archive['status'],
                        p_archive['if_cover'], p_archive['run_time'],p_archive['archive_id'])
-        print(sql)
-        cr.execute(sql)
-        cr.close()
-        db.commit()
-        result={}
-        result['code']='0'
-        result['message']='更新成功！'
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '更新成功!'}
     except :
-        print(traceback.format_exc())
-        result['code'] = '-1'
-        result['message'] = '更新失败！'
-    return result
+        traceback.print_exc()
+        return {'code': '-1', 'message': '更新失败!'}
 
-def del_archive(p_archiveid):
-    result={}
+async def del_archive(p_archiveid):
     try:
-        db = get_connection()
-        cr = db.cursor()
         sql="delete from t_db_archive_config  where id='{0}'".format(p_archiveid)
-        print(sql)
-        cr.execute(sql)
-        cr.close()
-        db.commit()
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '删除成功!'}
     except :
-        result['code'] = '-1'
-        result['message'] = '删除失败！'
-    return result
+        traceback.print_exc()
+        return {'code': '-1', 'message': '删除失败!'}
 
 def check_archive(p_archive):
     result = {}
@@ -314,82 +242,62 @@ def check_archive(p_archive):
     result['message'] = '验证通过'
     return result
 
-def get_archive_by_archiveid(p_archiveid):
-    db = get_connection_dict()
-    cr = db.cursor()
+async def get_archive_by_archiveid(p_archiveid):
     sql = """SELECT   id,archive_tag,server_id,comments,archive_db_type,sour_db_id,sour_schema,
                       sour_table,archive_time_col,archive_rentition,rentition_time,rentition_time_type,dest_db_id,dest_schema,script_path,
                       script_file,python3_home,api_server,status,batch_size,if_cover,run_time
              FROM t_db_archive_config where id={0}
           """.format(p_archiveid)
-    cr.execute(sql)
-    rs = cr.fetchall()
-    cr.close()
-    db.commit()
-    print('get_archive_by_archiveid->rs=',rs)
-    return rs[0]
+    return await async_processer.query_dict_one(sql)
 
 def push_archive_task(p_tag,p_api):
-    try:
-        result = {}
-        result['code'] = '0'
-        result['message'] = '推送成功！'
-        v_cmd="curl -XPOST {0}/push_script_remote_archive -d 'tag={1}'".format(p_api,p_tag)
-        print('push_archive_task=',v_cmd)
-        r=os.popen(v_cmd).read()
-        d=json.loads(r)
-
-        if d['code']==200:
-           return result
+    data = {
+        'tag': p_tag,
+    }
+    url = 'http://{}/push_script_remote_archive'.format(p_api)
+    res = requests.post(url, data=data)
+    jres = res.json()
+    v = ''
+    for c in jres['msg']['crontab'].split('\n'):
+        if c.count(p_tag) > 0:
+            v = v + "<span class='warning'>" + c + "</span>"
         else:
-           result['code'] = '-1'
-           result['message'] = '{0}!'.format(d['msg'])
-           return result
-    except Exception as e:
-        print('push_archive_task.error:',traceback.format_exc())
-        result['code'] = '-1'
-        result['message'] = '{0!'.format(traceback.format_exc())
-        return result
+            v = v + c
+        v = v + '<br>'
+    jres['msg']['crontab'] = v
+    return jres
+
 
 def run_archive_task(p_tag,p_api):
-    try:
-        result = {}
-        result['code'] = '0'
-        result['message'] = '执行成功！'
-        v_cmd = "curl -XPOST {0}/run_script_remote_archive -d 'tag={1}'".format(p_api,p_tag)
-        print('v_cmd=', v_cmd)
-        r = os.popen(v_cmd).read()
-        d = json.loads(r)
-        if d['code'] == 200:
-            return result
+    data = {
+        'tag': p_tag,
+    }
+    url = 'http://{}/run_script_remote_archive'.format(p_api)
+    res = requests.post(url, data=data)
+    jres = res.json()
+    v = ''
+    for c in jres['msg']['crontab'].split('\n'):
+        if c.count(p_tag) > 0:
+            v = v + "<span class='warning'>" + c + "</span>"
         else:
-            result['code'] = '-1'
-            result['message'] = '{0}!'.format(d['msg'])
-            return result
-
-    except Exception as e:
-          result['code'] = '-1'
-          result['message'] = '{0}!'.format(str(e))
-          return result
+            v = v + c
+        v = v + '<br>'
+    jres['msg']['crontab'] = v
+    return jres
 
 def stop_archive_task(p_tag,p_api):
-    try:
-        result = {}
-        result['code'] = '0'
-        result['message'] = '停止成功！'
-        v_cmd = "curl -XPOST {0}/stop_script_remote_archive -d 'tag={1}'".format(p_api,p_tag)
-        r = os.popen(v_cmd).read()
-        d = json.loads(r)
-
-        if d['code'] == 200:
-            return result
+    data = {
+        'tag': p_tag,
+    }
+    url = 'http://{}/stop_script_remote_archive'.format(p_api)
+    res = requests.post(url, data=data)
+    jres = res.json()
+    v = ''
+    for c in jres['msg']['crontab'].split('\n'):
+        if c.count(p_tag) > 0:
+            v = v + "<span class='warning'>" + c + "</span>"
         else:
-            result['code'] = '-1'
-            result['message'] = '{0}!'.format(d['msg'])
-            return result
-
-    except Exception as e:
-         result['code'] = '-1'
-         result['message'] = '{0!'.format(str(e))
-         return result
-
+            v = v + c
+        v = v + '<br>'
+    jres['msg']['crontab'] = v
+    return jres

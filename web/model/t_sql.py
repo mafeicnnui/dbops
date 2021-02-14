@@ -89,13 +89,13 @@ def get_sqlserver_result(p_ds,p_sql,curdb):
         result['column'] = ''
         return result
 
-def get_mysql_result(p_ds,p_sql,curdb):
+async def get_mysql_result(p_ds,p_sql,curdb):
     result   = {}
     columns  = []
     data     = []
     p_env    = ''
     #get read timeout
-    read_timeout = int(get_audit_rule('switch_timeout')['rule_value'])
+    read_timeout = int((await get_audit_rule('switch_timeout'))['rule_value'])
     print('read_timeout=',read_timeout)
     if p_ds['db_env']=='1':
         p_env='PROD'
@@ -115,7 +115,7 @@ def get_mysql_result(p_ds,p_sql,curdb):
         cr.execute(p_sql)
         rs = cr.fetchall()
         #get sensitive column
-        c_sensitive = get_audit_rule('switch_sensitive_columns')['rule_value'].split(',')
+        c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
         #process desc
         i_sensitive = []
         desc = cr.description
@@ -125,7 +125,7 @@ def get_mysql_result(p_ds,p_sql,curdb):
             columns.append({"title": desc[i][0]})
 
         #check sql rwos
-        rule = get_audit_rule('switch_query_rows')
+        rule = await get_audit_rule('switch_query_rows')
         if len(rs)>int(rule['rule_value']):
             result['status'] = '1'
             result['msg'] = rule['error'].format(rule['rule_value'])
@@ -141,7 +141,7 @@ def get_mysql_result(p_ds,p_sql,curdb):
                    tmp.append('')
                 else:
                    if j in  i_sensitive:
-                       tmp.append(get_audit_rule('switch_sensitive_columns')['error'])
+                       tmp.append(await (get_audit_rule('switch_sensitive_columns'))['error'])
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)
@@ -265,16 +265,13 @@ def get_sqlserver_proxy_result_dict(p_ds,p_sql,curdb):
     p_ds['service'] = curdb
     url  = "http://{0}/get_mssql_query_dict".format(p_ds['proxy_server'])
     data = {
-            'db_ip'  :p_ds['ip'],
-            'db_port':p_ds['port'],
+            'db_ip'  : p_ds['ip'],
+            'db_port': p_ds['port'],
             'db_service': p_ds['service'],
             'db_user': p_ds['user'],
             'db_pass': p_ds['password'],
             'db_sql' : p_sql
     }
-    print('url=',url)
-    print('data=',data)
-
     r = requests.post(url,data)
     r = json.loads(r.text)
 
@@ -305,7 +302,7 @@ async def exe_query(p_dbid,p_sql,curdb):
         if p_ds['proxy_status'] == '1':
            result = get_mysql_proxy_result(p_ds,p_sql,curdb)
         else:
-           result = get_mysql_result(p_ds,p_sql,curdb)
+           result = await get_mysql_result(p_ds,p_sql,curdb)
 
     # 查询MSQLServer数据源
     if p_ds['db_type'] == '2':

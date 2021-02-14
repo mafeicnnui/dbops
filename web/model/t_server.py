@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/6/30 15:46
-# @Author  : 马飞
+# @Author  : ma.fei
 # @File    : t_user.py
 # @Software: PyCharm
 
-from web.utils.common     import exception_info,current_rq,aes_encrypt,aes_decrypt
-from web.utils.common     import get_connection,get_connection_ds,get_connection_ds_sqlserver,get_connection_ds_oracle,get_connection_ds_pg
-from web.model.t_user     import get_user_by_loginame
 import re
+import traceback
+from web.utils.common      import aes_encrypt,aes_decrypt,get_connection_ds_pg
+from web.utils.common      import get_connection_ds,get_connection_ds_sqlserver,get_connection_ds_oracle
+from web.utils.mysql_async import async_processer
 
-
-def query_server(p_name):
-    db = get_connection()
-    cr = db.cursor()
+async def query_server(p_name):
     if p_name == "":
         sql ="""SELECT  a.id,
                         c.dmmc as server_type,
@@ -49,64 +47,35 @@ def query_server(p_name):
                       and a.server_type=c.dmm and c.dm='06'
                       and binary concat(a.market_id,'|',a.server_ip,'|',a.server_port,'|',a.server_desc)  like '%{0}%' 
                     ORDER BY a.market_id,a.server_port""".format(p_name)
+    return await async_processer.query_list(sql)
 
-    print(sql)
-    cr.execute(sql)
-    v_list = []
-    for r in cr.fetchall():
-        v_list.append(list(r))
-    cr.close()
-    db.commit()
-    return v_list
-
-def get_serverid():
-    db = get_connection()
-    cr = db.cursor()
-    sql="select ifnull(max(id),0)+1 from t_server"
-    cr.execute(sql)
-    rs = cr.fetchone()
-    cr.close()
-    db.commit()
+async def get_serverid():
+    rs = await async_processer.query_one("select ifnull(max(id),0)+1 from t_server")
     return rs[0]
 
+async def get_server_by_serverid(p_serverid):
+    sql = """select cast(id as char) as server_id,
+                  market_id,
+                  server_type,
+                  server_ip,
+                  server_port,
+                  server_user,
+                  server_pass,
+                  server_os,
+                  server_cpu,
+                  server_mem,
+                  status,
+                  server_desc
+           from t_server where id={0}""".format(p_serverid)
+    server = await async_processer.query_one(sql)
+    server['server_pass'] = await aes_decrypt(server['server_pass'], server['server_user'])
+    return server
 
-def get_server_by_serverid(p_serverid):
-    db = get_connection()
-    cr = db.cursor()
-    sql="""select cast(id as char) as id,market_id,server_type,
-                  server_ip,server_port,server_user,server_pass,
-                  server_os,server_cpu,server_mem,status,server_desc
-           from t_server where id={0}
-        """.format(p_serverid)
-    print('get_server_by_serverid=',sql)
-    cr.execute(sql)
-    rs = cr.fetchall()
-    d_server={}
-    d_server['server_id']    = rs[0][0]
-    d_server['market_id']    = rs[0][1]
-    d_server['server_type']  = rs[0][2]
-    d_server['server_ip']    = rs[0][3]
-    d_server['server_port']  = rs[0][4]
-    d_server['server_user']  = rs[0][5]
-    d_server['server_pass']  = aes_decrypt(rs[0][6],rs[0][5])
-    d_server['server_os']    = rs[0][7]
-    d_server['server_cpu']   = rs[0][8]
-    d_server['server_mem']   = rs[0][9]
-    d_server['status']       = rs[0][10]
-    d_server['server_desc']  = rs[0][11]
-    cr.close()
-    db.commit()
-    print(d_server)
-    return d_server
-
-def save_server(p_server):
-    result = {}
-    val=check_server(p_server)
+async def save_server(p_server):
+    val = check_server(p_server)
     if val['code']=='-1':
         return val
     try:
-        db             = get_connection()
-        cr             = db.cursor()
         result         = {}
         market_id      = p_server['market_id']
         server_desc    = p_server['server_desc']
@@ -114,7 +83,7 @@ def save_server(p_server):
         server_ip      = p_server['server_ip']
         server_port    = p_server['server_port']
         server_user    = p_server['server_user']
-        server_pass    = aes_encrypt(p_server['server_pass'],server_user)
+        server_pass    = await aes_encrypt(p_server['server_pass'],server_user)
         server_os      = p_server['server_os']
         server_cpu     = p_server['server_cpu']
         server_mem     = p_server['server_mem']
@@ -122,28 +91,22 @@ def save_server(p_server):
         sql="""insert into t_server(market_id,server_desc,server_type,server_ip,server_port,server_user,server_pass,server_os,server_cpu,server_mem,status) 
                     values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')
             """.format(market_id,server_desc,server_type,server_ip,server_port,server_user,server_pass,server_os,server_cpu,server_mem,status);
-        print(sql)
-        cr.execute(sql)
-        cr.close()
-        db.commit()
+        await async_processer.exec_sql(sql)
         result['code']='0'
-        result['message']='保存成功！'
+        result['message']='保存成功!'
         return result
     except:
-        e_str = exception_info()
-        print(e_str)
+        traceback.print_exc()
+        result = {}
         result['code'] = '-1'
-        result['message'] = '保存失败！'
-    return result
+        result['message'] = '保存失败!'
+        return result
 
-def upd_server(p_server):
-    result={}
+async def upd_server(p_server):
     val = check_server(p_server)
     if  val['code'] == '-1':
         return val
     try:
-        db = get_connection()
-        cr = db.cursor()
         id              = p_server['server_id']
         market_id       = p_server['market_id']
         server_desc     = p_server['server_desc']
@@ -151,12 +114,11 @@ def upd_server(p_server):
         server_ip       = p_server['server_ip']
         server_port     = p_server['server_port']
         server_user     = p_server['server_user']
-        server_pass     = aes_encrypt(p_server['server_pass'], server_user)
+        server_pass     = await aes_encrypt(p_server['server_pass'], server_user)
         server_os       = p_server['server_os']
         server_cpu      = p_server['server_cpu']
         server_mem      = p_server['server_mem']
         status          = p_server['status']
-
         sql="""update t_server 
                   set  market_id     ='{0}', 
                        server_type   ='{1}',
@@ -171,36 +133,30 @@ def upd_server(p_server):
                        server_desc   ='{10}'
                 where id='{11}'""".format(market_id,server_type,server_ip,server_port,server_user,server_pass,
                                           server_os,server_cpu,server_mem,status,server_desc,id)
-        print(sql)
-        cr.execute(sql)
-        cr.close()
-        db.commit()
+        await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
-        result['message']='更新成功！'
-    except :
+        result['message']='更新成功!'
+        return result
+    except:
+        result = {}
         result['code'] = '-1'
-        result['message'] = '更新失败！'
-    return result
+        result['message'] = '更新失败!'
+        return result
 
 
-def del_server(p_serverid):
-    result={}
+async def del_server(p_serverid):
     try:
-        db = get_connection()
-        cr = db.cursor()
-        sql="delete from t_server  where id='{0}'".format(p_serverid)
-        print(sql)
-        cr.execute(sql)
-        cr.close()
-        db.commit()
+        await async_processer.exec_sql("delete from t_server  where id='{0}'".format(p_serverid))
         result={}
         result['code']='0'
         result['message']='删除成功！'
+        return result
     except :
+        result = {}
         result['code'] = '-1'
         result['message'] = '删除失败！'
-    return result
+        return result
 
 def check_server(p_server):
     result = {}
@@ -264,24 +220,23 @@ def check_server(p_server):
     result['message'] = '验证通过'
     return result
 
-def  check_server_valid(p_id):
+async def  check_server_valid(p_id):
     result = {}
     try:
-        p_ds=get_server_by_serverid(p_id)
+        p_ds = await get_server_by_serverid(p_id)
         if p_ds['db_type']=='0':
-           conn=get_connection_ds(p_ds)
+           get_connection_ds(p_ds)
         elif p_ds['db_type']=='1':
-           conn = get_connection_ds_oracle(p_ds)
+           get_connection_ds_oracle(p_ds)
         elif p_ds['db_type']=='2':
-           conn = get_connection_ds_sqlserver(p_ds)
+           get_connection_ds_sqlserver(p_ds)
         elif p_ds['db_type']=='3':
-           conn=get_connection_ds_pg(p_ds)
-
+           get_connection_ds_pg(p_ds)
         result['code'] = '0'
         result['message'] = '验证通过'
         return result
     except:
-        exception_info()
+        traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '验证失败'
         return result
