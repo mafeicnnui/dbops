@@ -1,23 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2019/9/5 16:08
-# @Author : 马飞
+# @Author : ma.fei
 # @File : ds.py
 # @Software: PyCharm
-######################################################################################
-#                                                                                    #
-#                                   数据库备份管理                                        #
-#                                                                                    #
-######################################################################################
 
 import json
 import tornado.web
-from   web.model.t_archive import query_archive,save_archive,get_archive_by_archiveid,upd_archive,del_archive
-from   web.model.t_archive import query_archive_log,push_archive_task,run_archive_task,stop_archive_task,query_archive_detail
-from   web.model.t_dmmx import get_dmm_from_dm,get_sync_server,get_sync_db_server,get_sync_db_server_by_type
-from   web.utils.common import current_rq2
+from   web.model.t_archive import query_archive_detail
 from   web.utils.basehandler import basehandler
-
 
 class dict_gen(basehandler):
     @tornado.web.authenticated

@@ -16,7 +16,7 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
-from web.utils.mysql_async import query_one
+from web.utils.mysql_async import async_processer
 
 def read_json(file):
     with open(file, 'r') as f:
@@ -333,12 +333,12 @@ def format_check(env,msg):
 
 async def aes_encrypt(p_password,p_key):
     sql="""select hex(aes_encrypt('{0}','{1}'))""".format(p_password,p_key[::-1])
-    rs = await query_one(sql)
+    rs = await async_processer.query_one(sql)
     return rs[0]
 
 async def aes_decrypt(p_password,p_key):
         sql="""select aes_decrypt(unhex('{0}'),'{1}')""".format(p_password,p_key[::-1])
-        rs = await query_one(sql)
+        rs = await async_processer.query_one(sql)
         return str(rs[0],encoding = "utf-8")
 
 def get_rand_str(p_len):

@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
 # @Software: PyCharm
+
 from web.services.sql          import orderquery,order_query
 from web.services.sql          import wtd_save,wtd_release,wtd_update,wtd_delete,get_order_no,wtd_query,wtd_detail,get_order_env,get_order_type,get_order_status,get_order_handler,wtd_save_uploadImage,wtd_attachment,wtd_attachment_number
 
-# 功能：我的工单API
+# 功能：我的工单
 wtd = [
 
         (r"/order/query", orderquery),

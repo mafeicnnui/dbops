@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2019/9/5 16:08
-# @Author : 马飞
-# @File : ds.py
+# @Author : ma.fei
+# @File : sync_bigdata.py
 # @Software: PyCharm
-######################################################################################
-#                                                                                    #
-#                                   大数据管理                                        #
-#                                                                                    #
-######################################################################################
 
 import json
 import tornado.web
@@ -23,85 +18,85 @@ from   web.utils.basehandler  import basehandler
 
 class syncbigdataquery(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_bigdata_query.html",
-                    dm_sync_ywlx = get_dmm_from_dm('08'),
-                    dm_sync_data_type = get_dmm_from_dm('09'),
+                    dm_sync_ywlx = await get_dmm_from_dm('08'),
+                    dm_sync_data_type = await get_dmm_from_dm('09'),
                     )
 
 class sync_bigdata_query(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag   = self.get_argument("sync_tag")
         sync_ywlx  = self.get_argument("sync_ywlx")
         sync_type  = self.get_argument("sync_type")
         sync_env   = self.get_argument("sync_env")
-        v_list     = query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env)
+        v_list     = await query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env)
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
 class sync_bigdata_query_detail(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id   = self.get_argument("sync_id")
-        v_list    = query_datax_sync_detail(sync_id)
+        v_list    = await query_datax_sync_detail(sync_id)
         v_json    = json.dumps(v_list)
         self.write({"code": 0, "message": v_json})
 
 class sync_bigdata_query_dataxTemplete(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id  = self.get_argument("sync_id")
-        templete = query_datax_sync_dataxTemplete(sync_id)
+        templete = await query_datax_sync_dataxTemplete(sync_id)
         self.write({"code": 0, "message": templete})
 
 class sync_bigdata_downloads_dataxTemplete(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id     = self.get_argument("sync_id")
         static_path = self.get_template_path().replace("templates", "static")
-        zipfile     = downloads_datax_sync_dataxTemplete(sync_id,static_path)
+        zipfile     = await downloads_datax_sync_dataxTemplete(sync_id,static_path)
         self.write({"code": 0, "message": zipfile})
 
 
 class sync_bigdata_query_es_dataxTemplete(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id  = self.get_argument("sync_id")
-        templete = query_datax_sync_es_dataxTemplete(sync_id)
+        templete = await query_datax_sync_es_dataxTemplete(sync_id)
         self.write({"code": 0, "message": templete})
 
 class sync_bigdata_downloads_es_dataxTemplete(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id     = self.get_argument("sync_id")
         static_path = self.get_template_path().replace("templates", "static")
-        zipfile     = downloads_datax_sync_dataxTemplete(sync_id,static_path)
+        zipfile     = await downloads_datax_sync_dataxTemplete(sync_id,static_path)
         self.write({"code": 0, "message": zipfile})
 
 class syncadd_bigdata(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_bigdata_add.html",
-                    sync_server       = get_sync_server(),
-                    db_server         = get_datax_sync_db_server(),
-                    dm_db_type        = get_dmm_from_dm('02'),
-                    dm_sync_ywlx      = get_dmm_from_dm('08'),
-                    dm_sync_data_type = get_dmm_from_dm2('09','5,6'),
-                    dm_sync_time_type = get_dmm_from_dm('10'),
-                    dm_sync_zk_host   = get_dmm_from_dm('15'),
-                    dm_sync_hbase_thrift = get_dmm_from_dm('16')
+                    sync_server       = await get_sync_server(),
+                    db_server         = await get_datax_sync_db_server(),
+                    dm_db_type        = await get_dmm_from_dm('02'),
+                    dm_sync_ywlx      = await get_dmm_from_dm('08'),
+                    dm_sync_data_type = await get_dmm_from_dm2('09','5,6'),
+                    dm_sync_time_type = await get_dmm_from_dm('10'),
+                    dm_sync_zk_host   = await get_dmm_from_dm('15'),
+                    dm_sync_hbase_thrift = await get_dmm_from_dm('16')
                     )
 
 class syncadd_bigdata_save(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         d_sync = {}
         d_sync['sync_tag']             = self.get_argument("sync_tag")
         d_sync['sync_server']          = self.get_argument("sync_server")
@@ -129,34 +124,34 @@ class syncadd_bigdata_save(basehandler):
         d_sync['sync_gap']             = self.get_argument("sync_gap")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
-        result=save_datax_sync(d_sync)
+        result = await save_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
 class syncchange_bigdata(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_bigdata_change.html" ,
-                    dm_proj_type = get_dmm_from_dm('05'),
-                    dm_sync_ywlx = get_dmm_from_dm('08'),
-                    dm_sync_data_type = get_dmm_from_dm('09'),
+                    dm_proj_type = await get_dmm_from_dm('05'),
+                    dm_sync_ywlx = await get_dmm_from_dm('08'),
+                    dm_sync_data_type = await get_dmm_from_dm('09'),
 
                     )
 
 class syncedit_bigdata(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         sync_id   = self.get_argument("sync_id")
-        d_sync    = query_datax_by_id(sync_id)
+        d_sync    = await query_datax_by_id(sync_id)
         self.render("./sync_bigdata_edit.html",
                     sync_id              = sync_id,
-                    sync_server          = get_sync_server(),
-                    db_server            = get_datax_sync_db_server(),
-                    dm_db_type           = get_dmm_from_dm('02'),
-                    dm_sync_ywlx         = get_dmm_from_dm('08'),
-                    dm_sync_data_type    = get_dmm_from_dm('09'),
-                    dm_sync_time_type    = get_dmm_from_dm('10'),
-                    dm_sync_zk_host      = get_dmm_from_dm('15'),
-                    dm_sync_hbase_thrift = get_dmm_from_dm('16'),
+                    sync_server          = await get_sync_server(),
+                    db_server            = await get_datax_sync_db_server(),
+                    dm_db_type           = await get_dmm_from_dm('02'),
+                    dm_sync_ywlx         = await get_dmm_from_dm('08'),
+                    dm_sync_data_type    = await get_dmm_from_dm('09'),
+                    dm_sync_time_type    = await get_dmm_from_dm('10'),
+                    dm_sync_zk_host      = await get_dmm_from_dm('15'),
+                    dm_sync_hbase_thrift = await get_dmm_from_dm('16'),
                     sync_tag             = d_sync['sync_tag'],
                     server_id            = d_sync['server_id'],
                     sour_db_server       = d_sync['sour_db_id'],
@@ -188,7 +183,7 @@ class syncedit_bigdata(basehandler):
 
 class syncedit_save_bigdata(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_sync = {}
         d_sync['sync_tag']             = self.get_argument("sync_tag")
@@ -218,24 +213,24 @@ class syncedit_save_bigdata(basehandler):
         d_sync['status']               = self.get_argument("status")
         d_sync['sync_id']              = self.get_argument("sync_id")
         d_sync['python3_home']         = self.get_argument("python3_home")
-        result=upd_datax_sync(d_sync)
+        result = await upd_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
 class syncclone_bigdata(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         sync_id   = self.get_argument("sync_id")
-        d_sync    = query_datax_by_id(sync_id)
+        d_sync    = await query_datax_by_id(sync_id)
         self.render("./sync_bigdata_clone.html",
                     sync_id              = sync_id,
-                    sync_server          = get_sync_server(),
-                    db_server            = get_datax_sync_db_server(),
-                    dm_db_type           = get_dmm_from_dm('02'),
-                    dm_sync_ywlx         = get_dmm_from_dm('08'),
-                    dm_sync_data_type    = get_dmm_from_dm('09'),
-                    dm_sync_time_type    = get_dmm_from_dm('10'),
-                    dm_sync_zk_host      = get_dmm_from_dm('15'),
-                    dm_sync_hbase_thrift = get_dmm_from_dm('16'),
+                    sync_server          = await get_sync_server(),
+                    db_server            = await get_datax_sync_db_server(),
+                    dm_db_type           = await get_dmm_from_dm('02'),
+                    dm_sync_ywlx         = await get_dmm_from_dm('08'),
+                    dm_sync_data_type    = await get_dmm_from_dm('09'),
+                    dm_sync_time_type    = await get_dmm_from_dm('10'),
+                    dm_sync_zk_host      = await get_dmm_from_dm('15'),
+                    dm_sync_hbase_thrift = await get_dmm_from_dm('16'),
                     sync_tag             = d_sync['sync_tag'].split('_v')[0]+'_v'+str(int(d_sync['sync_tag'].split('_v')[1])+1),
                     server_id            = d_sync['server_id'],
                     sour_db_server       = d_sync['sour_db_id'],
@@ -267,7 +262,7 @@ class syncclone_bigdata(basehandler):
 
 class syncclone_save_bigdata(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_sync = {}
         d_sync['sync_tag']             = self.get_argument("sync_tag")
@@ -294,72 +289,71 @@ class syncclone_save_bigdata(basehandler):
         d_sync['status']               = self.get_argument("status")
         d_sync['sync_id']              = self.get_argument("sync_id")
         d_sync['python3_home']         = self.get_argument("python3_home")
-        result=save_datax_sync(d_sync)
+        result = await save_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
-
 
 class syncedit_del_bigdata(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         syncid  = self.get_argument("syncid")
-        result=del_datax_sync(syncid)
+        result = await del_datax_sync(syncid)
         self.write({"code": result['code'], "message": result['message']})
 
 class synclogquery(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_log_query.html",
-                    dm_proj_type=get_dmm_from_dm('05'),
-                    dm_sync_ywlx=get_dmm_from_dm('08'),
+                    dm_proj_type = await get_dmm_from_dm('05'),
+                    dm_sync_ywlx = await get_dmm_from_dm('08'),
                     begin_date=current_rq2(),
                     end_date=current_rq2()
                     )
 
 class sync_log_query(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag    = self.get_argument("sync_tag")
         market_id   = self.get_argument("market_id")
         sync_ywlx   = self.get_argument("sync_ywlx")
         begin_date  = self.get_argument("begin_date")
         end_date    = self.get_argument("end_date")
-        v_list      = query_datax_sync_log(sync_tag,market_id,sync_ywlx,begin_date,end_date)
+        v_list      = await query_datax_sync_log(sync_tag,market_id,sync_ywlx,begin_date,end_date)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
 class sync_log_query_detail(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag = self.get_argument("sync_tag")
         sync_rqq = self.get_argument("sync_rqq")
         sync_rqz = self.get_argument("sync_rqz")
-        v_list=query_datax_sync_log_detail(sync_tag,sync_rqq,sync_rqz)
+        v_list = await query_datax_sync_log_detail(sync_tag,sync_rqq,sync_rqz)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
 class syncloganalyze(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_log_analyze.html",
-                      dm_proj_type = get_dmm_from_dm('05'),
-                      db_sync_tags = get_db_sync_tags(),
+                      dm_proj_type = await get_dmm_from_dm('05'),
+                      db_sync_tags = await get_db_sync_tags(),
                       begin_date=get_day_nday_ago(now(),0),
                       end_date=get_day_nday_ago(now(),0)
                     )
 
 class sync_log_analyze(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         market_id  = self.get_argument("market_id")
         tagname    = self.get_argument("tagname")
         begin_date = self.get_argument("begin_date")
         end_date   = self.get_argument("end_date")
         d_list     = {}
-        v_list1,v_list2 = query_datax_sync_log_analyze(market_id,tagname,begin_date,end_date)
+        v_list1,v_list2 = await query_datax_sync_log_analyze(market_id,tagname,begin_date,end_date)
         d_list['data1'] = v_list1
         d_list['data2'] = v_list2
         v_json = json.dumps(d_list)
@@ -367,22 +361,22 @@ class sync_log_analyze(basehandler):
 
 class get_sync_tasks(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         market_id = self.get_argument("market_id")
         d_list  = {}
-        v_list  = get_db_sync_tags_by_market_id(market_id)
+        v_list  = await get_db_sync_tags_by_market_id(market_id)
         d_list['data'] = v_list
         v_json  = json.dumps(d_list)
         self.write(v_json)
 
 class get_sync_ywlx(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         market_id = self.get_argument("market_id")
         d_list  = {}
-        v_list  = get_db_sync_ywlx_by_market_id(market_id)
+        v_list  = await get_db_sync_ywlx_by_market_id(market_id)
         d_list['data'] = v_list
         v_json  = json.dumps(d_list)
         self.write(v_json)
@@ -437,23 +431,23 @@ class syncedit_status(basehandler):
 
 class syncloganalyze_bigdata(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_bigdata_log_analyze.html",
-                      db_sync_tags = get_datax_sync_tags(),
-                      begin_date=get_day_nday_ago(now(),0),
-                      end_date=get_day_nday_ago(now(),0)
+                      db_sync_tags = await get_datax_sync_tags(),
+                      begin_date=  get_day_nday_ago(now(),0),
+                      end_date =  get_day_nday_ago(now(),0)
                     )
 
 class sync_log_analyze_bigdata(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_env   = self.get_argument("sync_env")
         tagname    = self.get_argument("tagname")
         begin_date = self.get_argument("begin_date")
         end_date   = self.get_argument("end_date")
         d_list     = {}
-        v_list1,v_list2 = query_sync_log_analyze(sync_env,tagname,begin_date,end_date)
+        v_list1,v_list2 = await query_sync_log_analyze(sync_env,tagname,begin_date,end_date)
         d_list['data1'] = v_list1
         d_list['data2'] = v_list2
         v_json = json.dumps(d_list)
@@ -461,11 +455,11 @@ class sync_log_analyze_bigdata(basehandler):
 
 class get_bigdata_sync_tasks(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_env = self.get_argument("sync_env")
         d_list  = {}
-        v_list  = get_datax_sync_tags_by_env(sync_env)
+        v_list  = await get_datax_sync_tags_by_env(sync_env)
         d_list['data'] = v_list
         v_json  = json.dumps(d_list)
         self.write(v_json)

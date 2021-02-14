@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
 # @Software: PyCharm
 
 from web.services.minio        import minioquery,minio_query,minioadd,minioadd_save,miniochange,minioedit,minioedit_save,minioedit_del,minioedit_push,minioclone
 from web.services.minio        import miniologquery,minio_log_query,miniologanalyze,minio_log_analyze
 
-# 功能：MinIO图片上传API
 minio = [
         (r"/minio/query", minioquery),
         (r"/minio/_query", minio_query),

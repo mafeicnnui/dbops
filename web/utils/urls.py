@@ -10,7 +10,6 @@ from web.urls.role     import role
 from web.urls.logon    import logon
 from web.urls.comm     import comm
 from web.urls.main     import main
-
 from web.urls.menu     import menu
 from web.urls.func     import func
 from web.urls.ds       import ds
@@ -54,6 +53,3 @@ urls.extend(monitor)
 urls.extend(inst)
 urls.extend(slow)
 urls.extend(minio)
-
-
-

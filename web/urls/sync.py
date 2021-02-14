@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
 # @Software: PyCharm
 
 from web.services.sync         import syncadd,syncadd_save,syncadd_save_tab,syncadd_del_tab,syncquery,sync_query,sync_query_tab,sync_query_sync_tabs,syncchange,syncedit,syncedit_save,syncclone,syncclone_save,syncedit_del,synclogquery
 from web.services.sync         import sync_log_query,sync_log_query_detail,syncedit_push,syncedit_run,syncedit_stop,syncloganalyze,sync_log_analyze,get_sync_tasks,get_sync
 
-# 功能：数据库同步API
 sync = [
 
         (r"/sync/query", syncquery),

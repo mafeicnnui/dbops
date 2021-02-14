@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
 # @Software: PyCharm
 
@@ -9,7 +9,6 @@ from web.services.sql          import sqlquery,sql_query,sqlrelease,sql_check,sq
 from web.services.sql          import sql_release,sqlaudit,sql_audit,sqlrun,sql_run,sql_audit_query,sql_audit_detail,sql_run_query
 from web.services.sql          import get_tree_by_sql,query_sql_release
 
-# 功能：数据库操作API
 sql = [
         (r"/sql/query", sqlquery),
         (r"/sql/_query", sql_query),

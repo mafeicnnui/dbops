@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/1/15 9:02
-# @Author : 马飞
+# @Author : ma.fei
 # @File : basehandler.py
 # @Software: PyCharm
 
-import tornado.web
 import time
+import tornado.web
 from tornado.web import HTTPError
 from web.model.t_xtqx  import check_url
 
 class basehandler(tornado.web.RequestHandler):
+     # def __init__(self):
+     #     self.userid= str(self.get_secure_cookie("userid"), encoding="utf-8")
+     #     self.username = str(self.get_secure_cookie("username"), encoding="utf-8")
 
      def get_current_user(self):
         userid = ''

@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2019/9/5 16:08
-# @Author : 马飞
-# @File : ds.py
+# @Author : ma.fei
+# @File : transfer.py
 # @Software: PyCharm
-######################################################################################
-#                                                                                    #
-#                                   数据库备份管理                                        #
-#                                                                                    #
-######################################################################################
 
 import json
 import tornado.web
@@ -22,41 +17,39 @@ from   web.utils.basehandler import basehandler
 class transferquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./transfer_query.html"
-                    )
+        self.render("./transfer_query.html")
 
 class transfer_query(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         transfer_tag   = self.get_argument("transfer_tag")
-        v_list   = query_transfer(transfer_tag)
+        v_list   = await query_transfer(transfer_tag)
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
 class transfer_query_detail(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         transfer_id   = self.get_argument("transfer_id")
-        print('transfer_id=',transfer_id)
-        v_list    = query_transfer_detail(transfer_id)
+        v_list    = await query_transfer_detail(transfer_id)
         v_json    = json.dumps(v_list)
         self.write({"code": 0, "message": v_json})
 
 
 class transferadd(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./transfer_add.html",
-                    sync_server=get_sync_server(),
-                    db_server=get_sync_db_server(),
-                    dm_transfer_type=get_dmm_from_dm('09'),
+                    sync_server = await get_sync_server(),
+                    db_server   = await get_sync_db_server(),
+                    dm_transfer_type = await get_dmm_from_dm('09'),
                     )
 
 class transferadd_save(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         d_transfer = {}
         d_transfer['transfer_tag']         = self.get_argument("transfer_tag")
         d_transfer['task_desc']            = self.get_argument("task_desc")
@@ -74,7 +67,7 @@ class transferadd_save(basehandler):
         d_transfer['batch_size']           = self.get_argument("batch_size")
         d_transfer['api_server']           = self.get_argument("api_server")
         d_transfer['status']               = self.get_argument("status")
-        result=save_transfer(d_transfer)
+        result = await save_transfer(d_transfer)
         self.write({"code": result['code'], "message": result['message']})
 
 class transferchange(basehandler):
@@ -84,13 +77,13 @@ class transferchange(basehandler):
 
 class transferedit(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         transfer_id   = self.get_argument("transferid")
-        d_transfer    = get_transfer_by_transferid(transfer_id)
+        d_transfer    = await get_transfer_by_transferid(transfer_id)
         self.render("./transfer_edit.html",
-                    transfer_server      = get_sync_server(),
-                    dm_transfer_type     = get_dmm_from_dm('09'),
-                    db_server            = get_sync_db_server(),
+                    transfer_server      = await get_sync_server(),
+                    dm_transfer_type     = await get_dmm_from_dm('09'),
+                    db_server            = await get_sync_db_server(),
                     transfer_id          = transfer_id,
                     transfer_tag         = d_transfer['transfer_tag'],
                     transfer_db_type     = d_transfer['transfer_type'],
@@ -112,7 +105,7 @@ class transferedit(basehandler):
 
 class transferedit_save(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_transfer = {}
         d_transfer['transfer_id']     = self.get_argument("transfer_id")
@@ -132,37 +125,37 @@ class transferedit_save(basehandler):
         d_transfer['batch_size']      = self.get_argument("batch_size")
         d_transfer['api_server']      = self.get_argument("api_server")
         d_transfer['status']          = self.get_argument("status")
-        result=upd_transfer(d_transfer)
+        result = await upd_transfer(d_transfer)
         self.write({"code": result['code'], "message": result['message']})
 
 class transferedit_del(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         transfer_id  = self.get_argument("transferid")
-        result=del_transfer(transfer_id)
+        result = await del_transfer(transfer_id)
         self.write({"code": result['code'], "message": result['message']})
 
 class transferlogquery(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         self.render("./sync_log_query.html",
-                    dm_proj_type=get_dmm_from_dm('05'),
-                    dm_sync_ywlx=get_dmm_from_dm('08'),
+                    dm_proj_type = await get_dmm_from_dm('05'),
+                    dm_sync_ywlx = await get_dmm_from_dm('08'),
                     begin_date=current_rq2(),
                     end_date=current_rq2()
                     )
 
 class transfer_log_query(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag    = self.get_argument("sync_tag")
         market_id   = self.get_argument("market_id")
         sync_ywlx   = self.get_argument("sync_ywlx")
         begin_date  = self.get_argument("begin_date")
         end_date    = self.get_argument("end_date")
-        v_list      = query_transfer_log(sync_tag,market_id,sync_ywlx,begin_date,end_date)
+        v_list      = await query_transfer_log(sync_tag,market_id,sync_ywlx,begin_date,end_date)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
@@ -198,13 +191,13 @@ class transferedit_stop(basehandler):
 
 class transferclone(basehandler):
     @tornado.web.authenticated
-    def get(self):
+    async def get(self):
         transfer_id   = self.get_argument("transfer_id")
         d_transfer    = get_transfer_by_transferid(transfer_id)
         self.render("./transfer_clone.html",
-                    transfer_server   = get_sync_server(),
-                    dm_transfer_type  = get_dmm_from_dm('09'),
-                    db_server         = get_sync_db_server(),
+                    transfer_server   = await get_sync_server(),
+                    dm_transfer_type  = await get_dmm_from_dm('09'),
+                    db_server         = await get_sync_db_server(),
                     transfer_id       = transfer_id,
                     transfer_tag      = d_transfer['transfer_tag'].split('_v')[0]+'_v'+str(int(d_transfer['transfer_tag'].split('_v')[1])+1),
                     transfer_db_type  = d_transfer['transfer_type'],
@@ -227,7 +220,7 @@ class transferclone(basehandler):
 
 class transferclone_save(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_transfer = {}
         d_transfer['transfer_tag']    = self.get_argument("transfer_tag")
@@ -246,7 +239,7 @@ class transferclone_save(basehandler):
         d_transfer['batch_size']      = self.get_argument("batch_size")
         d_transfer['api_server']      = self.get_argument("api_server")
         d_transfer['status']          = self.get_argument("status")
-        result = save_transfer(d_transfer)
+        result = await save_transfer(d_transfer)
         self.write({"code": result['code'], "message": result['message']})
 
 class transferlogquery(basehandler):
@@ -259,12 +252,12 @@ class transferlogquery(basehandler):
 
 class transfer_log_query(basehandler):
     @tornado.web.authenticated
-    def post(self):
+    async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         transfer_tag    = self.get_argument("transfer_tag")
         begin_date      = self.get_argument("begin_date")
         end_date        = self.get_argument("end_date")
         task_status     = self.get_argument("task_status")
-        v_list          = query_transfer_log(transfer_tag,begin_date,end_date,task_status)
+        v_list          = await query_transfer_log(transfer_tag,begin_date,end_date,task_status)
         v_json          = json.dumps(v_list)
         self.write(v_json)

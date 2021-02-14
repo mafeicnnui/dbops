@@ -5,7 +5,6 @@
 # @File : initialize.py
 # @Software: PyCharm
 
-
 import json
 import tornado.web
 import threading
@@ -25,21 +24,20 @@ from web.utils.basehandler     import basehandler
 from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common          import DateEncoder
 
-
 class sqlquery(basehandler):
    @tornado.web.authenticated
    async def get(self):
-       logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       self.render("./sql_query.html", dss= await get_dss_sql_query(logon_name))
+       name = str(self.get_secure_cookie("username"), encoding="utf-8")
+       self.render("./sql_query.html", dss= await get_dss_sql_query(name))
 
 class sql_query(basehandler):
    @tornado.web.authenticated
-   def post(self):
+   async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        dbid   = self.get_argument("dbid")
        sql    = self.get_argument("sql")
        curdb  = self.get_argument("cur_db")
-       result = exe_query(dbid,sql,curdb)
+       result = await exe_query(dbid,sql,curdb)
        v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
        v_json = json.dumps(v_dict)
        self.write(v_json)
@@ -47,9 +45,9 @@ class sql_query(basehandler):
 class sqlrelease(basehandler):
     @tornado.web.authenticated
     async def get(self):
-       logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
+       name = str(self.get_secure_cookie("username"), encoding="utf-8")
        self.render("./sql_release.html",
-                   dss    = await get_dss_sql_release(logon_name),
+                   dss    = await get_dss_sql_release(name),
                    vers   = await get_dmm_from_dm('12'),
                    orders = await get_dmm_from_dm('13'),
                    )
@@ -73,8 +71,8 @@ class sql_check(basehandler):
    @tornado.web.authenticated
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       user       = await get_user_by_loginame(logon_name)
+       name       = str(self.get_secure_cookie("username"), encoding="utf-8")
+       user       = await get_user_by_loginame(name)
        dbid       = self.get_argument("dbid")
        cdb        = self.get_argument("cur_db")
        sql        = self.get_argument("sql")
@@ -87,51 +85,47 @@ class sql_format(basehandler):
    @tornado.web.authenticated
    def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       sql        = self.get_argument("sql")
-       result     = format_sql(sql)
-       self.write({"code": result['code'], "message": result['message']})
+       sql   = self.get_argument("sql")
+       res   = format_sql(sql)
+       self.write({"code": res['code'], "message": res['message']})
 
 
 class sql_check_result(basehandler):
    @tornado.web.authenticated
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       user   = await get_user_by_loginame(logon_name)
-       dbid   = self.get_argument("dbid")
-       sql    = self.get_argument("sql")
-       curdb  = self.get_argument("cur_db")
-       v_list = query_check_result(user)
+       name = str(self.get_secure_cookie("username"), encoding="utf-8")
+       user   = await get_user_by_loginame(name)
+       v_list = await query_check_result(user)
        v_dict = {"data": v_list}
        v_json = json.dumps(v_dict)
        self.write(v_json)
 
-
 class sqlaudit(basehandler):
    @tornado.web.authenticated
    async def get(self):
-       logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
+       name = str(self.get_secure_cookie("username"), encoding="utf-8")
        self.render("./sql_audit.html",
-                   audit_dss = await get_dss_sql_audit(logon_name),
+                   audit_dss = await get_dss_sql_audit(name),
                    vers = await get_dmm_from_dm('12'))
 
 class sql_audit(basehandler):
    @tornado.web.authenticated
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       username = str(self.get_secure_cookie("username"), encoding="utf-8")
+       name     = str(self.get_secure_cookie("username"), encoding="utf-8")
        sqlid    = self.get_argument("sqlid")
        status   = self.get_argument("status")
        message  = self.get_argument("message")
-       result   = await upd_sql(sqlid,username,status,message)
+       result   = await upd_sql(sqlid,name,status,message)
        self.write({"code": result['code'], "message": result['message']})
 
 class sqlrun(basehandler):
    @tornado.web.authenticated
    async def get(self):
-       logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
+       name = str(self.get_secure_cookie("username"), encoding="utf-8")
        self.render("./sql_run.html",
-                   run_dss = await get_dss_sql_run(logon_name),
+                   run_dss = await get_dss_sql_run(name),
                    vers = await get_dmm_from_dm('12'))
 
 
@@ -142,8 +136,8 @@ class sql_run(basehandler):
        dbid    = self.get_argument("dbid")
        db_name = self.get_argument("db_name")
        sql_id  = self.get_argument("sql_id")
-       username = str(self.get_secure_cookie("username"), encoding="utf-8")
-       t = threading.Thread(target=exe_sql(dbid,db_name,sql_id,username))
+       name    = str(self.get_secure_cookie("username"), encoding="utf-8")
+       t = threading.Thread(target=exe_sql(dbid,db_name,sql_id,name))
        t.start()
        self.write({"code": 'threading', "message": ''})
 
@@ -282,10 +276,10 @@ class get_tab_stru(basehandler):
 class orderquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
+        user_name = str(self.get_secure_cookie("username"), encoding="utf-8")
         userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
         self.render("./order_query.html",
-                    order_dss     = await get_dss_order(logon_name),
+                    order_dss     = await get_dss_order(user_name),
                     vers          = await get_dmm_from_dm('12'),
                     order_types   = await get_dmm_from_dm('17'),
                     order_handles = await get_users_from_proj(userid),
@@ -322,7 +316,6 @@ class wtd_detail(basehandler):
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
-
 class get_order_no(basehandler):
     @tornado.web.authenticated
     async def post(self):
@@ -333,10 +326,9 @@ class get_order_no(basehandler):
 class get_order_env(basehandler):
     @tornado.web.authenticated
     async def post(self):
-        logon_name = str(self.get_secure_cookie("username"), encoding="utf-8")
-        result     = await get_dss_order(logon_name)
+        name    = str(self.get_secure_cookie("username"), encoding="utf-8")
+        result  = await get_dss_order(name)
         self.write({"message": result})
-
 
 class get_order_type(basehandler):
     @tornado.web.authenticated

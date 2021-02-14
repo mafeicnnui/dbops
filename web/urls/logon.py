@@ -8,7 +8,7 @@
 from web.services.logon  import index,main,platform,easylife,logon,logout,logon_check,get_tree,get_time,get_verify,error,lock,heartbeat
 from web.services.logon  import unlock,lock_status,forget_password,forget_password_check_user,forget_password_check_auth,forget_password_check_pass
 
-# 功能：主页面API
+# 功能：主页面
 logon = [
         (r"/login",                          logon),
         (r"/unlock",                         unlock),

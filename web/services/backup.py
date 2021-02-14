@@ -5,7 +5,6 @@
 # @File : ds.py
 # @Software: PyCharm
 
-
 import json
 import tornado.web
 from   web.model.t_backup    import query_backup,query_backup_case,save_backup,get_backup_by_backupid,upd_backup,del_backup,query_backup_log,query_backup_log_detail
@@ -41,7 +40,6 @@ class backup_case(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-
 class backupadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
@@ -71,7 +69,6 @@ class backupadd_save(basehandler):
         d_backup['api_server']      = self.get_argument("api_server")
         d_backup['task_desc']       = self.get_argument("task_desc")
         d_backup['status']          = self.get_argument("status")
-        print(d_backup)
         result = await save_backup(d_backup)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -148,8 +145,7 @@ class backuplogquery(basehandler):
         self.render("./backup_log_query.html",
                     dm_env_type = await get_dmm_from_dm('03'),
                     begin_date = current_rq3(-1),
-                    end_date = current_rq2()
-                    )
+                    end_date = current_rq2())
 
 class backup_log_query(basehandler):
     @tornado.web.authenticated
@@ -163,7 +159,6 @@ class backup_log_query(basehandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
-
 class backup_log_query_detail(basehandler):
     @tornado.web.authenticated
     async def post(self):
@@ -173,7 +168,6 @@ class backup_log_query_detail(basehandler):
         v_list      = await query_backup_log_detail(tagname,backup_date)
         v_json      = json.dumps(v_list)
         self.write(v_json)
-
 
 class backuploganalyze(basehandler):
     @tornado.web.authenticated
@@ -203,7 +197,6 @@ class backup_log_analyze(basehandler):
         v_json = json.dumps(d_list)
         self.write(v_json)
 
-
 class get_backup_tasks(basehandler):
     @tornado.web.authenticated
     async def post(self):
@@ -211,8 +204,7 @@ class get_backup_tasks(basehandler):
         db_env  = self.get_argument("db_env")
         db_type = self.get_argument("db_type")
         d_list  = {}
-        v_list  = await get_db_backup_tags_by_env_type(db_env,db_type)
-        d_list['data'] = v_list
+        d_list['data'] = await get_db_backup_tags_by_env_type(db_env,db_type)
         v_json  = json.dumps(d_list)
         self.write(v_json)
 

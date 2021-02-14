@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
+# @func : menu api
 # @Software: PyCharm
 
 from web.services.menu import menuquery,menu_query,menuadd,menuadd_save,menuchange,menuedit,menuedit_save,menuedit_del
 
-# 功能：菜单管理API
 menu = [
         (r"/menu/query", menuquery),
         (r"/menu/_query", menu_query),

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
-# @File : logon.py.py
+# @Author : ma.fei
+# @File : bigdata.py.py
 # @Software: PyCharm
 
 from web.services.sync_bigdata import syncadd_bigdata,syncadd_bigdata_save,syncbigdataquery,sync_bigdata_query,sync_bigdata_query_detail,sync_bigdata_query_dataxTemplete
@@ -10,7 +10,6 @@ from web.services.sync_bigdata import sync_bigdata_downloads_dataxTemplete,syncc
 from web.services.sync_bigdata import syncedit_pushall_bigdata,syncedit_run_bigdata,syncedit_stop_bigdata,syncclone_bigdata,syncclone_save_bigdata,syncloganalyze_bigdata,sync_log_analyze_bigdata,get_bigdata_sync_tasks
 from web.services.sync_bigdata import sync_bigdata_query_es_dataxTemplete,sync_bigdata_downloads_es_dataxTemplete
 
-# 功能：大数据管理API
 bigdata = [
         (r"/bigdata/add", syncadd_bigdata),
         (r"/bigdata/add/save", syncadd_bigdata_save),

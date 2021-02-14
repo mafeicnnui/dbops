@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
 # @Software: PyCharm
 
@@ -11,7 +11,6 @@ from web.services.db_inst      import dbinstparaquery,dbinstpara_query,dbinstpar
 from web.services.db_user      import dbuserquery,db_user_query,db_user_save,db_user_update,db_user_delete,db_user_sql,db_user_dbs,db_user_info,db_user_query_by_id
 from web.services.db_config    import dbinstcfgquery,db_inst_cfg_query,db_inst_cfg_update
 
-# 功能： 功能：数据库管理
 inst = [
         # 功能：数据库管理-新增实例API
         (r"/db/inst/crt/query", dbinstcrtquery),

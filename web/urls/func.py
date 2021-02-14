@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
-# @File : logon.py.py
+# @Author : ma.fei
+# @File : func.py
 # @Software: PyCharm
 
 from web.services.func         import funcquery,func_query,funcadd,funcadd_save,funcchange,funcedit,funcedit_save,funcedit_del
 
-# 功能：功能管理API
 func = [
         (r"/func/query", funcquery),
         (r"/func/_query", func_query),

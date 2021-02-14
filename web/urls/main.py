@@ -10,7 +10,7 @@ from web.services.sync         import get_sync_park,get_sync_park_real_time,get_
 from web.services.sync         import get_sync_flow_device,get_sync_park_charge,get_sync_bi,sync_case,sync_case_log
 from web.services.sync         import db_active_num,db_slow_num,sys_stats_num,sys_stats_idx
 
-# 功能：主页面API
+# 功能：主页面
 main = [
         (r"/backup_case", backup_case),
         (r"/sync_case", sync_case),

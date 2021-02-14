@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time : 2020/12/5 12:33
-# @Author : 马飞
+# @Author : ma.fei
 # @File : logon.py.py
 # @Software: PyCharm
 
 from web.services.backup       import backupquery,backup_query,backupadd,backupadd_save,backupchange,backupedit,backupedit_save,backupedit_del,backuplogquery
 from web.services.backup       import backup_log_query,backup_log_query_detail,backupedit_push,backupedit_run,backupedit_stop,backuploganalyze,backup_log_analyze,get_backup_tasks
 
-# 功能：数据库备份API
 backup = [
         (r"/backup/query", backupquery),
         (r"/backup/_query", backup_query),
