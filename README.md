@@ -90,7 +90,11 @@
 
 3.3 运行容器
 
-    docker run --name easebase -p 8080:8080 -v /home/dbops/config.json:/opt/dbops/config/config.json:ro  -d mafeicnnui/dbops:2.0
+    docker run \
+       --name easebase \
+       -p 8080:8080 \
+       -v /home/dbops/config.json:/opt/dbops/config/config.json:ro \
+       -d mafeicnnui/dbops:2.0
     
 3.4 访问 easebase
     
