@@ -1,6 +1,6 @@
 一、概述  
 
-   Easebase 数据库自动化运维平台是基本python3.6开发，后端使用tornado框架，前端使用bootstrap框架。  
+   Easebase 数据库自动化运维平台,基于python3.6+tornado+bootstrap开发 
    
    说明：该平台依赖dbapi平台接口服务，需要在部署后再部署dbapi服务。  
 
@@ -29,7 +29,7 @@
     
 2.3  数据库连接配置
 
-    编辑：./config/config.json 文件：
+    vi /config/config.json 
     {
         "db_ip"        : "10.2.39.17",
         "db_port"      : "23306",
@@ -41,53 +41,58 @@
         
 2.5 数据库初始化
     
-      结构：devops.sql  
-      数据：devops_init.sql
-    
+     puppet.sql       
 
 三、停启服务
 
 3.1 启动服务  
 
-    cd dbops
-    # 通过yum 安装python3
-    ./start.sh 
-    
-    # 自定义安装 python3情况
-    ./start_env.sh   
+    start.sh 
+
 
 3.2 重启服务  
 
-   cd dbops
-   ./restart.sh
+    restart.sh
+    
+3.4 配置nginx  
+
+    详见 /dbops/doc/conf/nginx.conf
 
 
 3.3 停止服务  
 
-   cd dbops
-   ./stop.sh
+    stop.sh
 
 3.4 访问devops  
     
-    http://localhost:81
+    http://IP:81
     user:admin/admin
 
 三、docker部署 
 
-3.1 打镜像
+3.1 获取镜像
 
-    FROM python:3.6
-    ADD req.txt /opt
-    ADD dbops.tar /opt/
-    RUN /usr/local/bin/python -m pip install --upgrade pip && pip3 install -r /opt/req.txt -i https://pypi.douban.com/simple && chmod a+x /opt/dbops/*.sh
-    WORKDIR /opt/dbops
-    ENTRYPOINT ["/opt/dbops/start.sh"]
+    docker pull mafeicnnui/dbops:2.0
 
-3.2 构建镜像
+3.2 配置数据源
 
-    docker build -t dbops:v1 .
+    mkdir /home/dbops
+    vi config.json 
+    {
+        "db_ip"        : "192.168.1.100”,
+        "db_port"      : "3306",
+        "db_user"      : "puppet",
+        "db_pass"      : "Abcd@1234",
+        "db_service"   : "puppet",
+        "db_charset"   : "utf8"
+    }
 
 
-3.2 运行容器
+3.3 运行容器
 
-    docker run dbops:v1
+    docker run --name easebase -p 8080:8080 -v /home/dbops/config.json:/opt/dbops/config/config.json:ro  -d mafeicnnui/dbops:2.0
+    
+3.4 访问 easebase
+    
+    http://IP:88080
+    user:admin/mf#
