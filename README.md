@@ -94,5 +94,5 @@
     
 3.4 访问 easebase
     
-    http://IP:88080
-    user:admin/mf#
+    http://IP:8080
+    user:admin/admin
