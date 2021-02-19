@@ -31,8 +31,8 @@
 
     vi /config/config.json 
     {
-        "db_ip"        : "10.2.39.17",
-        "db_port"      : "23306",
+        "db_ip"        : "192.168.1.100",
+        "db_port"      : "3306",
         "db_user"      : "puppet",
         "db_pass"      : "12345678",
         "db_service"   : "puppet",
