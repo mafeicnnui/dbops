@@ -14,6 +14,12 @@ def read_json(file):
          cfg = json.loads(f.read())
     return cfg
 
+def capital_to_lower(dict_info):
+    new_dict = {}
+    for i, j in dict_info.items():
+        new_dict[i.lower()] = j
+    return new_dict
+
 db = read_json('./config/config.json')
 
 class async_processer:
@@ -94,7 +100,7 @@ class async_processer:
                     v_list = []
                     rs = await cur.fetchall()
                     for r in rs:
-                        v_list.append(r)
+                        v_list.append(capital_to_lower(r))
         return v_list
 
     async def query_dict_list_by_ds(p_ds, p_sql):
@@ -106,7 +112,7 @@ class async_processer:
                     v_list = []
                     rs = await cur.fetchall()
                     for r in rs:
-                        v_list.append(r)
+                        v_list.append(capital_to_lower(r))
         return v_list
 
     async def query_dict_one(p_sql):
@@ -116,7 +122,7 @@ class async_processer:
                 async with conn.cursor(DictCursor) as cur:
                     await cur.execute(p_sql)
                     rs = await cur.fetchone()
-        return rs
+        return capital_to_lower(rs)
 
     async def query_dict_one_by_ds(p_ds,p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']), user=p_ds['user'], password=p_ds['password'],
@@ -125,4 +131,4 @@ class async_processer:
                 async with conn.cursor(DictCursor) as cur:
                     await cur.execute(p_sql)
                     rs = await cur.fetchone()
-        return rs
+        return capital_to_lower(rs)
