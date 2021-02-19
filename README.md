@@ -38,10 +38,11 @@
         "db_service"   : "puppet",
         "db_charset"   : "utf8"
     }
+    
         
 2.5 数据库初始化
     
-     puppet.sql       
+     mysql -upuppet -p12345678 -h'192.168.1.1' <puppet.sql
 
 三、停启服务
 
