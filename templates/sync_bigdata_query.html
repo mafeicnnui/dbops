@@ -12,7 +12,6 @@
     <link   href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css"  >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext/language_tools.js')}}"></script>
-
     <style>
         #example{
             width: 100% !important;
@@ -548,8 +547,6 @@
                       scrollX    :true,
                       scrollCollapse: true,
                       paging:     false,
-                      // iDisplayLength: 15,
-                      //bAutoWidth: true,
                       data: dataSet,
                       columns: [
                         { "title": "标识符"},
@@ -572,8 +569,6 @@
                                   '<input class="btn btn-xs btn-primary"  type="button"  value="预览" onclick="showTemplete(\''+p_val+'\');"/>' +'&nbsp;'+
                                   '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloads(\''+p_val+'\');"/>';
                                return msg;
-                               // return  '<button class="btn btn-xs waves-effect waves-light"  onclick=isSelect("'+p_val+'")><i class="ion-skip-forward"></i></button>'
-
                             }
                         },
                       ],
@@ -605,12 +600,6 @@
                      });
                   },
                   error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
                     if (jqXHR.status==403){
                         swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
                         setTimeout(" window.location.href='/login'",3000);
@@ -654,7 +643,6 @@
             $('#es_index_name').attr("readonly","readonly");
             $('#es_type_name').attr("readonly","readonly");
 
-
             $('#sync_tag').attr("value",obj[0]);
             $('#sync_server').attr("value",obj[1]);
             $('#sour_db_server').attr("value",obj[2]);
@@ -667,7 +655,6 @@
                   value=sele_sour_tab_cols_arr[i];
                   $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+value+"</option>");
             }
-            //$('#sele_sour_tab_cols').attr("value",obj[5]);
             $('#sour_incr_col').attr("value",obj[6]);
             $('#desc_db_server').attr("value",obj[7]);
             $('#sync_ywlx2').attr("value",obj[8]);
@@ -707,12 +694,6 @@
                        });
                   },
                   error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
                         if (jqXHR.status==403){
                             swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
                             setTimeout(" window.location.href='/login'",3000);
@@ -722,8 +703,7 @@
                             swal("系统不可用,请稍后重试!", "", "error")
                         }
                     }
-             });
-
+             })
 
         }
 
@@ -742,9 +722,8 @@
                       console.log('message=',dataSet.message,'code=',dataSet.code);
                       res = dataSet.message
                   }
-             });
+             })
 
-            console.log('res=',res);
             var  obj = JSON.parse(res);
             if (obj[25] == '5') {
                 console.log('hbase_templete');
@@ -883,12 +862,6 @@
                       link[0].click();
                   },
                   error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
                     if (jqXHR.status==403){
                         swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
                         setTimeout(" window.location.href='/login'",3000);
