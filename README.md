@@ -99,5 +99,5 @@
     
 3.4 访问 easebase
     
-    http://IP:8080
+    http://IP:8081
     user:admin/admin
