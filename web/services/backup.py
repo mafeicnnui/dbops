@@ -210,7 +210,7 @@ class get_backup_tasks(basehandler):
 
 class backupedit_push(basehandler):
     @tornado.web.authenticated
-    async def post(self):
+    def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
         api    = self.get_argument("api")
@@ -220,7 +220,7 @@ class backupedit_push(basehandler):
 
 class backupedit_run(basehandler):
     @tornado.web.authenticated
-    async def post(self):
+    def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
         api    = self.get_argument("api")
@@ -230,7 +230,7 @@ class backupedit_run(basehandler):
 
 class backupedit_stop(basehandler):
     @tornado.web.authenticated
-    async def post(self):
+    def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
         api    = self.get_argument("api")
