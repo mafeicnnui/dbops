@@ -214,7 +214,7 @@ class backupedit_push(basehandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
         api    = self.get_argument("api")
-        v_list = await push_backup_task(tag,api)
+        v_list = push_backup_task(tag,api)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -224,7 +224,7 @@ class backupedit_run(basehandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
         api    = self.get_argument("api")
-        v_list = await run_backup_task(tag,api)
+        v_list = run_backup_task(tag,api)
         v_json = json.dumps(v_list)
         self.write(json.loads(v_json))
 
@@ -234,6 +234,6 @@ class backupedit_stop(basehandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
         api    = self.get_argument("api")
-        v_list = await stop_backup_task(tag,api)
+        v_list = stop_backup_task(tag,api)
         v_json = json.dumps(v_list)
         self.write(v_json)
