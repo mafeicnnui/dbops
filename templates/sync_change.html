@@ -3,11 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>同步维护</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <style>
         #example{
             width: 100% !important;
@@ -136,18 +131,7 @@
       </div>
     </div><!-- /.modal -->
 
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
     <script>
-
         $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
                 $("#query_btn").click();
@@ -361,13 +345,14 @@
                                });
                           },
                           success: function (dataSet) {
-                              if (dataSet['code']== 200) {
-                                     swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
-                                     $('#ace-editor').html(dataSet['msg']['crontab'])
-                                     $('.modal').on('show.bs.modal', centerModals);
-                                     $(window).on('resize', centerModals);
-                                     $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                                     $("#query_btn").click();
+                              console.log('dataSet=',dataSet);
+                              if (dataSet['code']== '200') {
+                                  swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
+                                  $('#ace-editor').html(dataSet['msg'])
+                                  $('.modal').on('show.bs.modal', centerModals);
+                                  $(window).on('resize', centerModals);
+                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+                                  $("#query_btn").click();
                               } else {
                                   swal("推送失败!", "任务["+v_desc+"]推送失败!", "error");
                               }

@@ -16,10 +16,7 @@ async def query_archive(sync_tag):
         v_where = v_where + " and a.archive_tag='{0}'\n".format(sync_tag)
     sql = """SELECT  a.id,
                      CONCAT(SUBSTR(a.archive_tag,1,40),'...') AS archive_tag,
-                     a.archive_tag,
-                     a.comments,
-                     b.server_desc,
-                     a.api_server,
+                     a.archive_tag,a.comments,b.server_desc,a.api_server,
                      CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
                 FROM t_db_archive_config a,t_server b 
                 WHERE a.server_id=b.id AND b.status='1' 
@@ -89,16 +86,11 @@ async def save_archive(p_archive):
     if val['code']=='-1':
         return val
     try:
-        sql="""insert into t_db_archive_config(
-                         archive_tag,comments,archive_db_type,
-                         server_id,sour_db_id,sour_schema,
-                         sour_table,archive_time_col,archive_rentition,
-                         rentition_time,rentition_time_type,dest_db_id,
-                         dest_schema,python3_home,script_path,
-                         script_file,batch_size,api_server,
-                         status,if_cover,run_time)
-               values('{0}','{1}','{2}','{3}','{4}','{5}',
-                      '{6}','{7}','{8}','{9}','{10}','{11}',
+        sql="""insert into t_db_archive_config( 
+                  archive_tag,comments,archive_db_type,server_id,sour_db_id,sour_schema,
+                  sour_table,archive_time_col,archive_rentition,rentition_time,rentition_time_type,dest_db_id,
+                  dest_schema,python3_home,script_path,script_file,batch_size,api_server,status,if_cover,run_time)
+               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}',
                       '{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}')
             """.format(p_archive['archive_tag'],p_archive['task_desc'],p_archive['archive_db_type'],
                        p_archive['archive_server'],p_archive['sour_db_server'],p_archive['sour_db_name'],
@@ -164,91 +156,60 @@ async def del_archive(p_archiveid):
         traceback.print_exc()
         return {'code': '-1', 'message': '删除失败!'}
 
+async def get_archive_by_archiveid(p_archiveid):
+    st = """SELECT id,archive_tag,server_id,comments,archive_db_type,sour_db_id,sour_schema,
+                   sour_table,archive_time_col,archive_rentition,rentition_time,rentition_time_type,dest_db_id,dest_schema,script_path,
+                   script_file,python3_home,api_server,status,batch_size,if_cover,run_time
+            FROM t_db_archive_config where id={0}""".format(p_archiveid)
+    return await async_processer.query_dict_one(st)
+
 def check_archive(p_archive):
-    result = {}
 
-    if p_archive["archive_tag"]=="":
-        result['code']='-1'
-        result['message']='归档标识号不能为空！'
-        return result
+    if p_archive["archive_tag"]=='':
+       return {'code':'-1','message':'归档标识号不能为空!'}
 
-    if p_archive["task_desc"] == "":
-        result['code'] = '-1'
-        result['message'] = '任务描述不能为空！'
-        return result
+    if p_archive["task_desc"] == '':
+       return {'code': '-1', 'message': '任务描述不能为空!'}
 
-    if p_archive["archive_server"]=="":
-        result['code']='-1'
-        result['message']='传输服务器不能为空！'
-        return result
+    if p_archive["archive_server"]=='':
+       return {'code': '-1', 'message': '传输服务器不能为空!'}
 
-    if p_archive["sour_db_server"]=="":
-        result['code']='-1'
-        result['message']='源数据库实例不能为空！'
-        return result
+    if p_archive["sour_db_server"]=='':
+       return {'code': '-1', 'message': '源数据库实例不能为空!'}
 
-    if p_archive["sour_db_name"] == "":
-        result['code'] = '-1'
-        result['message'] = '源数据库名不能为空！'
-        return result
+    if p_archive["sour_db_name"] == '':
+       return {'code': '-1', 'message': '源数据库名不能为空!'}
 
-    if p_archive["sour_tab_name"] == "":
-        result['code'] = '-1'
-        result['message'] = '源数据库表名不能为空！'
-        return result
+    if p_archive["sour_tab_name"] == '':
+       return {'code': '-1', 'message': '源数据库表名不能为空!'}
 
     if p_archive['archive_rentition'] == '2':
-        if p_archive["dest_db_server"]=="":
-            result['code']='-1'
-            result['message']='目标数据库实例不能为空！'
-            return result
 
-        if p_archive["dest_db_name"] == "":
-            result['code'] = '-1'
-            result['message'] = '目标数据库名称不能为空！'
-            return result
+        if p_archive["dest_db_server"]=='':
+           return {'code': '-1', 'message': '目标数据库实例不能为空!'}
 
-        if p_archive["batch_size"] == "":
-            result['code'] = '-1'
-            result['message'] = '批大小不能为空！'
-            return result
+        if p_archive["dest_db_name"] == '':
+           return {'code': '-1', 'message': '目标数据库名称不能为空!'}
 
-    if p_archive["python3_home"] == "":
-        result['code'] = '-1'
-        result['message'] = 'PYTHON3主目录不能为空！'
-        return result
+        if p_archive["batch_size"] == '':
+           return {'code': '-1', 'message': '批大小不能为空!'}
 
-    if p_archive["script_base"] == "":
-        result['code'] = '-1'
-        result['message'] = '归档主目录不能为空！'
-        return result
+    if p_archive["python3_home"] == '':
+       return {'code': '-1', 'message': 'PYTHON3主目录不能为空!'}
 
-    if p_archive["script_name"] == "":
-        result['code'] = '-1'
-        result['message'] = '归档脚本名不能为空！'
-        return result
+    if p_archive["script_base"] == '':
+       return {'code': '-1', 'message': '归档主目录不能为空!'}
 
-    if p_archive["api_server"] == "":
-        result['code'] = '-1'
-        result['message'] = 'API服务器不能为空！'
-        return result
+    if p_archive["script_name"] == '':
+        return {'code': '-1', 'message': '归档脚本名不能为空!'}
 
-    if p_archive["status"] == "":
-        result['code'] = '-1'
-        result['message'] = '任务状态不能为空！'
-        return result
+    if p_archive["api_server"] == '':
+        return {'code': '-1', 'message': 'API服务器不能为空!'}
 
-    result['code'] = '0'
-    result['message'] = '验证通过'
-    return result
+    if p_archive["status"] == '':
+        return {'code': '-1', 'message': '任务状态不能为空!'}
 
-async def get_archive_by_archiveid(p_archiveid):
-    sql = """SELECT   id,archive_tag,server_id,comments,archive_db_type,sour_db_id,sour_schema,
-                      sour_table,archive_time_col,archive_rentition,rentition_time,rentition_time_type,dest_db_id,dest_schema,script_path,
-                      script_file,python3_home,api_server,status,batch_size,if_cover,run_time
-             FROM t_db_archive_config where id={0}
-          """.format(p_archiveid)
-    return await async_processer.query_dict_one(sql)
+    return {'code': '-1', 'message': '验证通过!'}
 
 def push_archive_task(p_tag,p_api):
     data = {
@@ -266,7 +227,6 @@ def push_archive_task(p_tag,p_api):
         v = v + '<br>'
     jres['msg']['crontab'] = v
     return jres
-
 
 def run_archive_task(p_tag,p_api):
     data = {

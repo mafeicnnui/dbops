@@ -137,7 +137,7 @@ async def query_project(p_name,p_userid,is_grants):
 
 async def get_dsid():
     sql="select ifnull(max(id),0)+1 from t_db_source"
-    return await async_processer.query_one(sql)
+    return (await async_processer.query_one(sql))[0]
 
 async def check_ds_repeat(p_ds):
     result = {}

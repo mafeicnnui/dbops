@@ -7,10 +7,11 @@
 
 import json
 import tornado.web
-from   web.model.t_slow      import save_slow,check_slow,query_slow,upd_slow,del_slow,query_slow_by_id,analyze_slow_log,query_slow_log_plan
+from web.model.t_slow import save_slow, check_slow, query_slow, upd_slow, del_slow, query_slow_by_id, analyze_slow_log, \
+    query_slow_log_plan, get_db_by_slow_inst_id, get_user_by_slow_inst_id
 from   web.model.t_slow      import push_slow,query_slow_log_by_id,query_slow_log,get_db_by_inst_id,get_user_by_inst_id,query_slow_log_detail
 from   web.utils.basehandler import basehandler
-from   web.model.t_dmmx      import get_dmm_from_dm,get_inst_names,get_gather_server
+from web.model.t_dmmx        import get_dmm_from_dm, get_inst_names, get_gather_server,get_sync_db_server_by_type
 from   web.utils.common      import current_rq2,current_rq3,current_rq4
 
 class slowquery(basehandler):
@@ -35,8 +36,10 @@ class slowadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
         self.render("./slow_add.html",
-                    dm_inst_names = await get_inst_names(''),
-                    dm_db_server = await get_gather_server())
+                    dm_inst_names   = await get_inst_names(''),
+                    dm_db_server    = await get_gather_server(),
+                    dm_stats_method = await get_dmm_from_dm('37'),
+                    db_server       = (await get_sync_db_server_by_type('0'))['message'],)
 
 class slowadd_save(basehandler):
     @tornado.web.authenticated
@@ -179,6 +182,15 @@ class query_db_by_inst(basehandler):
         v_json   = json.dumps({'data':v_list})
         self.write(v_json)
 
+class query_db_by_slowlog(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        inst_id  = self.get_argument("inst_id")
+        v_list   = await get_db_by_slow_inst_id(inst_id)
+        v_json   = json.dumps({'data':v_list})
+        self.write(v_json)
+
 class query_user_by_inst(basehandler):
     @tornado.web.authenticated
     async def post(self):
@@ -188,6 +200,14 @@ class query_user_by_inst(basehandler):
         v_json  = json.dumps({'data':v_list})
         self.write(v_json)
 
+class query_user_by_slowlog(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        inst_id = self.get_argument("inst_id")
+        v_list  = await get_user_by_slow_inst_id(inst_id)
+        v_json  = json.dumps({'data':v_list})
+        self.write(v_json)
 
 class slowloganalyze(basehandler):
     @tornado.web.authenticated

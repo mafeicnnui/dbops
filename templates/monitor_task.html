@@ -827,9 +827,7 @@
                   datatype: "json",
                   async:false,
                   success: function (dataSet) {
-                      console.log(dataSet);
                       if (task_tag.indexOf('gather')!=-1) {
-                          console.log('gather')
                           $('#upd_monitor_task_tab').hide()
                           $('#upd_monitor_task').hide()
                           $('#upd_gather_task_tab').show()

@@ -3,15 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>归档日志查询</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('assets/css/core.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
-
-    <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext/language_tools.js')}}"></script>
@@ -77,7 +68,7 @@
     </div>
 
     <!--详情 -->
-     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
       <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
@@ -97,31 +88,30 @@
     </div>
    </div><!-- /.modal -->
 
-    <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
     <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-
 
     <script>
 
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
+         function showSql(msg){
+             var editor = ace.edit("ace-editor");
+             editor.setShowPrintMargin(false);
+             editor.setFontSize(16);
+             editor.getSession().setUseSoftTabs(true);
+             editor.setReadOnly(true);
+             editor.setValue('')
+             editor.insert(msg)
+             editor.setReadOnly(true)
+             $('#con-close-modal').modal({
+                keyboard: false,
+                backdrop:false
+             });
+        }
 
          $("#task_status").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+             $("#query_btn").click();
+         });
 
-        $("#query_btn").click(function() {
+         $("#query_btn").click(function() {
               $.ajax({
                   url: "/archive/log/_query",
                   type: "post",
@@ -208,26 +198,17 @@
                        });
                  }
              });
-            });
+         });
 
-        $(document).ready(function() {
-            $("#query_btn").click();
-        });
+         $(document).keydown(function(event){
+             if (event.keyCode == 13) { //判断为Enter键
+                 $("#query_btn").click();
+             }
+         });
 
-        function showSql(msg){
-             var editor = ace.edit("ace-editor");
-             editor.setShowPrintMargin(false);
-             editor.setFontSize(16);
-             editor.getSession().setUseSoftTabs(true);
-             editor.setReadOnly(true);
-             editor.setValue('')
-             editor.insert(msg)
-             editor.setReadOnly(true)
-             $('#con-close-modal').modal({
-                keyboard: false,
-                backdrop:false
-             });
-        }
+         $(document).ready(function() {
+             $("#query_btn").click();
+         });
 
    </script>
 </body>

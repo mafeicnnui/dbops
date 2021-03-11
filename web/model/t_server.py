@@ -67,7 +67,7 @@ async def get_server_by_serverid(p_serverid):
                   status,
                   server_desc
            from t_server where id={0}""".format(p_serverid)
-    server = await async_processer.query_one(sql)
+    server = await async_processer.query_dict_one(sql)
     server['server_pass'] = await aes_decrypt(server['server_pass'], server['server_user'])
     return server
 

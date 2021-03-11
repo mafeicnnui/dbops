@@ -278,6 +278,14 @@ async def get_user_by_inst_id(p_inst_id):
     sql  = """SELECT distinct USER FROM mysql.user ORDER BY 1 """
     return await async_processer.query_list_by_ds(pds,sql)
 
+async def get_db_by_slow_inst_id(p_inst_id):
+    sql = """SELECT DISTINCT db FROM `t_slow_detail` WHERE finish_time >= DATE_SUB(NOW(),INTERVAL 3 DAY) and inst_id={} ORDER BY 1""".format(p_inst_id)
+    return await async_processer.query_list(sql)
+
+async def get_user_by_slow_inst_id(p_inst_id):
+    sql  = """SELECT DISTINCT USER FROM `t_slow_detail` WHERE finish_time >= DATE_SUB(NOW(),INTERVAL 3 DAY) and inst_id={} ORDER BY 1 """.format(p_inst_id)
+    return await async_processer.query_list(sql)
+
 
 async def analyze_slow_log(p_inst_id,p_db_name,p_db_user,p_db_host,p_begin_date,p_end_date):
     vv  = ''

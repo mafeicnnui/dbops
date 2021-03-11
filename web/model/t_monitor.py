@@ -249,7 +249,7 @@ async def get_templetes_by_templete_id(p_templeteid):
 
 async def get_monitor_task_by_tag(p_tag):
     sql = """SELECT  * FROM t_monitor_task where task_tag='{0}'""".format(p_tag)
-    return (await async_processer.query_one(sql))[0]
+    return (await async_processer.query_dict_one(sql))
 
 async def query_task(p_task_tag):
     v_where=' '

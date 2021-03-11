@@ -76,8 +76,8 @@ class backupchange(basehandler):
     @tornado.web.authenticated
     async def get(self):
         self.render("./backup_change.html",
-                    dm_env_type  = await get_dmm_from_dm('03'),
-                    dm_db_type   = await get_dmm_from_dm('02'))
+                    dm_env_type=await get_dmm_from_dm('03'),
+                    dm_db_type=await get_dmm_from_dm('02'))
 
 class backupedit(basehandler):
     @tornado.web.authenticated

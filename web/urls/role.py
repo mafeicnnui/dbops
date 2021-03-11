@@ -5,7 +5,7 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.role         import rolequery,roleadd,roleadd_save,role_query,rolechange,roleedit,roleedit_save,roleedit_del
+from web.services.role  import rolequery,roleadd,roleadd_save,role_query,rolechange,roleedit,roleedit_save,roleedit_del
 
 # 功能：角色管理API
 role = [

@@ -13,18 +13,14 @@ from web.utils.mysql_async import async_processer
 async def query_role(p_name):
     if p_name == "":
         sql = """select id,name,
-                     case status when '1' then '是'
-                                 when '0' then '否'
-                     end  status,
+                     case status when '1' then '是' when '0' then '否' end  status,
                      creator,date_format(creation_date,'%Y-%m-%d')    creation_date,
                      updator,date_format(last_update_date,'%Y-%m-%d') last_update_date 
                  from t_role
                  order by name""".format(p_name)
     else:
         sql = """select id,name,
-                     case status when '1' then '是'
-                                 when '0' then '否'
-                     end  status,
+                     case status when '1' then '是' when '0' then '否' end  status,
                      creator,date_format(creation_date,'%Y-%m-%d')    creation_date,
                      updator,date_format(last_update_date,'%Y-%m-%d') last_update_date 
                  from t_role 

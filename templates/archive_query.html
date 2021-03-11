@@ -3,11 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>归档查询</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
         #example{
             width: 100% !important;
@@ -286,21 +281,82 @@
     </div>
    </div>
 
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-
    <script>
 
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
+        function set_attr(data){
+            var  obj = JSON.parse(data);
+            $('#archive_tag').attr("readonly","readonly");
+            $('#archive_tag').attr("value",obj['archive_tag']);
+
+            $('#task_desc').attr("readonly","readonly");
+            $('#task_desc').attr("value",obj['comments']);
+
+            $('#archive_server').attr("readonly","readonly");
+            $('#archive_server').attr("value",obj['server_desc']);
+
+            $('#archive_db_type').attr("readonly","readonly");
+            $('#archive_db_type').attr("value",obj['db_type']);
+
+            $('#sour_db_server').attr("readonly","readonly");
+            $('#sour_db_server').attr("value",obj['archive_db_sour']);
+
+            $('#sour_tab_name').attr("readonly","readonly");
+            $('#sour_tab_name').attr("value",obj['sour_table']);
+
+            $('#archive_time_col').attr("readonly","readonly");
+            $('#archive_time_col').attr("value",obj['archive_time_col']);
+
+            $('#archive_rentition').attr("readonly","readonly");
+            $('#archive_rentition').attr("value",obj['archive_rentition']);
+
+            $('#rentition_time').attr("readonly","readonly");
+            $('#rentition_time').attr("value",obj['rentition_time']);
+
+            $('#rentition_time_type').attr("readonly","readonly");
+            $('#rentition_time_type').attr("value",obj['rentition_time_type']);
+
+            $('#dest_db_server').attr("readonly","readonly");
+            $('#dest_db_server').attr("value",obj['archive_db_dest']);
+
+            $('#dest_db_name').attr("readonly","readonly");
+            $('#dest_db_name').attr("value",obj['dest_schema']);
+
+            $('#python3_home').attr("readonly","readonly");
+            $('#python3_home').attr("value",obj['python3_home']);
+
+            $('#script_base').attr("readonly","readonly");
+            $('#script_base').attr("value",obj['script_path']);
+
+            $('#script_name').attr("readonly","readonly");
+            $('#script_name').attr("value",obj['script_file']);
+
+            $('#batch_size').attr("readonly","readonly");
+            $('#batch_size').attr("value",obj['batch_size']);
+
+            $('#api_server').attr("readonly","readonly");
+            $('#api_server').attr("value",obj['api_server']);
+
+            $('#status').attr("readonly","readonly");
+            $('#status').attr("value",obj['status']);
+        }
+
+        function showdetail(v) {
+            $.ajax({
+                  url: "/archive/_query/detail",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      archive_id: v
+                  },
+                  success: function (dataSet) {
+                      set_attr(dataSet.message)
+                      $('#con-close-modal').modal({
+                          keyboard: false,
+                          backdrop:false
+                      });
+                  }
+             })
+        }
 
         $("#query_btn").click(function() {
               $.ajax({
@@ -367,13 +423,7 @@
                              }
                          });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -384,89 +434,17 @@
                     }
                 }
              });
-            });
+        });
+
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) {
+                $("#query_btn").click();
+            }
+        });
 
         $(document).ready(function() {
             $("#query_btn").click();
         });
-
-       function set_attr(data){
-            var  obj = JSON.parse(data);
-            console.log('obj=',obj)
-            $('#archive_tag').attr("readonly","readonly");
-            $('#archive_tag').attr("value",obj['archive_tag']);
-
-            $('#task_desc').attr("readonly","readonly");
-            $('#task_desc').attr("value",obj['comments']);
-
-            $('#archive_server').attr("readonly","readonly");
-            $('#archive_server').attr("value",obj['server_desc']);
-
-            $('#archive_db_type').attr("readonly","readonly");
-            $('#archive_db_type').attr("value",obj['db_type']);
-
-            $('#sour_db_server').attr("readonly","readonly");
-            $('#sour_db_server').attr("value",obj['archive_db_sour']);
-
-            $('#sour_tab_name').attr("readonly","readonly");
-            $('#sour_tab_name').attr("value",obj['sour_table']);
-
-            $('#archive_time_col').attr("readonly","readonly");
-            $('#archive_time_col').attr("value",obj['archive_time_col']);
-
-            $('#archive_rentition').attr("readonly","readonly");
-            $('#archive_rentition').attr("value",obj['archive_rentition']);
-
-            $('#rentition_time').attr("readonly","readonly");
-            $('#rentition_time').attr("value",obj['rentition_time']);
-
-            $('#rentition_time_type').attr("readonly","readonly");
-            $('#rentition_time_type').attr("value",obj['rentition_time_type']);
-
-            $('#dest_db_server').attr("readonly","readonly");
-            $('#dest_db_server').attr("value",obj['archive_db_dest']);
-
-            $('#dest_db_name').attr("readonly","readonly");
-            $('#dest_db_name').attr("value",obj['dest_schema']);
-
-            $('#python3_home').attr("readonly","readonly");
-            $('#python3_home').attr("value",obj['python3_home']);
-
-            $('#script_base').attr("readonly","readonly");
-            $('#script_base').attr("value",obj['script_path']);
-
-            $('#script_name').attr("readonly","readonly");
-            $('#script_name').attr("value",obj['script_file']);
-
-            $('#batch_size').attr("readonly","readonly");
-            $('#batch_size').attr("value",obj['batch_size']);
-
-            $('#api_server').attr("readonly","readonly");
-            $('#api_server').attr("value",obj['api_server']);
-
-            $('#status').attr("readonly","readonly");
-            $('#status').attr("value",obj['status']);
-        }
-
-       function showdetail(v) {
-            console.log('showdetail=',v);
-            $.ajax({
-                  url: "/archive/_query/detail",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      archive_id: v
-                  },
-                  success: function (dataSet) {
-                      console.log('message=',dataSet.message,'code=',dataSet.code);
-                      set_attr(dataSet.message)
-                      $('#con-close-modal').modal({
-                          keyboard: false,
-                          backdrop:false
-                      });
-                  }
-             })
-        }
 
    </script>
 </body>

@@ -6,7 +6,6 @@
 # @Software: PyCharm
 
 import json
-
 from  aiomysql import create_pool,DictCursor
 
 def read_json(file):
@@ -23,7 +22,6 @@ def capital_to_lower(dict_info):
 db = read_json('./config/config.json')
 
 class async_processer:
-
     async def query_list(p_sql):
         async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],
                                db=db['db_service'], autocommit=True) as pool:

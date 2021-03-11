@@ -2,18 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <!-- App title -->
     <title>备份维护</title>
-    <!-- DataTables -->
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
-    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-
     <style>
         #example{
             width: 100% !important;
@@ -113,24 +102,22 @@
       </div>
     </div><!-- /.modal -->
 
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
     <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
 
-         function centerModals() {
+        function isSelect() {
+           var rec=0;
+           $("#example tbody tr td input:checked").each( function() {
+              rec=rec+1;
+           });
+
+           if ( rec==1 ){
+              set_button_status(false);
+           } else {
+              set_button_status(true);
+           }
+        }
+
+        function centerModals() {
               $('.modal').each(function(i) {
                 var $clone = $(this).clone().css('display', 'block').appendTo('body');
                 var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
@@ -140,52 +127,30 @@
               });
          }
 
-        $("#tagname").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#push').attr("disabled",true);
-           $('#run').attr("disabled",true);
-           $('#stop').attr("disabled",true);
+        function set_button_status(p_status) {
+           $('#dsupd').attr("disabled",p_status);
+           $('#dsdel').attr("disabled",p_status);
+           $('#push').attr("disabled",p_status);
+           $('#run').attr("disabled",p_status);
+           $('#stop').attr("disabled",p_status);
+        }
+
+        function query_data(){
+           set_button_status(true);
            $("#query_btn").click();
+        }
+
+        $("#tagname").bind("input propertychange",function(){
+            query_data();
         });
 
         $("#db_env").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#push').attr("disabled",true);
-           $('#run').attr("disabled",true);
-           $('#stop').attr("disabled",true);
-           $("#query_btn").click();
+            query_data();
         });
 
         $("#db_type").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#push').attr("disabled",true);
-           $('#run').attr("disabled",true);
-           $('#stop').attr("disabled",true);
-           $("#query_btn").click();
+            query_data();
         });
-
-        function isSelect() {
-           var rec=0;
-           $("#example tbody tr td input:checked").each( function() {
-              rec=rec+1;
-           });
-           if ( rec==1 ){
-              $('#dsupd').attr("disabled",false);
-              $('#dsdel').attr("disabled",false);
-              $('#push').attr("disabled",false);
-              $('#run').attr("disabled",false);
-              $('#stop').attr("disabled",false);
-           } else {
-              $('#dsupd').attr("disabled",true);
-              $('#dsdel').attr("disabled",true);
-              $('#push').attr("disabled",true);
-              $('#run').attr("disabled",true);
-              $('#stop').attr("disabled",true);
-           }
-        }
 
         $("#query_btn").click(function() {
               $.ajax({
@@ -207,25 +172,25 @@
                           scrollY    :false,
                           scrollX    :true,
                           scrollCollapse: true,
-                          paging:     true,
+                          paging: true,
                           iDisplayLength: 16,
                           data: dataSet,
                           columns: [
-                            { "title": "标识符"},
-                            { "title": "任务描述"},
-                            { "title": "标签名" },
-                            { "title": "备份有效期" },
-                            { "title": "运行时间" },
-                            { "title": "备份服务器" },
-                            { "title": "接口服务器"},
-                            { "title": "备份状态"},
-                            { "title": "任务状态"},
-                            {
-                                "title":"选择",
-                                "width": "25px",
-                                "render": function(data,type,row){
-                                     return '<input type="radio" name="userid" onclick="isSelect();" >'; }
-                            },
+                                { "title": "标识符"},
+                                { "title": "任务描述"},
+                                { "title": "标签名" },
+                                { "title": "备份有效期" },
+                                { "title": "运行时间" },
+                                { "title": "备份服务器" },
+                                { "title": "接口服务器"},
+                                { "title": "备份状态"},
+                                { "title": "任务状态"},
+                                {
+                                    "title":"选择",
+                                    "width": "25px",
+                                    "render": function(data,type,row){
+                                         return '<input type="radio" name="userid" onclick="isSelect();" >'; }
+                                },
                           ],
                           "language": {
                                  "search"       : "在表格中搜索:",
@@ -253,19 +218,9 @@
                                  }
                              }
                          });
-                      $('#dsupd').attr("disabled",true);
-                      $('#dsdel').attr("disabled",true);
-                      $('#push').attr("disabled",true);
-                      $('#run').attr("disabled",true);
-                      $('#stop').attr("disabled",true);
+                      set_button_status(true)
                  },
-                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                 error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -306,7 +261,7 @@
                           success: function (dataSet) {
                               if (dataSet['code']== 200) {
                                      swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
-                                     $('#ace-editor').html(dataSet['msg']['crontab'])
+                                     $('#ace-editor').html(dataSet['msg'])
                                      $('.modal').on('show.bs.modal', centerModals);
                                      $(window).on('resize', centerModals);
                                      $('#con-close-modal').modal({ keyboard: false,backdrop:false});
@@ -320,13 +275,7 @@
                               $('#push').attr("disabled",true);
                               $('#run').attr("disabled",true);
                           },
-                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                         error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -349,7 +298,6 @@
                   v_desc = row[1].innerHTML;
                   v_tag  = row[2].innerHTML;
                   v_api  = row[6].innerHTML;
-                  console.log("v_tag=",v_tag)
                   $.ajax({
                           url: "/backup/edit/run",
                           type: "post",
@@ -359,25 +307,14 @@
                               api: v_api
                           },
                           success: function (dataSet) {
-                              console.log(dataSet.code, dataSet.message);
-                              if (dataSet.code=='0') {
-                                     swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
-                                 $("#query_btn").click();
+                              if (dataSet.code== 200) {
+                                  swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
                               } else {
                                   swal("运行失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
                               }
-                              $('#dsupd').attr("disabled",true);
-                              $('#dsdel').attr("disabled",true);
-                              $('#push').attr("disabled",true);
-                              $('#run').attr("disabled",true);
+                              query_data();
                           },
-                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                         error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -400,7 +337,6 @@
                   v_desc = row[1].innerHTML;
                   v_tag  = row[2].innerHTML;
                   v_api  = row[6].innerHTML;
-                  console.log("v_tag=",v_tag)
                   $.ajax({
                           url: "/backup/edit/stop",
                           type: "post",
@@ -410,25 +346,17 @@
                               api: v_api
                           },
                           success: function (dataSet) {
-                              console.log(dataSet.code, dataSet.message);
-                              if (dataSet.code=='0') {
-                                     swal("停止成功!", "任务["+v_desc+"]已运行成功!", "success");
-                                 $("#query_btn").click();
+                              console.log(dataSet);
+                              if (dataSet.code== 200) {
+                                  swal("停止成功!", "任务["+v_desc+"]已运行成功!","success");
+                              } else if (dataSet.code== -2) {
+                                  swal("停止失败!", "任务["+v_desc+"]未运行!", "info");
                               } else {
-                                  swal("停止失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
+                                  swal("停止失败!", "任务["+v_desc+"]停止发生异常!","error");
                               }
-                              $('#dsupd').attr("disabled",true);
-                              $('#dsdel').attr("disabled",true);
-                              $('#push').attr("disabled",true);
-                              $('#run').attr("disabled",true);
+                              query_data();
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
+                          error: function (jqXHR) {
                                 if (jqXHR.status==403){
                                     swal("登陆信息已过期，请重新登陆!", "", "error")
                                     window.location.href='/login'
@@ -461,13 +389,7 @@
                 success: function () {
                    $('#main-container-div').load("/backup/edit?backupid="+backupid);
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -514,13 +436,7 @@
                                     swal("删除失败!", "用户["+backupdesc+"]"+dataSet.message+"!", "error");
                                 }
                             },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
+                            error: function (jqXHR) {
                                 if (jqXHR.status==403){
                                     swal("登陆信息已过期，请重新登陆!", "", "error")
                                     window.location.href='/login'
@@ -538,7 +454,14 @@
             });
         });
 
+        $(document).keydown(function(event){
+           if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+        });
+
         $(document).ready(function() {
+              //timer = setInterval("query_data()",3000);
               $("#query_btn").click();
         });
 

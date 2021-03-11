@@ -7,4 +7,4 @@ do
     ps -ef |grep dbops | grep ${i} | awk '{print $2}' | xargs kill -9
  fi
 done
-echo "Stopping dbops Server...ok"
+

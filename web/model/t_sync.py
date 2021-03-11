@@ -156,7 +156,7 @@ async def query_sync_log_detail(p_tag,p_sync_rqq,p_sync_rqz):
     return await async_processer.query_list(sql)
 
 async def save_sync(p_backup):
-    val=check_sync(p_backup,'add')
+    val = await check_sync(p_backup,'add')
     if val['code']=='-1':
         return val
     try:
@@ -297,7 +297,7 @@ async def del_sync_tab(p_sync):
 
 async def upd_sync(p_sync):
     result={}
-    val = check_sync(p_sync,'upd')
+    val = await check_sync(p_sync,'upd')
     if  val['code'] == '-1':
         return val
     try:
@@ -585,58 +585,37 @@ def push_sync_task(p_tag,p_api):
     }
     url = 'http://{}/push_script_remote_sync'.format(p_api)
     res = requests.post(url, data=data)
-    jres = res.json()
-    v = ''
-    for c in jres['msg']['crontab'].split('\n'):
-        if c.count(p_tag) > 0:
-            v = v + "<span class='warning'>" + c + "</span>"
-        else:
-            v = v + c
-        v = v + '<br>'
-    jres['msg']['crontab'] = v
-    return jres
+    try:
+        jres = res.json()
+        v = ''
+        for c in jres['msg']:
+            if c.count(p_tag) > 0:
+                v = v + "<span class='warning'>" + c + "</span>"
+            else:
+                v = v + c
+            v = v + '<br>'
+        jres['msg'] = v
+        return jres
+    except:
+        traceback.print_exc()
 
 def run_sync_task(p_tag,p_api):
-    try:
-        result = {}
-        v_cmd = "curl -XPOST {0}/run_script_remote_sync -d 'tag={1}'".format(p_api,p_tag)
-        r = os.popen(v_cmd).read()
-        d = json.loads(r)
-        if d['code'] == 200:
-            result['code'] = '0'
-            result['message'] = '执行成功！'
-            return result
-        else:
-            result['code'] = '-1'
-            result['message'] = '{0}!'.format(d['msg'])
-            return result
-    except :
-          traceback.print_exc()
-          result = {}
-          result['code']    = '-1'
-          result['message'] = '执行失败!'
-          return result
+    data = {
+        'tag': p_tag,
+    }
+    url = 'http://{}/run_script_remote_sync'.format(p_api)
+    res = requests.post(url, data=data)
+    jres = res.json()
+    return jres
 
 def stop_sync_task(p_tag,p_api):
-    try:
-        result = {}
-        v_cmd  = "curl -XPOST {0}/stop_script_remote_sync -d 'tag={1}'".format(p_api,p_tag)
-        r = os.popen(v_cmd).read()
-        d = json.loads(r)
-        if d['code'] == 200:
-            result['code'] = '0'
-            result['message'] = '停止成功!'
-            return result
-        else:
-            result['code']    = '-1'
-            result['message'] = '{0}!'.format(d['msg'])
-            return result
-    except :
-         traceback.print_exc()
-         result = {}
-         result['code'] = '-1'
-         result['message'] = '停止失败!'
-         return result
+    data = {
+        'tag': p_tag,
+    }
+    url = 'http://{}/stop_script_remote_sync'.format(p_api)
+    res = requests.post(url, data=data)
+    jres = res.json()
+    return jres
 
 async def query_sync_park():
     sql = """SELECT 

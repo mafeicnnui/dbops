@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>归档变更</title>
-    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <style>
         .modal-lg {
             width:65%;
@@ -402,7 +400,6 @@
           </div>
        </div>
     </form>
-
     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -429,16 +426,7 @@
     </div>
    </div><!-- /.modal -->
 
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-    <!-- Tooltipster js -->
-    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
-    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
-    <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
-    <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
-
     <script>
-
            function set_selected(){
                 document.all['s_archive_tag'].style.color="#ff0000";
                 document.all['s_task_desc'].style.color="#ff0000";
@@ -480,82 +468,7 @@
                 $('#task_desc').val('归档任务['+db_type+'_'+sour_db+'_'+sour_tab+']')
             }
 
-           $("#sour_tab_name").bind("input propertychange",function(){
-               var s=$("#sour_tab_name").val()
-               if (s.indexOf(",") >=0 ) {
-                    $("#sour_tab_where").val('')
-                    $('#sour_tab_where').attr("readonly",true);
-               } else {
-                   $('#sour_tab_where').attr("readonly",false);
-               }
-           });
-
-          $(document).ready(function() {
-             set_selected();
-          });
-
-          $('#return').on('click', function() {
-           $('#main-container-div').load('/archive/change');
-        });
-
-          $("#save").click(function () {
-          console.log(" status:",$('#status').val())
-          $.ajax({
-            url: "/archive/edit/save",
-            type: "post",
-            datatype: "json",
-            data: {
-                    archive_id           : $('#archive_id').val(),
-                    archive_tag          : $('#archive_tag').val(),
-                    task_desc            : $('#task_desc').val(),
-                    archive_server       : $('#archive_server').val(),
-                    archive_db_type      : $('#archive_db_type').val(),
-                    sour_db_server       : $('#sour_db_server').val(),
-                    sour_db_name         : $('#sour_db_name').val(),
-                    sour_tab_name        : $('#sour_tab_name').val(),
-                    archive_time_col     : $('#archive_time_col').val(),
-                    archive_rentition    : $('#archive_rentition').val(),
-                    rentition_time       : $('#rentition_time').val(),
-                    rentition_time_type  : $('#rentition_time_type').val(),
-                    if_cover             : $('#if_cover').val(),
-                    dest_db_server       : $('#dest_db_server').val(),
-                    dest_db_name         : $('#dest_db_name').val(),
-                    python3_home         : $('#python3_home').val(),
-                    script_base          : $('#script_base').val(),
-                    script_name          : $('#script_name').val(),
-                    run_time             : $('#run_time').val(),
-                    batch_size           : $('#batch_size').val(),
-                    api_server           : $('#api_server').val(),
-                    status               : $('#status').val()
-            },
-            success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
-                if (dataSet.code==0) {
-                   swal("变更成功", "", "success")
-                } else {
-                   swal(dataSet.message, "", "error")
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('jqXHR.responseText=',jqXHR.responseText);
-                console.log('jqXHR.status=',jqXHR.status);
-                console.log('jqXHR.readyState=',jqXHR.readyState);
-                console.log('jqXHR.statusText=',jqXHR.statusText);
-                console.log('textStatus=',textStatus);
-                console.log('errorThrown=',errorThrown);
-                if (jqXHR.status==403){
-                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                    window.location.href='/login'
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-            }
-         });
-      });
-
-         function showTabDetail(){
+           function showTabDetail(){
 
             if ($('#sour_db_name').val() =='') {
                 return false
@@ -569,8 +482,7 @@
             $('#tab_stru').text($('#sour_db_name').val())
 
             if ($('#sour_db_name').val()!='') {
-
-                $.ajax({
+                 $.ajax({
                     url: "/get_tab_stru",
                     type: "post",
                     datatype: "json",
@@ -580,250 +492,307 @@
                         tab_name: $('#sour_tab_name').val()
                     },
                     success: function (dataSet) {
-                        console.log('get_tab_stru=', dataSet)
                         $('#example_detail').DataTable({
-                            "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
-                            "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                            destroy: true,
-                            async: true,
-                            scrollY: "350px",
-                            ordering: false,
-                            bAutoWidth: true,
-                            scrollX: true,
-                            paging: false,
-                            iDisplayLength: 10,
-                            data: dataSet,
-                            responsive: false,
-                            columns: [
-                                {"title": "列名"},
-                                {"title": "列描述"},
-                                {"title": "列类型"},
-                                {"title": "是否自增"},
-                                {"title": "是否主键"},
-                                {"title": "是否非空"},
-                            ],
-                            "language": {
-                                "search": "在表格中搜索:",
-                                "sProcessing": "处理中...",
-                                "sLengthMenu": "显示 _MENU_ 项结果",
-                                "sZeroRecords": "没有匹配结果",
-                                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                "sInfoPostFix": "",
-                                "sSearch": "搜索:",
-                                "sUrl": "",
-                                "sEmptyTable": "表中数据为空",
-                                "sLoadingRecords": "载入中...",
-                                "sInfoThousands": ",",
-                                "oPaginate": {
-                                    "sFirst": "首页",
-                                    "sPrevious": "上页",
-                                    "sNext": "下页",
-                                    "sLast": "末页"
-                                },
-                                "oAria": {
-                                    "sSortAscending": ": 以升序排列此列",
-                                    "sSortDescending": ": 以降序排列此列"
+                                "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                                "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                destroy: true,
+                                async: true,
+                                scrollY: "350px",
+                                ordering: false,
+                                bAutoWidth: true,
+                                scrollX: true,
+                                paging: false,
+                                iDisplayLength: 10,
+                                data: dataSet,
+                                responsive: false,
+                                columns: [
+                                    {"title": "列名"},
+                                    {"title": "列描述"},
+                                    {"title": "列类型"},
+                                    {"title": "是否自增"},
+                                    {"title": "是否主键"},
+                                    {"title": "是否非空"},
+                                ],
+                                "language": {
+                                    "search": "在表格中搜索:",
+                                    "sProcessing": "处理中...",
+                                    "sLengthMenu": "显示 _MENU_ 项结果",
+                                    "sZeroRecords": "没有匹配结果",
+                                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                    "sInfoPostFix": "",
+                                    "sSearch": "搜索:",
+                                    "sUrl": "",
+                                    "sEmptyTable": "表中数据为空",
+                                    "sLoadingRecords": "载入中...",
+                                    "sInfoThousands": ",",
+                                    "oPaginate": {
+                                        "sFirst": "首页",
+                                        "sPrevious": "上页",
+                                        "sNext": "下页",
+                                        "sLast": "末页"
+                                    },
+                                    "oAria": {
+                                        "sSortAscending": ": 以升序排列此列",
+                                        "sSortDescending": ": 以降序排列此列"
+                                    }
                                 }
-                            }
-                        });
+                         });
                     }
                 });
             }
         }
 
-         $('#sour_tab_name').change(function() {
-                console.log('sour_tab_name=',$('#sour_tab_name').val());
-                set_archive_tag()
-                if ($('#sour_tab_name').val()!=''){
-                    $.ajax({
-                          url: "/get_incr_col",
-                          type: "post",
-                          datatype: "json",
-                          async:false,
-                          data:{
-                              dbid     : $('#sour_db_server').val(),
-                              db_name  : $('#sour_db_name').val(),
-                              tab_name : $('#sour_tab_name').val()
-                          },
-                          success: function (dataSet) {
-                             console.log(dataSet)
-                             $("#archive_time_col").empty();
-                             $("#archive_time_col").append("<option value=''>......</option>");
-                             for(i=0;i<dataSet['message'].length;i++){
-                                  var val  = dataSet['message'][i][0];
-                                  var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
-                                  $("#archive_time_col").append("<option value='"+val+"'>"+text+"</option>");
-                             }
-                          }
-                    });
+           $("#sour_tab_name").bind("input propertychange",function(){
+               var s=$("#sour_tab_name").val()
+               if (s.indexOf(",") >=0 ) {
+                    $("#sour_tab_where").val('')
+                    $('#sour_tab_where').attr("readonly",true);
+               } else {
+                   $('#sour_tab_where').attr("readonly",false);
+               }
+           });
 
-                } else {
-                     $("#sour_incr_col").empty();
-                     $("#sour_incr_col").append("<option value=''>...</option>");
-                }
-            });
-
-         $('#archive_db_type').change(function() {
-                 if ($('#sour_db_server').val()!='...') {
-                     $.ajax({
-                         url: "/ds/get/db/type",
-                         type: "post",
-                         datatype: "json",
-                         async: false,
-                         data: {
-                             db_type: $('#archive_db_type').val(),
-                         },
-                         success: function (dataSet) {
-                             set_archive_tag()
-                             $("#sour_db_server").empty();
-                             $("#dest_db_server").empty();
-                             $("#sour_db_name").empty();
-                             $("#sour_db_server").append("<option value=''>...</option>");
-                             $("#dest_db_server").append("<option value=''>...</option>");
-                             for (i = 0; i < dataSet['message'].length; i++) {
-                                 var val = dataSet['message'][i][0];
-                                 var text = dataSet['message'][i][1];
-                                 $("#sour_db_server").append("<option value='" + val + "'>" + text + "</option>");
-                                 $("#dest_db_server").append("<option value='" + val + "'>" + text + "</option>");
-                             }
-                         }
-                     })
-                 } else {
-                     $("#sour_db_server").empty();
-                     $("#sour_db_name").empty();
-                     $("#dest_db_server").empty();
-                     $("#sour_db_server").append("<option value=''>...</option>");
-                     $("#sour_db_name").append("<option value=''>...</option>");
-                     $("#dest_db_server").append("<option value=''>...</option>");
-                 }
-            });
-
-         $('#sour_db_server').change(function() {
-            console.log('sour_db_server=',$('#sour_db_server').val());
-            if ($('#sour_db_server').val()!=''){
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#sour_db_server').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#sour_db_name").empty();
-                         $("#sour_db_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#sour_db_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                })
-            } else {
-                 $("#sour_db_name").empty();
-            }
+           $('#return').on('click', function() {
+           $('#main-container-div').load('/archive/change');
         });
 
-         $('#dest_db_server').change(function() {
-            console.log('dest_db_server=',$('#dest_db_server').val());
-            if ($('#dest_db_server').val()!=''){
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#dest_db_server').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#dest_db_name").empty();
-                         $("#dest_db_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#dest_db_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                })
-            } else {
-                 $("#dest_db_name").empty();
-            }
-        });
+           $("#save").click(function () {
+              $.ajax({
+                    url: "/archive/edit/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                            archive_id           : $('#archive_id').val(),
+                            archive_tag          : $('#archive_tag').val(),
+                            task_desc            : $('#task_desc').val(),
+                            archive_server       : $('#archive_server').val(),
+                            archive_db_type      : $('#archive_db_type').val(),
+                            sour_db_server       : $('#sour_db_server').val(),
+                            sour_db_name         : $('#sour_db_name').val(),
+                            sour_tab_name        : $('#sour_tab_name').val(),
+                            archive_time_col     : $('#archive_time_col').val(),
+                            archive_rentition    : $('#archive_rentition').val(),
+                            rentition_time       : $('#rentition_time').val(),
+                            rentition_time_type  : $('#rentition_time_type').val(),
+                            if_cover             : $('#if_cover').val(),
+                            dest_db_server       : $('#dest_db_server').val(),
+                            dest_db_name         : $('#dest_db_name').val(),
+                            python3_home         : $('#python3_home').val(),
+                            script_base          : $('#script_base').val(),
+                            script_name          : $('#script_name').val(),
+                            run_time             : $('#run_time').val(),
+                            batch_size           : $('#batch_size').val(),
+                            api_server           : $('#api_server').val(),
+                            status               : $('#status').val()
+                    },
+                    success: function (dataSet) {
+                        console.log(dataSet.code, dataSet.message);
+                        if (dataSet.code==0) {
+                           swal("变更成功", "", "success")
+                        } else {
+                           swal(dataSet.message, "", "error")
+                        }
+                    },
+                    error: function (jqXHR) {
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                    }
+               });
+          });
 
-         $('#sour_db_name').change(function() {
-            console.log('sour_db_server=',$('#sour_db_server').val());
-            console.log('sour_db_name=',$('#sour_db_name').val());
+           $('#sour_tab_name').change(function() {
+                    set_archive_tag()
+                    if ($('#sour_tab_name').val()!=''){
+                        $.ajax({
+                              url: "/get_incr_col",
+                              type: "post",
+                              datatype: "json",
+                              async:false,
+                              data:{
+                                  dbid     : $('#sour_db_server').val(),
+                                  db_name  : $('#sour_db_name').val(),
+                                  tab_name : $('#sour_tab_name').val()
+                              },
+                              success: function (dataSet) {
+                                 console.log(dataSet)
+                                 $("#archive_time_col").empty();
+                                 $("#archive_time_col").append("<option value=''>......</option>");
+                                 for(i=0;i<dataSet['message'].length;i++){
+                                      var val  = dataSet['message'][i][0];
+                                      var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
+                                      $("#archive_time_col").append("<option value='"+val+"'>"+text+"</option>");
+                                 }
+                              }
+                        });
 
-            $("#sour_tab_name").empty();
-            $("#sour_tab_cols").empty();
-            $("#sele_sour_tab_cols").empty();
-            set_archive_tag()
-
-            if ($('#sour_db_name').val()!=''){
-                $.ajax({
-                      url: "/get_tables",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid    : $('#sour_db_server').val(),
-                          db_name : $('#sour_db_name').val(),
-                      },
-                      success: function (dataSet) {
-                         console.log(dataSet)
-                         $("#sour_tab_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#sour_tab_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
+                    } else {
+                         $("#sour_incr_col").empty();
+                         $("#sour_incr_col").append("<option value=''>...</option>");
+                    }
                 });
-            } else {
-                $("#sour_tab_name").append("<option value=''>......</option>");
-                $("#sour_incr_col").append("<option value=''>......</option>");
-            }
-        });
 
-         $('#sour_tab_name').change(function() {
-                console.log('sour_tab_name=',$('#sour_tab_name').val());
-                set_archive_tag()
-                if ($('#sour_tab_name').val()!=''){
+           $('#archive_db_type').change(function() {
+                     if ($('#sour_db_server').val()!='...') {
+                         $.ajax({
+                             url: "/ds/get/db/type",
+                             type: "post",
+                             datatype: "json",
+                             async: false,
+                             data: {
+                                 db_type: $('#archive_db_type').val(),
+                             },
+                             success: function (dataSet) {
+                                 set_archive_tag()
+                                 $("#sour_db_server").empty();
+                                 $("#dest_db_server").empty();
+                                 $("#sour_db_name").empty();
+                                 $("#sour_db_server").append("<option value=''>...</option>");
+                                 $("#dest_db_server").append("<option value=''>...</option>");
+                                 for (i = 0; i < dataSet['message'].length; i++) {
+                                     var val = dataSet['message'][i][0];
+                                     var text = dataSet['message'][i][1];
+                                     $("#sour_db_server").append("<option value='" + val + "'>" + text + "</option>");
+                                     $("#dest_db_server").append("<option value='" + val + "'>" + text + "</option>");
+                                 }
+                             }
+                         })
+                     } else {
+                         $("#sour_db_server").empty();
+                         $("#sour_db_name").empty();
+                         $("#dest_db_server").empty();
+                         $("#sour_db_server").append("<option value=''>...</option>");
+                         $("#sour_db_name").append("<option value=''>...</option>");
+                         $("#dest_db_server").append("<option value=''>...</option>");
+                     }
+                });
+
+           $('#sour_db_server').change(function() {
+                if ($('#sour_db_server').val()!=''){
                     $.ajax({
-                          url: "/get_incr_col",
+                          url: "/get_database",
                           type: "post",
                           datatype: "json",
                           async:false,
                           data:{
-                              dbid     : $('#sour_db_server').val(),
-                              db_name  : $('#sour_db_name').val(),
-                              tab_name : $('#sour_tab_name').val()
+                              dbid : $('#sour_db_server').val(),
                           },
                           success: function (dataSet) {
-                             console.log(dataSet)
-                             $("#archive_time_col").empty();
-                             $("#archive_time_col").append("<option value=''>......</option>");
+                             $("#sour_db_name").empty();
+                             $("#sour_db_name").append("<option value=''>...</option>");
                              for(i=0;i<dataSet['message'].length;i++){
-                                  var val  = dataSet['message'][i][0];
-                                  var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
-                                  $("#archive_time_col").append("<option value='"+val+"'>"+text+"</option>");
+                                  var val  = dataSet['message'][i];
+                                  var text = dataSet['message'][i];
+                                  $("#sour_db_name").append("<option value='"+val+"'>"+text+"</option>");
                              }
                           }
-                    });
-
+                    })
                 } else {
-                     $("#sour_incr_col").empty();
-                     $("#sour_incr_col").append("<option value=''>...</option>");
+                     $("#sour_db_name").empty();
                 }
             });
 
-        $('#archive_rentition').change(function() {
-            $("#dest_db_server").append("<option value=''>...</option>");
-            $("#dest_db_name").append("<option value=''>...</option>");
-        });
+           $('#dest_db_server').change(function() {
+                if ($('#dest_db_server').val()!=''){
+                    $.ajax({
+                          url: "/get_database",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                              dbid : $('#dest_db_server').val(),
+                          },
+                          success: function (dataSet) {
+                             $("#dest_db_name").empty();
+                             $("#dest_db_name").append("<option value=''>...</option>");
+                             for(i=0;i<dataSet['message'].length;i++){
+                                  var val  = dataSet['message'][i];
+                                  var text = dataSet['message'][i];
+                                  $("#dest_db_name").append("<option value='"+val+"'>"+text+"</option>");
+                             }
+                          }
+                    })
+                } else {
+                     $("#dest_db_name").empty();
+                }
+            });
 
+           $('#sour_db_name').change(function() {
+                $("#sour_tab_name").empty();
+                $("#sour_tab_cols").empty();
+                $("#sele_sour_tab_cols").empty();
+                set_archive_tag()
+
+                if ($('#sour_db_name').val()!=''){
+                    $.ajax({
+                          url: "/get_tables",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                              dbid    : $('#sour_db_server').val(),
+                              db_name : $('#sour_db_name').val(),
+                          },
+                          success: function (dataSet) {
+                             $("#sour_tab_name").append("<option value=''>...</option>");
+                             for(i=0;i<dataSet['message'].length;i++){
+                                  var val  = dataSet['message'][i];
+                                  var text = dataSet['message'][i];
+                                  $("#sour_tab_name").append("<option value='"+val+"'>"+text+"</option>");
+                             }
+                          }
+                    });
+                } else {
+                    $("#sour_tab_name").append("<option value=''>......</option>");
+                    $("#sour_incr_col").append("<option value=''>......</option>");
+                }
+            });
+
+           $('#sour_tab_name').change(function() {
+                    set_archive_tag()
+                    if ($('#sour_tab_name').val()!=''){
+                        $.ajax({
+                              url: "/get_incr_col",
+                              type: "post",
+                              datatype: "json",
+                              async:false,
+                              data:{
+                                  dbid     : $('#sour_db_server').val(),
+                                  db_name  : $('#sour_db_name').val(),
+                                  tab_name : $('#sour_tab_name').val()
+                              },
+                              success: function (dataSet) {
+                                 $("#archive_time_col").empty();
+                                 $("#archive_time_col").append("<option value=''>......</option>");
+                                 for(i=0;i<dataSet['message'].length;i++){
+                                      var val  = dataSet['message'][i][0];
+                                      var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
+                                      $("#archive_time_col").append("<option value='"+val+"'>"+text+"</option>");
+                                 }
+                              }
+                        });
+
+                    } else {
+                         $("#sour_incr_col").empty();
+                         $("#sour_incr_col").append("<option value=''>...</option>");
+                    }
+                });
+
+           $('#archive_rentition').change(function() {
+                $("#dest_db_server").append("<option value=''>...</option>");
+                $("#dest_db_name").append("<option value=''>...</option>");
+            });
+
+           $(document).ready(function() {
+                 set_selected();
+           });
 
    </script>
 </body>
