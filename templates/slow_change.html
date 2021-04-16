@@ -57,6 +57,17 @@
                  </select>
                </div>
            </div>
+           <div class="col-md-3">
+               <div class="input-group">
+                 <span class="input-group-addon">数据源实例</span>
+                 <select class="form-control select" id="dbs_name" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_dbs_names %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                 </select>
+               </div>
+           </div>
            <div class="col-md-1">
                <div class="input-group">
                    <span class="input-group-btn">
@@ -586,7 +597,7 @@
                 },
                 beforeSend: function () {
                     swal({
-                        title: "正在启动远程任务...",
+                        title: "正在推送中...",
                         text: "实例[" + v_inst_name + "]慢日志配置正在推送中...",
                         type: "info",
                         showConfirmButton: false
@@ -595,7 +606,7 @@
                 success: function (dataSet) {
                    if (dataSet['code']== 200) {
                          swal("推送成功!", "任务["+v_inst_name+"]已推送成功!", "success");
-                         $('#ace-editor').html(dataSet['msg']['crontab'])
+                         $('#ace-editor').html(dataSet['msg'])
                          $('.modal').on('show.bs.modal', centerModals);
                          $(window).on('resize', centerModals);
                          $('#con-close-modal').modal({ keyboard: false,backdrop:false});
@@ -603,7 +614,16 @@
                    } else {
                       swal("推送失败!", "任务["+v_inst_name+"]推送失败!", "error");
                    }
-                }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('jqXHR.responseText=',jqXHR.responseText);
+                    console.log('jqXHR.status=',jqXHR.status);
+                    console.log('jqXHR.readyState=',jqXHR.readyState);
+                    console.log('jqXHR.statusText=',jqXHR.statusText);
+                    console.log('textStatus=',textStatus);
+                    console.log('errorThrown=',errorThrown);
+                    swal("推送异常!", "任务["+v_inst_name+"]推送失败!", "error");
+                  }
             })
         }
 
@@ -617,8 +637,9 @@
                   type: "post",
                   datatype: "json",
                   data:{
-                      inst_id: $('#inst_name').val(),
-                      inst_env: $('#inst_env').val(),
+                      inst_id : $('#inst_name').val(),
+                       ds_id  : $('#dbs_name').val(),
+                        inst_env : $('#inst_env').val(),
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -684,13 +705,7 @@
                              }
                          });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
                         setTimeout(" window.location.href='/login'",3000);

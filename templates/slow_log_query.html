@@ -34,10 +34,21 @@
        <div class="row">
                <div class="col-md-2">
                    <div class="input-group">
-                     <span class="input-group-addon">实例</span>
+                     <span class="input-group-addon">实例名</span>
                      <select class="form-control select" id="inst_name" >
                         <option value='' selected = "selected">.....</option>
                         {% for var in dm_inst_names %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                     </select>
+                   </div>
+               </div>
+               <div class="col-md-2">
+                   <div class="input-group">
+                     <span class="input-group-addon">数据源</span>
+                     <select class="form-control select" id="dbs_name" >
+                        <option value='' selected = "selected">.....</option>
+                        {% for var in dm_dbs_names %}
                              <option value={{var[0]}} >{{var[1]}}</option>
                         {% end %}
                      </select>
@@ -59,6 +70,18 @@
                </div>
                <div class="col-md-2">
                    <div class="input-group">
+                     <span class="input-group-addon">IP地址</span>
+                     <input id="db_host"  type="text" class="form-control" placeholder="请输入IP地址">
+<!--                     <span class="input-group-btn">-->
+<!--                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>-->
+<!--                    </span>-->
+                   </div>
+               </div>
+       </div>
+<br>
+      <div class="row">
+               <div class="col-md-2">
+                   <div class="input-group">
                      <span class="input-group-addon">数据库</span>
                      <select class="form-control select" id="db_name" >
                      </select>
@@ -66,15 +89,29 @@
                </div>
                <div class="col-md-2">
                    <div class="input-group">
-                     <span class="input-group-addon">用户</span>
+                     <span class="input-group-addon">用户名</span>
                      <select class="form-control select" id="db_user" >
                      </select>
                    </div>
                </div>
                <div class="col-md-2">
+                 <div class="input-group">
+                      <span class="input-group-addon">时长起</span>
+                      <input  id="begin_query_time"  type="number" class="form-control"  placeholder="时长起">
+<!--                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>-->
+                </div>
+               </div>
+               <div class="col-md-2">
+                  <div class="input-group">
+                      <span class="input-group-addon">止</span>
+                      <input  id="end_query_time"  type="number" class="form-control"  placeholder="时长止" >
+<!--                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>-->
+                  </div>
+               </div>
+               <div class="col-md-2">
                    <div class="input-group">
-                     <span class="input-group-addon">地址</span>
-                     <input id="db_host"  type="text" class="form-control" placeholder="请输入IP地址">
+                     <span class="input-group-addon">关键字</span>
+                     <input id="db_sql"  type="text" class="form-control" placeholder="请输入SQL关键字">
                      <span class="input-group-btn">
                        <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
                     </span>

@@ -9,14 +9,14 @@ import tornado.web
 import json
 from  web.utils.basehandler   import basehandler
 from  web.model.t_db_config   import query_db_config,update_db_config
-from  web.model.t_dmmx        import get_dmm_from_dm,get_inst_names
+from  web.model.t_dmmx        import get_dmm_from_dm,get_slow_inst_names
 
 class dbinstcfgquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
         self.render("./db_inst_cfg_query.html",
                     dm_env_type     = await get_dmm_from_dm('03'),
-                    dm_inst_names   = await get_inst_names(''),
+                    dm_inst_names   = await get_slow_inst_names(''),
                  )
 
 class db_inst_cfg_query(basehandler):

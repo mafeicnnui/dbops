@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>新建同步</title>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
        #example{
             width: 100% !important;
@@ -470,13 +468,6 @@
     </div>
    </div><!-- /.modal -->
 
-    <!-- Counter js  -->
-    <script src="{{static_url('plugins/counterup/jquery.counterup.min.js')}}"></script>
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-
     <script>
 
         var sour_ds='';
@@ -515,21 +506,19 @@
             document.all['s_sync_col_val'].style.color="#ff0000";
             document.all['s_sync_time_type'].style.color="#ff0000";
             document.all['s_sync_repair_day'].style.color="#ff0000";
-
             document.all['s_sync_tab_name'].style.color="#ff0000";
-            // document.all['s_sync_tab_time'].style.color="#ff0000";
             document.all['s_sync_tab_col'].style.color="#ff0000";
 
         }
 
         function centerModals() {
-          $('.modal').each(function(i) {
-            var $clone = $(this).clone().css('display', 'block').appendTo('body');
-            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-            top = top > 50 ? top : 0;
-            $clone.remove();
-            $(this).find('.modal-content').css("margin-top", top - 50);
-          });
+              $('.modal').each(function(i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 50 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top - 50);
+              });
         }
 
         function init_tab_config(){
@@ -564,7 +553,7 @@
                       sour_ds = dataSet;
                       console.log('sour_ds=',sour_ds);
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
+                  error: function (jqXHR) {
                         if (jqXHR.status==403){
                             swal("登陆信息已过期，请重新登陆!", "", "error")
                             window.location.href='/login'
@@ -606,13 +595,7 @@
                           $("#sync_tab_name").append("<option value='"+val+"'>"+text+"</option>");
                      }
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -650,13 +633,7 @@
                          }
 
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -693,13 +670,7 @@
                          }
 
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -785,7 +756,6 @@
         function syn_tab_del(row){
              v =unescape(row).split(',')
              var tab = v[1]+'.'+v[2]+'.'+v[3]
-             console.log('syn_tab_del='+v);
              swal({
                 title: "确认要删除吗?",
                 text: "表["+tab+"]删除后无法进行数据同步了！",
@@ -814,13 +784,7 @@
                                    swal(dataSet.message, "", "error")
                                 }
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                          error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -908,21 +872,15 @@
                          });
 
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
+                  error: function (jqXHR) {
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
                 }
              })
         }
@@ -947,7 +905,6 @@
              set_sync_tabs();
              query_tab_sync();
              init_tab_config();
-
         }
 
         function selectSysAll() {
@@ -978,7 +935,6 @@
           }
 
         function set_tab_cols(p_cols){
-               console.log('set_tab_cols=',p_cols)
                v_col_list = p_cols.split('#');
                $.ajax({
                   url : "http://{0}/get_mssql_columns".format(sour_ds['proxy_server']),
@@ -1010,13 +966,7 @@
                       }
 
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -1058,72 +1008,58 @@
 
         $('#save_sync_tab_config').click(function(){
 
-                if ($('#sync_tab_name').val()=='') {
-                      swal("同步表名不能为空!", "", "error")
+            if ($('#sync_tab_name').val()=='') {
+                  swal("同步表名不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#sync_sele_col').val()=='') {
+                  swal("同步列名不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#sync_tab_incr_col').val()!='') {
+                if ($('#sync_tab_time').val()=='') {
+                      swal("同步时长不能为空!", "", "error")
                       return;
                 }
+            }
 
-                if ($('#sync_sele_col').val()=='') {
-                      swal("同步列名不能为空!", "", "error")
-                      return;
+            $.ajax({
+                  url: "/sync/add/save/tab",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      'sync_id'      :$('#sync_tab_id').val(),
+                      'sync_tag'     : $('#sync_tag').val(),
+                      'db_name'      : $('#sync_tab_name').val().split('.')[0],
+                      'schema_name'  : $('#sync_tab_name').val().split('.')[1],
+                      'tab_name'     : $('#sync_tab_name').val().split('.')[2],
+                      'sync_cols'    : get_tab_cols(),
+                      'sync_incr_col': $('#sync_tab_incr_col').val(),
+                      'sync_time'    : $('#sync_tab_time').val(),
+              },
+              success: function (dataSet) {
+                if (dataSet.code==0) {
+                   swal("保存成功", "", "success")
+                   init_tab_config();
+                   query_tab_sync();
+                } else {
+                   swal(dataSet.message, "", "error")
                 }
 
-                if ($('#sync_tab_incr_col').val()!='') {
-                    if ($('#sync_tab_time').val()=='') {
-                          swal("同步时长不能为空!", "", "error")
-                          return;
-                    }
+              },
+              error: function (jqXHR) {
+                if (jqXHR.status==403){
+                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                    window.location.href='/login'
+                } else if (jqXHR.status==502){
+                    swal("用户无权访问权限此功能!", "", "error")
+                } else {
+                    swal("系统不可用,请稍后重试!", "", "error")
                 }
-
-                console.log('a=',$('#sync_tag').val());
-                console.log('b=',$('#sync_tab_name').val().split('.')[0]);
-                console.log('c=',$('#sync_tab_name').val().split('.')[1]);
-                console.log('d=',$('#sync_tab_name').val().split('.')[2]);
-                console.log('e=',get_tab_cols());
-                console.log('f=',$('#sync_tab_incr_col').val());
-                console.log('g=',$('#sync_tab_time').val());
-
-                $.ajax({
-                      url: "/sync/add/save/tab",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          'sync_id'      :$('#sync_tab_id').val(),
-                          'sync_tag'     : $('#sync_tag').val(),
-                          'db_name'      : $('#sync_tab_name').val().split('.')[0],
-                          'schema_name'  : $('#sync_tab_name').val().split('.')[1],
-                          'tab_name'     : $('#sync_tab_name').val().split('.')[2],
-                          'sync_cols'    : get_tab_cols(),
-                          'sync_incr_col': $('#sync_tab_incr_col').val(),
-                          'sync_time'    : $('#sync_tab_time').val(),
-                  },
-                  success: function (dataSet) {
-                    if (dataSet.code==0) {
-                       swal("保存成功", "", "success")
-                       init_tab_config();
-                       query_tab_sync();
-                    } else {
-                       swal(dataSet.message, "", "error")
-                    }
-
-                  },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
-             })
+            }
+         })
 
         });
 
@@ -1137,7 +1073,7 @@
 
         $('#sour_db_server').change(function() {
               $('#mdi-view-list').attr('disabled',false);
-         });
+        });
 
         $('#sync_tab_incr_col').change(function(){
              if ($('#sync_tab_incr_col').val()!='') {
@@ -1171,7 +1107,7 @@
                }
           });
 
-         $('.modal').on('hidden.bs.modal', function () {
+        $('.modal').on('hidden.bs.modal', function () {
               $.ajax({
                   url: "/sync/_query/sync/tabs",
                   type: "post",
@@ -1188,7 +1124,7 @@
                           $('#sync_tables').val(dataSet)
                       }
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -1242,13 +1178,7 @@
                        swal(dataSet.message, "", "error")
                     }
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'

@@ -35,10 +35,10 @@ def check_slow(p_slow):
         return result
 
 
-    if if_exists_slow(p_slow["inst_id"]):
-        result['code'] = '-1'
-        result['message'] = '慢日志已存在！'
-        return result
+    # if if_exists_slow(p_slow["inst_id"]):
+    #     result['code'] = '-1'
+    #     result['message'] = '慢日志已存在！'
+    #     return result
 
     result['code'] = '0'
     result['message'] = '验证通过'
@@ -49,31 +49,47 @@ def push_slow(p_api,p_slowid):
     res = requests.post(url, data={'slow_id': p_slowid})
     jres = res.json()
     v = ''
-    for c in jres['msg']['crontab'].split('\n'):
+    for c in jres['msg']:
         if c.count(p_slowid) > 0:
             v = v + "<span class='warning'>" + c + "</span>"
         else:
             v = v + c
         v = v + '<br>'
-    jres['msg']['crontab'] = v
+    jres['msg'] = v
     return jres
 
-async def query_slow(p_inst_id,p_inst_env):
-    vv  = ''
+async def query_slow(p_inst_id,p_ds_id,p_inst_env):
+    vv  = ' where 1=1 '
     if p_inst_id != '':
-        vv = "  where a.inst_id ='{0}' ".format(p_inst_id)
+        vv = vv + "  and a.inst_id ='{0}'".format(p_inst_id)
+
+    if p_ds_id != '':
+        vv = vv + "  and  a.ds_id ='{0}'".format(p_ds_id)
+
     if p_inst_env != '':
-        vv = vv +"  and b.inst_env ='{0}' ".format(p_inst_env)
-    sql = """select a.id, b.inst_name,
-                   (SELECT dmmc FROM t_dmmx X WHERE x.dm='03' AND x.dmm=b.inst_env) AS env_name,
+        vv = vv + """ and (a.inst_id in(select id from t_db_inst x where x.inst_env ='{0}') 
+                              or  a.inst_id in(select id from t_db_source x where x.db_env ='{1}'))
+                  """.format(p_inst_env,p_inst_env)
+    st = """select a.id,
+                    CASE WHEN a.ds_id IS NOT NULL THEN
+                           (SELECT x.db_desc FROM t_db_source X WHERE x.id=a.ds_id)
+                    ELSE
+                       (SELECT x.inst_name FROM t_db_inst X WHERE x.id=a.inst_id)
+                    END AS inst_name, 
+                    CASE WHEN a.ds_id IS NOT NULL THEN
+                           (SELECT y.dmmc FROM t_db_source X,t_dmmx Y WHERE x.id=a.ds_id AND  y.dm='03' AND y.dmm=x.db_env)
+                    ELSE
+                       (SELECT y.dmmc FROM t_db_inst X,t_dmmx Y WHERE x.id=a.inst_id AND  y.dm='03' AND y.dmm=x.inst_env)
+                    END  AS env_name,
                     a.log_file,
                     a.query_time,
                     a.script_file,
                     a.api_server,
                     case a.status when '1' then '是'  when '0' then '否'  end  status,
-                    date_format(create_date,'%Y-%m-%d')    create_date
-             from t_slow_log a,t_db_inst b where a.inst_id=b.id {} order by a.id""".format(vv)
-    return await async_processer.query_list(sql)
+                    date_format(create_date,'%Y-%m-%d')   create_date
+             from t_slow_log a {} order by a.id""".format(vv)
+    print(st)
+    return await async_processer.query_list(st)
 
 async def query_slow_log(p_inst_id,p_db_name,p_db_user,p_db_host,p_begin_date,p_end_date):
     vv  = ''
@@ -108,19 +124,21 @@ async def get_slows():
     sql="select cast(id as char) as id,name from t_role where status='1'"
     return await async_processer.query_list(sql)
 
-async def if_exists_slow(p_inst_id):
-    sql="select count(0) from t_slow_log where inst_id='{0}'".format(p_inst_id)
-    rs =await  async_processer.query_one(sql)
-    if rs[0]==0:
-        return False
-    else:
-        return True
+# async def if_exists_slow(p_inst_id):
+#     sql="select count(0) from t_slow_log where inst_id='{0}'".format(p_inst_id)
+#     rs =await  async_processer.query_one(sql)
+#     if rs[0]==0:
+#         return False
+#     else:
+#         return True
 
 async def save_slow(p_slow):
-    val = check_slow(p_slow)
-    if val['code'] == '-1':
-        return val
+    # val = check_slow(p_slow)
+    # if val['code'] == '-1':
+    #     return val
     try:
+        db_type       = p_slow['db_type']
+        ds_id         = p_slow['db_source']
         inst_id       = p_slow['inst_id']
         server_id     = p_slow['server_id']
         slow_time     = p_slow['slow_time']
@@ -132,19 +150,21 @@ async def save_slow(p_slow):
         script_file   = p_slow['script_file']
         slow_status   = p_slow['slow_status']
         api_server    = p_slow['api_server']
-        sql="""insert into t_slow_log(inst_id,server_id,log_file,query_time,python3_home,run_time,exec_time,script_path,script_file,status,api_server,create_date) 
-                 values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',now())
-            """.format(inst_id,server_id,slow_log_name,slow_time,python3_home,run_time,exec_time,script_path,script_file,slow_status,api_server)
-        await async_processer.exec_sql(sql)
+        statement     = """insert into t_slow_log(db_type,ds_id,inst_id,server_id,log_file,query_time,python3_home,run_time,exec_time,script_path,script_file,status,api_server,create_date) 
+                             values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',now())
+                        """.format(db_type,ds_id,inst_id,server_id,slow_log_name,slow_time,python3_home,run_time,exec_time,script_path,script_file,slow_status,api_server)
+        await async_processer.exec_sql(statement)
 
-        sql = """INSERT INTO t_db_inst_parameter(inst_id,NAME,VALUE,TYPE,STATUS,create_date) 
+        if db_type == '0':
+           st = """INSERT INTO t_db_inst_parameter(inst_id,NAME,VALUE,TYPE,STATUS,create_date) 
                              VALUES({},'慢日志开关'  ,'{}','mysqld','1',NOW()),
                                    ({},'慢日志文件名','{}','mysqld','1',NOW()),
                                    ({},'慢日志时长'  ,'{}','mysqld','1',NOW()) 
-            """.format(inst_id, 'slow_query_log={}'.format('ON' if slow_status == '1' else 'OFF'),
+                """.format(inst_id, 'slow_query_log={}'.format('ON' if slow_status == '1' else 'OFF'),
                        inst_id, 'slow_query_log_file=''{{}}/{}'''.format(slow_log_name),
                        inst_id,'long_query_time={}'.format(slow_time))
-        await async_processer.exec_sql(sql)
+           await async_processer.exec_sql(st)
+
         return {'code': '0', 'message': '保存成功!'}
     except:
         traceback.print_exc()
@@ -178,22 +198,26 @@ async def upd_slow(p_slow):
                        status         ='{}' ,
                        last_update_date =now() 
                 where id='{}'
-            """.format(inst_id,server_id,slow_time,slow_log_name,python3_home,run_time,exec_time,script_path,script_file,api_server,slow_status,slow_id)
+            """.format(inst_id,server_id,slow_time,slow_log_name,python3_home,run_time,
+                       exec_time,script_path,script_file,api_server,slow_status,slow_id)
+        print(sql)
         await async_processer.exec_sql(sql)
 
-        sql = """delete from  t_db_inst_parameter 
-                  where inst_id={} 
-                   and (value like 'slow_query_log%' or value like 'long_query_time%')""".format(inst_id)
-        await async_processer.exec_sql(sql)
+        if  inst_id is not None and inst_id!='':
+            sql = """delete from  t_db_inst_parameter 
+                      where inst_id='{}'
+                       and (value like 'slow_query_log%' or value like 'long_query_time%')""".format(inst_id)
+            await async_processer.exec_sql(sql)
 
-        sql = """INSERT INTO t_db_inst_parameter(inst_id,NAME,VALUE,TYPE,STATUS,create_date) 
-                     VALUES({},'慢日志开关'  ,'{}','mysqld','1',NOW()),
-                           ({},'慢日志文件名','{}','mysqld','1',NOW()),
-                           ({},'慢日志时长'  ,'{}','mysqld','1',NOW()) 
-              """.format(inst_id, 'slow_query_log={}'.format('ON' if slow_status == '1' else 'OFF'),
-                         inst_id, 'slow_query_log_file=''{{}}/{}'''.format(slow_log_name),
-                         inst_id, 'long_query_time={}'.format(slow_time))
-        await async_processer.exec_sql(sql)
+            sql = """INSERT INTO t_db_inst_parameter(inst_id,NAME,VALUE,TYPE,STATUS,create_date) 
+                         VALUES({},'慢日志开关'  ,'{}','mysqld','1',NOW()),
+                               ({},'慢日志文件名','{}','mysqld','1',NOW()),
+                               ({},'慢日志时长'  ,'{}','mysqld','1',NOW()) 
+                  """.format(inst_id, 'slow_query_log={}'.format('ON' if slow_status == '1' else 'OFF'),
+                             inst_id, 'slow_query_log_file=''{{}}/{}'''.format(slow_log_name),
+                             inst_id, 'long_query_time={}'.format(slow_time))
+            await async_processer.exec_sql(sql)
+
         return {'code': '0', 'message': '更新成功!'}
     except :
         traceback.print_exc()

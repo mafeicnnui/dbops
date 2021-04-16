@@ -12,6 +12,18 @@
        <form class="form-horizontal" role="form">
             <div class="form-group">
                 <div>
+                    <label class="col-md-2 control-label"><span id="s_db_typee">*</span>数据库类型</label>
+                </div>
+                <div class="col-md-10">
+                      <select class="form-control select" id="db_type" >
+                          {% for var in dm_db_type %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                          {% end %}
+                      </select>
+                </div>
+           </div>
+            <div class="form-group">
+                <div>
                     <label class="col-md-2 control-label"><span id="s_stats_method">*</span>采集方式</label>
                 </div>
                 <div class="col-md-10">
@@ -74,7 +86,7 @@
                     <label class="col-md-2 control-label"><span id="s_slow_log_name">*</span>慢日志文件名</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="slow_log_name"  type="text" class="form-control" readonly value="slow_log_YYYYMMDD.log" placeholder="请输入慢查询日志名">
+                    <input id="slow_log_name"  type="text" class="form-control"  value="slow_log_YYYYMMDD.log" placeholder="请输入慢查询日志名">
                 </div>
            </div>
            <div class="form-group">
@@ -114,7 +126,7 @@
                     <label class="col-md-2 control-label"><span id="s_script_file">*</span>采集脚本</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="script_file"  type="text" class="form-control" readonly  value="gather_slow.py" placeholder="请输入采集脚本">
+                    <input id="script_file"  type="text" class="form-control"  value="gather_slow.py" placeholder="请输入采集脚本">
                 </div>
            </div>
            <div class="form-group">
@@ -151,9 +163,10 @@
 
     <script>
         function set_selected(){
+            document.all['s_db_typee'].style.color="#ff0000";
             document.all['s_stats_method'].style.color="#ff0000";
             document.all['s_db_source'].style.color="#ff0000";
-            document.all['s_inst_name'].style.color="#ff0000";
+            // document.all['s_inst_name'].style.color="#ff0000";
             document.all['s_inst_server'].style.color="#ff0000";
             document.all['s_slow_time'].style.color="#ff0000";
             document.all['s_slow_log_name'].style.color="#ff0000";
@@ -199,6 +212,8 @@
                 type: "post",
                 datatype: "json",
                 data: {
+                     db_type       : $('#db_type').val(),
+                     db_source     : $('#db_source').val(),
                      inst_id       : $('#inst_name').val(),
                      server_id     : $('#inst_server').val(),
                      slow_time     : $('#slow_time').val(),

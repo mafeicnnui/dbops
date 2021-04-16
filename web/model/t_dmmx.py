@@ -54,12 +54,20 @@ async def get_gather_tasks():
     sql = "select id,comments from t_monitor_task WHERE status='1' order by id"
     return await async_processer.query_list(sql)
 
-async def get_inst_names(p_env):
+async def get_slow_dbs_names(p_env):
     if p_env == '':
-        sql = "select id,inst_name from t_db_inst  order by inst_name"
+        sql = "SELECT a.ds_id,b.db_desc FROM t_slow_log a,t_db_source b WHERE  a.ds_id=b.id AND a.STATUS='1' order by b.db_desc"
     else:
-        sql = "select id,inst_name from t_db_inst WHERE id in(select inst_id from t_slow_log where status='1') and inst_env='{}' order by inst_name".format(p_env)
+        sql = "SELECT a.ds_id,b.db_desc FROM t_slow_log a,t_db_source b WHERE  a.ds_id=b.id AND a.STATUS='1' and b.db_env='{}' order by b.db_desc".format(p_env)
     return await async_processer.query_list(sql)
+
+async def get_slow_inst_names(p_env):
+    if p_env == '':
+        sql = "SELECT a.inst_id, b.inst_name FROM t_slow_log a,t_db_inst b WHERE  a.inst_id=b.id AND a.STATUS='1' order by b.inst_name"
+    else:
+        sql = "SELECT a.inst_id, b.inst_name FROM t_slow_log a,t_db_inst b WHERE  a.inst_id=b.id AND a.STATUS='1'  and b.inst_env='{}'  order by b.inst_name".format(p_env)
+    return await async_processer.query_list(sql)
+
 
 
 async def get_db_server():

@@ -3,11 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>同步查询</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
         #example{
             width: 100% !important;
@@ -88,21 +83,7 @@
          </div>
      </div>
    </div>
-   <!--<script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>-->
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-   <!--<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>-->
    <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
 
         $("#tagname").bind("input propertychange",function(){
            $("#query_btn").click();
@@ -118,6 +99,12 @@
 
         $("#sync_type").bind("input propertychange",function(){
            $("#query_btn").click();
+        });
+
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
         });
 
         $(document).ready(function() {
@@ -145,7 +132,6 @@
                       scrollCollapse: true,
                       paging:     true,
                       iDisplayLength: 16,
-                      //bAutoWidth: true,
                       data: dataSet,
                       columns: [
                         { "title": "标识符"},
@@ -154,9 +140,9 @@
                         { "title": "任务描述"},
                         { "title": "同步服务器" },
                         { "title": "业务类型" },
-                        // { "title": "同步方向" },
                         { "title": "运行时间" },
                         { "title": "接口服务器"},
+                        { "title": "同步状态"},
                         { "title": "任务状态"}
                       ],
                       "language": {
@@ -186,13 +172,7 @@
                          }
                      });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'

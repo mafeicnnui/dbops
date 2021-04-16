@@ -10,7 +10,7 @@ import tornado.web
 from  web.utils.basehandler   import basehandler
 from  web.model.t_db_inst     import query_inst_list
 from  web.model.t_db_user     import query_db_user,save_db_user,get_user_sql,get_db_name,query_user_by_id,update_db_user,delete_db_user
-from  web.model.t_dmmx        import get_dmm_from_dm,get_inst_names
+from  web.model.t_dmmx        import get_dmm_from_dm,get_slow_inst_names
 
 class dbuserquery(basehandler):
     @tornado.web.authenticated
@@ -20,7 +20,7 @@ class dbuserquery(basehandler):
                     mysql_sys_privs = await get_dmm_from_dm('31'),
                     dm_user_status  = await get_dmm_from_dm('25'),
                     dm_env_type     = await get_dmm_from_dm('03'),
-                    dm_inst_names   = await get_inst_names('') )
+                    dm_inst_names   = await get_slow_inst_names('') )
 
 
 class db_user_query_by_id(basehandler):

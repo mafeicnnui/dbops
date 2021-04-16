@@ -35,7 +35,12 @@ async def query_sync(sync_tag,market_id,sync_ywlx,sync_type,task_status):
                      ELSE                         
                         a.api_server
                      END AS api_server ,
-                     CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  STATUS
+                     a.api_server as back_api_server,
+                     CASE a.status WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  STATUS,
+                     CASE a.task_status 
+                       WHEN '1' THEN 
+                      CONCAT('<span style=''color: red''>运行中(',TIMESTAMPDIFF(SECOND,a.task_create_time,NOW()),'s)</span>')
+                       WHEN '0' THEN '停止' END  STATUS
              FROM t_db_sync_config a,t_server b ,t_dmmx c,t_dmmx d
             WHERE a.server_id=b.id AND b.status='1' 
               AND c.dm='08' AND d.dm='09'
@@ -579,14 +584,35 @@ async def get_sync_by_sync_tag(p_sync_tag):
     sql = "select * from t_db_sync_config where sync_tag='{0}'".format(p_sync_tag)
     return await async_processer.query_dict_one(sql)
 
+
+def get_health_api_server(api_servers):
+    api_status  = {}
+    for api in api_servers.split(','):
+        req = 'http://{}/health'.format(api)
+        try:
+          res = requests.head(req)
+          api_status[api] = res.status_code
+        except:
+          api_status[api] = 500
+
+    print('api server status:',api_status)
+    for key in api_status:
+        if api_status[key] == 200:
+            print('health api server:', key)
+            return key
+    return None
+
 def push_sync_task(p_tag,p_api):
     data = {
         'tag': p_tag,
     }
-    url = 'http://{}/push_script_remote_sync'.format(p_api)
+
+    url = 'http://{}/push_script_remote_sync'.format(get_health_api_server(p_api))
     res = requests.post(url, data=data)
+    print('res=',res)
     try:
         jres = res.json()
+        print('jres=',jres)
         v = ''
         for c in jres['msg']:
             if c.count(p_tag) > 0:
@@ -594,6 +620,7 @@ def push_sync_task(p_tag,p_api):
             else:
                 v = v + c
             v = v + '<br>'
+        print('v=',v)
         jres['msg'] = v
         return jres
     except:
