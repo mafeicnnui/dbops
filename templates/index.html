@@ -24,6 +24,7 @@
         <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
 
         <style>
             .modal-lg {
@@ -669,10 +670,17 @@
         <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
         <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
 
+        <!-- datetimepicker.js -->
+        <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
+
         <!-- App js -->
         <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
 
+        <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
+        <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
 
         <script>
             var screen_lock_status = 'unlock';

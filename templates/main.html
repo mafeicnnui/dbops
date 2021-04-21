@@ -1,21 +1,5 @@
  <head>
     <meta charset="utf-8">
-    <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/core.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/pages.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/menu.css')}}"  rel="stylesheet" type="text/css" />
-
-    <link href="{{static_url('assets/css/icons/icomoon/styles.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('plugins/form_wizard/css/components.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
-
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
 
     <style>
          #db-backup-prod,#db-sync-prod{
@@ -55,30 +39,21 @@
           min-height: 180px;
         }
 
-        #active_num_hopson_biz_55,#slow_num_hopson_biz_23_55,#qps_num_hopson_biz_55,#tps_num_hopson_biz_55{
+        #active_num_hopson_biz_55,#slow_num_hopson_biz_55_55,#qps_num_hopson_biz_55,#tps_num_hopson_biz_55{
             width:350px;
             height:165px;
         }
 
-        #active_num_hopson_biz_slave_88,#slow_num_hopson_biz_slave_38_88,#qps_num_hopson_biz_slave_88,#tps_num_hopson_biz_slave_88{
+        #active_num_hopson_biz_slave_88,#slow_num_hopson_biz_slave_88_88,#qps_num_hopson_biz_slave_88,#tps_num_hopson_biz_slave_88{
             width:350px;
             height:165px;
         }
 
-        #active_num_hopson_bi_54,#slow_num_hopson_bi_24_54,#qps_num_hopson_bi_54,#tps_num_hopson_bi_54{
+        #active_num_hopson_bi_54,#slow_num_hopson_bi_54_54,#qps_num_hopson_bi_54,#tps_num_hopson_bi_54{
             width:350px;
             height:165px;
         }
         #active_num_hopson_stage_53,#slow_num_hopson_stage_29_53,#qps_num_hopson_stage_53,#tps_num_hopson_stage_53{
-            width:350px;
-            height:165px;
-        }
-
-        #active_num_hft_biz_160,#slow_num_hft_biz_42_160,#qps_num_hft_biz_160,#tps_num_hft_biz_160{
-            width:350px;
-            height:165px;
-        }
-        #active_num_hft_biz_slave_161,#slow_num_hft_biz_slave_43_161,#qps_num_hft_biz_slave_161,#tps_num_hft_biz_slave_161{
             width:350px;
             height:165px;
         }
@@ -90,7 +65,6 @@
         .modal-lg-detail {
             width:60%;
             height:55%;
-            /*min-width: 1200px;*/
             max-height: 300px;
         }
         label {
@@ -242,7 +216,7 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_hopson_biz_23_55'></div>
+                                <div id='slow_num_hopson_biz_55_55'></div>
                              </div>
                         </div>
                     </div>
@@ -281,7 +255,7 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_hopson_biz_slave_38_88'></div>
+                                <div id='slow_num_hopson_biz_slave_88_88'></div>
                              </div>
                         </div>
                     </div>
@@ -321,7 +295,7 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                 <div id='slow_num_hopson_bi_24_54'></div>
+                                 <div id='slow_num_hopson_bi_54_54'></div>
                             </div>
                         </div>
                     </div>
@@ -376,84 +350,6 @@
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
                                 <div id='tps_num_hopson_stage_53'></div>
-                           </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div>
-
-    <!--数据库运行情况 会付通-主库-->
-    <div class="row">
-          <div class="panel panel-border panel-primary">
-                <div class="panel-heading">
-                    <h3 id='title_160' class="panel-title">会付通-主库[MySQL]</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='active_num_hft_biz_160'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='slow_num_hft_biz_42_160'></div>
-                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='qps_num_hft_biz_160'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='tps_num_hft_biz_160'></div>
-                           </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div>
-
-    <!--数据库运行情况 会付通-从库-->
-    <div class="row">
-          <div class="panel panel-border panel-teal">
-                <div class="panel-heading">
-                    <h3 id='title_161' class="panel-title">会付通-从库[MySQL]</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='active_num_hft_biz_slave_161'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='slow_num_hft_biz_slave_43_161'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='qps_num_hft_biz_slave_161'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='tps_num_hft_biz_slave_161'></div>
                            </div>
                         </div>
                     </div>
@@ -636,14 +532,6 @@
          </div>
       </div>
      </div>
-
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
-    <script src="{{static_url('plugins/loaders/blockui.min.js')}}"></script>
-
-    <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
-    <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
-    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
 
     <script src="{{static_url('assets/js/utils.js')}}"></script>
 
@@ -854,13 +742,14 @@
         }
 
         function get_contents_from_div(p_id,p_render_id) {
-                var dbid=p_id.split('_')[p_id.split('_').length - 1];
+                var db_id=p_id.split('_')[p_id.split('_').length - 1];
                 if (p_id.indexOf("slow") >= 0 ) {
                       var inst_id=p_id.split('_')[p_id.split('_').length - 2];
                       $.ajax({
                             url: "/get/db/slow/num",
                             type: "post",
                             data: {
+                                'ds_id'     : db_id,
                                 'inst_id'   : inst_id,
                                 'begin_date': $('#begin_date').val(),
                                 'end_date'  : $('#end_date').val()
@@ -882,7 +771,7 @@
                         url: "/get/db/active/num",
                         type: "post",
                         data: {
-                             'db_id'     : dbid,
+                             'db_id'     : db_id,
                              'begin_date': $('#begin_date').val(),
                              'end_date'  : $('#end_date').val()
                         },
@@ -902,7 +791,7 @@
                         url: "/get/db/active/num",
                         type: "post",
                         data: {
-                             'db_id'     : dbid,
+                             'db_id'     : db_id,
                              'begin_date': $('#begin_date').val(),
                              'end_date'  : $('#end_date').val()
                         },
@@ -923,7 +812,7 @@
                         url: "/get/db/active/num",
                         type: "post",
                         data: {
-                              'db_id'     : dbid,
+                              'db_id'     : db_id,
                               'begin_date': $('#begin_date').val(),
                               'end_date'  : $('#end_date').val()
                         },
