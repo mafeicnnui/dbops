@@ -494,9 +494,10 @@ class db_slow_num(basehandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_id     = self.get_argument("inst_id")
+        ds_id       = self.get_argument("ds_id")
         begin_date  = self.get_argument("begin_date")
         end_date    = self.get_argument("end_date")
-        v_list      = await query_db_slow_num(inst_id,begin_date,end_date)
+        v_list      = await query_db_slow_num(inst_id,ds_id,begin_date,end_date)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 

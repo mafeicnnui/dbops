@@ -919,28 +919,36 @@ async def query_db_active_num(p_db_id,p_begin_date,p_end_date):
     res['amount']['y_tps'] = y_tps
     return res
 
-async def query_db_slow_num(p_inst_id,p_begin_date,p_end_date):
+async def query_db_slow_num(p_inst_id,p_ds_id,p_begin_date,p_end_date):
     res = {}
     if p_begin_date != '' or p_end_date != '':
         sql = """SELECT DATE_FORMAT(finish_time,'%Y-%m-%d %H') AS rq,
                            COUNT(0) as val
                     FROM t_slow_detail 
-                     WHERE inst_id={} 
+                     WHERE {}={} 
                        AND finish_time >= '{}'
                        AND finish_time <= '{}'
                        AND query_time>3
                        GROUP BY DATE_FORMAT(finish_time,'%Y-%m-%d %H')  ORDER BY 1
-               """.format(p_inst_id,p_begin_date,p_end_date)
+               """.format('db_id' if p_inst_id == p_ds_id else 'inst_id',
+                          p_ds_id if p_inst_id == p_ds_id else p_inst_id,
+                          p_begin_date,
+                          p_end_date)
     else:
         sql = """SELECT DATE_FORMAT(finish_time,'%H') AS rq,
                               COUNT(0) as val
                        FROM t_slow_detail 
-                        WHERE inst_id={} 
+                        WHERE {}={} 
                           AND finish_time >= CONCAT(DATE_FORMAT(NOW(),'%Y-%m-%d'),' 0:0:0')
                           AND finish_time <= CONCAT(DATE_FORMAT(NOW(),'%Y-%m-%d'),' 23:59:59')
                           AND query_time>3
                           GROUP BY DATE_FORMAT(finish_time,'%H')  ORDER BY 1
-                  """.format(p_inst_id, p_begin_date, p_end_date)
+                  """.format('db_id' if p_inst_id == p_ds_id else 'inst_id',
+                             p_ds_id if p_inst_id == p_ds_id else p_inst_id,
+                             p_begin_date,
+                             p_end_date)
+
+    print(sql)
     x = []
     y = []
     for r in await async_processer.query_list(sql):
