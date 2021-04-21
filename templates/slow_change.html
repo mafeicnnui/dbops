@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>慢日志维护</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/buttons.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+<!--    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/buttons.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
     <style>
         #example{
             width: 100% !important;
@@ -63,6 +63,17 @@
                  <select class="form-control select" id="dbs_name" >
                     <option value='' selected = "selected">.....</option>
                     {% for var in dm_dbs_names %}
+                         <option value={{var[0]}} >{{var[1]}}</option>
+                    {% end %}
+                 </select>
+               </div>
+           </div>
+           <div class="col-md-2">
+               <div class="input-group">
+                 <span class="input-group-addon">实例类型</span>
+                 <select class="form-control select" id="inst_type" >
+                    <option value='' selected = "selected">.....</option>
+                    {% for var in dm_inst_type %}
                          <option value={{var[0]}} >{{var[1]}}</option>
                     {% end %}
                  </select>
@@ -360,8 +371,6 @@
       </div>
     </div><!-- /.modal -->
 
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-
    <script>
         $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
@@ -637,9 +646,10 @@
                   type: "post",
                   datatype: "json",
                   data:{
-                      inst_id : $('#inst_name').val(),
-                       ds_id  : $('#dbs_name').val(),
-                        inst_env : $('#inst_env').val(),
+                      inst_id   : $('#inst_name').val(),
+                      inst_env  : $('#inst_env').val(),
+                      inst_type : $('#inst_type').val(),
+                      ds_id     : $('#dbs_name').val(),
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {

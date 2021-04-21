@@ -58,18 +58,24 @@ def push_slow(p_api,p_slowid):
     jres['msg'] = v
     return jres
 
-async def query_slow(p_inst_id,p_ds_id,p_inst_env):
+async def query_slow(p_inst_id,p_ds_id,p_inst_env,p_inst_type):
     vv  = ' where 1=1 '
     if p_inst_id != '':
-        vv = vv + "  and a.inst_id ='{0}'".format(p_inst_id)
+       vv = vv + "  and a.inst_id ='{0}'".format(p_inst_id)
 
     if p_ds_id != '':
-        vv = vv + "  and  a.ds_id ='{0}'".format(p_ds_id)
+       vv = vv + "  and  a.ds_id ='{0}'".format(p_ds_id)
 
     if p_inst_env != '':
-        vv = vv + """ and (a.inst_id in(select id from t_db_inst x where x.inst_env ='{0}') 
-                              or  a.inst_id in(select id from t_db_source x where x.db_env ='{1}'))
-                  """.format(p_inst_env,p_inst_env)
+       vv = vv + """ and (a.inst_id in(select id from t_db_inst x where x.inst_env ='{0}') 
+                        or  a.inst_id in(select id from t_db_source x where x.db_env ='{1}'))""".format(p_inst_env,p_inst_env)
+
+    if p_inst_type =='1':
+        vv = vv + "  and a.inst_id is not null and a.inst_id!=''".format(p_inst_id)
+
+    if p_inst_type == '2':
+        vv = vv + "  and a.ds_id is not null and a.ds_id!='' ".format(p_inst_id)
+
     st = """select a.id,
                     CASE WHEN a.ds_id IS NOT NULL THEN
                            (SELECT x.db_desc FROM t_db_source X WHERE x.id=a.ds_id)
@@ -91,26 +97,38 @@ async def query_slow(p_inst_id,p_ds_id,p_inst_env):
     print(st)
     return await async_processer.query_list(st)
 
-async def query_slow_log(p_inst_id,p_db_name,p_db_user,p_db_host,p_begin_date,p_end_date):
+async def query_slow_log(p_inst_id,p_ds_id,p_db_name,p_db_user,p_db_host,p_begin_date,p_end_date,p_begin_query_time,p_end_query_time,p_sql):
     vv  = ''
     if p_inst_id != '':
         vv = "  where a.inst_id ='{0}' ".format(p_inst_id)
+    if p_ds_id != '':
+        vv = "  where a.db_id ='{0}' ".format(p_ds_id)
+
     if p_begin_date != '':
         vv = vv + " and a.finish_time>='{0}'\n".format(p_begin_date)
     if p_end_date != '':
         vv = vv + " and a.finish_time<='{0}'\n".format(p_end_date)
+
+    if p_begin_query_time != '':
+        vv = vv + " and a.query_time>='{0}'\n".format(p_begin_query_time)
+    if p_end_query_time != '':
+        vv = vv + " and a.query_time<='{0}'\n".format(p_end_query_time)
+
     if p_db_name != '':
         vv = vv + "  and a.db ='{0}' ".format(p_db_name)
     if p_db_user != '':
         vv = vv + "  and a.user ='{0}' ".format(p_db_user)
     if p_db_host != '':
         vv = vv + "  and instr(a.host,'{0}')>0".format(p_db_host)
+    if p_sql != '':
+        vv = vv + "  and instr(a.sql_text,'{0}')>0".format(p_sql)
 
-    sql = """SELECT 
+    st = """SELECT 
                   a.sql_id,a.user,a.db,a.host,cast(ROUND(a.query_time+0,2) as char) AS exec_time,
                   a.bytes,DATE_FORMAT(a.finish_time,'%Y-%m-%d %H:%i:%s') AS create_date
                 FROM t_slow_detail a {} order by a.finish_time desc """.format(vv)
-    return await async_processer.query_list(sql)
+    print(st)
+    return await async_processer.query_list(st)
 
 async def get_slowid():
     rs = await  async_processer.query_one("select ifnull(max(id),0)+1 from t_role")
@@ -123,14 +141,6 @@ async def get_slow_by_slowid(p_slowid):
 async def get_slows():
     sql="select cast(id as char) as id,name from t_role where status='1'"
     return await async_processer.query_list(sql)
-
-# async def if_exists_slow(p_inst_id):
-#     sql="select count(0) from t_slow_log where inst_id='{0}'".format(p_inst_id)
-#     rs =await  async_processer.query_one(sql)
-#     if rs[0]==0:
-#         return False
-#     else:
-#         return True
 
 async def save_slow(p_slow):
     # val = check_slow(p_slow)
@@ -302,30 +312,49 @@ async def get_user_by_inst_id(p_inst_id):
     sql  = """SELECT distinct USER FROM mysql.user ORDER BY 1 """
     return await async_processer.query_list_by_ds(pds,sql)
 
-async def get_db_by_slow_inst_id(p_inst_id):
+async def get_slow_db_by_instid(p_inst_id):
     sql = """SELECT DISTINCT db FROM `t_slow_detail` WHERE finish_time >= DATE_SUB(NOW(),INTERVAL 3 DAY) and inst_id={} ORDER BY 1""".format(p_inst_id)
     return await async_processer.query_list(sql)
 
-async def get_user_by_slow_inst_id(p_inst_id):
+async def get_slow_user_by_instid(p_inst_id):
     sql  = """SELECT DISTINCT USER FROM `t_slow_detail` WHERE finish_time >= DATE_SUB(NOW(),INTERVAL 3 DAY) and inst_id={} ORDER BY 1 """.format(p_inst_id)
     return await async_processer.query_list(sql)
 
+async def get_slow_db_by_dsid(p_db_id):
+    sql = """SELECT DISTINCT db FROM `t_slow_detail` WHERE finish_time >= DATE_SUB(NOW(),INTERVAL 3 DAY) and db_id={} ORDER BY 1""".format(p_db_id)
+    return await async_processer.query_list(sql)
 
-async def analyze_slow_log(p_inst_id,p_db_name,p_db_user,p_db_host,p_begin_date,p_end_date):
+async def get_slow_user_by_dsid(p_db_id):
+    sql  = """SELECT DISTINCT USER FROM `t_slow_detail` WHERE finish_time >= DATE_SUB(NOW(),INTERVAL 3 DAY) and db_id={} ORDER BY 1 """.format(p_db_id)
+    return await async_processer.query_list(sql)
+
+async def analyze_slow_log(p_inst_id,p_ds_id,p_db_name,p_db_user,p_db_host,p_begin_date,p_end_date,p_begin_query_time,p_end_query_time,p_sql):
     vv  = ''
     v_total = {}
     if p_inst_id != '':
         vv = " and a.inst_id ='{0}' ".format(p_inst_id)
+    if p_ds_id != '':
+        vv = " and a.db_id ='{0}' ".format(p_ds_id)
+
     if p_db_name != '':
         vv = vv + "  and a.db ='{0}' ".format(p_db_name)
     if p_db_user != '':
         vv = vv + "  and a.user ='{0}' ".format(p_db_user)
     if p_db_host != '':
         vv = vv + "  and instr(a.host,'{0}')>0".format(p_db_host)
+
     if p_begin_date != '':
         vv = vv + " and a.finish_time>='{0}'\n".format(p_begin_date)
     if p_end_date != '':
         vv = vv + " and a.finish_time<='{0}'\n".format(p_end_date)
+
+    if p_begin_query_time != '':
+        vv = vv + " and a.query_time>='{0}'\n".format(p_begin_query_time)
+    if p_end_query_time != '':
+        vv = vv + " and a.query_time<='{0}'\n".format(p_end_query_time)
+
+    if p_sql != '':
+        vv = vv + "  and instr(a.sql_text,'{0}')>0".format(p_sql)
 
     sql_host  = """SELECT HOST as name,COUNT(0) AS value FROM t_slow_detail a where 1 =1 {} GROUP BY HOST""".format(vv)
 

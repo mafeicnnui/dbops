@@ -3,16 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>慢日志查询</title>
-    <!-- DataTables -->
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
-
      <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
-
     <style>
         #example{
             width: 100% !important;
@@ -30,7 +24,7 @@
     </style>
 </head>
 <body>
-      <p></p>
+       <p></p>
        <div class="row">
                <div class="col-md-2">
                    <div class="input-group">
@@ -72,14 +66,11 @@
                    <div class="input-group">
                      <span class="input-group-addon">IP地址</span>
                      <input id="db_host"  type="text" class="form-control" placeholder="请输入IP地址">
-<!--                     <span class="input-group-btn">-->
-<!--                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>-->
-<!--                    </span>-->
                    </div>
                </div>
        </div>
-<br>
-      <div class="row">
+       <br>
+       <div class="row">
                <div class="col-md-2">
                    <div class="input-group">
                      <span class="input-group-addon">数据库</span>
@@ -98,20 +89,22 @@
                  <div class="input-group">
                       <span class="input-group-addon">时长起</span>
                       <input  id="begin_query_time"  type="number" class="form-control"  placeholder="时长起">
-<!--                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>-->
                 </div>
                </div>
                <div class="col-md-2">
                   <div class="input-group">
                       <span class="input-group-addon">止</span>
                       <input  id="end_query_time"  type="number" class="form-control"  placeholder="时长止" >
-<!--                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>-->
                   </div>
                </div>
                <div class="col-md-2">
                    <div class="input-group">
                      <span class="input-group-addon">关键字</span>
                      <input id="db_sql"  type="text" class="form-control" placeholder="请输入SQL关键字">
+                   </div>
+               </div>
+               <div class="col-md-1">
+                   <div class="input-group">
                      <span class="input-group-btn">
                        <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
                     </span>
@@ -148,11 +141,7 @@
         </div>
        </div><!-- /.modal -->
 
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
-   <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
-
    <script>
         $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
@@ -228,8 +217,8 @@
         $(document).ready(function() {
 
             $("#query_btn").click(function() {
-               if ($('#inst_name').val()==''){
-                    swal("请选择实例", "", "info");
+               if ($('#inst_name').val()=='' && $('#dbs_name').val()==''){
+                    swal("请选择实例或数据源", "", "info");
                     return false;
                }
 
@@ -248,12 +237,16 @@
                   type: "post",
                   datatype: "json",
                   data:{
-                      inst_id   : $('#inst_name').val(),
-                      db_name   : $('#db_name').val(),
-                      db_user   : $('#db_user').val(),
-                      db_host   : $('#db_host').val(),
-                      begin_date: $('#begin_date').val(),
-                      end_date  : $('#end_date').val(),
+                      inst_id         : $('#inst_name').val(),
+                      ds_id           : $('#dbs_name').val(),
+                      db_name         : $('#db_name').val(),
+                      db_user         : $('#db_user').val(),
+                      db_host         : $('#db_host').val(),
+                      begin_date      : $('#begin_date').val(),
+                      end_date        : $('#end_date').val(),
+                      begin_query_time: $('#begin_query_time').val(),
+                      end_query_time  : $('#end_query_time').val(),
+                      db_sql          : $('#db_sql').val(),
                   },
                   beforeSend: function () {
                      swal({title: "正在查询中...",type: "info",showConfirmButton: false});
@@ -319,13 +312,7 @@
                              }
                          });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
                         setTimeout(" window.location.href='/login'",3000);
@@ -343,34 +330,28 @@
 
         });
 
-         function get_db_users(){
-            console.log('inst_id=',$('#inst_name').val());
-            $.ajax({
+          function get_inst_db_users() {
+             if ($('#inst_name').val()!='') {
+                 $.ajax({
                       url: "/get/inst/db",
                       type: "post",
                       datatype: "json",
                       data:{
-                          inst_id    : $('#inst_name').val(),
+                          inst_id : $('#inst_name').val(),
                       },
                       success: function (dataSet) {
                          console.log('/get/inst/db=',dataSet)
                          $("#db_name").empty();
                          $("#db_name").append("<option value=''>请选择数据库...</option>");
                          for(i=0;i<dataSet['data'].length;i++){
-                             console.log('i=',i)
+                              console.log('i=',i)
                               var val  = dataSet['data'][i]
                               var text = dataSet['data'][i]
                               console.log('option:',"<option value='"+val+"'>"+text+"</option>")
                               $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
                          }
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                      error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -381,8 +362,10 @@
                             }
                       }
              });
+             }
 
-             $.ajax({
+              if ($('#inst_name').val()!='') {
+                  $.ajax({
                       url: "/get/inst/user",
                       type: "post",
                       datatype: "json",
@@ -400,13 +383,7 @@
                               $("#db_user").append("<option value='"+val+"'>"+text+"</option>");
                          }
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                      error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -417,11 +394,84 @@
                             }
                       }
              });
+              }
+          }
 
-         }
+          function get_ds_db_users(){
+              if ($('#dbs_name').val()!='') {
+                 $.ajax({
+                      url: "/get/ds/db",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          db_id : $('#dbs_name').val(),
+                      },
+                      success: function (dataSet) {
+                         console.log('/get/inst/db=',dataSet)
+                         $("#db_name").empty();
+                         $("#db_name").append("<option value=''>请选择数据库...</option>");
+                         for(i=0;i<dataSet['data'].length;i++){
+                              console.log('i=',i)
+                              var val  = dataSet['data'][i]
+                              var text = dataSet['data'][i]
+                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
+                              $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      },
+                      error: function (jqXHR) {
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                      }
+             });
+              }
+
+               if ($('#dbs_name').val()!='') {
+                  $.ajax({
+                      url: "/get/ds/user",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          db_id : $('#dbs_name').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#db_user").empty();
+                         $("#db_user").append("<option value=''>请选择用户...</option>");
+                         for(i=0;i<dataSet['data'].length;i++){
+                             console.log('i=',i)
+                              var val  = dataSet['data'][i]
+                              var text = dataSet['data'][i]
+                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
+                              $("#db_user").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      },
+                      error: function (jqXHR) {
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                      }
+             });
+              }
+          }
 
          $('#inst_name').change(function() {
-            get_db_users();
+              get_inst_db_users();
+              $('#dbs_name').val('')
+         });
+
+         $('#dbs_name').change(function() {
+              get_ds_db_users();
+              $('#inst_name').val('');
          });
 
    </script>

@@ -6,8 +6,12 @@
 # @Software: PyCharm
 
 from web.services.slow import slowquery, slowadd, slowadd_save, slow_query, slowchange, slowedit_save, slowedit_del, \
-                              slow_query_by_id, slowedit_push, query_slowlog_plan_by_id, query_db_by_slowlog, \
-                              slowlogquery,slowlog_query,query_slowlog_by_id,query_user_by_slowlog,slowloganalyze,\
+                              slow_query_by_id, slowedit_push, query_slowlog_plan_by_id, \
+                              query_db_by_slowlog_instid, \
+                              query_user_by_slowlog_instid, \
+                              query_db_by_slowlog_dsid,\
+                              query_user_by_slowlog_dsid,\
+                              slowlogquery,slowlog_query,query_slowlog_by_id,slowloganalyze,\
                               slowlog_analyze,query_slowlog_detail_by_id
 
 slow = [
@@ -25,8 +29,10 @@ slow = [
         (r"/slow/log/query/id",              query_slowlog_by_id),
         (r"/slow/log/detail/id",             query_slowlog_detail_by_id),
         (r"/slow/log/plan/id",               query_slowlog_plan_by_id),
-        (r"/get/inst/db",                    query_db_by_slowlog),
-        (r'/get/inst/user',                  query_user_by_slowlog),
+        (r"/get/inst/db",                    query_db_by_slowlog_instid),
+        (r'/get/inst/user',                  query_user_by_slowlog_instid),
+        (r"/get/ds/db",                      query_db_by_slowlog_dsid),
+        (r'/get/ds/user',                    query_user_by_slowlog_dsid),
         (r"/slow/log/analyze",               slowloganalyze),
         (r"/slow/log/_analyze",              slowlog_analyze),
 ]

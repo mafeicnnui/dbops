@@ -68,8 +68,6 @@ async def get_slow_inst_names(p_env):
         sql = "SELECT a.inst_id, b.inst_name FROM t_slow_log a,t_db_inst b WHERE  a.inst_id=b.id AND a.STATUS='1'  and b.inst_env='{}'  order by b.inst_name".format(p_env)
     return await async_processer.query_list(sql)
 
-
-
 async def get_db_server():
     sql = "SELECT id,db_desc FROM t_db_source WHERE  db_type in(0,4,5,6) AND STATUS=1 ORDER BY id"
     return await async_processer.query_list(sql)

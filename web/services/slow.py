@@ -7,11 +7,12 @@
 
 import json
 import tornado.web
-from web.model.t_slow import save_slow, check_slow, query_slow, upd_slow, del_slow, query_slow_by_id, analyze_slow_log, \
-    query_slow_log_plan, get_db_by_slow_inst_id, get_user_by_slow_inst_id
-from   web.model.t_slow      import push_slow,query_slow_log_by_id,query_slow_log,get_db_by_inst_id,get_user_by_inst_id,query_slow_log_detail
 from   web.utils.basehandler import basehandler
-from web.model.t_dmmx        import get_dmm_from_dm, get_slow_inst_names,get_slow_dbs_names, get_gather_server,get_sync_db_server_by_type,get_sync_db_server
+from web.model.t_slow        import save_slow, check_slow, query_slow, upd_slow, del_slow, query_slow_by_id, analyze_slow_log, \
+                                    query_slow_log_plan, get_slow_db_by_instid, get_slow_user_by_instid
+from   web.model.t_slow      import push_slow,query_slow_log_by_id,query_slow_log,query_slow_log_detail,\
+                                    get_slow_db_by_dsid,get_slow_user_by_dsid
+from   web.model.t_dmmx      import get_dmm_from_dm, get_slow_inst_names,get_slow_dbs_names, get_gather_server,get_sync_db_server
 from   web.utils.common      import current_rq2,current_rq3,current_rq4
 
 class slowquery(basehandler):
@@ -28,11 +29,12 @@ class slow_query(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        inst_id  = self.get_argument("inst_id")
-        ds_id    = self.get_argument("ds_id")
-        inst_env = self.get_argument("inst_env")
-        v_list   = await query_slow(inst_id,ds_id,inst_env)
-        v_json   = json.dumps(v_list)
+        ds_id     = self.get_argument("ds_id")
+        inst_id   = self.get_argument("inst_id")
+        inst_env  = self.get_argument("inst_env")
+        inst_type = self.get_argument("inst_type")
+        v_list    = await query_slow(inst_id,ds_id,inst_env,inst_type)
+        v_json    = json.dumps(v_list)
         self.write(v_json)
 
 class slowadd(basehandler):
@@ -81,6 +83,7 @@ class slowchange(basehandler):
     async def get(self):
         self.render("./slow_change.html",
                     dm_env_type   = await get_dmm_from_dm('03'),
+                    dm_inst_type  = await get_dmm_from_dm('38'),
                     dm_inst_names = await get_slow_inst_names(''),
                     dm_dbs_names  = await get_slow_dbs_names(''),
                     dm_db_server  = await get_gather_server()
@@ -99,7 +102,7 @@ class slowedit_save(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        d_slow={}
+        d_slow = {}
         d_slow['slow_id']       = self.get_argument("slow_id")
         d_slow['inst_id']       = self.get_argument("inst_id")
         d_slow['server_id']     = self.get_argument("server_id")
@@ -147,14 +150,18 @@ class slowlog_query(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        inst_id    = self.get_argument("inst_id")
-        db_name    = self.get_argument("db_name")
-        db_user    = self.get_argument("db_user")
-        db_host    = self.get_argument("db_host")
-        begin_date = self.get_argument("begin_date")
-        end_date   = self.get_argument("end_date")
-        v_list     = await query_slow_log(inst_id,db_name,db_user,db_host,begin_date,end_date)
-        v_json     = json.dumps(v_list)
+        inst_id          = self.get_argument("inst_id")
+        ds_id            = self.get_argument("ds_id")
+        db_name          = self.get_argument("db_name")
+        db_user          = self.get_argument("db_user")
+        db_host          = self.get_argument("db_host")
+        begin_date       = self.get_argument("begin_date")
+        end_date         = self.get_argument("end_date")
+        begin_query_time = self.get_argument("begin_query_time")
+        end_query_time   = self.get_argument("end_query_time")
+        db_sql           = self.get_argument("db_sql")
+        v_list           = await query_slow_log(inst_id,ds_id,db_name,db_user,db_host,begin_date,end_date,begin_query_time,end_query_time,db_sql)
+        v_json           = json.dumps(v_list)
         self.write(v_json)
 
 class query_slowlog_by_id(basehandler):
@@ -188,34 +195,43 @@ class query_db_by_inst(basehandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_id  = self.get_argument("inst_id")
-        v_list   = await get_db_by_inst_id(inst_id)
+        v_list   = await get_slow_db_by_instid(inst_id)
         v_json   = json.dumps({'data':v_list})
         self.write(v_json)
 
-class query_db_by_slowlog(basehandler):
+class query_db_by_slowlog_instid(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_id  = self.get_argument("inst_id")
-        v_list   = await get_db_by_slow_inst_id(inst_id)
+        v_list   = await get_slow_db_by_instid(inst_id)
         v_json   = json.dumps({'data':v_list})
         self.write(v_json)
 
-class query_user_by_inst(basehandler):
+class query_user_by_slowlog_instid(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_id = self.get_argument("inst_id")
-        v_list  = await get_user_by_inst_id(inst_id)
+        v_list  = await get_slow_user_by_instid(inst_id)
         v_json  = json.dumps({'data':v_list})
         self.write(v_json)
 
-class query_user_by_slowlog(basehandler):
+class query_db_by_slowlog_dsid(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        inst_id = self.get_argument("inst_id")
-        v_list  = await get_user_by_slow_inst_id(inst_id)
+        db_id  = self.get_argument("db_id")
+        v_list   = await get_slow_db_by_dsid(db_id)
+        v_json   = json.dumps({'data':v_list})
+        self.write(v_json)
+
+class query_user_by_slowlog_dsid(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_id = self.get_argument("db_id")
+        v_list  = await get_slow_user_by_dsid(db_id)
         v_json  = json.dumps({'data':v_list})
         self.write(v_json)
 
@@ -225,19 +241,25 @@ class slowloganalyze(basehandler):
         self.render("./slow_log_analyze.html",
                      begin_date    = current_rq4(0,1),
                      end_date      = current_rq4(0,-1),
-                     dm_inst_names = await get_inst_names(''))
+                     dm_inst_names = await get_slow_inst_names(''),
+                     dm_dbs_names  = await get_slow_dbs_names(''),
+                    )
 
 class slowlog_analyze(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        inst_id    = self.get_argument("inst_id")
-        db_name    = self.get_argument("db_name")
-        db_user    = self.get_argument("db_user")
-        db_host    = self.get_argument("db_host")
-        begin_date = self.get_argument("begin_date")
-        end_date   = self.get_argument("end_date")
-        v_list     = await analyze_slow_log(inst_id,db_name,db_user,db_host,begin_date,end_date)
-        v_json     = json.dumps(v_list)
+        inst_id          = self.get_argument("inst_id")
+        ds_id            = self.get_argument("ds_id")
+        db_name          = self.get_argument("db_name")
+        db_user          = self.get_argument("db_user")
+        db_host          = self.get_argument("db_host")
+        begin_date       = self.get_argument("begin_date")
+        end_date         = self.get_argument("end_date")
+        begin_query_time = self.get_argument("begin_query_time")
+        end_query_time   = self.get_argument("end_query_time")
+        db_sql           = self.get_argument("db_sql")
+        v_list           = await analyze_slow_log(inst_id,ds_id,db_name,db_user,db_host,begin_date,end_date,begin_query_time,end_query_time,db_sql)
+        v_json           = json.dumps(v_list)
         self.write(v_json)
 
