@@ -135,7 +135,8 @@ async def query_backup_log_detail(tagname,backup_date):
                 CAST(b.start_time AS CHAR),
                 CAST(b.end_time AS CHAR),
                 b.db_size,b.elaspsed_backup,b.elaspsed_gzip,
-                CASE b.STATUS WHEN '1' THEN '<span style=''color: red''>失败</span>' WHEN '0' THEN '成功' END  STATUS
+                CASE b.STATUS WHEN '1' THEN '<span style=''color: red''>失败</span>' WHEN '0' THEN '成功' END  STATUS,
+                error
             FROM  t_db_config a,t_db_backup_detail b,t_db_source c
             WHERE a.db_tag=b.db_tag and a.db_id=c.id and a.status='1' {0} 
               order by b.create_date,b.db_tag """.format(v_where)
