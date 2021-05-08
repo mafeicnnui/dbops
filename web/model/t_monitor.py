@@ -521,6 +521,34 @@ async def query_monitor_svr(env,search_text):
                           or instr(es,'0@')>0 ORDER BY server_desc,sxh"""
     return {'data': await async_processer.query_list(sql1), 'warning': await async_processer.query_list(sql2)}
 
+async def query_monitor_proj():
+    sql = """SELECT market_id,
+                    market_name,
+                    ip_dx,ip_dx_status,
+                    ip_lt,ip_lt_status,
+                    link_status,
+                    DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') update_time 
+             FROM t_monitor_project order by id"""
+    return {'data': await async_processer.query_list(sql)}
+
+async def query_monitor_proj_log(p_market_id,p_begin_date,p_end_date):
+    res = {}
+    sql = """SELECT  DATE_FORMAT(update_time,'%H:%i') update_time,
+                     CASE WHEN link_status = 'True' THEN 100 ELSE 0 END link_status
+                 FROM t_monitor_project_log
+                  where market_id='{}' 
+                    and update_time between '{}' and '{}'
+                      order by update_time""".format(p_market_id,p_begin_date,p_end_date)
+    print(sql)
+    x = []
+    y = []
+    for r in  await async_processer.query_list(sql):
+        x.append(r[0])
+        y.append(r[1])
+    res['x'] = x
+    res['y'] = y
+    return res
+
 def get_max_disk_usage(d_disk):
     n_max_val =0.0
     for key in d_disk:
@@ -558,18 +586,21 @@ def check_task(p_task):
     return result
 
 def push_monitor_task(p_tag,p_api):
-    url = 'http://{}/push_script_remote_monitor'.format(p_api)
-    res = requests.post(url, data={'tag': p_tag})
+    url  = 'http://{}/push_script_remote_monitor'.format(p_api)
+    res  = requests.post(url, data={'tag': p_tag})
     jres = res.json()
-    v = ''
-    for c in jres['msg']['crontab'].split('\n'):
-        if c.count(p_tag) > 0:
-            v = v + "<span class='warning'>" + c + "</span>"
-        else:
-            v = v + c
-        v = v + '<br>'
-    jres['msg']['crontab'] = v
-    return jres
+    if jres['code'] == 200:
+        v = ''
+        for c in jres['msg']:
+            if c.count(p_tag) > 0:
+                v = v + "<span class='warning'>" + c + "</span>"
+            else:
+                v = v + c
+            v = v + '<br>'
+        jres['msg'] = v
+        return jres
+    else:
+        return jres
 
 def run_monitor_task(p_tag,p_api):
     url = 'http://{}/run_script_remote_archive'.format(p_api)
