@@ -11,7 +11,7 @@ from   web.model.t_monitor   import query_monitor_index,save_index,upd_index,del
 from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get_monitor_indexes_by_type,get_monitor_task_by_tag,query_monitor_sys
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
-from   web.model.t_monitor   import push_monitor_task,run_monitor_task,stop_monitor_task,query_monitor_svr
+from   web.model.t_monitor   import push_monitor_task,run_monitor_task,stop_monitor_task,query_monitor_svr,query_monitor_proj,query_monitor_proj_log
 from   web.utils.basehandler import basehandler
 from   web.model.t_dmmx      import get_dmm_from_dm,get_gather_server,get_templete_names,get_sync_db_server,get_gather_tasks
 from   web.utils.common      import get_day_nday_ago,now
@@ -359,6 +359,25 @@ class get_monitor_view_svr(basehandler):
         search_text = self.get_argument("search_text")
         v_list = await query_monitor_svr(env,search_text)
         v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_monitor_view_proj(basehandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_list = await query_monitor_proj()
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+
+class get_monitor_view_proj_log(basehandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        market_id  = self.get_argument("market_id")
+        begin_date = self.get_argument("begin_date")
+        end_date   = self.get_argument("end_date")
+        print(market_id,begin_date,end_date)
+        v_list     = await query_monitor_proj_log(market_id,begin_date,end_date)
+        v_json     = json.dumps(v_list)
         self.write(v_json)
 
 

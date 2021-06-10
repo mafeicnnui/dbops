@@ -918,13 +918,7 @@
                                 swal(dataSet.message, "", "error")
                             }
                         },
-                       error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                       error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -962,13 +956,7 @@
                             swal(dataSet.message, "", "error")
                         }
                     },
-                   error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
+                   error: function (jqXHR) {
                         if (jqXHR.status==403){
                             swal("登陆信息已过期，请重新登陆!", "", "error")
                             window.location.href='/login'
@@ -1012,13 +1000,7 @@
                                 swal(dataSet.message, "", "error")
                             }
                         },
-                       error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                       error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -1056,13 +1038,7 @@
                             swal(dataSet.message, "", "error")
                         }
                     },
-                   error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
+                   error: function (jqXHR) {
                         if (jqXHR.status==403){
                             swal("登陆信息已过期，请重新登陆!", "", "error")
                             window.location.href='/login'
@@ -1147,13 +1123,13 @@
                           success: function (dataSet) {
                               if (dataSet['code']== 200) {
                                   swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
-                                  $('#ace-editor').html(dataSet['msg']['crontab'])
+                                  $('#ace-editor').html(dataSet['msg'])
                                   $('.modal').on('show.bs.modal', centerModals);
                                   $(window).on('resize', centerModals);
                                   $('#con-close-modal').modal({ keyboard: false,backdrop:false});
                                   $("#query_btn").click();
                               } else {
-                                  swal("推送失败!", "任务["+v_desc+"]推送失败!", "error");
+                                  swal("推送失败!", "任务["+v_desc+"]推送失败("+dataSet['msg']+")!", "error");
                               }
 
                               $('#task_upd_win').attr("disabled",true);

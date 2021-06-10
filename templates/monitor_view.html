@@ -17,7 +17,7 @@
             width: 100% !important;
         }
         .table_td_center {
-            text-align: left;
+            text-align: center;
         }
 
         /* dataTables表头居中 */
@@ -55,6 +55,18 @@
              font-size: 10.8px;
              line-height: 20px;
         }
+        #monitor_review {
+            width:100%;
+            height:350px;
+        }
+        .modal-lg-detail {
+              margin-left:250px;
+              margin-top:80px;
+              width:85%;
+              height:65%;
+              max-height: 400px;
+        }
+
     </style>
 
  </head>
@@ -68,6 +80,9 @@
                 </li>
                 <li id='incr_li' class="">
                     <a href="#svr-monitor" data-toggle="tab" aria-expanded="false">服务监控</a>
+                </li>
+                 <li id='proj_li' class="">
+                    <a href="#proj-monitor" data-toggle="tab" aria-expanded="false">外网监控</a>
                 </li>
             </ul>
             <div class="tab-content br-n pn">
@@ -211,9 +226,18 @@
                             </span>
                           </div>
                      </div>
-                    <div class="row">
+                     <div class="row">
                         <div id='div-svr-monitor' class="col-md-12">
                             <table id="tab-svr-monitor" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+                        </div>
+                    </div>
+                </div>
+                <div id="proj-monitor" class="tab-pane">
+                     <div class="row">
+                     </div>
+                     <div class="row">
+                        <div id='div-proj-monitor' class="col-md-12">
+                            <table id="tab-proj-monitor" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
                         </div>
                     </div>
                 </div>
@@ -221,6 +245,69 @@
         </div>
 
     </div>
+
+    <!--图表放大窗口 -->
+    <div id="con-modal-img-win" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id='monitor_review_title' class="modal-title">图表预览</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                         <form class="form-horizontal" role="form">
+                            <div class="form-group" >
+                               <div class="col-md-2">
+                                    <div class="input-group">
+                                        <label class="control-label">开始日期</label>
+                                    </div>
+                               </div>
+                               <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="ion-ios7-clock-outline"></i></span>
+                                        <input  id="begin_date"  type="text" value="" class="form-control datetimepicker"  readonly >
+                                        <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+                                    </div>
+                               </div>
+                               <div class="text-right col-md-2">
+                                    <div class="input-group">
+                                      <label class="control-label">结束日期&nbsp;</label>
+                                    </div>
+                               </div>
+                               <div class="col-md-3">
+                                  <div class="input-group">
+                                      <span class="input-group-addon"><i class="ion-ios7-alarm-outline"></i></span>
+                                      <input  id="end_date"  type="text" value="" class="form-control datetimepicker"  readonly  >
+                                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+                                  </div>
+                               </div>
+                               <div class="col-md-2">
+                                   <div class="input-group">
+                                        <span class="input-group-btn">
+                                           <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                                        </span>
+                                   </div>
+                               </div>
+
+                            </div>
+                         </form>
+                         <div class="col-md-12">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                    <div id='monitor_review'></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+
     <input id='current_tab_hidden' type='hidden'>
     <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
 
@@ -230,70 +317,11 @@
     <!-- Tooltipster js -->
     <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
     <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+    <script src="{{static_url('assets/js/utils.js')}}"></script>
+
 
     <script>
-
-          function GetDate(format) {
-             /**
-             * format=1 表示获取年月日
-             * format=2 表示获取年月日时分秒
-             * **/
-             var _time;
-             var now   = new Date();
-             var year  = now.getFullYear();
-             var month = now.getMonth()+1;
-             var date  = now.getDate();
-             var day   = now.getDay();//得到周几
-             var hour  = now.getHours();//得到小时
-             var minu  = now.getMinutes();//得到分钟
-             var sec   = now.getSeconds();//得到秒
-             if (format==1){
-                 _time = year+"-"+month+"-"+date            }
-            else if (format==2){
-                _time = year+"-"+month+"-"+date+" "+hour+":"+minu+":"+sec
-            }
-            return _time
-         }
-
-          /*
-          * 获得时间差,时间格式为 年-月-日 小时:分钟:秒 或者 年/月/日 小时：分钟：秒
-          * 其中，年月日为全格式，例如 ： 2010-10-12 01:00:00
-          * 返回精度为：秒，分，小时，天
-          */
-
-          function GetDateDiff(startTime, endTime, diffType) {
-            //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式
-            // console.log("GetDateDiff1=",startTime,endTime,diffType)
-            startTime = startTime.replace(/\-/g, "/");
-            endTime   = endTime.replace(/\-/g, "/");
-            // console.log("GetDateDiff2=",startTime,endTime)
-
-            //将计算间隔类性字符转换为小写
-            diffType = diffType.toLowerCase();
-            var sTime = new Date(startTime);      //开始时间
-            var eTime = new Date(endTime);        //结束时间
-
-            //作为除数的数字
-            var divNum = 1;
-            switch (diffType) {
-                case "second":
-                    divNum = 1000;
-                    break;
-                case "minute":
-                    divNum = 1000 * 60;
-                    break;
-                case "hour":
-                    divNum = 1000 * 3600;
-                    break;
-                case "day":
-                    divNum = 1000 * 3600 * 24;
-                    break;
-                default:
-                    break;
-            }
-            return parseInt((eTime.getTime() - sTime.getTime()) / parseInt(divNum));
-
-        }
 
           //警告提醒
           function showtips(flag,title,content){
@@ -570,7 +598,7 @@
                                return result
                             }
                           },
-                          {
+                         {
                              "title":"MSSQL汇纳客流",
                              "className" : 'table_td_center',
                              "render": function(data,type,row,meta) {
@@ -815,34 +843,285 @@
                  });
 
                  console.log('warning=>svr=',dataSet.warning,dataSet.warning.length)
-                 if (dataSet.warning.length>0){
+                 if (dataSet.warning.length>0) {
                      for (i=0;i<dataSet.warning.length;i++) {
-
-                         if (dataSet.warning[i]['mysql_proj'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'MySQL(项目)数据库服务异常!');
+                         console.log('dataSet.warning.mysql=',dataSet.warning[i][1],dataSet.warning[i][2])
+                         if (dataSet.warning[i][1]=='0') {
+                             showtips('error',dataSet.warning[i][0],'MySQL(项目)数据库服务异常!');
                          }
-                         if (dataSet.warning[i]['mssql_park'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'MSSQL(车流)数据库服务异常!');
+                         if (dataSet.warning[i][2]=='0') {
+                             showtips('error',dataSet.warning[i][0],'MSSQL(车流)数据库服务异常!');
                          }
-                         if (dataSet.warning[i]['mssql_flow'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'MSSQL(客流)数据库服务异常!');
+                         if (dataSet.warning[i][3]=='0') {
+                             showtips('error',dataSet.warning[i][0],'MSSQL(客流)数据库服务异常!');
                          }
-                         if (dataSet.warning[i]['mssql_car'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'MSSQL(反向寻车)服务异常!');
+                         if (dataSet.warning[i][4]=='0') {
+                             showtips('error',dataSet.warning[i][0],'MSSQL(反向寻车)服务异常!');
                          }
-                         if (dataSet.warning[i]['redis'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'redis服务异常!');
+                         if (dataSet.warning[i][5]=='0') {
+                             showtips('error',dataSet.warning[i][0],'MSSQL德利多富服务异常!');
                          }
-                         if (dataSet.warning[i]['mongo'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'mongo服务异常!');
+                         if (dataSet.warning[i][6]=='0') {
+                             showtips('error',dataSet.warning[i][0],'MSSQL商管服务异常!');
                          }
-                         if (dataSet.warning[i]['es'].split('@')[0]=='0') {
-                             showtips('error',dataSet.warning[i]['server_desc'],'ElasticSearch服务异常!');
+                         if (dataSet.warning[i][7]=='0') {
+                             showtips('error',dataSet.warning[i][0],'Oracle商管服务异常!');
+                         }
+                         if (dataSet.warning[i][8]=='0') {
+                             showtips('error',dataSet.warning[i][0],'redis服务异常!');
+                         }
+                         if (dataSet.warning[i][9]=='0') {
+                             showtips('error',dataSet.warning[i][0],'mongo服务异常!');
+                         }
+                         if (dataSet.warning[i][10]=='0') {
+                             showtips('error',dataSet.warning[i][0],'ElasticSearch服务异常!');
                          }
                      }
                  }
               }
            });
+          }
+
+          //获取项目外网数据
+          function get_proj_monitor(){
+              $.ajax({
+                  url: "/monitor/view/proj",
+                  type: "post",
+                  datatype: "json",
+                  success: function (dataSet) {
+                     console.log( 'get_proj_monitor=',dataSet.data)
+                     $('#tab-proj-monitor').DataTable( {
+                              "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                              destroy    : true,
+                              async      : true,
+                              ordering   : true,
+                              scrollY    : true,
+                              scrollX    : false,
+                              paging     : false,
+                              data       : dataSet.data,
+                              autoFill   : false,
+                              bAutoWidth : false,
+                              info       : true,
+                              columns: [
+                                { "title": "项目编码","width":"10%"},
+                                { "title": "项目名称"},
+                                { "title": "电信IP"},
+                                { "title": "电信状态","className" : 'table_td_center'},
+                                { "title": "联通IP"},
+                                { "title": "联通状态","className" : 'table_td_center'},
+                                { "title": "链路状态","className" : 'table_td_center'},
+                                { "title": "更新时间","className" : 'table_td_center'},
+                                { "title": "详情","className" : 'table_td_center'},
+                              ],
+                              columnDefs: [
+                                  {
+                                        targets: 3,
+                                        render: function(data, type, row){
+                                            var  market_id    = row[0]
+                                            var  update_time  = row[7]
+                                            if (row[3] == 'False') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-warning"></i>'
+                                                    return msg;
+                                             } else  if (row[3] == 'True') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-success"></i>'
+                                                    return msg;
+                                             } else {
+                                                    return '';
+                                             }
+                                        }
+                                  },
+                                  {
+                                        targets: 5,
+                                        render: function(data, type, row, meta){
+                                            var  market_id    = row[0]
+                                            var  update_time  = row[7]
+                                            if (row[5] == 'False') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-warning"></i>'
+                                                    return msg;
+                                             } else  if (row[5] == 'True') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-success"></i>'
+                                                    return msg;
+                                             } else {
+                                                    return '';
+                                             }
+                                        }
+                                  },
+                                  {
+                                      targets: 6,
+                                      render: function (data, type, row, meta) {
+                                            var  market_id    = row[0]
+                                            var  update_time  = row[7]
+                                            if (row[6] == 'False') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-warning"></i>'
+                                                    return msg;
+                                             } else  if (row[6] == 'True') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-success"></i>'
+                                                    return msg;
+                                             } else {
+                                                    return '';
+                                             }
+                                      }
+                                  },
+                                  {
+                                      targets:8,
+                                      render: function (data, type, row, meta) {
+                                            var  market_id    = row[0]
+                                            var  market_name    = row[1]
+                                            var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_proj_grapha(\''+market_id+'@'+market_name+'\');"/>' +'&nbsp;';
+                                            return msg ;
+                                      }
+                                  }
+                              ],
+                             "language": {
+                                         "search"       : "在表格中搜索:",
+                                         "sProcessing"  : "处理中...",
+                                         "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                         "sZeroRecords" : "没有匹配结果",
+                                         "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                         "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                         "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                         "sInfoPostFix" : "",
+                                         "sSearch"      : "搜索:",
+                                         "sUrl"         : "",
+                                         "sEmptyTable"  : "表中数据为空",
+                                         "sLoadingRecords": "载入中...",
+                                         "sInfoThousands": ",",
+                                         "oPaginate": {
+                                             "sFirst"   : "首页",
+                                             "sPrevious": "上页",
+                                             "sNext"    : "下页",
+                                             "sLast"    : "末页"
+                                         },
+                                         "oAria": {
+                                             "sSortAscending" : ": 以升序排列此列",
+                                             "sSortDescending": ": 以降序排列此列"
+                                         }
+                                     }
+                         });
+                     console.log('dataSet.data=',dataSet.data,dataSet.data.length)
+
+                  }
+             });
+          }
+
+          // 获取图表数据
+          function get_contents_from_div_large(p_market_id) {
+              $.ajax({
+                    url: "/monitor/view/proj/log",
+                    type: "post",
+                    data: {
+                        'market_id'   : p_market_id,
+                        'begin_date'  : $('#begin_date').val(),
+                        'end_date'    : $('#end_date').val()
+                    },
+                    datatype: "json",
+                    success: function (dataSet) {
+                        get_charts_large('链路历史',dataSet.x, dataSet.y,'#edc4a7')
+                    }
+              });
+          }
+
+          // 显示图表
+          function get_charts_large(p_title,p_x_data,p_y_data,p_color) {
+              var myChart = echarts.init($('#monitor_review')[0])
+              var option = {
+                  title:{
+                         text:p_title,
+                         left:'center',
+                         textStyle:{
+                            color:'#9ea7c4',
+                            fontWeight:'bold',
+                            fontFamily:'宋体',
+                    　　　　 fontSize:12
+                        }
+                   },
+                   grid: {
+                       top: '25px',
+                       bottom: '60px',
+                       right: '15px',
+                       left:'30px'
+                   },
+                   xAxis: {
+                        type: 'category',
+                        splitLine:{
+                           show:false
+                        },
+                        axisLine: { show: true,lineStyle:{ color:'#329ba3' }},
+                        axisLabel:{
+                            textStyle:
+                                {  color:'#9ea7c4',
+                                   fontSize:8,
+                                   fontStyle: 'italic',
+                                   fontWeight: 'bold'
+                                }
+                        },
+                        axisTick : {show: false},
+                        data: p_x_data
+                    },
+                    yAxis: {
+                        type: 'value',
+                        splitLine:{
+                           show:false
+                        },
+                        margin: 5,
+                        rotate: 60,
+                        axisTick : {show:false},
+                        splitLine: {show:false},
+                        axisLabel: {textStyle:{color:'#9ea7c4',fontSize:8} },
+                        axisLine : {show: true,lineStyle:{ color:'#6173A3'}},
+                    },
+                   tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#83d5a5'
+                        }
+                      }
+                    },
+                  toolbox: {
+                        show: true,
+                        feature: {
+                            saveAsImage: {
+                        　　　　show:true,
+                        　　　　excludeComponents :['toolbox'],
+                        　　　　pixelRatio: 1
+                            }
+                        }
+                    },
+                    series: [{
+                        data: p_y_data,
+                        type: 'line',
+                        itemStyle : {
+                            normal : {
+                              lineStyle:{
+                                color:p_color
+                              }
+                            }
+                        },
+                        showAllSymbol: false,
+                        symbolSize:1,
+                        smooth: true
+                    }]
+              };
+              myChart.setOption(option);
+        }
+
+          function show_proj_grapha(p_market){
+              p_market_id = p_market.split('@')[0]
+              p_market_name =p_market.split('@')[1]
+              $('#begin_date').val(GetDate(3));
+              $('#end_date').val(GetDate(2));
+              console.log(GetDate(3),GetDate(2))
+              $('#monitor_review_title').text(p_market_name+'链路图表');
+              get_contents_from_div_large(p_market_id);
+              $('.modal').on('show.bs.modal', centerModals);
+              $(window).on('resize', centerModals);
+              $('#con-modal-img-win').modal({
+                  keyboard: false,
+                  backdrop:false
+              });
           }
 
           //标签页事件监听
@@ -860,6 +1139,11 @@
                  console.log('服务监控')
                  get_svr_mon_data()
               }
+
+               if (activeTab=='外网监控') {
+                 console.log('外网监控')
+                 get_proj_monitor()
+               }
            })
 
           //查询当前活动页内容
@@ -902,24 +1186,11 @@
                    get_svr_mon_data();
                });
 
-               // $("#search_text_sys").change(function(){
-               //    get_sys_monitor();
-               // });
-               //
-               // $("#search_text_svr").change(function(){
-               //    get_svr_mon_data();
-               // });
-
           })
 
          $("#tab-svr-monitor").on("click","td i",function(){
              var id = $(this).attr('id').split('@')[1];
              var rq = $(this).attr('id').split('@')[2];
-             console.log('dsid=',$(this).attr('id'))
-             console.log('dsid2=',$(this).attr('id').split('@'))
-             console.log('dsid3=',id)
-             console.log('dsid4=',rq)
-
              $.ajax({
                   url: "/get_ds",
                   type: "post",
