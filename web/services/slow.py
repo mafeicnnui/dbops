@@ -10,10 +10,11 @@ import tornado.web
 from   web.utils.basehandler import basehandler
 from web.model.t_slow        import save_slow, check_slow, query_slow, upd_slow, del_slow, query_slow_by_id, analyze_slow_log, \
                                     query_slow_log_plan, get_slow_db_by_instid, get_slow_user_by_instid
-from   web.model.t_slow      import push_slow,query_slow_log_by_id,query_slow_log,query_slow_log_detail,\
-                                    get_slow_db_by_dsid,get_slow_user_by_dsid
+from   web.model.t_slow      import push_slow,query_slow_log_by_id,query_slow_log_by_id_oracle,query_slow_log_by_id_mssql,query_slow_log,query_slow_log_detail,\
+                                    get_slow_db_by_dsid,get_slow_user_by_dsid,query_slow_log_oracle,query_slow_log_mssql
 from   web.model.t_dmmx      import get_dmm_from_dm, get_slow_inst_names,get_slow_dbs_names, get_gather_server,get_sync_db_server
 from   web.utils.common      import current_rq2,current_rq3,current_rq4
+from   web.model.t_ds        import get_ds_by_dsid
 
 class slowquery(basehandler):
     @tornado.web.authenticated
@@ -160,8 +161,14 @@ class slowlog_query(basehandler):
         begin_query_time = self.get_argument("begin_query_time")
         end_query_time   = self.get_argument("end_query_time")
         db_sql           = self.get_argument("db_sql")
-        v_list           = await query_slow_log(inst_id,ds_id,db_name,db_user,db_host,begin_date,end_date,begin_query_time,end_query_time,db_sql)
-        v_json           = json.dumps(v_list)
+        dss              = await get_ds_by_dsid(ds_id)
+        if dss['db_type'] == '1':
+            v_list = await query_slow_log_oracle(ds_id,db_user,begin_date,end_date,begin_query_time,end_query_time,db_sql)
+        elif dss['db_type'] == '2':
+            v_list = await query_slow_log_mssql(ds_id, db_user, begin_date, end_date, begin_query_time, end_query_time,db_sql)
+        else:
+            v_list =  await query_slow_log(  inst_id, ds_id, db_name, db_user, db_host, begin_date, end_date, begin_query_time,end_query_time, db_sql)
+        v_json  = json.dumps(v_list)
         self.write(v_json)
 
 class query_slowlog_by_id(basehandler):
@@ -172,6 +179,26 @@ class query_slowlog_by_id(basehandler):
         v_list   = await query_slow_log_by_id(sql_id)
         v_json   = json.dumps(v_list)
         self.write(v_json)
+
+
+class query_slowlog_by_id_oracle(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        sql_id = self.get_argument("sql_id")
+        v_list = await query_slow_log_by_id_oracle(sql_id)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class query_slowlog_by_id_mssql(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        sql_id = self.get_argument("sql_id")
+        v_list = await query_slow_log_by_id_mssql(sql_id)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
 
 class query_slowlog_detail_by_id(basehandler):
     @tornado.web.authenticated

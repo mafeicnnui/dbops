@@ -11,7 +11,9 @@ from web.services.slow import slowquery, slowadd, slowadd_save, slow_query, slow
                               query_user_by_slowlog_instid, \
                               query_db_by_slowlog_dsid,\
                               query_user_by_slowlog_dsid,\
-                              slowlogquery,slowlog_query,query_slowlog_by_id,slowloganalyze,\
+                              slowlogquery,slowlog_query,\
+                              query_slowlog_by_id,query_slowlog_by_id_oracle,query_slowlog_by_id_mssql,\
+                              slowloganalyze,\
                               slowlog_analyze,query_slowlog_detail_by_id
 
 slow = [
@@ -27,6 +29,8 @@ slow = [
         (r"/slow/log/query",                 slowlogquery),
         (r"/slow/log/_query",                slowlog_query),
         (r"/slow/log/query/id",              query_slowlog_by_id),
+        (r"/slow/log/query/id/oracle",       query_slowlog_by_id_oracle),
+        (r"/slow/log/query/id/mssql",        query_slowlog_by_id_mssql),
         (r"/slow/log/detail/id",             query_slowlog_detail_by_id),
         (r"/slow/log/plan/id",               query_slowlog_plan_by_id),
         (r"/get/inst/db",                    query_db_by_slowlog_instid),

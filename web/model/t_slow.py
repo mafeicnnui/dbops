@@ -11,6 +11,7 @@ import traceback
 from   web.model.t_db_inst import query_inst_by_id,get_ds_by_instid
 from   web.model.t_sql_release import  format_sql
 from   web.utils.mysql_async import async_processer
+from   web.utils.common  import format_sql as format_sql_format
 
 def check_slow(p_slow):
     result = {}
@@ -130,6 +131,81 @@ async def query_slow_log(p_inst_id,p_ds_id,p_db_name,p_db_user,p_db_host,p_begin
     print(st)
     return await async_processer.query_list(st)
 
+async def query_slow_log_oracle(p_ds_id,p_db_user,p_begin_date,p_end_date,p_begin_query_time,p_end_query_time,p_sql):
+    vv  = ''
+    if p_ds_id != '':
+        vv = "  where a.ds_id ='{0}' ".format(p_ds_id)
+
+    if p_begin_date != '':
+        vv = vv + " and a.first_time>='{0}'\n".format(p_begin_date)
+    if p_end_date != '':
+        vv = vv + " and a.last_time<='{0}'\n".format(p_end_date)
+
+    if p_begin_query_time != '':
+        vv = vv + " and a.avg_time>='{0}'\n".format(p_begin_query_time)
+    if p_end_query_time != '':
+        vv = vv + " and a.avg_time<='{0}'\n".format(p_end_query_time)
+
+    if p_db_user != '':
+        vv = vv + "  and a.username ='{0}' ".format(p_db_user)
+
+    if p_sql != '':
+        vv = vv + "  and instr(a.sql_text,'{0}')>0".format(p_sql)
+
+    st = """SELECT sql_id,
+                   username,
+                   priority,
+                   DATE_FORMAT(a.first_time,'%Y-%m-%d %H:%i:%s') AS  first_time,
+                   DATE_FORMAT(a.last_time,'%Y-%m-%d %H:%i:%s') AS  last_time,
+                   executions,
+                   avg_time,
+                   rows_processed,
+                   disk_reads,
+                   buffer_gets,
+                   sql_text 
+             FROM `t_slow_detail_oracle` a 
+             {}
+             ORDER BY last_time """.format(vv)
+    print(st)
+    return await async_processer.query_list(st)
+
+async def query_slow_log_mssql(p_ds_id,p_db_user,p_begin_date,p_end_date,p_begin_query_time,p_end_query_time,p_sql):
+    vv  = ''
+    if p_ds_id != '':
+        vv = "  where a.ds_id ='{0}' ".format(p_ds_id)
+
+    if p_begin_date != '':
+        vv = vv + " and a.first_time>='{0}'\n".format(p_begin_date)
+    if p_end_date != '':
+        vv = vv + " and a.last_time<='{0}'\n".format(p_end_date)
+
+    if p_begin_query_time != '':
+        vv = vv + " and a.query_time>='{0}'\n".format(p_begin_query_time)
+    if p_end_query_time != '':
+        vv = vv + " and a.query_time<='{0}'\n".format(p_end_query_time)
+
+    if p_db_user != '':
+        vv = vv + "  and a.username ='{0}' ".format(p_db_user)
+
+    if p_sql != '':
+        vv = vv + "  and instr(a.sql_text,'{0}')>0".format(p_sql)
+
+    st = """SELECT sql_id,
+                   loginame,
+                   dbname,
+                   hostname,
+                   DATE_FORMAT(a.first_time,'%Y-%m-%d %H:%i:%s') AS  first_time,
+                   DATE_FORMAT(a.last_time,'%Y-%m-%d %H:%i:%s') AS  last_time,
+                   query_time,
+                   physical_io,
+                   cmd,
+                   sql_text 
+             FROM `t_slow_detail_mssql` a 
+             {}
+             ORDER BY last_time """.format(vv)
+    print(st)
+    return await async_processer.query_list(st)
+
 async def get_slowid():
     rs = await  async_processer.query_one("select ifnull(max(id),0)+1 from t_role")
     return rs[0]
@@ -162,7 +238,13 @@ async def save_slow(p_slow):
         api_server    = p_slow['api_server']
         statement     = """insert into t_slow_log(db_type,ds_id,inst_id,server_id,log_file,query_time,python3_home,run_time,exec_time,script_path,script_file,status,api_server,create_date) 
                              values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',now())
-                        """.format(db_type,ds_id,inst_id,server_id,slow_log_name,slow_time,python3_home,run_time,exec_time,script_path,script_file,slow_status,api_server)
+                        """.format(db_type,ds_id,inst_id,server_id,slow_log_name,slow_time,
+                                   format_sql_format(python3_home),
+                                   run_time,
+                                   exec_time,
+                                   format_sql_format(script_path),
+                                   script_file,
+                                   slow_status,api_server)
         await async_processer.exec_sql(statement)
 
         if db_type == '0':
@@ -187,10 +269,10 @@ async def upd_slow(p_slow):
         server_id      = p_slow['server_id']
         slow_time      = p_slow['slow_time']
         slow_log_name  = p_slow['slow_log_name']
-        python3_home   = p_slow['python3_home']
+        python3_home   = format_sql_format(p_slow['python3_home'])
         run_time       = p_slow['run_time']
         exec_time      = p_slow['exec_time']
-        script_path    = p_slow['script_path']
+        script_path    = format_sql_format(p_slow['script_path'])
         script_file    = p_slow['script_file']
         slow_status    = p_slow['slow_status']
         api_server     = p_slow['api_server']
@@ -268,6 +350,19 @@ async def query_slow_log_by_id(p_sqlid):
     rs  = await async_processer.query_dict_one(sql)
     rs['sql_text'] = format_sql(rs['sql_text'])['message']
     return rs
+
+async def query_slow_log_by_id_oracle(p_sqlid):
+    sql = """SELECT a.ds_id,a.sql_text FROM t_slow_detail_oracle a  WHERE  a.sql_id='{0}' limit 1""".format(p_sqlid)
+    rs  = await async_processer.query_dict_one(sql)
+    rs['sql_text'] = format_sql(rs['sql_text'])['message']
+    return rs
+
+async def query_slow_log_by_id_mssql(p_sqlid):
+    sql = """SELECT a.ds_id,a.sql_text FROM t_slow_detail_mssql a  WHERE  a.sql_id='{0}' limit 1""".format(p_sqlid)
+    rs  = await async_processer.query_dict_one(sql)
+    rs['sql_text'] = format_sql(rs['sql_text'])['message']
+    return rs
+
 
 async def query_slow_log_detail(p_sqlid):
     sql = """SELECT 
