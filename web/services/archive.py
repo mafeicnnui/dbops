@@ -72,6 +72,7 @@ class archiveadd_save(basehandler):
         d_archive['batch_size']           = self.get_argument("batch_size")
         d_archive['api_server']           = self.get_argument("api_server")
         d_archive['status']               = self.get_argument("status")
+        print(d_archive)
         result = await save_archive(d_archive)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -91,7 +92,7 @@ class archiveedit(basehandler):
                     dm_archive_type      = await get_dmm_from_dm('09'),
                     dm_archive_time_type = await get_dmm_from_dm('20'),
                     dm_archive_rentition = await get_dmm_from_dm('21'),
-                    dm_archive_instance  = await get_sync_db_server_by_type(d_archive['archive_db_type'])['message'],
+                    dm_archive_instance  = (await get_sync_db_server_by_type(d_archive['archive_db_type']))['message'],
                     archive_id           = archive_id,
                     archive_tag          = d_archive['archive_tag'],
                     task_desc            = d_archive['comments'],
@@ -212,14 +213,14 @@ class archiveclone(basehandler):
     @tornado.web.authenticated
     async def get(self):
         archive_id   = self.get_argument("archive_id")
-        d_archive    = get_archive_by_archiveid(archive_id)
+        d_archive    = await get_archive_by_archiveid(archive_id)
         self.render("./archive_clone.html",
                     dm_db_type          = await get_dmm_from_dm('02'),
                     dm_archive_server   = await get_sync_server(),
                     dm_archive_type     = await get_dmm_from_dm('09'),
                     dm_archive_time_type= await get_dmm_from_dm('20'),
                     dm_archive_rentition= await get_dmm_from_dm('21'),
-                    dm_archive_instance = await get_sync_db_server_by_type(d_archive['archive_db_type'])['message'],
+                    dm_archive_instance = (await get_sync_db_server_by_type(d_archive['archive_db_type']))['message'],
                     archive_id          = archive_id,
                     archive_tag         = d_archive['archive_tag'] + '_clone',
                     task_desc           = d_archive['comments'] + '_clone',

@@ -209,7 +209,7 @@ def check_archive(p_archive):
     if p_archive["status"] == '':
         return {'code': '-1', 'message': '任务状态不能为空!'}
 
-    return {'code': '-1', 'message': '验证通过!'}
+    return {'code': '0', 'message': '验证通过!'}
 
 def push_archive_task(p_tag,p_api):
     data = {
@@ -219,14 +219,15 @@ def push_archive_task(p_tag,p_api):
     res = requests.post(url, data=data)
     jres = res.json()
     v = ''
-    for c in jres['msg']['crontab'].split('\n'):
+    for c in jres['msg']:
         if c.count(p_tag) > 0:
             v = v + "<span class='warning'>" + c + "</span>"
         else:
             v = v + c
         v = v + '<br>'
-    jres['msg']['crontab'] = v
+    jres['msg'] = v
     return jres
+
 
 def run_archive_task(p_tag,p_api):
     data = {
@@ -235,29 +236,13 @@ def run_archive_task(p_tag,p_api):
     url = 'http://{}/run_script_remote_archive'.format(p_api)
     res = requests.post(url, data=data)
     jres = res.json()
-    v = ''
-    for c in jres['msg']['crontab'].split('\n'):
-        if c.count(p_tag) > 0:
-            v = v + "<span class='warning'>" + c + "</span>"
-        else:
-            v = v + c
-        v = v + '<br>'
-    jres['msg']['crontab'] = v
     return jres
 
 def stop_archive_task(p_tag,p_api):
     data = {
         'tag': p_tag,
     }
-    url = 'http://{}/stop_script_remote_archive'.format(p_api)
-    res = requests.post(url, data=data)
+    url  = 'http://{}/stop_script_remote_archive'.format(p_api)
+    res  = requests.post(url, data=data)
     jres = res.json()
-    v = ''
-    for c in jres['msg']['crontab'].split('\n'):
-        if c.count(p_tag) > 0:
-            v = v + "<span class='warning'>" + c + "</span>"
-        else:
-            v = v + c
-        v = v + '<br>'
-    jres['msg']['crontab'] = v
     return jres
