@@ -704,87 +704,87 @@
                });
              }
 
-            function lock_screen() {
-                 $('#unlock_password').val('');
-                 Custombox.open({
-                    target:'#custom-modal',
-                    effect:'door',
-                    overlayClose:'',
-                    escKey:false,
-                    overlaySpeed:"100",
-                    overlayColor:"#36404a",
-                    plugin:"custommodal"
-                 });
-
-                 screen_lock_status = 'locked';
-                 $.ajax({
-                      url: "/lock",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                         console.log('/lock ok!')
-                     }
-                 });
-            }
-
-            function check_lock_screen () {
-                  var cookie_screen_lock_status;
-                  var cookie_heartbeat;
-
-                  $.ajax({
-                      url: "/lock_status",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                        // console.log('lock_status=',dataSet.code)
-                        cookie_screen_lock_status = dataSet.code;
-                     },
-                 });
-
-                  $.ajax({
-                      url: "/heartbeat",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                        // console.log('heartbeat=',dataSet.code)
-                        cookie_heartbeat = dataSet.code;
-                     },
-                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                     }
-                  });
-
-                  // console.log('check_lock_screen:',get_curr_time());
-                  // console.log('screen_lock_status=',screen_lock_status);
-                  // console.log('cookie_screen_lock_status=',cookie_screen_lock_status);
-                  // console.log('cookie_heartbeat=',cookie_heartbeat);
-
-                  if (cookie_screen_lock_status == 'locked') {
-                     if (screen_lock_status == 'unlock') {
-                         lock_screen();
-                     }
-                  } else if (cookie_heartbeat == 'undefined') {
-                     if (screen_lock_status == 'unlock') {
-                         lock_screen();
-                     }
-                  }
-            }
+            // function lock_screen() {
+            //      $('#unlock_password').val('');
+            //      Custombox.open({
+            //         target:'#custom-modal',
+            //         effect:'door',
+            //         overlayClose:'',
+            //         escKey:false,
+            //         overlaySpeed:"100",
+            //         overlayColor:"#36404a",
+            //         plugin:"custommodal"
+            //      });
+            //
+            //      screen_lock_status = 'locked';
+            //      $.ajax({
+            //           url: "/lock",
+            //           type: "post",
+            //           datatype: "json",
+            //           async:false,
+            //           success: function (dataSet) {
+            //              console.log('/lock ok!')
+            //          }
+            //      });
+            // }
+            //
+            // function check_lock_screen () {
+            //       var cookie_screen_lock_status;
+            //       var cookie_heartbeat;
+            //
+            //       $.ajax({
+            //           url: "/lock_status",
+            //           type: "post",
+            //           datatype: "json",
+            //           async:false,
+            //           success: function (dataSet) {
+            //             // console.log('lock_status=',dataSet.code)
+            //             cookie_screen_lock_status = dataSet.code;
+            //          },
+            //      });
+            //
+            //       $.ajax({
+            //           url: "/heartbeat",
+            //           type: "post",
+            //           datatype: "json",
+            //           async:false,
+            //           success: function (dataSet) {
+            //             // console.log('heartbeat=',dataSet.code)
+            //             cookie_heartbeat = dataSet.code;
+            //          },
+            //          error: function (jqXHR, textStatus, errorThrown) {
+            //             console.log('jqXHR.responseText=',jqXHR.responseText);
+            //             console.log('jqXHR.status=',jqXHR.status);
+            //             console.log('jqXHR.readyState=',jqXHR.readyState);
+            //             console.log('jqXHR.statusText=',jqXHR.statusText);
+            //             console.log('textStatus=',textStatus);
+            //             console.log('errorThrown=',errorThrown);
+            //             if (jqXHR.status==403){
+            //                 swal("登陆信息已过期，请重新登陆!", "", "error")
+            //                 window.location.href='/login'
+            //             } else if (jqXHR.status==502){
+            //                 swal("用户无权访问权限此功能!", "", "error")
+            //             } else {
+            //                 swal("系统不可用,请稍后重试!", "", "error")
+            //             }
+            //          }
+            //       });
+            //
+            //       // console.log('check_lock_screen:',get_curr_time());
+            //       // console.log('screen_lock_status=',screen_lock_status);
+            //       // console.log('cookie_screen_lock_status=',cookie_screen_lock_status);
+            //       // console.log('cookie_heartbeat=',cookie_heartbeat);
+            //
+            //       if (cookie_screen_lock_status == 'locked') {
+            //          if (screen_lock_status == 'unlock') {
+            //              lock_screen();
+            //          }
+            //       } else if (cookie_heartbeat == 'undefined') {
+            //          if (screen_lock_status == 'unlock') {
+            //              lock_screen();
+            //          }
+            //       }
+            // }
 
             function get_privs(){
                  var tmp='';
@@ -980,7 +980,7 @@
 
                  setInterval("updateTime();",1000);
 
-                 setInterval("check_lock_screen();",30000);
+                 // setInterval("check_lock_screen();",30000);
 
                  $(".file").click(function() {
                       $.ajax({
@@ -1058,9 +1058,7 @@
                      });
 
                  });
-
-                 check_lock_screen();
-
+                 // check_lock_screen();
             });
 
         </script>

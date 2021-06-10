@@ -12,7 +12,7 @@ from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
 from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx
-from   web.utils.common import current_rq2,get_day_nday_ago,now
+from   web.utils.common import current_rq2,get_day_nday_ago,now,DateEncoder
 from   web.utils.basehandler import basehandler
 
 class syncquery(basehandler):
@@ -382,7 +382,7 @@ class get_sync(basehandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag = self.get_argument("sync_tag")
         v_list  = await get_sync_by_sync_tag(sync_tag)
-        v_json  = json.dumps(v_list)
+        v_json  = json.dumps(v_list,cls=DateEncoder)
         self.write(v_json)
 
 

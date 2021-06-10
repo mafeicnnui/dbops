@@ -41,8 +41,10 @@ async def query_backup_case(p_db_env):
                    CASE WHEN d.status='0' THEN '√' ELSE '×' END flag                   
              FROM t_db_source a,t_dmmx b,t_dmmx c,t_db_backup_total d,t_db_config e
              WHERE a.db_env=b.dmm AND b.dm='03'
-               and a.db_env='{0}' AND a.db_type=c.dmm AND c.dm='02'
+               and a.db_env='{0}' AND a.db_type not in(4,5) 
+               AND a.db_type=c.dmm AND c.dm='02'
                AND d.db_tag=e.db_tag AND e.db_id=a.id
+               and e.status='1'
                AND create_date=(SELECT MAX(create_date) FROM t_db_backup_total X WHERE x.db_tag=d.db_tag) 
              ORDER BY a.market_id,a.db_env,a.db_type""".format(p_db_env)
 
@@ -51,8 +53,10 @@ async def query_backup_case(p_db_env):
                CAST(SUM(CASE WHEN d.status='1' THEN 1 ELSE 0 END) AS CHAR) AS  failure
             FROM t_db_source a,t_dmmx b,t_dmmx c,t_db_backup_total d,t_db_config e
              WHERE a.db_env=b.dmm AND b.dm='03'
-                AND a.db_env='{0}' AND a.db_type=c.dmm AND c.dm='02'
+                AND a.db_env='{0}' AND a.db_type not in(4,5)
+                AND a.db_type=c.dmm AND c.dm='02'
                 AND d.db_tag=e.db_tag AND e.db_id=a.id
+                and e.status='1'
                 AND create_date=(SELECT MAX(create_date) FROM t_db_backup_total X WHERE x.db_tag=d.db_tag) 
               ORDER BY a.market_id,a.db_env,a.db_type""".format(p_db_env)
 

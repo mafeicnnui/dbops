@@ -1,6 +1,6 @@
  <head>
     <meta charset="utf-8">
-
+    <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
     <style>
          #db-backup-prod,#db-sync-prod{
             width: 100% !important;
@@ -533,6 +533,13 @@
       </div>
      </div>
 
+      <!-- datetimepicker.js -->
+    <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+    <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+
+    <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
     <script src="{{static_url('assets/js/utils.js')}}"></script>
 
     <script>

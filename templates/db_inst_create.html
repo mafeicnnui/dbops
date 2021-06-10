@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>实例管理</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+<!--    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
 
      <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
@@ -25,9 +25,6 @@
         .modal-log {
             width:85%;
             height:80%;
-            /*height:500px;*/
-            /*margin-left:250px;*/
-            /*margin-top:100px;*/
         }
         .table th{
             text-align: center;
@@ -623,12 +620,12 @@
 
    <input id="g_inst_id" type="hidden">
 
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+<!--   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>-->
+<!--   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>-->
+<!--   <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>-->
+<!--   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>-->
+<!--   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>-->
+<!--   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>-->
    <script>
 
        timer='';
@@ -1191,7 +1188,7 @@
                       scrollCollapse: true,
                       paging:     true,
                       ordering   :false,
-                      iDisplayLength: 16,
+                      iDisplayLength: 14,
                       data: dataSet,
                       columns: [
                         { "title": "实例ID","width":"5%"},

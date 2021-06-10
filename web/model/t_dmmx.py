@@ -74,7 +74,7 @@ async def get_db_server():
 
 async def get_db_backup_server():
     sql = """SELECT id,db_desc FROM t_db_source 
-             WHERE  (db_type in(0)  and user in('puppet','easylife') or db_type not in (0))
+             WHERE  (db_type in(0)  and user in('puppet','easylife','apptong') or db_type not in (0))
                 and STATUS=1 ORDER BY db_desc,db_type"""
     return await async_processer.query_list(sql)
 
