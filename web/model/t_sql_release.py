@@ -323,7 +323,7 @@ async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
 
         p_ds = await get_ds_by_dsid(p_dbid)
         if p_ds['db_type'] == '0':
-            val = check_mysql_ddl(p_dbid,p_cdb, p_sql,logon_user,type)
+            val = await check_mysql_ddl(p_dbid,p_cdb, p_sql,logon_user,type)
 
         if val == False:
             result['code'] = '1'

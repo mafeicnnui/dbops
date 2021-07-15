@@ -243,7 +243,8 @@ async def save_sync(p_backup):
 
 async def check_sync_tab(p_sync_id):
     st = "select count(0) from t_db_sync_tab_config where id={}".format(p_sync_id)
-    rs = await async_processer.query_list(st)
+    rs = await async_processer.query_one(st)
+    print('check_sync_tab=>st=',st,rs[0])
     return rs[0]
 
 async def save_sync_tab(p_sync):
@@ -257,7 +258,7 @@ async def save_sync_tab(p_sync):
         sync_cols            = p_sync['sync_cols']
         sync_incr_col        = p_sync['sync_incr_col']
         sync_time            = p_sync['sync_time']
-        if check_sync_tab(sync_id) == 0:
+        if await check_sync_tab(sync_id) == 0:
             sql = """insert into t_db_sync_tab_config(sync_tag,db_name,schema_name,tab_name, sync_cols, sync_incr_col,sync_time,status,create_date)
                        values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}',now())
                   """.format(sync_tag, db_name, schema_name,tab_name, sync_cols,sync_incr_col,sync_time,'1')
@@ -276,6 +277,7 @@ async def save_sync_tab(p_sync):
                        where id = '{}'""".format(sync_tag,db_name, schema_name, tab_name, sync_cols, sync_incr_col, sync_time,sync_id)
             result['code']    = '0'
             result['message'] = '更新成功!'
+        print(sql)
         await async_processer.exec_sql(sql)
         await async_processer.exec_sql("update t_db_sync_config set sync_table='{}' where sync_tag='{}'".format(sync_tag,await query_sync_tab_cfg(sync_tag)))
         return result

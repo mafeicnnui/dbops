@@ -120,9 +120,9 @@ async def del_check_results(user):
 
 async def get_obj_pk_name(p_ds,p_sql):
     if await check_mysql_tab_exists(p_ds, get_obj_name(p_sql)) > 0:
-        return '表:{0}已存在!'.format(get_obj_name(p_sql))
+       return '表:{0}已存在!'.format(get_obj_name(p_sql))
     else:
-        await async_processer.exec_sql(p_sql)
+      await async_processer.exec_sql(p_sql)
     sql = '''SELECT column_name  FROM  information_schema.columns 
                 WHERE upper(table_schema)=DATABASE()  AND upper(table_name)=upper('{}')  AND column_key='PRI'
           '''.format(get_obj_name(p_sql))
@@ -156,24 +156,38 @@ async def get_obj_privs_grammar(p_ds,p_sql):
     try:
         op = get_obj_op(p_sql)
         ob = get_obj_name(p_sql)
-        tb = await f_get_table_ddl(p_ds,ob)
         dp = 'drop table {}'
         if op == 'CREATE_TABLE':
             if await check_mysql_tab_exists(p_ds,ob) > 0:
                return '表:{0} 已存在!'.format(ob)
             else:
-               await async_processer.exec_sql_by_ds(p_ds,p_sql)
-               await async_processer.exec_sql_by_ds(p_ds,dp.format(ob))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql)
+               await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
+               # try:
+               #    await async_processer.exec_sql_by_ds(p_ds,p_sql)
+               # except :
+               #    e=traceback.format_exc().split('pymysql.err.ProgrammingError: (1064, "')[1]
+               #    return e
+
+               # try:
+               #    await async_processer.exec_sql_by_ds(p_ds,dp.format(ob))
+               # except:
+               #     e = traceback.format_exc().split('pymysql.err.ProgrammingError: (1064, "')[1]
+               #     return e
+               return '0'
         if op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
+            tb = await f_get_table_ddl(p_ds, ob)
             if await check_mysql_tab_exists(p_ds,ob) == 0:
                return '表:{0} 不存在!'.format(ob)
             else:
                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_'+ob))
                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-        return '0'
-    except Exception as e:
-        return process_result(str(e))
+               return '0'
+    except :
+        e = traceback.format_exc().split('Error: ')[1]
+        print('e=',e)
+        return e
 
 async def get_obj_privs_grammar_proc(p_ds,p_sql):
     try:
@@ -202,7 +216,6 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
     try:
         op = get_obj_op(p_sql)
         ob = get_obj_name(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
         dp = 'drop table {}'
         if op == 'CREATE_TABLE':
             if await check_mysql_tab_exists(p_ds, ob) > 0:
@@ -212,6 +225,7 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
                 await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
             config[ob] = dp.format(ob)
         elif op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
+            tb = await f_get_table_ddl(p_ds, ob)
             if config.get('dbops_' + ob) is None:
                 if await check_mysql_tab_exists(p_ds, ob) ==  0:
                    return '表:{0}不存在!'.format(ob)
@@ -256,14 +270,13 @@ async def get_col_comment(p_ds,p_sql):
     try:
         ob = get_obj_name(p_sql)
         op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
         dp = 'drop table {}'
         st = '''SELECT table_name,column_name,CASE WHEN column_comment!='' THEN 1 ELSE 0 END 
                   FROM  information_schema.columns   
                      WHERE UPPER(table_schema)=DATABASE()  AND UPPER(table_name) = upper('{}')'''
 
         if op == 'CREATE_TABLE':
-            if await check_mysql_tab_exists(p_ds,ob) > 0:
+            if (await check_mysql_tab_exists(p_ds,ob)) > 0:
                 return  '表:{0}已存在!'.format(ob)
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
@@ -272,9 +285,10 @@ async def get_col_comment(p_ds,p_sql):
                 await async_processer.exec_sql_by_ds(p_ds, 'drop table {}'.format(ob))
                 return col
         elif op == 'ALTER_TABLE_ADD':
-            if await check_mysql_tab_exists(p_ds, ob) ==  0:
+            if await (check_mysql_tab_exists(p_ds, ob)) ==  0:
                return '表:{0} 不存在!'.format(get_obj_name(p_sql))
             else:
+               tb = await f_get_table_ddl(p_ds, ob)
                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                col = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
@@ -372,7 +386,6 @@ async def get_time_col_default_value(p_ds,p_sql):
         ob = get_obj_name(p_sql)
         op = get_obj_op(p_sql)
         dp = 'drop table {}'
-        tb = await f_get_table_ddl(p_ds, ob)
         st = '''SELECT  table_name, column_name,'CURRENT_TIMESTAMP',
                         CASE WHEN column_default='CURRENT_TIMESTAMP'  THEN  1 ELSE 0 END
                   FROM  information_schema.columns   
@@ -403,6 +416,7 @@ async def get_time_col_default_value(p_ds,p_sql):
            if await check_mysql_tab_exists(p_ds, ob) ==  0:
               return '表:{0}不存在!'.format(get_obj_name(p_sql))
            else:
+              tb   = await f_get_table_ddl(p_ds, ob)
               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
               rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
@@ -490,7 +504,7 @@ async def check_tab_rule(p_sql,p_user,n_sxh):
                where rule_type='ddl' and status='1' 
                 and rule_code in('switch_tab_max_len','switch_tab_not_digit_first',
                                  'switch_tab_two_digit_end','switch_tab_disable_prefix') order by id"""
-    rs = await async_processer.query_list(sql)
+    rs = await async_processer.query_dict_list(sql)
     for rule in rs:
         if rule['rule_code'] == 'switch_tab_max_len' :
             if get_obj_op(p_sql) == 'CREATE_TABLE' and  get_obj_type(p_sql.strip()) == 'TABLE':
@@ -716,50 +730,54 @@ async def get_tab_char_col_len_multi(p_ds,p_sql,rule,config):
     except Exception as e:
         return process_result(str(e))
 
-async def get_tab_has_fields(p_ds,p_sql):
+async def get_tab_has_fields(p_ds,p_sql,p_rule):
     ob = get_obj_name(p_sql)
     op = get_obj_op(p_sql)
-    tb = await f_get_table_ddl(p_ds, ob)
     dp = 'drop table {}'
     try:
-        st = '''SELECT table_name,'create_time' AS column_name 
-                     FROM  information_schema.tables a  
-                    WHERE a.table_schema=DATABASE()  
-                      AND a.table_name= LOWER('{0}')
-                      AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
-                                     WHERE a.table_schema=b.table_schema
-                                       AND b.table_schema=DATABASE()
-                                       AND a.table_name=b.table_name
-                                       AND b.column_name='create_time')
-                    UNION ALL
-                    SELECT table_name,'update_time' AS column_name 
-                     FROM  information_schema.tables a  
-                    WHERE a.table_schema=DATABASE()  
-                      AND a.table_name = LOWER('{1}')
-                      AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
-                                     WHERE a.table_schema=b.table_schema
-                                       AND b.table_schema=DATABASE()
-                                       AND a.table_name=b.table_name
-                                       AND b.column_name='update_time')'''
+        st =''
+        for col in p_rule['rule_value'].split(','):
+            if op == 'CREATE_TABLE':
+                st = st +'''SELECT table_name,'{}' AS column_name
+                                    FROM  information_schema.tables a
+                                   WHERE a.table_schema=DATABASE()
+                                     AND a.table_name= LOWER('{}')
+                                     AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
+                                                    WHERE a.table_schema=b.table_schema
+                                                      AND b.table_schema=DATABASE()
+                                                      AND a.table_name=b.table_name
+                                                      AND b.column_name='{}')  union all \n'''.format(col,ob,col)
+            elif op == 'ALTER_TABLE_ADD':
+                st = st + '''SELECT table_name,'{}' AS column_name
+                                    FROM  information_schema.tables a
+                                   WHERE a.table_schema=DATABASE()
+                                     AND a.table_name= LOWER('{}')
+                                     AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
+                                                    WHERE a.table_schema=b.table_schema
+                                                      AND b.table_schema=DATABASE()
+                                                      AND a.table_name=b.table_name
+                                                      AND b.column_name='{}')  union all \n'''.format(col,'dbops_' + ob, col)
 
         if op == 'CREATE_TABLE':
-            if await check_mysql_tab_exists(p_ds, ob) > 0:
+            if (await check_mysql_tab_exists(p_ds, ob)) > 0:
                 return  '表:{0}已存在!'.format(ob)
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
-                col = await async_processer.query_list_by_ds(p_ds, st.format(ob,ob))
+                col = await async_processer.query_list_by_ds(p_ds, st[0:-12].replace('$$TAB$$',ob))
                 await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
                 return col
         elif op == 'ALTER_TABLE_ADD':
-            if await check_mysql_tab_exists(p_ds, ob) == 0:
+            if await (check_mysql_tab_exists(p_ds, ob)) == 0:
                 return '表:{0}不存在!'.format(get_obj_name(p_sql))
             else:
+                tb = await f_get_table_ddl(p_ds, ob)
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
+                rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format('dbops_' + ob,'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                 return rs
     except Exception as e:
+        traceback.print_exc()
         return process_result(str(e))
 
 async def get_tab_rows(p_ds,p_sql):
@@ -812,28 +830,27 @@ async def get_tab_has_fields_multi(p_ds,p_sql,config):
     except Exception as e:
         return process_result(str(e))
 
-async def get_tab_tcol_datetime(p_ds,p_sql):
+async def get_tab_tcol_datetime(p_ds,p_sql,p_rule):
     try:
         ob = get_obj_name(p_sql)
         op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
         dp = 'drop table {}'
         st = '''SELECT table_name,
                            'create_time' AS column_name
-                     FROM  information_schema.tables a  
-                    WHERE a.table_schema=DATABASE()  
+                     FROM  information_schema.tables a
+                    WHERE a.table_schema=DATABASE()
                       AND a.table_name= LOWER('{0}')
                       AND EXISTS(SELECT 1 FROM information_schema.columns b
                                      WHERE a.table_schema=b.table_schema
                                        AND b.table_schema=DATABASE()
                                        AND a.table_name=b.table_name
                                        AND b.column_name='create_time'
-                                       AND b.data_type!='datetime')   
+                                       AND b.data_type!='datetime')
                     UNION ALL
                     SELECT table_name,
                            'update_time' AS column_name
-                     FROM  information_schema.tables a  
-                    WHERE a.table_schema=DATABASE()  
+                     FROM  information_schema.tables a
+                    WHERE a.table_schema=DATABASE()
                       AND a.table_name= LOWER('{1}')
                       AND EXISTS(SELECT 1 FROM information_schema.columns b
                                      WHERE a.table_schema=b.table_schema
@@ -850,6 +867,7 @@ async def get_tab_tcol_datetime(p_ds,p_sql):
               await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
               return rs
         elif op == 'ALTER_TABLE_ADD':
+            tb = await f_get_table_ddl(p_ds, ob)
             if await check_mysql_tab_exists(p_ds, ob) == 0:
                 return '表:{0}不存在!'.format(get_obj_name(p_sql))
             else:
@@ -909,7 +927,6 @@ async def get_col_not_null(p_ds,p_sql):
     try:
         ob = get_obj_name(p_sql)
         op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
         dp = 'drop table {}'
         st = '''SELECT table_name,column_name,CASE WHEN is_nullable='YES' THEN 0 ELSE 1 END 
                 FROM  information_schema.columns  WHERE UPPER(table_schema)=DATABASE()  AND UPPER(table_name) = upper('{}')'''
@@ -925,6 +942,7 @@ async def get_col_not_null(p_ds,p_sql):
             if await check_mysql_tab_exists(p_ds, ob) == 0:
                 return '表:{0}不存在!'.format(ob)
             else:
+                tb = await f_get_table_ddl(p_ds, ob)
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                 rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
@@ -1068,7 +1086,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
     st     = p_sql.strip()
     ru     = """select id,rule_code,rule_name,rule_value,error 
                   from t_sql_audit_rule where rule_type='ddl' and status='1' and id not in (27,28,29,30) order by id"""
-    rs     = await async_processer.query_list(ru)
+    rs     = await async_processer.query_dict_list(ru)
     print('输出检测项...')
     print('-'.ljust(150, '-'))
     for r in rs:
@@ -1083,9 +1101,10 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                 print('检测DDL语法及权限...')
                 v = await get_obj_privs_grammar(ds,st)
                 if v != '0':
-                    rule['error'] = format_sql(format_exception(v))
+                    rule['error'] = format_sql(v)
                     await save_check_results(rule, p_user, st, sxh)
                     res = False
+                    break
 
         if rule['rule_code'] == 'switch_tab_not_exists_pk' and rule['rule_value'] == 'true':
             if op == 'CREATE_TABLE':
@@ -1099,7 +1118,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
             if op == 'CREATE_TABLE':
                 print('强制主键名为ID...')
                 if tp == 'TABLE' and (p_sql.upper().count('PRIMARY') > 0 \
-                        and p_sql.upper().count('KEY') > 0) and await get_obj_pk_name(ds,st) != 'id':
+                        and p_sql.upper().count('KEY') > 0) and (await get_obj_pk_name(ds,st)) != 'id':
                     rule['error'] = rule['error'].format(ob)
                     await save_check_results(rule, p_user,st,sxh)
                     res = False
@@ -1108,7 +1127,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
             if op == 'CREATE_TABLE':
                 print('强制主键为自增列...')
                 if tp== 'TABLE' and (p_sql.upper().count('PRIMARY') > 0 \
-                            and p_sql.upper().count('KEY') > 0) and get_obj_pk_exists_auto_incr(db_cur, p_sql) == 0:
+                            and p_sql.upper().count('KEY') > 0) and (await get_obj_pk_exists_auto_incr(ds, p_sql)) == 0:
                     rule['error'] = rule['error'].format(get_obj_name(p_sql.strip()))
                     await save_check_results(rule, p_user,st,sxh)
                     res = False
@@ -1117,7 +1136,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
             if op == 'CREATE_TABLE':
                 print('强制自增列初始值为1...')
                 if tp == 'TABLE' and (p_sql.upper().count('PRIMARY') > 0  and p_sql.upper().count('KEY') > 0) \
-                      and await get_obj_exists_auto_incr_not_1(ds, p_sql) != 1:
+                      and (await get_obj_exists_auto_incr_not_1(ds, p_sql)) != 1:
                     rule['error'] = rule['error'].format(ob)
                     await save_check_results(rule,p_user,st,sxh)
                     res = False
@@ -1126,23 +1145,24 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
             if get_obj_op(p_sql) == 'CREATE_TABLE':
                 print('不允许主键类型非int/bigint...')
                 if tp == 'TABLE' and (p_sql.upper().count('PRIMARY') > 0 \
-                        and p_sql.upper().count('KEY') > 0) and get_obj_pk_type_not_int_bigint(db_cur, p_sql) > 0:
+                        and p_sql.upper().count('KEY') > 0) and (await get_obj_pk_type_not_int_bigint(ds, p_sql)) > 0:
                     rule['error'] = rule['error'].format(get_obj_name(p_sql.strip()))
-                    await save_check_results(db_ops, rule, p_user, p_sql,sxh)
+                    await save_check_results(rule, p_user, p_sql,sxh)
                     res = False
 
         if rule['rule_code'] == 'switch_tab_comment' and rule['rule_value'] == 'true':
             if op == 'CREATE_TABLE':
                 print('检查表注释...')
-                if tp == 'TABLE' and await get_tab_comment(ds, p_sql) == 0:
+                if tp == 'TABLE' and ((await get_tab_comment(ds, p_sql)) == 0):
                     rule['error'] = rule['error'].format(ob)
-                    await save_check_results(db_ops, rule, p_user, p_sql,sxh)
+                    await save_check_results(rule, p_user, p_sql,sxh)
                     res = False
 
         if rule['rule_code'] == 'switch_col_comment' and rule['rule_value'] == 'true' and tp == 'TABLE':
             if get_obj_op(p_sql) in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
                 print('检查列注释...')
-                v = await get_col_comment(ds, st)
+                v = await get_col_comment(ds,st)
+                print('get_col_comment=',v)
                 e = rule['error']
                 try:
                     for i in v:
@@ -1173,7 +1193,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                     await save_check_results(rule,p_user,st,sxh)
 
         if rule['rule_code'] == 'switch_col_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
-            if get_obj_op(p_sql) in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
+            if op in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
                 print('检查列默认值...')
                 v = await get_col_default_value(ds, st)
                 e = rule['error']
@@ -1189,8 +1209,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                     rule['error'] = v
                     await save_check_results(rule,p_user,st,sxh)
 
-
-        if rule['rule_code'] == 'switch_time_col_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
+        if rule['rule_code'] == 'switch_tcol_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
             if op in ('CREATE_TABLE'):
                 print('检查时间字段默认值...')
                 v = await get_time_col_default_value(ds, st)
@@ -1204,8 +1223,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                 except:
                     res = False
                     rule['error'] = v
-                    await save_check_results(rule, p_user, p_sql.strip(),n_sxh)
-
+                    await save_check_results(rule, p_user, p_sql.strip(),sxh)
 
         if rule['rule_code'] == 'switch_char_max_len' and tp == 'TABLE':
             if op == 'CREATE_TABLE':
@@ -1233,7 +1251,6 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                     rule['error'] = v
                     await save_check_results(rule,p_user,st,sxh)
 
-
         if rule['rule_code'] == 'switch_tab_tcol_datetime' and rule['rule_value'] == 'true' and tp == 'TABLE':
             if op == 'CREATE_TABLE':
                 print('时间字段类型为datetime...')
@@ -1248,7 +1265,6 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                     res = False
                     rule['error'] = v
                     await save_check_results(rule,p_user,st,sxh)
-
 
         if rule['rule_code'] == 'switch_tab_char_total_len' and tp == 'TABLE':
             if get_obj_op(p_sql.strip()) == 'CREATE_TABLE':
@@ -1267,7 +1283,6 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                     res = False
                     rule['error'] = rule['error'].format(ob,rule['rule_value'])
                     await save_check_results(rule,p_user,st,sxh)
-
 
         if rule['rule_code'] == 'switch_disable_trigger' and rule['rule_value'] == 'true':
             if get_obj_type(p_sql) == 'TRIGGER':
@@ -1305,6 +1320,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
     return res
 
 async def process_single_ddl_proc(p_dbid,p_cdb,p_sql,p_user):
+    print('process_single_ddl_proc...')
     sxh  = 1
     res  = True
     op   = get_obj_op(p_sql.strip())
@@ -2019,7 +2035,7 @@ async def save_check_results(rule,user,psql,sxh):
     await async_processer.exec_sql(sql)
 
 async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
-    del_check_results(p_user)
+    await del_check_results(p_user)
     # TYPE: FUNC\PROC\TRI\EVENT
     if p_type == '4':
         print('process_single_ddl....')

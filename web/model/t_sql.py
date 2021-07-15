@@ -287,6 +287,20 @@ def get_sqlserver_proxy_result_dict(p_ds,p_sql,curdb):
         result['column'] = ''
     return result
 
+def get_mongo_proxy_result():
+
+    pass
+
+def get_mongo_result():
+    pass
+
+def get_redis_proxy_result():
+    pass
+
+def get_redis_result():
+    pass
+
+
 async def exe_query(p_dbid,p_sql,curdb):
     result = {}
 
@@ -310,6 +324,20 @@ async def exe_query(p_dbid,p_sql,curdb):
             result = get_sqlserver_proxy_result(p_ds, p_sql, curdb)
         else:
             result = get_sqlserver_result(p_ds, p_sql, curdb)
+
+    # 查询Redis数据源
+    if p_ds['db_type'] == '5':
+        if p_ds['proxy_status'] == '1':
+            result = get_redis_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_redis_result(p_ds, p_sql, curdb)
+
+    # 查询MongoDB数据源
+    if p_ds['db_type'] == '6':
+        if p_ds['proxy_status'] == '1':
+            result = get_mongo_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_mongo_result(p_ds, p_sql, curdb)
 
 
     return result
