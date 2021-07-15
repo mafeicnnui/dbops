@@ -27,5 +27,16 @@ jQuery(document).ready(function () {
         defaultTIme: false
     });
 
+    $('.datepicker_kpi').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        language: 'zh-CN',
+        format: "yyyy-mm",
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        defaultTIme: false
+    });
+
 
 });
