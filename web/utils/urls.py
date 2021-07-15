@@ -28,6 +28,8 @@ from web.urls.monitor  import monitor
 from web.urls.inst     import inst
 from web.urls.slow     import slow
 from web.urls.minio    import minio
+from web.urls.bbtj    import bbtj
+
 
 urls = []
 urls.extend(logon)
@@ -53,3 +55,4 @@ urls.extend(monitor)
 urls.extend(inst)
 urls.extend(slow)
 urls.extend(minio)
+urls.extend(bbtj)

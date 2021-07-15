@@ -12,12 +12,19 @@ function GetDate(format) {
      var hour  = now.getHours();//得到小时
      var minu  = now.getMinutes();//得到分钟
      var sec   = now.getSeconds();//得到秒
+
+     if (month <10) {
+         month="0"+month
+     }
+
      if (format==1){
          _time = year+"-"+month+"-"+date
      } else if (format==2){
          _time = year+"-"+month+"-"+date+" "+hour+":"+minu+":"+sec
      } else if (format==3){
         _time = year+"-"+month+"-"+date+" 0:0:0"
+     } else if (format==4) {
+        _time = year+"-"+month
      }
     return _time
  }
