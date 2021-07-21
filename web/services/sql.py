@@ -131,14 +131,15 @@ class sqlrun(basehandler):
 
 class sql_run(basehandler):
    @tornado.web.authenticated
-   def post(self):
+   async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        dbid    = self.get_argument("dbid")
        db_name = self.get_argument("db_name")
        sql_id  = self.get_argument("sql_id")
        name    = str(self.get_secure_cookie("username"), encoding="utf-8")
-       t = threading.Thread(target=exe_sql(dbid,db_name,sql_id,name))
-       t.start()
+       # t       = threading.Thread(target=(await exe_sql(dbid,db_name,sql_id,name)))
+       # t.start()
+       await exe_sql(dbid, db_name, sql_id, name)
        self.write({"code": 'threading', "message": ''})
 
 

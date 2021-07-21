@@ -12,9 +12,10 @@ from web.utils.common           import current_time
 from web.model.t_ds             import get_ds_by_dsid
 from web.model.t_sql_check      import check_mysql_ddl
 from web.utils.common           import send_mail
+from web.utils.common           import format_sql as fmt_sql
 from web.model.t_user           import get_user_by_userid
 from web.utils.mysql_async      import async_processer
-
+from web.utils.mysql_rollback   import write_rollback
 
 async def get_sqlid():
     sql="select ifnull(max(id),0)+1 from t_sql_release"
@@ -66,6 +67,7 @@ async def query_audit(p_name,p_dsid,p_ver,p_userid):
               {0}
             order by a.creation_date desc
           """.format(v_where)
+    print(sql)
     return await async_processer.query_list(sql)
 
 async def query_run(p_name,p_dsid,p_ver,p_userid):
@@ -165,7 +167,6 @@ async def get_order_attachment_number(p_wtd_no):
     else:
        return rs[0].count(',')+1
 
-
 async def query_wtd_detail(p_wtd_no,p_userid):
     sql = """SELECT 
                  order_no,
@@ -254,7 +255,6 @@ async def delete_order(order_number):
         result['message'] = '删除失败!'
         return result
 
-
 async def release_order(p_order_no,p_userid):
     result = {}
     try:
@@ -275,13 +275,12 @@ async def release_order(p_order_no,p_userid):
         return result
 
 async def query_audit_sql(id):
-    sql = """select a.sqltext from t_sql_release a  where a.id={0}""".format(id)
-    rs = await async_processer.query_one(sql)
+    sql = """select a.sqltext,a.error,b.rollback_statement from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
+    rs = await async_processer.query_dict_one(sql)
     result = {}
     result['code'] = '0'
-    result['message'] = rs[0]
+    result['message'] = rs
     return result
-
 
 async def save_sql(p_dbid,p_sql,desc,logon_user):
     result = {}
@@ -309,7 +308,6 @@ async def save_sql(p_dbid,p_sql,desc,logon_user):
         result['code'] = '-1'
         result['message'] = '发布失败！'
         return result
-
 
 async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
     result = {}
@@ -351,7 +349,8 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,ver,type):
 
         sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,version,type) 
                  values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')
-            """.format(get_sqlid(),p_dbid,p_cdb,p_sql,'0',desc,current_time(),p_user['username'],current_time(),p_user['username'],ver,type)
+            """.format((await get_sqlid()),p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['username'],current_time(),p_user['username'],ver,type)
+        print('release=>',sql)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='发布成功！'
@@ -361,7 +360,6 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,ver,type):
         result['code'] = '-1'
         result['message'] = '发布失败!'
         return result
-
 
 async def upd_sql(p_sqlid,p_username,p_status,p_message):
     result={}
@@ -384,8 +382,7 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message):
         result['message'] = '审核异常!'
         return result
 
-
-async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None):
+async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,start_pos=None,stop_pos=None):
     try:
         if p_flag == 'before':
             sql = """update t_sql_release 
@@ -396,20 +393,26 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None):
                     where id='{3}'""".format(current_time(),p_username,current_time(),str(p_sqlid))
         elif p_flag =='after':
             sql = """update t_sql_release 
-                        set last_update_date ='{0}' ,
-                            exec_end ='{1}'                    
-                        where id='{2}'""".format(current_time(), current_time(), str(p_sqlid))
-        else:
+                        set status ='4' ,
+                            last_update_date ='{0}' ,
+                            exec_end ='{1}',
+                            binlog_file='{2}',
+                            start_pos='{3}',
+                            stop_pos='{4}'
+                        where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
+        elif p_flag=='error':
             sql = """update t_sql_release 
-                        set  status ='4' ,
+                        set  status ='5' ,
                              last_update_date ='{0}' ,
                              exec_end ='{1}',
                              error = '{2}'                    
                         where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
+        else:
+           pass
+        print(sql)
         await async_processer.exec_sql(sql)
     except :
         traceback.print_exc()
-
 
 async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
     result = {}
@@ -418,13 +421,26 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         p_ds['service'] = p_db_name
         await upd_run_status(p_sql_id,p_username,'before')
         sql = await get_sql_by_sqlid(p_sql_id)
+        # get binlog ,start_position
+        await async_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
+        await async_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
+        rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
+        binlog_file=rs1[0]
+        start_position=rs1[1]
         await async_processer.exec_sql_by_ds(p_ds,sql)
-        await upd_run_status(p_sql_id, p_username, 'after')
+        # get stop_position
+        rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
+        stop_position=rs2[1]
+        print(binlog_file,start_position,stop_position)
+        await upd_run_status(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
+        # write rollback statement
+        write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
+
         result['code'] = '0'
         result['message'] = '执行成功!'
         return result
     except Exception as e:
-        traceback.print_exc()
+        #traceback.print_exc()
         error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'
         result['code'] = '-1'
         result['message'] = '执行失败!'

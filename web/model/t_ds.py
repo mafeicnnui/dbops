@@ -240,7 +240,7 @@ async def get_dss_sql_audit(logon_name):
     sql="""select cast(id as char) as id,a.db_desc as name
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
-               and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='3')
+               and a.id IN (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='3')
                order by a.db_desc
         """.format(d_user['userid'])
     return await async_processer.query_list(sql)
@@ -250,7 +250,7 @@ async def get_dss_sql_run(logon_name):
     sql="""select cast(id as char) as id,a.db_desc as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
-               and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='4')
+               and a.id in (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='4')
                order by a.db_desc
         """.format(d_user['userid'])
     return await async_processer.query_list(sql)
@@ -260,7 +260,7 @@ async def get_dss_order(logon_name):
     sql="""select cast(id as char) as id,a.db_desc as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
-               and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='5')
+               and a.id in (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='5')
                order by a.db_desc
         """.format(d_user['userid'])
     return await async_processer.query_list(sql)

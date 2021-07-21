@@ -100,7 +100,10 @@ def check_idx_name_col(p_sql,rule):
 async def check_mysql_tab_exists(ds,tab):
    sql="""select count(0) from information_schema.tables 
             where table_schema=database() and table_name='{0}'""".format(tab)
+   print('check_mysql_tab_exists=>p_ds=>',ds)
+   print('check_mysql_tab_exists=>sql=>',sql)
    rs = await async_processer.query_one_by_ds(ds,sql)
+   print('check_mysql_tab_exists=>rs=>',rs,rs[0])
    return rs[0]
 
 async def check_mysql_proc_exists(ds,tab):
@@ -119,16 +122,17 @@ async def del_check_results(user):
     await async_processer.exec_sql(sql)
 
 async def get_obj_pk_name(p_ds,p_sql):
-    if await check_mysql_tab_exists(p_ds, get_obj_name(p_sql)) > 0:
+    if (await check_mysql_tab_exists(p_ds, get_obj_name(p_sql))) > 0:
        return '表:{0}已存在!'.format(get_obj_name(p_sql))
     else:
-      await async_processer.exec_sql(p_sql)
+      await async_processer.exec_sql_by_ds(p_ds,p_sql)
+
     sql = '''SELECT column_name  FROM  information_schema.columns 
                 WHERE upper(table_schema)=DATABASE()  AND upper(table_name)=upper('{}')  AND column_key='PRI'
           '''.format(get_obj_name(p_sql))
-    rs  = await async_processer.query_one(sql)
+    rs  = await async_processer.query_one_by_ds(p_ds,sql)
     col = rs[0]
-    await async_processer.exec_sql('drop table {}'.format(get_obj_name(p_sql)))
+    await async_processer.exec_sql_by_ds(p_ds,'drop table {}'.format(get_obj_name(p_sql)))
     return col
 
 async def get_obj_pk_name_multi(p_ds,p_sql,config):
@@ -1423,20 +1427,21 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
     sxh  = 1
     res  = True
     op   = get_obj_op(p_sql.strip())
-    ds   = get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
+    ds   = await get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
     st   = p_sql.strip()
     ru   = """select id,rule_code,rule_name,rule_value,error 
                 from t_sql_audit_rule where  rule_type='dml' and status='1'  order by id"""
-    rs   = await async_processer.query_list(ru)
+    rs   = await async_processer.query_dict_list(ru)
 
     print('输出检测项...op=',op)
     print('-'.ljust(150, '-'))
     for r in rs:
         print(r)
     # delete table result
-    del_check_results(p_user)
+    await del_check_results(p_user)
     # check sql
     for rule in rs:
+        print('xxx=',rule)
         rule['error'] = format_sql(rule['error'])
 
         if rule['rule_code'] == 'switch_dml_where' and rule['rule_value'] == 'true':
@@ -1477,10 +1482,14 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
         if rule['rule_code'] == 'switch_dml_ins_exists_col' and rule['rule_value'] == 'true':
             if op in('INSERT'):
                print('检查插入语句那必须存在列名...')
-               n_pos= re.split(r'\s+', p_sql.strip())[2].count(')')
-               if n_pos == 0:
-                   n_pos = re.split(r'\s+', p_sql.strip())[3].count(')')
-               if n_pos == 0:
+               print(re.split(r'\s+', p_sql.strip()))
+               print(re.split(r'\s+', p_sql.strip())[2])
+               print(re.split(r'\s+', p_sql.strip())[3])
+               n_pos1 = re.split(r'\s+', p_sql.strip())[2].count('(')
+               n_pos2 = re.split(r'\s+', p_sql.strip())[3].count('(')
+               # if n_pos == 0:
+               #     n_pos = re.split(r'\s+', p_sql.strip())[3].count(')')
+               if n_pos1 == 0 and n_pos2 ==0:
                    await save_check_results(rule, p_user,st,sxh)
                    res = False
 

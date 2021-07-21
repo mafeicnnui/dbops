@@ -1,18 +1,11 @@
 <html>
 <head>
     <title>SQL审核</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
     <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext/language_tools.js')}}"></script>
-
-   <!-- Sweet Alert -->
+    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
+    <!-- Sweet Alert -->
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
 
     <style>
@@ -21,6 +14,9 @@
             height:20%;
             /*margin-left:500px;*/
             /*margin-top :150px;*/
+        }
+         #ace-editor {
+           height:200px;
         }
         .table th{
             text-align: center;
@@ -94,7 +90,6 @@
             <div class="modal-body">
                 <input id="sql_id" type="hidden"  value='' >
                 <input id="sql_status" type="hidden"  value='' >
-
                 <div class="row">
                     <div id='ace-editor' class="col-md-12"></div>
                 </div>
@@ -132,13 +127,6 @@
 
 </body>
 
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
 
 <script type="text/javascript">
 
@@ -300,60 +288,67 @@
 
       });
 
+      function format_sql(sql) {
+           var res='';
+           $.ajax({
+                type: 'post',
+                url: '/sql/_format',
+                async:false,
+                data: {
+                    "sql":sql
+                },
+                success: function (dataSet) {
+                  res=dataSet.message
+                },
+            })
+            return res
+      }
+
       function show_audit(msg){
          id =msg.split(',')[0]
          status =msg.split(',')[1]
          $.ajax({
-                url     : "/sql/audit/detail",
-                type    : "post",
-                datatype: "json",
-                data:{id: id},
+                url      : "/sql/audit/detail",
+                type     : "post",
+                datatype : "json",
+                data     : {
+                    id: id
+                },
                 success: function (dataSet) {
-                    var sql = dataSet.message
-                    console.log('sql=',sql)
-                    $.ajax({
-                        type: 'post',
-                        url: '/sql/_format',
-                        data: {"sql":sql},
-                        success: function (dataSet) {
-                            console.log('sql2=',dataSet);
-                            $('#sql_id').val(id);
-                            $('#sql_status').val(status);
-                            console.log('status=',status);
-                            if (status=='已发布') {
-                                console.log('A');
-                                $('#auditSql').removeAttr("disabled");
-                            } else {
-                                console.log('AAA');
-                                $('#auditSql').attr("disabled","disabled");
-                            }
+                    $('#sql_id').val(id);
+                    $('#sql_status').val(status);
+                    console.log('status=',status);
+                    if (status=='已发布') {
+                        console.log('A');
+                        $('#auditSql').removeAttr("disabled");
+                    } else {
+                        console.log('AAA');
+                        $('#auditSql').attr("disabled","disabled");
+                    }
 
-                            set_audit_btn();
+                    set_audit_btn();
+                    var editor = ace.edit("ace-editor");
+                    editor.setValue('')
+                    editor.insert(format_sql(dataSet.message.sqltext))
+                    editor.setReadOnly(true);
 
-                            var editor = ace.edit("ace-editor");
-                            editor.setValue('')
-                            editor.insert(dataSet.message);
-                            editor.setReadOnly(true);
-
-                            $('.modal').on('show.bs.modal', centerModals);
-                            $(window).on('resize', centerModals);
-                            $('#con-close-modal').modal({
-                               keyboard: false,
-                               backdrop:false
-                            });
-                        },
-                        error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                setTimeout(" window.location.href='/login'",3000);
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal').modal({
+                       keyboard: false,
+                       backdrop:false
                     })
-                }
+                },
+                error: function (jqXHR) {
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+               }
         });
     }
 

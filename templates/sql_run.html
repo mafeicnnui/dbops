@@ -1,16 +1,10 @@
 <html>
 <head>
     <title>SQL执行</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
      <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext/language_tools.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
 
      <!-- Sweet Alert -->
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
@@ -22,10 +16,10 @@
             width:60%;
             height:20%;
             margin-left:500px;
-            margin-top:200px;
+            margin-top:100px;
         }
 
-        #ace-editor{
+        #ace-editor,#ace-editor3{
            height:200px;
         }
 
@@ -111,6 +105,11 @@
                 </div>
                 <br>
                 <div class="row">
+                  <span>备份语句：</span>
+                  <div id='ace-editor3' class="col-md-12"></div>
+                </div>
+                <br>
+                <div class="row">
                     <span>运行错误：</span>
                     <div id='ace-editor2' class="col-md-12"></div>
                 </div>
@@ -126,167 +125,184 @@
 
 </body>
 
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
+<script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
 <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
-
 
 <script type="text/javascript">
     $(document).ready(function() {
+          var editor = ace.edit("ace-editor");
+          editor.setTheme("ace/theme/xcode");
+          editor.getSession().setMode("ace/mode/sql");
+          editor.setShowPrintMargin(false);
+          editor.setFontSize(16);
+          editor.getSession().setUseSoftTabs(true);
+          editor.setReadOnly(true);
 
-              var editor = ace.edit("ace-editor");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/sql");
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(16);
-              editor.getSession().setUseSoftTabs(true);
-              editor.setReadOnly(true);
+          var editor2 = ace.edit("ace-editor2");
+          editor2.setTheme("ace/theme/xcode");
+          editor2.getSession().setMode("ace/mode/sql");
+          editor2.setShowPrintMargin(false);
+          editor2.setFontSize(16);
+          editor2.getSession().setUseSoftTabs(true);
+          editor2.setReadOnly(true);
 
-              var editor2 = ace.edit("ace-editor2");
-              editor2.setTheme("ace/theme/xcode");
-              editor2.getSession().setMode("ace/mode/sql");
-              editor2.setShowPrintMargin(false);
-              editor2.setFontSize(16);
-              editor2.getSession().setUseSoftTabs(true);
-              editor2.setReadOnly(true);
+          var editor3 = ace.edit("ace-editor3");
+          editor3.setTheme("ace/theme/xcode");
+          editor3.getSession().setMode("ace/mode/sql");
+          editor3.setShowPrintMargin(false);
+          editor3.setFontSize(16);
+          editor3.getSession().setUseSoftTabs(true);
+          editor3.setReadOnly(true);
 
-              $("#query_btn").click(function()
-              {
-                    var name = $("#name").val();
-                    var dsid = $("#db_run_source").val();
-                    var ver  = $("#db_ver").val();
+          $("#query_btn").click(function()
+          {
+                var name = $("#name").val();
+                var dsid = $("#db_run_source").val();
+                var ver  = $("#db_ver").val();
 
-                    $.ajax({
-                      url: "/sql/run/query",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          qname:name,
-                          dsid:dsid,
-                          ver:ver
-                      },
-                      success: function (dataSet) {
-                          $('#example').DataTable( {
-                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                              destroy    :true,
-                              async      :false,
-                              ordering   :false,
-                              scrollY    :false,
-                              scrollX    :false,
-                              scrollCollapse: true,
-                              paging:     true,
-                              iDisplayLength: 16,
-                              data: dataSet,
-                              columns: [
-                                 { "title": "工单编号" },
-                                 { "title": "工单描述" },
-                                 { "title": "工单状态" },
-                                 { "title": "工单类型" },
-                                 { "title": "数据库环境" },
-                                 { "title": "版本号"},
-                                 { "title": "发布人" },
-                                 { "title": "发布时间" },
-                                 { "title": "审核人"},
-                                 { "title": "审核时间"},
-                                 { "title": "错误","visible":false},
-                                 { "title": "操作"},
-                               ],
-                                columnDefs: [
-                                {
-                                    targets: 11,
-                                    render: function(data, type, row, meta){
-                                         console.log('row[0]='+row[0]);
-                                         var id=row[0]
-                                         var status=row[2]
-                                         var err=escape(row[10])
-                                         var par = id+'^^^'+err
+                $.ajax({
+                  url: "/sql/run/query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      qname:name,
+                      dsid:dsid,
+                      ver:ver
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :false,
+                          ordering   :false,
+                          scrollY    :false,
+                          scrollX    :false,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 16,
+                          data: dataSet,
+                          columns: [
+                             { "title": "工单编号" },
+                             { "title": "工单描述" },
+                             { "title": "工单状态" },
+                             { "title": "工单类型" },
+                             { "title": "数据库环境" },
+                             { "title": "版本号"},
+                             { "title": "发布人" },
+                             { "title": "发布时间" },
+                             { "title": "审核人"},
+                             { "title": "审核时间"},
+                             { "title": "错误","visible":false},
+                             { "title": "操作"},
+                           ],
+                            columnDefs: [
+                            {
+                                targets: 11,
+                                render: function(data, type, row, meta){
+                                     console.log('row[0]='+row[0]);
+                                     var id=row[0]
+                                     var status=row[2]
+                                     var err=escape(row[10])
+                                     var par = id+'^^^'+err
 
-                                         if (status=='已发布') {
-                                            msg ='&nbsp;'+
-                                                  '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
-                                                  '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                         } else if (status=='执行失败' || status == '已审核') {
-                                            msg ='&nbsp;'+
-                                                  '<input class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\''+id+'\');"/>' +'&nbsp;'+
-                                                  '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                         } else {
-                                            msg ='&nbsp;'+
-                                                  '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
-                                                  '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                         }
-                                         return msg;
-                                    }
-                                 }
-                                ],
-                              "language": {
-                                     "search"       : "在表格中搜索:",
-                                     "sProcessing"  : "处理中...",
-                                     "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                     "sZeroRecords" : "没有匹配结果",
-                                     "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix" : "",
-                                     "sSearch"      : "搜索:",
-                                     "sUrl"         : "",
-                                     "sEmptyTable"  : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands": ",",
-                                     "oPaginate": {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
+                                     if (status=='已发布') {
+                                        msg ='&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
+                                     } else if (status=='执行失败' || status == '已审核') {
+                                        msg ='&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\''+id+'\');"/>' +'&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
+                                     } else {
+                                        msg ='&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
                                      }
+                                     return msg;
+                                }
+                             }
+                            ],
+                          "language": {
+                                 "search"       : "在表格中搜索:",
+                                 "sProcessing"  : "处理中...",
+                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
+                                 "sZeroRecords" : "没有匹配结果",
+                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                 "sInfoPostFix" : "",
+                                 "sSearch"      : "搜索:",
+                                 "sUrl"         : "",
+                                 "sEmptyTable"  : "表中数据为空",
+                                 "sLoadingRecords": "载入中...",
+                                 "sInfoThousands": ",",
+                                 "oPaginate": {
+                                     "sFirst"   : "首页",
+                                     "sPrevious": "上页",
+                                     "sNext"    : "下页",
+                                     "sLast"    : "末页"
+                                 },
+                                 "oAria": {
+                                     "sSortAscending" : ": 以升序排列此列",
+                                     "sSortDescending": ": 以降序排列此列"
                                  }
-                            });
-                      },
-                      error: function (jqXHR) {
-                        if (jqXHR.status==403){
-                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                            setTimeout(" window.location.href='/login'",3000);
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                      }
-                  })
-              });
+                             }
+                        });
+                  },
+                  error: function (jqXHR) {
+                    if (jqXHR.status==403){
+                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                        setTimeout(" window.location.href='/login'",3000);
+                    } else if (jqXHR.status==502){
+                        swal("用户无权访问权限此功能!", "", "error")
+                    } else {
+                        swal("系统不可用,请稍后重试!", "", "error")
+                    }
+                  }
+              })
+          });
 
-              $("#query_btn").click();
+          $("#query_btn").click();
 
       });
 
      function showtips(flag,content){
-                    toastr.options = {
-                      "closeButton": false,
-                      "debug": false,
-                      "newestOnTop": false,
-                      "progressBar": false,
-                      "positionClass": "toast-top-right",
-                      "preventDuplicates": false,
-                      "onclick": null,
-                      "showDuration": "300",
-                      "hideDuration": "1000",
-                      "timeOut": "3000",
-                      "extendedTimeOut": "1000",
-                      "showEasing": "swing",
-                      "hideEasing": "linear",
-                      "showMethod": "fadeIn",
-                      "hideMethod": "fadeOut"
-                    }
-                    toastr[flag]('', content)
-              }
+            toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": false,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": false,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "3000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+            }
+            toastr[flag]('', content)
+      }
+
+
+      function format_sql(sql) {
+           var res='';
+           $.ajax({
+                type: 'post',
+                url: '/sql/_format',
+                async:false,
+                data: {
+                    "sql":sql
+                },
+                success: function (dataSet) {
+                  res=dataSet.message
+                },
+            })
+            return res
+      }
 
      function showSql(row){
         id  = row.split('^^^')[0];
@@ -299,42 +315,73 @@
                     id: id
                 },
                 success: function (dataSet) {
-                    var sql = dataSet.message
-                    console.log('sql=',sql)
-                    $.ajax({
-                        type: 'post',
-                        url: '/sql/_format',
-                        data: {
-                            "sql":sql
-                        },
-                        success: function (dataSet) {
-                            console.log('sql2=',dataSet);
-                            var editor = ace.edit("ace-editor");
-                            editor.setValue('')
-                            editor.insert(dataSet.message);
-                            editor.setReadOnly(true);
+                    // var sql = dataSet.message
+                    console.log('dataSet=',dataSet)
+                    console.log('a=',dataSet.message.sqltext)
+                    console.log('b=',dataSet.message.error)
+                    console.log('c=',dataSet.message.rollback_statement)
+                    sql = format_sql(dataSet.message.sqltext)
+                    console.log('format_sql=',sql)
+                    var editor = ace.edit("ace-editor");
+                    editor.setValue('')
+                    editor.insert(sql);
+                    editor.setReadOnly(true);
 
-                            var editor2 = ace.edit("ace-editor2");
-                            editor2.setValue('')
-                            editor2.insert(err);
-                            editor2.setReadOnly(true);
+                    var editor3 = ace.edit("ace-editor3");
+                    editor3.setValue('')
+                    editor3.insert(dataSet.message.rollback_statement);
+                    editor3.setReadOnly(true);
 
-                            $('#con-close-modal').modal({
-                                keyboard: false,
-                                backdrop:false
-                            });
-                        },
-                        error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                               swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                               setTimeout(" window.location.href='/login'",3000);
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
-                    })
+                    var editor2 = ace.edit("ace-editor2");
+                    editor2.setValue('')
+                    editor2.insert(dataSet.message.error);
+                    editor2.setReadOnly(true);
+
+                    $('#con-close-modal').modal({
+                        keyboard: false,
+                        backdrop:false
+                    });
+
+                    // $.ajax({
+                    //     type: 'post',
+                    //     url: '/sql/_format',
+                    //     data: {
+                    //         "sql":dataSet.message['sqltext']
+                    //     },
+                    //     success: function (dataSet) {
+                    //         // console.log('sql2=',dataSet);
+                    //
+                    //         var editor = ace.edit("ace-editor");
+                    //         editor.setValue('')
+                    //         editor.insert(dataSet.message['sqltext']);
+                    //         editor.setReadOnly(true);
+                    //
+                    //         var editor2 = ace.edit("ace-editor2");
+                    //         editor2.setValue('')
+                    //         editor2.insert(dataSet.message['error']);
+                    //         editor2.setReadOnly(true);
+                    //
+                    //         var editor3 = ace.edit("ace-editor");
+                    //         editor3.setValue('')
+                    //         editor3.insert(dataSet.message['rollback_statement']);
+                    //         editor3.setReadOnly(true);
+                    //
+                    //         $('#con-close-modal').modal({
+                    //             keyboard: false,
+                    //             backdrop:false
+                    //         });
+                    //     },
+                    //     error: function (jqXHR) {
+                    //         if (jqXHR.status==403){
+                    //            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                    //            setTimeout(" window.location.href='/login'",3000);
+                    //         } else if (jqXHR.status==502){
+                    //             swal("用户无权访问权限此功能!", "", "error")
+                    //         } else {
+                    //             swal("系统不可用,请稍后重试!", "", "error")
+                    //         }
+                    //     }
+                    // })
                 },
                 error: function (jqXHR) {
                     if (jqXHR.status==403){
