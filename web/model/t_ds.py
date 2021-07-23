@@ -231,7 +231,7 @@ async def get_dss_sql_release(logon_name):
     sql="""select cast(id as char) as id,a.db_desc as name 
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
-               and (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='2')
+               and a.id in (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='2')
         """.format(d_user['userid'])
     return await async_processer.query_list(sql)
 

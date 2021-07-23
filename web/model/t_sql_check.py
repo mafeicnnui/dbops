@@ -39,9 +39,16 @@ def get_obj_name(p_sql):
        else:
           return obj
     if get_obj_op(p_sql) in('INSERT','DELETE'):
-         return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','')
+         if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','').find('.')<0:
+            return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','')
+         else:
+            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').split('.')[1]
+
     if get_obj_op(p_sql) in('UPDATE'):
-         return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','')
+        if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','').find('.')<0:
+           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','')
+        else:
+           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').split('.')[1]
 
 def get_obj_type(p_sql):
     if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
@@ -1243,17 +1250,18 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
         if rule['rule_code'] == 'switch_tab_has_time_fields' and tp == 'TABLE':
             if op in('CREATE_TABLE','ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
                 print('表必须拥有字段...')
-                v = await get_tab_has_fields(ds, st, rule)
-                e = rule['error']
-                try:
-                    for i in v:
+                if rule['rule_value']!='':
+                    v = await get_tab_has_fields(ds, st, rule)
+                    e = rule['error']
+                    try:
+                        for i in v:
+                            res = False
+                            rule['error'] = e.format(i[0], i[1])
+                            await save_check_results(rule,p_user,st,sxh)
+                    except:
                         res = False
-                        rule['error'] = e.format(i[0], i[1])
+                        rule['error'] = v
                         await save_check_results(rule,p_user,st,sxh)
-                except:
-                    res = False
-                    rule['error'] = v
-                    await save_check_results(rule,p_user,st,sxh)
 
         if rule['rule_code'] == 'switch_tab_tcol_datetime' and rule['rule_value'] == 'true' and tp == 'TABLE':
             if op == 'CREATE_TABLE':
@@ -1393,10 +1401,12 @@ async def get_dml_privs_grammar(p_ds,p_sql):
                return '表:{0}不存在!'.format(ob)
             else:
                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
+               print(p_sql.replace(ob, 'dbops_' + ob))
                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                return None
     except Exception as e:
+        traceback.print_exc()
         return process_result(str(e))
 
 async def get_dml_rows(p_ds,p_sql):
@@ -2051,7 +2061,7 @@ async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
         return await process_single_ddl_proc(p_dbid, p_cdb, p_sql.strip(), p_user)
     else:
         # TYPE:DDL、DML、DCL
-        if p_sql.count(';') == 0:
+        if p_sql.count(');') == 0 or re.findall(r'\s+\)\s+;',p_sql) ==[]:
             # SINGLE DDL
             if p_type in('1','3'):
                print('process_single_ddl....')
@@ -2060,7 +2070,7 @@ async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
             elif p_type == '2':
                print('process_single_dml....')
                return await process_single_dml(p_dbid, p_cdb, p_sql.strip(), p_user)
-        elif p_sql.count(';') == 1:
+        elif p_sql.count(');') == 1 or re.findall(r'\s+\)\s+;',p_sql) !=[]:
             # SINGLE DDL
             if p_type in('1','3'):
                 print('process_single_ddl....')

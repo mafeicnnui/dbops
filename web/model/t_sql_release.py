@@ -15,7 +15,7 @@ from web.utils.common           import send_mail
 from web.utils.common           import format_sql as fmt_sql
 from web.model.t_user           import get_user_by_userid
 from web.utils.mysql_async      import async_processer
-from web.utils.mysql_rollback   import write_rollback
+from web.utils.mysql_rollback   import write_rollback,delete_rollback
 
 async def get_sqlid():
     sql="select ifnull(max(id),0)+1 from t_sql_release"
@@ -86,8 +86,9 @@ async def query_run(p_name,p_dsid,p_ver,p_userid):
                      CASE a.status WHEN '0' THEN '已发布'
                        WHEN '1' THEN '已审核'
                        WHEN '2' THEN '审核失败'
-                       WHEN '3' THEN '已执行'
-                       WHEN '4' THEN '执行失败'
+                       WHEN '3' THEN '执行中'
+                       WHEN '4' THEN '已执行'
+                       WHEN '5' THEN '执行失败'
                      END  STATUS,
                      c.dmmc AS 'type',
                      b.db_desc,
@@ -398,7 +399,8 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,s
                             exec_end ='{1}',
                             binlog_file='{2}',
                             start_pos='{3}',
-                            stop_pos='{4}'
+                            stop_pos='{4}',
+                            error = ''
                         where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
         elif p_flag=='error':
             sql = """update t_sql_release 
@@ -445,6 +447,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         result['code'] = '-1'
         result['message'] = '执行失败!'
         await upd_run_status(p_sql_id, p_username, 'error', error)
+        delete_rollback(p_sql_id)
         return result
 
 

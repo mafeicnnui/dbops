@@ -101,7 +101,7 @@ async def update_kpi(p_month,p_market_id):
             UPDATE  kpi_po_hz a ,kpi_item_plan b
                SET a.goal=b.item_value,
                    a.completion_rate=
-                   CASE  WHEN  REPLACE(b.item_value,'%','')='0' THEN
+                   CASE  WHEN  REPLACE(b.item_value,'%','')+0 = 0 THEN
                       ''
                    WHEN INSTR(a.actual_completion,'%') >0 THEN
                       CONCAT(ROUND(ROUND(REPLACE(actual_completion,'%','')/REPLACE(b.item_value,'%',''),4)*100,2),'%')
@@ -119,7 +119,7 @@ async def update_kpi(p_month,p_market_id):
          UPDATE  kpi_po_hz a ,kpi_item_plan b
            SET a.`annual_target`=b.item_value,
                a.`completion_sum_rate`=
-               CASE WHEN  REPLACE(b.item_value,'%','')='0' THEN
+               CASE WHEN  REPLACE(b.item_value,'%','')+0 =0 THEN
                   ''  
                WHEN INSTR(a.completion_sum_finish,'%') >0 THEN
                   CONCAT(ROUND(ROUND(REPLACE(a.completion_sum_finish,'%','')/REPLACE(b.item_value,'%',''),4)*100,2),'%')

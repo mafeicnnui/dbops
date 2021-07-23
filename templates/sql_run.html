@@ -329,7 +329,7 @@
 
                     var editor3 = ace.edit("ace-editor3");
                     editor3.setValue('')
-                    editor3.insert(dataSet.message.rollback_statement);
+                    editor3.insert(format_sql(dataSet.message.rollback_statement));
                     editor3.setReadOnly(true);
 
                     var editor2 = ace.edit("ace-editor2");
