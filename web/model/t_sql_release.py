@@ -16,6 +16,7 @@ from web.utils.common           import format_sql as fmt_sql
 from web.model.t_user           import get_user_by_userid
 from web.utils.mysql_async      import async_processer
 from web.utils.mysql_rollback   import write_rollback,delete_rollback
+from web.model.t_sql_check      import reReplace,check_statement_count
 
 async def get_sqlid():
     sql="select ifnull(max(id),0)+1 from t_sql_release"
@@ -429,11 +430,26 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         binlog_file=rs1[0]
         start_position=rs1[1]
-        await async_processer.exec_sql_by_ds(p_ds,sql)
+        # await async_processer.exec_sql_by_ds(p_ds,sql)
+        print('check_statement_count(sql)=',check_statement_count(sql))
+        if check_statement_count(sql) == 1:
+            print('exec single statement:')
+            print('-----------------------------------------')
+            print('statement:', sql)
+            await async_processer.exec_sql_by_ds(p_ds, sql)
+        elif check_statement_count(sql) > 1:
+            print('exec multi statement:')
+            print('-----------------------------------------')
+            for st in reReplace(sql):
+                print('st=',st+'$$$$\n')
+                await async_processer.exec_sql_by_ds(p_ds, st)
+        else:
+            pass
+
         # get stop_position
         rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         stop_position=rs2[1]
-        print(binlog_file,start_position,stop_position)
+        print('binlog:',binlog_file,start_position,stop_position)
         await upd_run_status(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
         # write rollback statement
         write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
@@ -449,7 +465,6 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         await upd_run_status(p_sql_id, p_username, 'error', error)
         delete_rollback(p_sql_id)
         return result
-
 
 def check_validate(p_dbid,p_cdb,p_sql,desc,logon_user,type):
     result = {}

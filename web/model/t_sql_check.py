@@ -233,7 +233,7 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
                 return '表:{0}已存在!'.format(ob)
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
-                await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
+                #await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
             config[ob] = dp.format(ob)
         elif op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
             tb = await f_get_table_ddl(p_ds, ob)
@@ -243,7 +243,7 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
                 else:
                    await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                    await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                   await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                   #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
             config['dbops_' +ob] = dp.format('dbops_' + ob)
         return '0'
     except Exception as e:
@@ -721,20 +721,19 @@ async def get_tab_char_col_len_multi(p_ds,p_sql,rule,config):
         ob = get_obj_name(p_sql)
         dp = 'drop table {}'
         tb = await f_get_table_ddl(p_ds, ob)
-        st = '''SELECT table_name,column_name,
-                       CASE WHEN character_maximum_length<={0} THEN 1 ELSE 0 END AS val
+        st = '''SELECT table_name,column_name,CASE WHEN character_maximum_length<={0} THEN 1 ELSE 0 END AS val
                 FROM  information_schema.columns   
                   WHERE UPPER(table_schema)=DATABASE()  AND data_type IN('varchar','char')
-                   AND column_key!='PRI' AND UPPER(table_name) = upper('{1}')'''
+                     AND column_key!='PRI' AND UPPER(table_name) = upper('{1}')'''
 
         if op == 'CREATE_TABLE':
-            rs = await async_processer.query_dict_list_by_ds(p_ds,st.format(rule['rule_value'],ob))
+            rs = await async_processer.query_list_by_ds(p_ds,st.format(rule['rule_value'],ob))
             config[ob] = dp.format(ob)
             return rs
         elif op == 'ALTER_TABLE_ADD':
             if config.get('dbops_' + ob) is None:
                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-            rs = await async_processer.query_dict_list_by_ds(p_ds, st.format(rule['rule_value'], 'dbops_' +ob))
+            rs = await async_processer.query_list_by_ds(p_ds, st.format(rule['rule_value'], 'dbops_' +ob))
             await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
             config['dbops_' + ob] = dp.format('dbops_' + ob)
             return rs
@@ -920,7 +919,7 @@ async def get_tab_tcol_datetime_multi(p_ds,p_sql,config):
                                    AND b.column_name='update_time'
                                    AND b.data_type!='datetime')'''
         if op == 'CREATE_TABLE':
-           rs = await async_processer.query_list_by_ds(p_ds, st.format(ob))
+           rs = await async_processer.query_list_by_ds(p_ds, st.format(ob,ob))
            config[ob] = dp.format(ob)
            return rs
         elif op == 'ALTER_TABLE_ADD':
@@ -1534,17 +1533,41 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
 
     return res
 
+# 正则处理多行DDL，DML为列表
+def reReplace(p_sql):
+    pattern1 = re.compile(r'(\s*\)\s*;\s*)')
+    if pattern1.findall(p_sql)!=[]:
+       out = re.sub(pattern1, ')$$$$', p_sql)
+       #return out.split('$$$$')
+       return [i for i in out.split('$$$$') if i != '']
+
+    pattern2 = re.compile(r'(\s*\'\s*;\s*)')
+    if pattern2.findall(p_sql) != []:
+       out = re.sub(pattern2, "'$$$$", p_sql)
+       #return out.split('$$$$')
+       return [i for i in out.split('$$$$') if i != '']
+    return p_sql
+
+
+# 检测DDL，DML是否为多条,1:单条，>1：多条
+def check_statement_count(p_sql):
+    out = [i for i in reReplace(p_sql) if i != '']
+    # print('check_statement_count=>p_sql:',p_sql)
+    # print('check_statement_count=>out:',out)
+    # print('check_statement_count=>len:',len(out))
+    return len(out)
+
 async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
     sxh  = 1
     rss  = True
     cfg  = {}
-    ds   = get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
+    ds   = await get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
 
     # delete check table
-    del_check_results(p_user)
+    await del_check_results(p_user)
 
     # check dml sql
-    for s in p_sql.split(';'):
+    for s in reReplace(p_sql):
         ob  = get_obj_name(s.strip())
         op  = get_obj_op(s.strip())
         tp  = get_obj_type(s.strip())
@@ -1557,7 +1580,7 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
         print('check sql :',st.strip())
         ru = """select id,rule_code,rule_name,rule_value,error from t_sql_audit_rule
                   where  rule_type='ddl' and status='1' and id not in (27,28,29,30) order by id"""
-        rs = await async_processer.query_list(ru)
+        rs = await async_processer.query_dict_list(ru)
 
         print('输出检测项...')
         print('-'.ljust(150, '-'))
@@ -1570,6 +1593,7 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                 if tp == 'TABLE':
                     print('检测DDL语法及权限...')
                     v = await get_obj_privs_grammar_multi(ds,st,cfg)
+                    print(' 检测DDL语法及权限 v=',v)
                     if v != '0':
                        rule['error'] = format_sql(format_exception(v))
                        await save_check_results(rule, p_user,st,sxh)
@@ -1757,6 +1781,7 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                 if get_obj_op(st.strip()) == 'CREATE_TABLE':
                     print('时间字段类型为datetime...')
                     v = await get_tab_tcol_datetime_multi(ds, st,cfg)
+                    print('时间字段类型为datetime:',v)
                     e = rule['error']
                     try:
                         for i in v:
@@ -2061,7 +2086,7 @@ async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
         return await process_single_ddl_proc(p_dbid, p_cdb, p_sql.strip(), p_user)
     else:
         # TYPE:DDL、DML、DCL
-        if p_sql.count(');') == 0 or re.findall(r'\s+\)\s+;',p_sql) ==[]:
+        if check_statement_count(p_sql) ==1:
             # SINGLE DDL
             if p_type in('1','3'):
                print('process_single_ddl....')
@@ -2070,17 +2095,9 @@ async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
             elif p_type == '2':
                print('process_single_dml....')
                return await process_single_dml(p_dbid, p_cdb, p_sql.strip(), p_user)
-        elif p_sql.count(');') == 1 or re.findall(r'\s+\)\s+;',p_sql) !=[]:
-            # SINGLE DDL
-            if p_type in('1','3'):
-                print('process_single_ddl....')
-                return await process_single_ddl(p_dbid, p_cdb, p_sql.strip().replace(';',''), p_user)
-            # SINGLE DML
-            elif p_type == '2':
-                print('process_single_dml....')
-                return await process_single_dml(p_dbid, p_cdb, p_sql.strip().replace(';',''), p_user)
+
         # TYPE: MULTI DDL、DML、DCL
-        else:
+        if check_statement_count(p_sql) >1:
             # MULTI DDL
             if p_type in('1','3'):
                 rule = await get_audit_rule('switch_ddl_batch')

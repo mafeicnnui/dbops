@@ -5,6 +5,7 @@
 # @File : mysql_rollback.py.py
 # @Software: PyCharm
 
+import re
 import pymysql
 import traceback
 from pymysqlreplication import BinLogStreamReader
@@ -12,6 +13,7 @@ from pymysqlreplication.event import *
 from pymysqlreplication.row_event import (DeleteRowsEvent,UpdateRowsEvent,WriteRowsEvent,)
 from web.utils.common import get_connection
 from web.utils.common import format_sql
+from web.model.t_sql_check import get_obj_name
 
 def get_db(MYSQL_SETTINGS):
     conn = pymysql.connect(host=MYSQL_SETTINGS['host'],
@@ -73,10 +75,20 @@ def gen_sql(MYSQL_SETTINGS,event):
                format(MYSQL_SETTINGS['db'],event['table'],set_column(event['before_values']),get_where(MYSQL_SETTINGS,event,event['after_values']))
     elif event['action']=='delete':
         sql  = 'delete from {0}.{1} {2};'.format(MYSQL_SETTINGS['db'],event['table'],get_where(MYSQL_SETTINGS,event,event['data']))
-        rsql = get_ins_header(event)+ ' values ('+get_ins_values(event)+');'
+        rsql = get_ins_header(MYSQL_SETTINGS,event)+ ' values ('+get_ins_values(event)+');'
     else:
        pass
     return sql,rsql
+
+def gen_ddl_sql(p_ddl):
+    if p_ddl.find('create table')>=0:
+       # pattern = re.compile(r'(\s*CREATE\s*TABLE\s*)')
+       # if pattern.findall(p_ddl) != []:
+       tab = get_obj_name(p_ddl)
+       rsql = 'drop table {};'.format(tab)
+       return rsql
+    return p_ddl
+
 
 def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
 
@@ -102,13 +114,13 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
 
         schema = MYSQL_SETTINGS['db']
         for binlogevent in stream:
-            print('binlogeven=', binlogevent.event_type,binlogevent.packet.log_pos,binlogevent.schema)
+            #print('binlogeven=', binlogevent.event_type,binlogevent.packet.log_pos,binlogevent.schema)
             if binlogevent.event_type in (2,):
                 event = {"schema": bytes.decode(binlogevent.schema), "query": binlogevent.query.lower()}
                 if 'create' in event['query'] or 'drop' in event['query']  or 'alter' in event['query'] or 'truncate' in event['query']:
                     if event['schema'] == schema:
-                        print(binlogevent.query.lower())
-                        rollback_statments.append(binlogevent.query.lower())
+                        #print(binlogevent.query.lower())
+                        rollback_statments.append(gen_ddl_sql(binlogevent.query.lower()+';'))
 
             if isinstance(binlogevent, DeleteRowsEvent) or \
                     isinstance(binlogevent, UpdateRowsEvent) or \
