@@ -21,6 +21,7 @@
         <link href="{{static_url('assets/css/responsive.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
         <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
+
         <style>
             #div-prompt{
                  margin-top:5px;
@@ -28,24 +29,45 @@
                  #border-style:ridge;
                  #border-color:blue;
             }
+            body {
+               background-image:url('/static/assets/images/blog/6.jpg');
+               background-size: 100% 100%;
+               background-repeat:no-repeat;
+            }
+            .logo i {
+                display: block !important;
+            }
+            .logo_span {
+                color: #59aed5 !important;
+                font-size: 30px;
+            }
+
+            .wrapper-page{
+                margin-top:20%;
+            }
+
+            .account-pages{
+                padding-top:10px;
+                margin-top:10px;
+            }
+
+
         </style>
     </head>
     <script>
-            var resizefunc = [];
+        var resizefunc = [];
     </script>
     <body class="bg-transparent">
         <!-- HOME -->
          <section>
             <div class="bg-transparent container-alt">
-                <div class="row">
+                <div class="row" >
                     <div class="col-sm-12">
-                        <div class="wrapper-page">
-                            <div id="account-pages" class="m-t-40 account-pages">
-                                <div class="text-center account-logo-box">
-                                    <h2 class="text-uppercase">
-                                        <a href="index.html" class="text-success">
-                                            <span><img src="{{static_url('assets/images/logo4.png')}}" alt="" height="36"></span>
-                                        </a>
+                        <div class="wrapper-page" style="background-color: white">
+                            <div id="account-pages" class="account-pages">
+                                <div class="text-center">
+                                    <h2 class="bg-transparent text-uppercase">
+                                        <h3><span class="logo_span ion-coffee"></span><span>&nbsp;Ease<span>Base</span>数据库运维平台</span></h3>
                                     </h2>
                                 </div>
                                 <div class="account-content">
@@ -119,7 +141,10 @@
         <!-- App js -->
         <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
+<!--        <script src="{{static_url('assets/pages/particle-container.js')}}"></script>-->
+
         <script>
+
             $(document).keydown(function(event){
                 if (event.keyCode == 13) { //判断为Enter键
                     $("#btlogin").click();

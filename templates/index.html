@@ -298,7 +298,7 @@
                 <footer class="footer text-right">
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>作者:</b>一切随风</span></div>
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>版本:</b>V1.0</span></div>
-                    <div class="col-lg-3 col-md-4 col-sm-6"><span><b>博客:</b><a href="http://www.zhitbar.com" target="_blank">www.zhitbar.com</a></span></div>
+                    <div class="col-lg-3 col-md-4 col-sm-6"><span><b>博客:</b><a href="http://www.zhitbar.cn" target="_blank">www.zhitbar.cn</a></span></div>
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>邮箱:</b>zhdn_791005@163.com</span></div>
                 </footer>
             </div>
@@ -797,8 +797,8 @@
             }
 
             function get_curr_time() {
-                var date = new Date();
-                this.hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                var date    = new Date();
+                this.hour   = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
                 this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
                 this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
                 var currentTime = this.hour + "时" + this.minute + "分" + this.second + '秒';
