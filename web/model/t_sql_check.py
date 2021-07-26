@@ -1817,13 +1817,13 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
     sxh  = 1
     rss  = True
     cfg  = {}
-    ds   = get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
+    ds   = await get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
 
     # delete check table
-    del_check_results(db_ops, p_user)
+    await del_check_results(p_user)
 
     #逐条检查语句
-    for s in p_sql.split(';'):
+    for s in reReplace(p_sql):
         ob  = get_obj_name(s.strip())
         op  = get_obj_op(s.strip())
         tp  = get_obj_type(s.strip())
@@ -1835,232 +1835,96 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
         print('check sql :',st.strip())
         ru = """select id,rule_code,rule_name,rule_value,error 
                         from t_sql_audit_rule where rule_type='dml' and status='1' order by id"""
-        rs = await async_processer.query_list(ru)
+        rs = await async_processer.query_dict_list(ru)
 
         print('输出检测项...')
         print('-'.ljust(150, '-'))
         for r in ru:
             print(r)
 
+        # 逐个SQL进行检测
         for rule in rs:
             rule['error'] = format_sql(rule['error'])
-            if rule['rule_code'] == 'switch_check_ddl' and rule['rule_value'] == 'true':
-                if tp == 'TABLE':
-                    print('检测DDL语法及权限...')
-                    v = await get_obj_privs_grammar_multi(ds,st,cfg)
-                    if v != '0':
-                       rule['error'] = format_sql(format_exception(v))
-                       await save_check_results(rule, p_user, st, sxh)
-                       res = False
-
-            if rule['rule_code'] == 'switch_tab_not_exists_pk' and rule['rule_value'] == 'true':
-                if op == 'CREATE_TABLE':
-                    print('检查表必须有主键...')
-                    if get_obj_type(st.strip()) == 'TABLE' and not (st.upper().count('PRIMARY') > 0 and st.upper().count('KEY') > 0):
-                        rule['error'] =rule['error'].format(ob)
-                        await save_check_results(rule, p_user,st,sxh)
-                        res = False
-
-            if rule['rule_code'] == 'switch_tab_pk_id' and rule['rule_value'] == 'true':
-                if op == 'CREATE_TABLE':
-                    print('强制主键名为ID...')
-                    if get_obj_type(st.strip()) == 'TABLE' and (st.upper().count('PRIMARY') > 0 and st.upper().count('KEY') > 0) :
-                       v  = await get_obj_pk_name_multi(ds,st,cfg)
-                       if v == 0:
-                            rule['error'] = rule['error'].format(ob)
-                            await save_check_results(rule, p_user, st,sxh)
-                            res = False
-
-                       if v not in (0,1):
-                           rule['error'] = v
-                           await save_check_results(rule, p_user, st,sxh)
-                           res = False
-
-            if rule['rule_code'] == 'switch_tab_pk_auto_incr' and rule['rule_value'] == 'true':
-                if get_obj_op(st.strip()) == 'CREATE_TABLE':
-                    print('强制主键为自增列...')
-                    if tp == 'TABLE' and (st.upper().count('PRIMARY') > 0 and st.upper().count('KEY') > 0) :
-                        v =  await get_obj_pk_exists_auto_incr_multi(ds,st,cfg)
-                        if v == 0 :
-                            rule['error'] = rule['error'].format(ob)
-                            await save_check_results(rule, p_user,st,sxh)
-                            res = False
-
-                        if v not in (0, 1):
-                            rule['error'] = v
-                            await save_check_results(rule, p_user, st,sxh)
-                            res = False
-
-            if rule['rule_code'] == 'switch_tab_pk_autoincrement_1' and rule['rule_value'] == 'true':
-                if op == 'CREATE_TABLE':
-                    print('强制自增列初始值为1...')
-                    if tp == 'TABLE' and (st.upper().count('PRIMARY') > 0  and st.upper().count('KEY') > 0):
-                        v =  await get_obj_exists_auto_incr_not_1_multi(ds, st,cfg)
-                        if v == 0:
-                            rule['error'] = rule['error'].format(ob)
-                            await save_check_results(rule,p_user,st,sxh)
-                            res = False
-                        if v not in (0, 1):
-                            rule['error'] = v
-                            await save_check_results(rule,p_user,st,sxh)
-                            res = False
-
-            if rule['rule_code'] == 'switch_pk_not_int_bigint' and rule['rule_value'] == 'false':
-                if op == 'CREATE_TABLE':
-                    print('不允许主键类型非int/bigint...')
-                    if tp == 'TABLE'  and (st.upper().count('PRIMARY') > 0 and st.upper().count('KEY') > 0):
-                        v =  await get_obj_pk_type_not_int_bigint_multi(ds,st,cfg)
-                        if v == 1 :
-                            rule['error'] = rule['error'].format(ob)
-                            await save_check_results(rule,p_user,st,sxh)
-                            res = False
-                        if v not in (0, 1):
-                            rule['error'] = v
-                            await save_check_results(rule, p_user,st,sxh)
-                            res = False
-
-            if rule['rule_code'] == 'switch_tab_comment' and rule['rule_value'] == 'true':
-                if op == 'CREATE_TABLE':
-                    print('检查表注释...')
-                    if tp== 'TABLE':
-                        v = await get_tab_comment_multi(ds,st,cfg)
-                        if v ==0:
-                            rule['error'] = rule['error'].format(ob)
-                            await save_check_results(rule,p_user,st,sxh)
-                            res = False
-                        if v not in (0, 1):
-                            rule['error'] = v
-                            save_check_results(rule,p_user,st,sxh)
-                            res = False
-
-            if rule['rule_code'] == 'switch_col_comment' and rule['rule_value'] == 'true' and tp == 'TABLE':
-                if op in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
-                    print('检查列注释...')
-                    v = await get_col_comment_multi(ds, st,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            if i[2] == 0:
-                                res = False
-                                rule['error'] = e.format(i[0].replace('dbops_'+ ob,ob),i[1])
-                                await save_check_results(rule, p_user,st,sxh)
-                    except:
-                        res = False
-                        rule['error'] = v
-                        await save_check_results(rule,p_user,st,sxh)
-
-            if rule['rule_code'] == 'switch_col_not_null' and rule['rule_value'] == 'true' and tp == 'TABLE':
-                if op in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
-                    print('检查列是否为空...')
-                    v = await get_col_not_null_multi(ds, st,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            if i[2] == 0:
-                                res = False
-                                rule['error'] = e.format(i[0].replace('dbops_'+ob, ob),i[1])
-                                await save_check_results(rule,p_user,st,sxh)
-                    except:
-                        result = False
-                        rule['error'] = v
-                        await save_check_results(rule, p_user, st,sxh)
-
-            if rule['rule_code'] == 'switch_col_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
-                if op in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
-                    print('检查列默认值...')
-                    v = await get_col_default_value_multi(ds, st,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            if i[2] == 0:
-                                res = False
-                                rule['error'] = e.format(i[0].replace('dbops_'+ob, ob),i[1])
-                                await save_check_results(rule, p_user, st,sxh)
-                    except:
-                        res = False
-                        rule['error'] = v
-                        await save_check_results(rule,p_user,st,sxh)
-
-            if rule['rule_code'] == 'switch_time_col_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
-                if get_obj_op(st.strip()) in ('CREATE_TABLE'):
-                    print('检查时间字段默认值...')
-                    v = await get_time_col_default_value_multi(ds, st, cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            if i[3] == 0:
-                                result = False
-                                rule['error'] = e.format(i[0], i[1], i[2])
-                                await save_check_results(rule,p_user,st,sxh)
-                    except:
-                        res = False
-                        rule['error'] = v
+            if rule['rule_code'] == 'switch_dml_where' and rule['rule_value'] == 'true':
+                if op in ('UPDATE', 'DELETE'):
+                    print('检测DML语句条件...')
+                    if p_sql.upper().strip().count(' WHERE ') == 0:
                         await save_check_results(rule, p_user, st, sxh)
-
-            if rule['rule_code'] == 'switch_char_max_len' and tp == 'TABLE':
-                if op == 'CREATE_TABLE':
-                    print('字符字段最大长度...')
-                    v = await get_tab_char_col_len_multi(ds, st, rule,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            if i[2] == 0:
-                                result = False
-                                rule['error'] = e.format(i[0], i[1], rule['rule_value'])
-                                await save_check_results(rule, p_user, st,sxh)
-                    except:
-                        result = False
-                        rule['error'] = v
-                        await save_check_results(rule, p_user, st,sxh)
-
-            if rule['rule_code'] == 'switch_tab_has_time_fields' and tp == 'TABLE':
-                if op == 'CREATE_TABLE':
-                    print('表必须拥有字段...')
-                    v = await get_tab_has_fields_multi(ds, st,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            result = False
-                            rule['error'] = e.format(i[0], i[1])
-                            await save_check_results(rule, p_user,st,sxh)
-                    except:
-                        result = False
-                        rule['error'] = v
-                        await save_check_results(rule, p_user,st,sxh)
-
-            if rule['rule_code'] == 'switch_tab_tcol_datetime' and rule['rule_value'] == 'true' and tp == 'TABLE':
-                if op== 'CREATE_TABLE':
-                    print('时间字段类型为datetime...')
-                    v = await get_tab_tcol_datetime_multi(ds, st,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
-                            res = False
-                            rule['error'] = e.format(i[0], i[1])
-                            save_check_results(db_ops, rule, p_user, st.strip(),sxh)
-                    except:
                         res = False
-                        rule['error'] = v
-                        await save_check_results(rule, p_user,st,sxh)
 
-        print('res=',res,ob)
+            if rule['rule_code'] == 'switch_dml_order' and rule['rule_value'] == 'true':
+                if op in ('UPDATE', 'DELETE'):
+                    print('DML语句禁用 ORDER BY...')
+                    if re.search('\s+ORDER\s+BY\s+', st.upper()) is not None:
+                        await save_check_results(rule, p_user, st, sxh)
+                        res = False
+
+            if rule['rule_code'] == 'switch_dml_select' and rule['rule_value'] == 'true':
+                if op in ('INSERT', 'UPDATE', 'DELETE'):
+                    print('DML语句禁用 SELECT...')
+                    if re.search('SELECT\s+', st.upper()) is not None and re.search('\s+FROM\s+',
+                                                                                    st.upper()) is not None:
+                        await save_check_results(rule, p_user, st, sxh)
+                        res = False
+
+            if rule['rule_code'] == 'switch_dml_max_rows':
+                if op in ('INSERT', 'UPDATE', 'DELETE'):
+                    print('DML最大影响行数...')
+                    v = await get_dml_rows(ds, st)
+                    if is_number(str(v)):
+                        if v > int(rule['rule_value']):
+                            rule['error'] = rule['error'].format(rule['rule_value'])
+                            await save_check_results(rule, p_user, st, sxh)
+                            res = False
+                    else:
+                        rule['error'] = rule['error'].format(format_exception(v))
+                        await save_check_results(rule, p_user, st, sxh)
+                        res = False
+
+            if rule['rule_code'] == 'switch_dml_ins_exists_col' and rule['rule_value'] == 'true':
+                if op in ('INSERT'):
+                    print('检查插入语句那必须存在列名...')
+                    print(re.split(r'\s+', p_sql.strip()))
+                    print(re.split(r'\s+', p_sql.strip())[2])
+                    print(re.split(r'\s+', p_sql.strip())[3])
+                    n_pos1 = re.split(r'\s+', p_sql.strip())[2].count('(')
+                    n_pos2 = re.split(r'\s+', p_sql.strip())[3].count('(')
+                    # if n_pos == 0:
+                    #     n_pos = re.split(r'\s+', p_sql.strip())[3].count(')')
+                    if n_pos1 == 0 and n_pos2 == 0:
+                        await save_check_results(rule, p_user, st, sxh)
+                        res = False
+
+            if rule['rule_code'] == 'switch_dml_ins_cols':
+                ck = await get_audit_rule('switch_dml_ins_exists_col')
+                if ck['rule_value'] == 'true':
+                    if op in ('INSERT'):
+                        print('INSERT语句字段上限...')
+                        try:
+                            n_cols = re.split(r'\s+', p_sql.strip())[2].split('(')[1].split(')')[0].count(',') + 1
+                        except:
+                            n_cols = re.split(r'\s+', p_sql.strip())[3].split('(')[1].split(')')[0].count(',') + 1
+                        if n_cols > int(rule['rule_value']):
+                            rule['error'] = rule['error'].format(rule['rule_value'])
+                            await save_check_results(rule, p_user, st, sxh)
+                            res = False
+
+            if res:
+                if rule['rule_code'] == 'switch_check_dml' and rule['rule_value'] == 'true':
+                    if op in ('INSERT', 'UPDATE', 'DELETE'):
+                        print('检测DML语法及权限...')
+                        v = await get_dml_privs_grammar(ds, st)
+                        if v is not None:
+                            rule['error'] = format_sql(format_exception(v))
+                            await save_check_results(rule, p_user, st, sxh)
+                            res = False
+
         if res:
-           rule['id'] = '0'
-           rule['error'] = '检测通过!'
-           await save_check_results(rule, p_user,st,sxh)
-        rss = rss and  res
-        sxh = sxh +1
-    print('删除临时表...')
-    print('cfg=', cfg, type(cfg))
-    print('-'.ljust(150, '-'))
-    for key in cfg:
-       try:
-          await async_processer.exec_sql_by_ds(ds,cfg[key])
-          print(cfg[key])
-       except:
-          traceback.print_exc()
-    print('-'.ljust(150, '-')+'\n')
-    return rss
+            rule['id'] = '0'
+            rule['error'] = '检测通过!'
+            await save_check_results(rule, p_user, st, sxh)
+
+        return res
 
 async def get_audit_rule(p_key):
     sql = "select * from t_sql_audit_rule where rule_code='{0}'".format(p_key)
@@ -2076,7 +1940,16 @@ async def save_check_results(rule,user,psql,sxh):
     else:
         sql = '''insert into t_sql_audit_rule_err(xh,obj_name,rule_id,rule_name,rule_value,user_id,error) values ('{}','{}','{}','{}','{}','{}','{}')
               '''.format(sxh,obj,rule['id'],rule['rule_name'],rule['rule_value'],user['userid'],rule['error'])
+    print('save_check_results=',sql)
     await async_processer.exec_sql(sql)
+
+async def save_check_results_multi(rule,user,psql,sxh):
+    print('检查结果multi:')
+    print('-'.ljust(150, '-'))
+    if psql == '---':
+       sql = '''insert into t_sql_audit_rule_err(xh,obj_name,rule_id,rule_name,rule_value,user_id,error) values ('{}','{}','{}','{}','{}','{}','{}')
+             '''.format(sxh,'',rule['id'],rule['rule_name'],rule['rule_value'],user['userid'],rule['error'])
+       await async_processer.exec_sql(sql)
 
 async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
     await del_check_results(p_user)
@@ -2106,7 +1979,7 @@ async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
                    return await process_multi_ddl(p_dbid, p_cdb, p_sql.strip(), p_user)
                 else:
                    rule['error'] = format_sql(rule['error'])
-                   await save_check_results(rule, p_user, '---', 1)
+                   await save_check_results_multi(rule, p_user, '---', 1)
                    return False
             # MULTI DML
             elif p_type == '2':
@@ -2116,5 +1989,5 @@ async def check_mysql_ddl(p_dbid,p_cdb,p_sql,p_user,p_type):
                     return await process_multi_dml(p_dbid, p_cdb, p_sql.strip(), p_user)
                 else:
                     rule['error'] = format_sql(rule['error'])
-                    await save_check_results(rule, p_user, '---', 1)
+                    await save_check_results_multi(rule, p_user, '---', 1)
                     return False
