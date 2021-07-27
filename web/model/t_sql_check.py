@@ -1450,13 +1450,12 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
     await del_check_results(p_user)
     # check sql
     for rule in rs:
-        print('xxx=',rule)
         rule['error'] = format_sql(rule['error'])
-
         if rule['rule_code'] == 'switch_dml_where' and rule['rule_value'] == 'true':
             if op in('UPDATE','DELETE'):
                print('检测DML语句条件...')
-               if p_sql.upper().strip().count(' WHERE ') == 0:
+               match = re.search(r'(\s*where\s*)',p_sql.upper().strip(),re.IGNORECASE)
+               if  match.group() is None:
                     await save_check_results(rule,p_user, st,sxh)
                     res = False
 
@@ -1848,7 +1847,8 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
             if rule['rule_code'] == 'switch_dml_where' and rule['rule_value'] == 'true':
                 if op in ('UPDATE', 'DELETE'):
                     print('检测DML语句条件...')
-                    if p_sql.upper().strip().count(' WHERE ') == 0:
+                    match = re.search(r'(\s*where\s*)', p_sql.upper().strip(), re.IGNORECASE)
+                    if match.group() is None:
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
 

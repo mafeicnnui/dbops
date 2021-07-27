@@ -92,6 +92,10 @@ def gen_ddl_sql(p_ddl):
 
 def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
 
+    # 如果pos点未改变，返回空列表
+    if p_start_pos == p_end_pos :
+       return []
+
     MYSQL_SETTINGS = {
         "host": p_ds['ip'],
         "port": int(p_ds['port']),

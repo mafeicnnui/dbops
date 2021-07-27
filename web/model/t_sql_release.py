@@ -441,7 +441,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
             print('exec multi statement:')
             print('-----------------------------------------')
             for st in reReplace(sql):
-                print('st=',st+'$$$$\n')
+                print('st=',st)
                 await async_processer.exec_sql_by_ds(p_ds, st)
         else:
             pass
