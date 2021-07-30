@@ -174,17 +174,6 @@ async def get_obj_privs_grammar(p_ds,p_sql):
             else:
                await async_processer.exec_sql_by_ds(p_ds, p_sql)
                await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
-               # try:
-               #    await async_processer.exec_sql_by_ds(p_ds,p_sql)
-               # except :
-               #    e=traceback.format_exc().split('pymysql.err.ProgrammingError: (1064, "')[1]
-               #    return e
-
-               # try:
-               #    await async_processer.exec_sql_by_ds(p_ds,dp.format(ob))
-               # except:
-               #     e = traceback.format_exc().split('pymysql.err.ProgrammingError: (1064, "')[1]
-               #     return e
                return '0'
         if op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
             tb = await f_get_table_ddl(p_ds, ob)
@@ -621,20 +610,24 @@ async def check_idx_col_numbers(p_ds,p_sql,rule):
     dp  = 'drop table {}'
     if  op == "ALTER_TABLE_ADD":
         ob = get_obj_name(p_sql).lower()
-        idx = re.split(r'\s+', p_sql.strip())[5].split('(')[0].strip()
+        idx = re.split(r'\s+', p_sql.strip())[5].split('(')[0].strip().replace('`','')
     elif op == "CREATE_INDEX":
         ob = re.split(r'\s+', p_sql.strip())[4].split('(')[0].strip()
-        idx = re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip()
+        idx = re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','')
 
     tb = await f_get_table_ddl(p_ds, ob)
-    st = """SELECT n_fields FROM information_schema.INNODB_SYS_INDEXES WHERE `name`='{0}'""".format(idx)
+    st = """SELECT count(0) FROM information_schema.INNODB_SYS_INDEXES 
+            WHERE `table_id`=(SELECT table_id FROM information_schema.`INNODB_SYS_TABLES` WHERE NAME='{}/{}')
+              and `name`='{}' and n_fields>{}""".format(p_ds['service'],ob,idx,rule['rule_value'])
+    print('st=',st)
 
     if await check_mysql_tab_exists(p_ds, ob) > 0:
         await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_' + ob))
         await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
         rs = await async_processer.query_one_by_ds(p_ds, st.format('dbops_' + ob))
         await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-        if rs[0] > int(rule['rule_value']):
+        print('rs=',rs)
+        if rs[0] > 0:
            return rule['error'].format(ob,idx)
         return  None
     else:
@@ -649,7 +642,7 @@ async def check_idx_rule(p_ds,p_sql,p_user,n_sxh):
                   and rule_code in('switch_idx_name_null','switch_idx_name_rule',
                                    'switch_idx_numbers','switch_idx_col_numbers',
                                    'switch_idx_name_col') order by id"""
-    rs = await async_processer.query_list(sql)
+    rs = await async_processer.query_dict_list(sql)
     for rule in rs:
         if rule['rule_code'] == 'switch_idx_name_null' and rule['rule_value'] == 'false':
             if get_obj_op(p_sql) == 'ALTER_TABLE_ADD' and get_obj_type(p_sql.strip()) == 'TABLE'\
@@ -795,7 +788,7 @@ async def get_tab_rows(p_ds,p_sql):
     op = get_obj_op(p_sql)
     if op in ('CREATE_TABLE', 'ALTER_TABLE_ADD', 'ALTER_TABLE_DROP'):
         st = "select count(0) from {0}".format(ob)
-        rs = await async_processer.query_dict_one_by_ds(p_ds,st)
+        rs = await async_processer.query_one_by_ds(p_ds,st)
         return rs[0]
     return 0
 
@@ -1537,16 +1530,19 @@ def reReplace(p_sql):
     pattern1 = re.compile(r'(\s*\)\s*;\s*)')
     if pattern1.findall(p_sql)!=[]:
        out = re.sub(pattern1, ')$$$$', p_sql)
-       #return out.split('$$$$')
        return [i for i in out.split('$$$$') if i != '']
 
     pattern2 = re.compile(r'(\s*\'\s*;\s*)')
     if pattern2.findall(p_sql) != []:
        out = re.sub(pattern2, "'$$$$", p_sql)
-       #return out.split('$$$$')
        return [i for i in out.split('$$$$') if i != '']
-    return p_sql
 
+    pattern3 = re.compile(r'(\s*;\s*)')
+    if pattern3.findall(p_sql) != []:
+        out = re.sub(pattern3, '$$$$', p_sql)
+        # print('out3=',out)
+        return [i for i in out.split('$$$$') if i != '']
+    return [p_sql]
 
 # 检测DDL，DML是否为多条,1:单条，>1：多条
 def check_statement_count(p_sql):
