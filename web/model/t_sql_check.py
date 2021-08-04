@@ -316,7 +316,6 @@ async def get_col_comment_multi(p_ds,p_sql,config):
                    await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                    await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                    rs = await async_processer.query_lisst_by_ds(p_ds, st.format('dbops_' + ob))
-                   await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                    config['dbops_' + ob] = 'drop table {0}'.format('dbops_' + ob)
                    return rs
                 else:
@@ -375,7 +374,7 @@ async def get_col_default_value_multi(p_ds,p_sql,config):
                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                config['dbops_' + ob] = dp.format('dbops_' + ob)
                return rs
     except Exception as e:
@@ -430,43 +429,35 @@ async def get_time_col_default_value_multi(p_ds,p_sql,config):
         ob = get_obj_name(p_sql)
         op = get_obj_op(p_sql)
         dp = 'drop table {}'
-        tb = await f_get_table_ddl(p_ds, ob)
-        st = '''SELECT 
-                      table_name,
-                      column_name,
-                      'CURRENT_TIMESTAMP',
-                      CASE WHEN column_default='CURRENT_TIMESTAMP'  THEN  1 ELSE 0 END
-                FROM  information_schema.columns   
-                WHERE UPPER(table_schema)=DATABASE()  
-                 AND data_type IN('datetime','timestamp')
-                 AND column_key!='PRI'
-                 AND UPPER(table_name) = upper('{}')
-                 AND column_name='create_time'
-               union all  
-                SELECT 
-                     table_name,
-                     column_name,
-                     'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-                     CASE WHEN column_default='CURRENT_TIMESTAMP' AND extra='on update CURRENT_TIMESTAMP' THEN  1 ELSE 0 END
-                FROM  information_schema.columns   
-                WHERE UPPER(table_schema)=DATABASE()  
-                  AND data_type IN('datetime','timestamp')
-                  AND column_key!='PRI'
-                  AND UPPER(table_name) = upper('{}')
-                  AND column_name='update_time'
-            '''
+        st = '''SELECT  table_name, column_name,'CURRENT_TIMESTAMP',
+                        CASE WHEN column_default='CURRENT_TIMESTAMP'  THEN  1 ELSE 0 END
+                  FROM  information_schema.columns   
+                  WHERE upper(table_schema)=DATABASE()  
+                    AND data_type IN('datetime','timestamp')
+                    AND column_key!='PRI'
+                    AND UPPER(table_name) = upper('{}')
+                    AND column_name='create_time'
+                UNION ALL  
+                  SELECT table_name,column_name,'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+                         CASE WHEN column_default='CURRENT_TIMESTAMP' AND extra='on update CURRENT_TIMESTAMP' THEN  1 ELSE 0 END
+                  FROM  information_schema.columns   
+                  WHERE upper(table_schema)=DATABASE()  
+                    AND data_type IN('datetime','timestamp')
+                    AND column_key!='PRI'
+                    AND UPPER(table_name) = upper('{}')
+                    AND column_name='update_time'
+              '''
         if op == 'CREATE_TABLE':
-            rs = await async_processer.query_list_by_ds(p_ds, st.format(ob,ob))
-            config[ob] = dp.format(ob)
-            return rs
+              rs = await async_processer.query_list_by_ds(p_ds, st.format(ob,ob))
+              config[ob] = dp.format(ob)
+              return rs
         elif op == 'ALTER_TABLE_ADD':
-            if config.get('dbops_' + ob) is None:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-               rs = await async_processer.query_list_by_ds(p_ds,st.format('dbops_' + ob,'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-               config['dbops_' + ob] = dp.format('dbops_' + ob)
-               return rs
+              tb   = await f_get_table_ddl(p_ds, ob)
+              await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
+              await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
+              rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
+              config['dbops_' + ob] = dp.format('dbops_' + ob)
+              return rs
     except Exception as e:
         return process_result(str(e))
 
@@ -724,10 +715,10 @@ async def get_tab_char_col_len_multi(p_ds,p_sql,rule,config):
             config[ob] = dp.format(ob)
             return rs
         elif op == 'ALTER_TABLE_ADD':
-            if config.get('dbops_' + ob) is None:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
+            #if config.get('dbops_' + ob) is None:
+            #await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
             rs = await async_processer.query_list_by_ds(p_ds, st.format(rule['rule_value'], 'dbops_' +ob))
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
             config['dbops_' + ob] = dp.format('dbops_' + ob)
             return rs
     except Exception as e:
@@ -827,7 +818,7 @@ async def get_tab_has_fields_multi(p_ds,p_sql,config):
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                 rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                 config['dbops_' + ob] = dp.format('dbops_' +ob)
                 return rs
     except Exception as e:
@@ -920,7 +911,7 @@ async def get_tab_tcol_datetime_multi(p_ds,p_sql,config):
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                 rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                 config['dbops_' + ob] = dp.format('dbops_' + dp)
                 return rs
     except Exception as e:
@@ -973,8 +964,9 @@ async def get_col_not_null_multi(p_ds,p_sql,config):
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                 rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
+                config['dbops_' + ob] = dp.format('dbops_' + dp)
+                #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                #await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 return rs
     except Exception as e:
         return process_result(str(e))
@@ -1086,7 +1078,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
     op     = get_obj_op(p_sql.strip())
     tp     = get_obj_type(p_sql.strip())
     ds     = await get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
-    st     = p_sql.strip()
+    st     = p_sql.strip().replace("\\","\\\\")
     ru     = """select id,rule_code,rule_name,rule_value,error 
                   from t_sql_audit_rule where rule_type='ddl' and status='1' and id not in (27,28,29,30) order by id"""
     rs     = await async_processer.query_dict_list(ru)
@@ -1525,31 +1517,56 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
 
     return res
 
-# 正则处理多行DDL，DML为列表
+def preProcesses(matched):
+    value = matched.group(0)
+    return value.replace(';','^^^')
+
 def reReplace(p_sql):
+    p_sql_pre=p_sql
+    pattern0 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
+    if pattern0.findall(p_sql) != []:
+       print('一: 将comment中的;替换为^^^ ...')
+       p_sql_pre = re.sub(pattern0,preProcesses,p_sql)
+       print('A:',p_sql_pre)
+
     pattern1 = re.compile(r'(\s*\)\s*;\s*)')
-    if pattern1.findall(p_sql)!=[]:
-       out = re.sub(pattern1, ')$$$$', p_sql)
-       return [i for i in out.split('$$$$') if i != '']
+    if pattern1.findall(p_sql_pre)!=[]:
+       print('二: 将);替换为)$$$ ...')
+       p_sql_pre = re.sub(pattern1, ')$$$', p_sql_pre)
+       print('AA:', p_sql_pre)
 
     pattern2 = re.compile(r'(\s*\'\s*;\s*)')
-    if pattern2.findall(p_sql) != []:
-       out = re.sub(pattern2, "'$$$$", p_sql)
-       return [i for i in out.split('$$$$') if i != '']
+    if pattern2.findall(p_sql_pre) != []:
+       print('三: 将\';替换为\'$$$ ...')
+       p_sql_pre = re.sub(pattern2, "'$$$", p_sql_pre)
+       print('AAA:', p_sql_pre)
 
     pattern3 = re.compile(r'(\s*;\s*)')
-    if pattern3.findall(p_sql) != []:
-        out = re.sub(pattern3, '$$$$', p_sql)
-        # print('out3=',out)
-        return [i for i in out.split('$$$$') if i != '']
-    return [p_sql]
+    if pattern3.findall(p_sql_pre) != []:
+        print('四: 将;替换为$$$')
+        p_sql_pre = re.sub(pattern3, "$$$\n", p_sql_pre)
+        print('AAAA:', p_sql_pre)
 
-# 检测DDL，DML是否为多条,1:单条，>1：多条
+    print('五: 通过$$$将p_sql_pre处理为列表...')
+    p_sql_pre = [i for i in p_sql_pre.split('$$$') if i != '']
+    print('AAAAA=', p_sql_pre)
+    print('AAAAA-len=', len(p_sql_pre))
+
+    print('六: 将列表中每个语句comment中的^^^替为;...')
+    p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
+    print('AAAAAA=', p_sql_pre)
+    print('AAAAAA-len2=', len(p_sql_pre))
+
+    if len(p_sql_pre) == 1:
+       return [p_sql]
+    else:
+       return  p_sql_pre
+
 def check_statement_count(p_sql):
     out = [i for i in reReplace(p_sql) if i != '']
-    # print('check_statement_count=>p_sql:',p_sql)
-    # print('check_statement_count=>out:',out)
-    # print('check_statement_count=>len:',len(out))
+    print('check_statement_count=>p_sql:',p_sql)
+    print('check_statement_count=>out:',out)
+    print('check_statement_count=>len:',len(out))
     return len(out)
 
 async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
@@ -1562,7 +1579,7 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
     await del_check_results(p_user)
 
     # check dml sql
-    for s in reReplace(p_sql):
+    for s in reReplace(p_sql.replace("\\","\\\\")):
         ob  = get_obj_name(s.strip())
         op  = get_obj_op(s.strip())
         tp  = get_obj_type(s.strip())
@@ -1725,11 +1742,12 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                         rule['error'] = v
                         await save_check_results(rule, p_user, st,sxh)
 
-            if rule['rule_code'] == 'switch_time_col_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
+            if rule['rule_code'] == 'switch_tcol_default_value' and rule['rule_value'] == 'true' and tp == 'TABLE':
                 if op in ('CREATE_TABLE'):
                     print('检查时间字段默认值...')
                     v = await get_time_col_default_value_multi(ds, st,cfg)
                     e = rule['error']
+                    print('v==============',v,type(v))
                     try:
                         for i in v:
                             if i[3] == 0:

@@ -32,7 +32,8 @@ async def get_sql_by_sqlid(p_sql_id):
     rs = await async_processer.query_one(sql)
     return rs[0]
 
-async def query_audit(p_name,p_dsid,p_ver,p_userid):
+async def query_audit(p_name,p_dsid,p_creator,p_userid):
+    print('p_creator=',p_creator,'p_userid',p_userid)
     v_where = ''
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
@@ -41,8 +42,8 @@ async def query_audit(p_name,p_dsid,p_ver,p_userid):
     else:
         v_where = v_where + """ and exists(select 1 from t_user_proj_privs x 
                                            where x.proj_id=b.id and x.user_id='{0}' and priv_id='3')""".format(p_userid)
-    if p_ver != '':
-        v_where = v_where + " and a.version='{0}'\n".format(p_ver)
+    if p_creator != '':
+        v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
 
     sql = """SELECT  a.id, 
                      a.message,
@@ -54,16 +55,13 @@ async def query_audit(p_name,p_dsid,p_ver,p_userid):
                      END  STATUS,
                      c.dmmc AS 'type',
                      b.db_desc,
-                     e.dmmc, 
                      (SELECT NAME FROM t_user d WHERE d.login_name=a.creator) creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
                      DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date   
-            FROM t_sql_release a,t_db_source b,t_dmmx c,t_dmmx e
+            FROM t_sql_release a,t_db_source b,t_dmmx c
             WHERE a.dbid=b.id
-              AND a.version=e.dmm
               AND c.dm='13'
-              AND e.dm='12'  
               AND a.type=c.dmm
               {0}
             order by a.creation_date desc
@@ -71,7 +69,7 @@ async def query_audit(p_name,p_dsid,p_ver,p_userid):
     print(sql)
     return await async_processer.query_list(sql)
 
-async def query_run(p_name,p_dsid,p_ver,p_userid):
+async def query_run(p_name,p_dsid,p_creator,p_userid):
     v_where = ''
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
@@ -80,8 +78,9 @@ async def query_run(p_name,p_dsid,p_ver,p_userid):
     else:
         v_where = v_where + """ and exists(select 1 from t_user_proj_privs x 
                                    where x.proj_id=b.id and x.user_id='{0}' and priv_id='4')""".format(p_userid)
-    if p_ver != '':
-        v_where = v_where + " and a.version='{0}'\n".format(p_ver)
+    if p_creator != '':
+        v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
+
     sql = """SELECT  a.id, 
                      a.message,
                      CASE a.status WHEN '0' THEN '已发布'
@@ -93,31 +92,26 @@ async def query_run(p_name,p_dsid,p_ver,p_userid):
                      END  STATUS,
                      c.dmmc AS 'type',
                      b.db_desc,
-                     e.dmmc,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
                      DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
                      IFNULL(error,'')  as error   
-            FROM t_sql_release a,t_db_source b,t_dmmx c,t_dmmx e
+            FROM t_sql_release a,t_db_source b,t_dmmx c
             WHERE a.dbid=b.id
-              AND a.version=e.dmm
               AND c.dm='13'
-              AND e.dm='12' 
               AND a.type=c.dmm
-              {0}
-            order by a.creation_date desc
+              {0} order by a.creation_date desc
           """.format(v_where)
     return await async_processer.query_list(sql)
 
-async def query_order(p_name,p_dsid,p_ver,p_userid):
-    v_where = "  and ( a.creator='{0}' or a.auditor='{1}' or a.executor='{2}' )".format(p_userid,p_userid,p_userid)
+async def query_order(p_name,p_dsid,p_username):
+    v_where = "  and  a.creator='{0}'".format(p_username)
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
     if p_dsid != '':
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)
-    if p_ver != '':
-        v_where = v_where + " and a.version='{0}'\n".format(p_ver)
+
     sql = """SELECT  a.id, 
                      a.message,
                      CASE a.status WHEN '0' THEN '已发布'
@@ -128,22 +122,19 @@ async def query_order(p_name,p_dsid,p_ver,p_userid):
                      END  STATUS,
                      c.dmmc AS 'type',
                      b.db_desc,
-                     e.dmmc,
                      d.name AS creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
-                     (SELECT NAME FROM t_user e WHERE e.id=a.auditor) auditor,
+                     (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
                      DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
                      error
-            FROM t_sql_release a,t_db_source b,t_dmmx c,t_user d,t_dmmx e
+            FROM t_sql_release a,t_db_source b,t_dmmx c,t_user d
             WHERE a.dbid=b.id
-              and a.version=e.dmm
               AND c.dm='13'
-              and e.dm='12'
               AND a.type=c.dmm
-              AND a.creator=d.id
-              {0}
-            order by creation_date desc
+              AND a.creator=d.login_name
+              {0} order by creation_date desc
           """.format(v_where)
+    print(sql)
     return await async_processer.query_list(sql)
 
 async def query_wtd(p_userid):
@@ -336,11 +327,11 @@ async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
         result['message'] = '发布失败！'
         return result
 
-async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,ver,type):
+async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type):
     result = {}
     try:
         if check_validate(p_dbid,p_cdb,p_sql,desc,p_user,type)['code']!='0':
-           return check_validate(p_dbid,p_cdb,p_sql,desc,p_user,ver,type)
+           return check_validate(p_dbid,p_cdb,p_sql,desc,p_user,type)
         p_ds = await get_ds_by_dsid(p_dbid)
         if p_ds['db_type'] == '0':
             val = check_mysql_ddl(p_dbid,p_cdb, p_sql,p_user,type)
@@ -349,9 +340,9 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,ver,type):
             result['message'] = '发布失败!'
             return result
 
-        sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,version,type) 
-                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')
-            """.format((await get_sqlid()),p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['username'],current_time(),p_user['username'],ver,type)
+        sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type) 
+                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')
+            """.format((await get_sqlid()),p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type)
         print('release=>',sql)
         await async_processer.exec_sql(sql)
         result['code']='0'

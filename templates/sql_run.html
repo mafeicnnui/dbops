@@ -18,15 +18,15 @@
             margin-left:500px;
             margin-top:100px;
         }
-
-        #ace-editor,#ace-editor3{
+        #ace-editor{
+           height:280px;
+        }
+        #ace-editor3{
            height:200px;
         }
-
         #ace-editor2{
            height:80px;
         }
-
         .table th{
             text-align: center;
             vertical-align: middle!important;
@@ -58,20 +58,18 @@
                        </select>
                  </div>
             </div>
-            <div class="col-md-3">
-                <div>
-                    <label class="col-md-4 control-label"><span id="s_sql_ver">*</span>版本:</label>
-                </div>
-                <div class="col-md-8">
-                    <select class="form-control select" id="db_ver">
+             <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon">发布人</span>
+                    <select class="form-control select" id="sql_creater">
                         <option value='' selected = "selected">...</option>
-                        {% for var in vers %}
+                        {% for var in creater %}
                           <option value={{var[0]}}>{{var[1]}}</option>
                         {% end %}
                     </select>
-
-                </div>
+                 </div>
              </div>
+
              <div class="col-md-1">
                <div class="input-group">
                     <span class="input-group-btn">
@@ -105,7 +103,7 @@
                 </div>
                 <br>
                 <div class="row">
-                  <span>备份语句：</span>
+                  <span>回滚语句：</span>
                   <div id='ace-editor3' class="col-md-12"></div>
                 </div>
                 <br>
@@ -158,7 +156,7 @@
           {
                 var name = $("#name").val();
                 var dsid = $("#db_run_source").val();
-                var ver  = $("#db_ver").val();
+                var creater  = $("#sql_creater").val();
 
                 $.ajax({
                   url: "/sql/run/query",
@@ -167,7 +165,7 @@
                   data:{
                       qname:name,
                       dsid:dsid,
-                      ver:ver
+                      creater:creater
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -187,7 +185,6 @@
                              { "title": "工单状态" },
                              { "title": "工单类型" },
                              { "title": "数据库环境" },
-                             { "title": "版本号"},
                              { "title": "发布人" },
                              { "title": "发布时间" },
                              { "title": "审核人"},
@@ -197,12 +194,12 @@
                            ],
                             columnDefs: [
                             {
-                                targets: 11,
+                                targets: 10,
                                 render: function(data, type, row, meta){
                                      console.log('row[0]='+row[0]);
                                      var id=row[0]
                                      var status=row[2]
-                                     var err=escape(row[10])
+                                     var err=escape(row[9])
                                      var par = id+'^^^'+err
 
                                      if (status=='已发布') {

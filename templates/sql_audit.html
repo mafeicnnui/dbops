@@ -12,11 +12,9 @@
         .modal-lg-detail {
             width :60%;
             height:20%;
-            /*margin-left:500px;*/
-            /*margin-top :150px;*/
         }
          #ace-editor {
-           height:200px;
+           height:280px;
         }
         .table th{
             text-align: center;
@@ -48,18 +46,15 @@
                  </div>
             </div>
             <div class="col-md-3">
-                <div>
-                    <label class="col-md-4 control-label"><span id="s_sql_ver">*</span>版本:</label>
-                </div>
-                <div class="col-md-8">
-                    <select class="form-control select" id="db_ver">
+                 <div class="input-group">
+                    <span class="input-group-addon">发布人</span>
+                    <select class="form-control select" id="sql_creater">
                         <option value='' selected = "selected">...</option>
-                        {% for var in vers %}
+                        {% for var in creater %}
                           <option value={{var[0]}}>{{var[1]}}</option>
                         {% end %}
                     </select>
-
-                </div>
+                 </div>
              </div>
              <div class="col-md-1">
                <div class="input-group">
@@ -156,7 +151,7 @@
           {
                 var name = $("#name").val();
                 var dsid = $("#db_audit_source").val();
-                var ver  = $("#db_ver").val();
+                var creater  = $("#sql_creater").val();
 
                 $.ajax({
                   url: "/sql/audit/query",
@@ -165,7 +160,7 @@
                   data:{
                       qname:name,
                       dsid:dsid,
-                      ver:ver
+                      creater:creater
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -185,7 +180,6 @@
                          { "title": "工单状态" },
                          { "title": "工单类型" },
                          { "title": "数据库环境"},
-                         { "title": "版本号"},
                          { "title": "发布人" },
                          { "title": "发布时间"},
                          { "title": "审核人"},
@@ -194,7 +188,7 @@
                        ],
                         columnDefs: [
                         {
-                            targets: 10,
+                            targets: 9,
                             render: function(data, type, row, meta){
                                  var id=row[0]
                                  var status=row[2]

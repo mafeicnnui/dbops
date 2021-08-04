@@ -19,7 +19,7 @@ from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx          import get_tab_ddl_by_tname,get_tab_idx_by_tname,get_tree_by_dbid,get_tree_by_dbid_mssql
 from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,get_tab_structure,get_tab_keys,get_tab_incr_col,query_ds
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
-from web.model.t_dmmx          import get_dmm_from_dm,get_users_from_proj
+from web.model.t_dmmx          import get_dmm_from_dm,get_users_from_proj,get_users
 from web.utils.basehandler     import basehandler
 from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common          import DateEncoder
@@ -62,9 +62,8 @@ class sql_release(basehandler):
        cdb        = self.get_argument("cur_db")
        sql        = self.get_argument("sql")
        desc       = self.get_argument("desc")
-       ver        = self.get_argument("ver")
        type       = self.get_argument("type")
-       result     = await save_sql(dbid,cdb,sql,desc,user,ver,type)
+       result     = await save_sql(dbid,cdb,sql,desc,user,type)
        self.write({"code": result['code'], "message": result['message']})
 
 class sql_check(basehandler):
@@ -107,7 +106,8 @@ class sqlaudit(basehandler):
        name = str(self.get_secure_cookie("username"), encoding="utf-8")
        self.render("./sql_audit.html",
                    audit_dss = await get_dss_sql_audit(name),
-                   vers = await get_dmm_from_dm('12'))
+                   creater = await get_users(name)
+                   )
 
 class sql_audit(basehandler):
    @tornado.web.authenticated
@@ -126,7 +126,7 @@ class sqlrun(basehandler):
        name = str(self.get_secure_cookie("username"), encoding="utf-8")
        self.render("./sql_run.html",
                    run_dss = await get_dss_sql_run(name),
-                   vers = await get_dmm_from_dm('12'))
+                   creater = await get_users(name))
 
 
 class sql_run(basehandler):
@@ -147,12 +147,12 @@ class sql_audit_query(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        qname  = self.get_argument("qname")
-        dsid   = self.get_argument("dsid")
-        ver    = self.get_argument("ver")
-        userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
-        v_list = await query_audit(qname,dsid,ver,userid)
-        v_json = json.dumps(v_list)
+        qname   = self.get_argument("qname")
+        dsid    = self.get_argument("dsid")
+        creater = self.get_argument("creater")
+        userid  = str(self.get_secure_cookie("userid"), encoding="utf-8")
+        v_list  = await query_audit(qname,dsid,creater,userid)
+        v_json  = json.dumps(v_list)
         self.write(v_json)
 
 class sql_run_query(basehandler):
@@ -161,9 +161,9 @@ class sql_run_query(basehandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname  = self.get_argument("qname")
         dsid   = self.get_argument("dsid")
-        ver    = self.get_argument("ver")
+        creater= self.get_argument("creater")
         userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
-        v_list = await query_run(qname,dsid,ver,userid)
+        v_list = await query_run(qname,dsid,creater,userid)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -290,11 +290,10 @@ class order_query(basehandler):
     @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
+        username = str(self.get_secure_cookie("username"), encoding="utf-8")
         qname  = self.get_argument("qname")
         dsid   = self.get_argument("dsid")
-        ver    = self.get_argument("ver")
-        v_list = await query_order(qname,dsid,ver,userid)
+        v_list = await query_order(qname,dsid,username)
         v_json = json.dumps(v_list)
         self.write(v_json)
 

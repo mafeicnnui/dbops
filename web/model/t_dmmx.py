@@ -26,6 +26,13 @@ async def get_users_from_proj(p_userid):
               where project_group=(select project_group from t_user where id='{0}')""".format(p_userid)
     return await async_processer.query_list(sql)
 
+async def get_users(p_username):
+    if p_username=='admin':
+       sql = """select login_name,concat(name,'(',wkno,')') from t_user order by id """
+    else:
+       sql = """select login_name,concat(name,'(',wkno,')') from t_user where login_name='{}' order by id """.format(p_username)
+    return await async_processer.query_list(sql)
+
 async def get_sys_dmlx():
     sql = "select dm,mc from t_dmlx where flag='1' order by dm"
     return await async_processer.query_list(sql)

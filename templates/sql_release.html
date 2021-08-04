@@ -2,28 +2,12 @@
 <head>
     <meta charset="utf-8">
     <title>数据库发布</title>
-
-    <!-- jquery treeview -->
-    <!--<link   rel="stylesheet"  href="{{static_url('assets/css/jquery.treeview.css') }}	" />-->
-	<!--<link   rel="stylesheet"  href="{{static_url('assets/css/tree.css')}}" />-->
-	<!--<script type="text/javascript" src="{{static_url('assets/js/jquery.treeview.js')}}"></script>-->
-    <!--<script type='text/javascript' src="{{static_url('assets/js/jquery.contextmenu.r2-min.js')}}"></script>-->
-
     <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
-
-    <!-- ace code -->
-    <!--<script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>-->
-    <!--<script type="text/javascript" src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>-->
-    <!--<script type="text/javascript" src="{{static_url('plugins/editors/ace/mode-mysql.js')}}"></script>-->
-
     <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
-
-
      <!-- DataTables -->
     <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
     <!-- Notification css (Toastr) -->
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
@@ -109,21 +93,6 @@
                     <select class="form-control select" id="db_order_type">
                         <option value='' selected = "selected">...</option>
                         {% for var in orders %}
-                          <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-           </div>
-       </div>
-       <div class="col-md-2">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-4 control-label"><span id="s_sql_ver">*</span>版本:</label>
-                </div>
-                <div class="col-md-8">
-                    <select class="form-control select" id="db_ver">
-                        <option value='' selected = "selected">...</option>
-                        {% for var in vers %}
                           <option value={{var[0]}}>{{var[1]}}</option>
                         {% end %}
                     </select>
@@ -483,7 +452,7 @@
             document.all['s_sql_desc'].style.color="#ff0000";
             document.all['s_db_source'].style.color="#ff0000";
             document.all['s_order_type'].style.color="#ff0000";
-            document.all['s_sql_ver'].style.color="#ff0000";
+            // document.all['s_sql_ver'].style.color="#ff0000";
         }
 
         //当浏览器大小变化时
@@ -846,11 +815,6 @@
                       return false;
                   }
 
-                  if ($('#db_ver').val()=='') {
-                      showtips('error','版本不能为空!');
-                      return false;
-                  }
-
                   if (v_sql=='') {
                       showtips('error','请选中发布语句!');
                       return false;
@@ -973,7 +937,6 @@
                               cur_db: $('#curr_db').text(),
                               sql   : v_sql,
                               desc  : $('#sql_desc').val(),
-                              ver   : $('#db_ver').val(),
                               type  : v_type,
                           },
                           beforeSend: function () {
@@ -1046,7 +1009,6 @@
                             cur_db:  $('#curr_db').text(),
                             sql   :  editor.session.getTextRange(editor.getSelectionRange()),
                             desc  :  $('#sql_desc').val(),
-                            ver   :  $('#db_ver').val(),
                             type  :  $('#db_order_type').val(),
                         },
                         success: function (dataSet) {

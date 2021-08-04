@@ -76,7 +76,6 @@
                   data:{
                       qname : $("#name").val(),
                       dsid  : $("#db_audit_source").val(),
-                      ver   : $("#db_ver").val()
                   },
                   success: function (dataSet) {
                       $('#tab-sql').DataTable( {
@@ -85,11 +84,11 @@
                           destroy    :true,
                           async      :true,
                           ordering   :false,
-                          scrollY    :"400px",
+                          scrollY    :false,
                           scrollX    :false,
                           scrollCollapse: true,
-                          paging:     false,
-                          iDisplayLength: 14,
+                          paging:     true,
+                          iDisplayLength: 13,
                           data: dataSet,
                           columns: [
                              { "title": "工单编号" },
@@ -97,7 +96,6 @@
                              { "title": "工单状态" },
                              { "title": "工单类型" },
                              { "title": "数据库环境" },
-                             { "title": "版本号"},
                              { "title": "发布人" },
                              { "title": "发布时间" },
                              { "title": "审核人"},
@@ -107,16 +105,16 @@
                            ],
                           columnDefs: [
                             {
-                                targets: 11,
+                                targets: 10,
                                 render: function(data, type, row, meta){
                                      console.log('row[0]='+row[0]);
                                      var id=row[0]
-                                     var err=escape(row[10])
+                                     var err=escape(row[9])
                                      msg ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="错误" onclick="showErr(\''+err+'\');"/>' +'&nbsp;'
                                      return msg;
-
                                 }
                              }
                            ],
@@ -313,7 +311,9 @@
                         $.ajax({
                             type: 'post',
                             url: '/sql/_format',
-                            data: {"sql":sql},
+                            data: {
+                                sql:sql.sqltext
+                            },
                             success: function (dataSet) {
                                 console.log('sql2=',dataSet);
                                 var editor = ace.edit("ace-editor");
@@ -326,12 +326,15 @@
                                    keyboard: false,
                                    backdrop:false
                                 });
-
                              }
                         })
                     }
             });
         }
+
+         function DeleteSql() {
+
+         }
 
          function showErr(err){
             var editor2 = ace.edit("ace-editor2");
@@ -561,28 +564,16 @@
                        </select>
                  </div>
             </div>
-            <div class="col-md-3">
-                <div>
-                    <label class="col-md-4 control-label"><span id="s_sql_ver">*</span>版本:</label>
-                </div>
-                <div class="col-md-8">
-                    <select class="form-control select" id="db_ver">
-                        <option value='' selected = "selected">...</option>
-                        {% for var in vers %}
-                          <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
-                    </select>
-
-                </div>
-             </div>
              <div class="col-md-1">
                <div class="input-group">
                     <span class="input-group-btn">
                        <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
                     </span>
+                    <span class="input-group-btn">
+                       <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>
+                    </span>
                </div>
             </div>
-
         </div>
      </div>
     <p></p>
@@ -607,9 +598,6 @@
                      <div class="col-md-12">
                           <div id="div-tab">
                                <table id="tab-sql" class="table table-striped table-bordered" cellspacing="0" width="100%"  height="100%" ></table>
-                          </div>
-                          <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-                             <input  id='exp-btn' type='button' class="btn waves-effect waves-light btn-primary" value="导出"/>
                           </div>
                       </div>
                      </div>
@@ -990,6 +978,16 @@
 
 <script>
 
+    function centerModals() {
+          $('.modal').each(function(i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+          });
+     }
+
     function showtips(flag,title,content){
                 toastr.options = {
                       "closeButton": false,
@@ -1010,120 +1008,6 @@
                     }
                     toastr[flag](content,title)
      }
-
-    $('#order_attach_upd').click(function(){
-            $.ajax({
-                  url: "/wtd/attachment/number",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      wtd_no : $('#order_number_upd').val()
-                  },
-                  success: function (dataSet) {
-                     console.log('attachment_number=',dataSet)
-                     if (dataSet==0 ){
-                         showtips('info','','该问题单无附件!');
-                     } else {
-                         window.open("/wtd/attachment?wtd_no="+$('#order_number_upd').val());
-                     }
-
-                  }
-            })
-    })
-
-    $('#order_attach_detail').click(function(){
-         $.ajax({
-                  url: "/wtd/attachment/number",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      wtd_no : $('#order_number_detail').val()
-                  },
-                  success: function (dataSet) {
-                     console.log('attachment_number2=',dataSet)
-                     if (dataSet==0 ){
-                         showtips('info','','该问题单无附件!');
-                     } else {
-                         window.open("/wtd/attachment?wtd_no="+$('#order_number_detail').val());
-                     }
-                  }
-            });
-
-    })
-
-    function centerModals() {
-          $('.modal').each(function(i) {
-            var $clone = $(this).clone().css('display', 'block').appendTo('body');
-            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-            top = top > 50 ? top : 0;
-            $clone.remove();
-            $(this).find('.modal-content').css("margin-top", top - 50);
-          });
-     }
-
-    $('#db_source').change(function() {
-        console.log('db_source=',$('#db_source').val());
-        if ($('#db_source').val()!=''){
-            $.ajax({
-                  url: "/get_database",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      dbid : $('#db_source').val(),
-                  },
-                  success: function (dataSet) {
-                     $("#db_name").empty();
-                     $("#db_name").append("<option value=''>...</option>");
-                     for(i=0;i<dataSet['message'].length;i++){
-                          var val  = dataSet['message'][i];
-                          var text = dataSet['message'][i];
-                          $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
-                     }
-                  }
-            });
-        } else {
-            $("#db_name").empty();
-            $("#db_name").append("<option value=''>...</option>");
-        }
-     });
-
-    $('#add-btn').click(function(){
-        $('.modal').on('show.bs.modal', centerModals);
-        $(window).on('resize', centerModals);
-        $('#con-close-modal4').modal({
-               keyboard: false,
-               backdrop:false
-         });
-        init_order()
-    })
-
-    $('#file_order').filer({
-        limit: 3,
-        maxSize: 3,
-        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
-        changeInput: true,
-        showThumbs: true,
-        addMore: true
-    });
-
-    $('#file_order_detail').filer({
-        limit: 3,
-        maxSize: 3,
-        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
-        changeInput: true,
-        showThumbs: true,
-        addMore: true
-    });
-
-    $('#file_order_upd').filer({
-        limit: 3,
-        maxSize: 3,
-        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
-        changeInput: true,
-        showThumbs: true,
-        addMore: true
-    });
-
 
     function init_order(){
          $('#order_number').val('')
@@ -1202,6 +1086,109 @@
         }
         return order_name
     }
+
+    $('#order_attach_upd').click(function(){
+            $.ajax({
+                  url: "/wtd/attachment/number",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      wtd_no : $('#order_number_upd').val()
+                  },
+                  success: function (dataSet) {
+                     console.log('attachment_number=',dataSet)
+                     if (dataSet==0 ){
+                         showtips('info','','该问题单无附件!');
+                     } else {
+                         window.open("/wtd/attachment?wtd_no="+$('#order_number_upd').val());
+                     }
+
+                  }
+            })
+    })
+
+    $('#order_attach_detail').click(function(){
+         $.ajax({
+                  url: "/wtd/attachment/number",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      wtd_no : $('#order_number_detail').val()
+                  },
+                  success: function (dataSet) {
+                     console.log('attachment_number2=',dataSet)
+                     if (dataSet==0 ){
+                         showtips('info','','该问题单无附件!');
+                     } else {
+                         window.open("/wtd/attachment?wtd_no="+$('#order_number_detail').val());
+                     }
+                  }
+            });
+
+    })
+
+    $('#db_source').change(function() {
+        console.log('db_source=',$('#db_source').val());
+        if ($('#db_source').val()!=''){
+            $.ajax({
+                  url: "/get_database",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      dbid : $('#db_source').val(),
+                  },
+                  success: function (dataSet) {
+                     $("#db_name").empty();
+                     $("#db_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['message'].length;i++){
+                          var val  = dataSet['message'][i];
+                          var text = dataSet['message'][i];
+                          $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
+                     }
+                  }
+            });
+        } else {
+            $("#db_name").empty();
+            $("#db_name").append("<option value=''>...</option>");
+        }
+     });
+
+    $('#add-btn').click(function(){
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-modal4').modal({
+               keyboard: false,
+               backdrop:false
+         });
+        init_order()
+    })
+
+    $('#file_order').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
+
+    $('#file_order_detail').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
+
+    $('#file_order_upd').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
 
     $('#order_save_btn').click(function(){
 
@@ -1358,7 +1345,6 @@
                 })
         }
      })
-
 
     $("#order_env").bind("input propertychange",function(){
         if ($("#order_env").val()!='' && $("#order_type").val()!=''){
