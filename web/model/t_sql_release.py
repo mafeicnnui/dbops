@@ -137,7 +137,11 @@ async def query_order(p_name,p_dsid,p_username):
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
                      END  STATUS,                     
-                     c.dmmc AS 'type',
+                     CASE  WHEN a.run_time IS NOT NULL OR a.run_time !='' THEN
+                        CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
+                     ELSE
+                        c.dmmc 
+                     END AS 'type',
                      b.db_desc,
                      d.name AS creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
@@ -149,7 +153,7 @@ async def query_order(p_name,p_dsid,p_username):
               AND c.dm='13'
               AND a.type=c.dmm
               AND a.creator=d.login_name
-              {0} order by creation_date desc
+              {0} order by a.creation_date desc
           """.format(v_where)
     print(sql)
     return await async_processer.query_list(sql)
@@ -435,7 +439,8 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,s
                         set  status ='5' ,
                              last_update_date ='{0}' ,
                              exec_end ='{1}',
-                             error = '{2}'                    
+                             error = '{2}',
+                             failure_times=failure_times+1
                         where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
         else:
            pass

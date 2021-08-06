@@ -19,20 +19,15 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="multi ddl release support">
-      <change afterPath="$PROJECT_DIR$/web/task/schedule.py" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sql order performance">
+      <change afterPath="$PROJECT_DIR$/start_schedule.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/audit_rule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/audit_rule.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/order_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sql_audit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sql_audit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sql_release.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sql_run.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sql_run.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync_bigdata_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user_query.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_sql_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_check.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/wtd.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/wtd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/schedule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_rollback.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_rollback.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,13 +78,20 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/assets/images/blog" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops" />
+      <recent name="D:\work\dbops\static\assets\images\blog" />
+      <recent name="D:\work\dbops\templates" />
+      <recent name="D:\work\dbops\static\assets\pages" />
+      <recent name="D:\work\dbops\web\model" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\dbops\doc" />
       <recent name="C:\dbops\static\plugins\layui\css" />
@@ -97,15 +99,8 @@
       <recent name="C:\dbops\static\plugins" />
       <recent name="C:\dbops\static" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\static\assets\images\blog" />
-      <recent name="D:\work\dbops\templates" />
-      <recent name="D:\work\dbops\static\assets\pages" />
-      <recent name="D:\work\dbops\web\model" />
-      <recent name="D:\work\dbops\web\services" />
-    </key>
   </component>
-  <component name="RunManager" selected="Python.server">
+  <component name="RunManager" selected="Shell Script.start_schedule.sh">
     <configuration name="hello" type="PythonConfigurationType" factoryName="Python">
       <module name="dbops" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -179,6 +174,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="schedule" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="dbops" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/task" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/task/schedule.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="server" type="PythonConfigurationType" factoryName="Python">
       <module name="dbops" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -208,50 +225,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="server_18" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="sftp://hopson@10.2.39.17:65508/home/hopson/apps/usr/webserver/dba/python3.6.0/bin/python3" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/services" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/services/server.py" />
-      <option name="PARAMETERS" value="8300" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="t_sync_datax" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/model/t_sync_datax.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="t_user" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="dbops" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -274,22 +247,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="start_schedule.sh" type="ShConfigurationType" temporary="true">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/start_schedule.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.hello" />
       <item itemvalue="Python.server" />
       <item itemvalue="Python.mysql_async_process" />
       <item itemvalue="Python.run_task" />
-      <item itemvalue="Python.server_18" />
-      <item itemvalue="Python.t_sync_datax" />
       <item itemvalue="Python.t_user" />
+      <item itemvalue="Python.schedule" />
+      <item itemvalue="Shell Script.start_schedule.sh" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Shell Script.start_schedule.sh" />
+        <item itemvalue="Python.schedule" />
         <item itemvalue="Python.mysql_async_process" />
         <item itemvalue="Python.t_user" />
         <item itemvalue="Python.run_task" />
-        <item itemvalue="Python.server_18" />
-        <item itemvalue="Python.t_sync_datax" />
       </list>
     </recent_temporary>
   </component>
@@ -459,7 +443,7 @@
       <workItem from="1628038548975" duration="14717000" />
       <workItem from="1628065788512" duration="1238000" />
       <workItem from="1628122479867" duration="22438000" />
-      <workItem from="1628208747711" duration="6947000" />
+      <workItem from="1628208747711" duration="19793000" />
     </task>
     <task id="LOCAL-00001" summary="update urls description">
       <created>1612868366783</created>
@@ -762,7 +746,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628058802613</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="sql order performance">
+      <created>1628218826644</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1628218826644</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TodoView">
@@ -790,7 +781,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="page update" />
     <MESSAGE value="add docker README.md" />
     <MESSAGE value="add crontab task" />
     <MESSAGE value="puppet.sql update" />
@@ -815,29 +805,34 @@
     <MESSAGE value="login optimize" />
     <MESSAGE value="sql order bug fix" />
     <MESSAGE value="multi ddl release support" />
-    <option name="LAST_COMMIT_MESSAGE" value="multi ddl release support" />
+    <MESSAGE value="sql order performance" />
+    <option name="LAST_COMMIT_MESSAGE" value="sql order performance" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1877" height="148" key="GridCell.Tab.0.bottom" timestamp="1628218415664">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1628229696629">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628229696629" />
+    <state width="1877" height="239" key="GridCell.Tab.0.bottom" timestamp="1628238201263">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="981" height="189" key="GridCell.Tab.0.bottom/0.0.1024.728@0.0.1024.728" timestamp="1621504216591" />
-    <state width="1877" height="148" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628218415664" />
-    <state width="1877" height="148" key="GridCell.Tab.0.center" timestamp="1628218415664">
+    <state width="1877" height="239" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628238201263" />
+    <state width="1877" height="239" key="GridCell.Tab.0.center" timestamp="1628238201263">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="981" height="189" key="GridCell.Tab.0.center/0.0.1024.728@0.0.1024.728" timestamp="1621504216591" />
-    <state width="1877" height="148" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628218415664" />
-    <state width="1877" height="148" key="GridCell.Tab.0.left" timestamp="1628218415664">
+    <state width="1877" height="239" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628238201263" />
+    <state width="1877" height="239" key="GridCell.Tab.0.left" timestamp="1628238201262">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="981" height="189" key="GridCell.Tab.0.left/0.0.1024.728@0.0.1024.728" timestamp="1621504216591" />
-    <state width="1877" height="148" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628218415664" />
-    <state width="1877" height="148" key="GridCell.Tab.0.right" timestamp="1628218415664">
+    <state width="1877" height="239" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628238201262" />
+    <state width="1877" height="239" key="GridCell.Tab.0.right" timestamp="1628238201263">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="981" height="189" key="GridCell.Tab.0.right/0.0.1024.728@0.0.1024.728" timestamp="1621504216591" />
-    <state width="1877" height="148" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628218415664" />
+    <state width="1877" height="239" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628238201263" />
     <state width="1877" height="306" key="GridCell.Tab.1.bottom" timestamp="1624871892761">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -858,10 +853,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="531" y="215" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1624603476052" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1628058808209">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1628218836014">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628058808209" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628218836014" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1627018556013">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -891,7 +886,8 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1628218415641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628229618779" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1628238201252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

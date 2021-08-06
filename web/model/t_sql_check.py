@@ -79,7 +79,7 @@ def get_obj_op(p_sql):
        return re.split(r'\s+', p_sql)[0].upper()+'_'+re.split(r'\s+', p_sql)[1].upper()
     if re.split(r'\s+', p_sql)[0].upper() in('TRUNCATE'):
        return 'TRUNCATE_TABLE'
-    if re.split(r'\s+', p_sql)[0].upper()== 'ALTER' and re.split(r'\s+', p_sql)[1].upper()=='TABLE' and  re.split(r'\s+', p_sql)[3].upper() in('ADD','DROP'):
+    if re.split(r'\s+', p_sql)[0].upper()== 'ALTER' and re.split(r'\s+', p_sql)[1].upper()=='TABLE' and  re.split(r'\s+', p_sql)[3].upper() in('ADD','DROP','MODIFY'):
        return re.split(r'\s+', p_sql)[0].upper()+'_'+re.split(r'\s+', p_sql)[1].upper()+'_'+re.split(r'\s+', p_sql)[3].upper()
     if re.split(r'\s+', p_sql)[0].upper() in('INSERT','UPDATE','DELETE') :
        return re.split(r'\s+', p_sql)[0].upper()
@@ -1084,6 +1084,10 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
     rs     = await async_processer.query_dict_list(ru)
     print('输出检测项...')
     print('-'.ljust(150, '-'))
+    print('ob:{}'.format(ob))
+    print('op:{}'.format(op))
+    print('tp:{}'.format(tp))
+    print('-'.ljust(150, '-'))
     for r in rs:
         print(r)
     # delete check table
@@ -1232,7 +1236,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                         await save_check_results(rule, p_user,st,sxh)
 
         if rule['rule_code'] == 'switch_tab_has_time_fields' and tp == 'TABLE':
-            if op in('CREATE_TABLE','ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
+            if op in('CREATE_TABLE','ALTER_TABLE_ADD'):
                 print('表必须拥有字段...')
                 if rule['rule_value']!='':
                     v = await get_tab_has_fields(ds, st, rule)
@@ -1410,7 +1414,11 @@ async def get_dml_rows(p_ds,p_sql):
            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
            return rs[0]
         elif op in('UPDATE','DELETE'):
-           st = 'select count(0) from {0} {1}'.format(ob,p_sql[p_sql.upper().find('WHERE'):])
+           # st = 'select count(0) from {0} {1}'.format(ob,p_sql[p_sql.upper().find('WHERE'):])
+           st = '''select count(0) from {0} {1}'''.\
+                   format(p_sql[p_sql.upper().find('UPDATE')+6:p_sql.upper().find('SET')],
+                          p_sql[p_sql.upper().find('WHERE'):])
+           print('st=',st)
            rs = await async_processer.query_one_by_ds(p_ds, st)
            return rs[0]
 
