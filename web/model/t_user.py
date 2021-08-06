@@ -103,22 +103,22 @@ async def check_forget_password(login_name,email):
         result['message'] = '邮箱不能为空！'
         return result
 
-    if await check_user_exist(login_name)==0:
+    if (await check_user_exist(login_name))==0:
         result['code'] = '-1'
         result['message'] = '用户名不存在！'
         return result
 
-    if await check_email_exist(login_name,email) == 0:
+    if (await check_email_exist(login_name,email)) == 0:
         result['code'] = '-1'
         result['message'] = '非注册邮箱！'
         return result
 
-    if await get_user_by_loginame(login_name)['status']=='0':
+    if (await get_user_by_loginame(login_name))['status']=='0':
         result['code'] = '-1'
         result['message'] = '用户已禁用，请联系管理员！'
         return result
 
-    if await get_user_by_loginame(login_name)['expire_date']<now():
+    if (await get_user_by_loginame(login_name))['expire_date']<now():
         result['code'] = '-1'
         result['message'] = '该用户已过期，请联系管理员！'
         return result
@@ -153,17 +153,17 @@ async def check_authcode(user,auth_str):
 async def save_forget_authention_string(p_username,p_auth_string):
     result = {}
     try:
-        userid= await get_user_by_loginame(p_username)['userid']
+        userid= (await get_user_by_loginame(p_username))['userid']
         sql = """insert into t_forget_password(user_id,authentication_string,creation_date,creator) 
                        values('{0}','{1}',now(),'{2}')
-               """.format(userid, p_auth_string,p_username)
+                    """.format(userid, p_auth_string,p_username)
         await async_processer.exec_sql(sql)
         result = {}
         result['code'] = '0'
         result['message'] = '保存成功！'
         return result
     except:
-        traceback.format_exc()
+        traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '写入授权码异常!'
 

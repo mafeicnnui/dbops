@@ -10,7 +10,7 @@ if [ `ps -ef |grep schedule | grep -v grep | wc -l` == '1' ]
 then
    echo "schedule Server ${i} already running..."
 else
-   ${PYTHON3_HOME}/bin/python3 -u ${WORKDIR}/web/task/schedule.py #&>/tmp/schedule.log &
+   ${PYTHON3_HOME}/bin/python3 -u ${WORKDIR}/web/task/schedule.py &>/tmp/schedule.log &
 fi
 
 echo "Starting schedule Server...ok"

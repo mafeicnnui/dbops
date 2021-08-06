@@ -168,15 +168,15 @@ class forget_password_check_user(tornado.web.RequestHandler):
     async def post(self):
         user        = self.get_argument("user")
         email       = self.get_argument("email")
-        result      = check_forget_password(user,email)
+        result      = await check_forget_password(user,email)
         if result['code']=='0':
            auth_string = get_rand_str(64)
-           while check_auth_str_exist(auth_string):
+           while await check_auth_str_exist(auth_string):
                auth_string = get_rand_str(64)
            await save_forget_authention_string(user,auth_string)
            v_title='用户:{0} 口令变更激活邮件.{1}'.format(user,current_time())
-           v_content = """<p><h4>用户名：{}</h4><p><h4>授权码：{}</h4><p><h4>有效期：1分钟</h4>""".format(user,auth_string)
-           send_mail('190343@lifeat.cn', 'Hhc5HBtAuYTPGHQ8', email, v_title, v_content)
+           v_content = """<p><h4>用户名：</h4>{}<p><h4>授权码：</h4>{}<p><h4>有效期：</h4>1分钟""".format(user,auth_string)
+           send_mail('190343@lifeat.cn', 'R86hyfjobMBYR76h', email, v_title, v_content)
            self.write({"code": '0', "message": '授权码已发送至邮箱!'})
         else:
            self.write({"code": result['code'], "message": result['message']})
@@ -187,10 +187,10 @@ class modify_password(tornado.web.RequestHandler):
         self.render("./user/modify_password.html", auth_str=auth_str)
 
 class forget_password_check_auth(tornado.web.RequestHandler):
-    def post(self):
+    async def post(self):
         user     = self.get_argument("user")
         auth     = self.get_argument("auth")
-        result   = check_authcode(user,auth)
+        result   = await check_authcode(user,auth)
         self.write({"code": result['code'], "message": result['message']})
 
 class forget_password_check_pass(tornado.web.RequestHandler):
@@ -204,9 +204,9 @@ class forget_password_check_pass(tornado.web.RequestHandler):
             self.write({"code": result['code'], "message": result['message']})
         else:
             p_userid = await get_userid_by_auth(auth)
-            p_user = get_user_by_userid(p_userid)
+            p_user = await get_user_by_userid(p_userid)
             p_user['password'] = newpass
-            result2 = upd_password(p_user)
+            result2 = await upd_password(p_user)
             self.write({"code": result2['code'], "message": result2['message']})
 
 class tree(tornado.web.RequestHandler):
