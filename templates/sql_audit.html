@@ -86,6 +86,7 @@
                 <input id="sql_id" type="hidden"  value='' >
                 <input id="sql_status" type="hidden"  value='' >
                 <div class="row">
+                    <h5>执行语句：<span id ='run_time_detail' style="color:red"></span></h5>
                     <div id='ace-editor' class="col-md-12"></div>
                 </div>
                 <br>
@@ -325,6 +326,7 @@
                     editor.setValue('')
                     editor.insert(format_sql(dataSet.message.sqltext))
                     editor.setReadOnly(true);
+                    $('#run_time_detail').text(dataSet.message.run_time)
 
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);

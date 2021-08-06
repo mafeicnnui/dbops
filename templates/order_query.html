@@ -1,40 +1,43 @@
 <html>
 <head>
     <title>工单查询</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
     <!-- Sweet Alert -->
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
-
      <!-- Notification css (Toastr) -->
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
 
     <style>
-        .modal-lg-detail {
+       .modal-lg-templete {
             width:60%;
-            height:30%;
-            /*margin-left:550px;*/
-            /*margin-top:200px;*/
+            height:20%;
+            margin-left:500px;
+            margin-top:100px;
         }
-        .modal-lg-err {
-            width:40%;
-            height:40%;
-            /*margin-left:500px;*/
-            /*margin-top:200px;*/
+
+       #ace-editor-release,#ace-editor-rollback,#ace-editor-error{
+           overflow-x:auto;
+           overflow-y:auto;
+       }
+
+        #ace-editor-release{
+           height:280px;
         }
+        #ace-editor-rollback{
+           height:200px;
+        }
+        #ace-editor-error{
+           height:80px;
+        }
+
         .modal-lg-order {
             width:40%;
             height:45%;
-            /*margin-left:500px;*/
-            /*margin-top:100px;*/
         }
         .table th{
             text-align: center;
@@ -66,485 +69,11 @@
 
     </style>
 
-    <script type="text/javascript">
-
-         function query_order(){
-                 $.ajax({
-                  url: "/order/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname : $("#name").val(),
-                      dsid  : $("#db_audit_source").val(),
-                  },
-                  success: function (dataSet) {
-                      $('#tab-sql').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :false,
-                          scrollX    :false,
-                          scrollCollapse: true,
-                          paging:     true,
-                          iDisplayLength: 13,
-                          data: dataSet,
-                          columns: [
-                             { "title": "工单编号" },
-                             { "title": "工单描述" },
-                             { "title": "工单状态" },
-                             { "title": "工单类型" },
-                             { "title": "数据库环境" },
-                             { "title": "发布人" },
-                             { "title": "发布时间" },
-                             { "title": "审核人"},
-                             { "title": "审核时间"},
-                             { "title": "错误","visible":false},
-                             { "title": "操作"},
-                           ],
-                          columnDefs: [
-                            {
-                                targets: 10,
-                                render: function(data, type, row, meta){
-                                     console.log('row[0]='+row[0]);
-                                     var id=row[0]
-                                     var err=escape(row[9])
-                                     msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteSql(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="错误" onclick="showErr(\''+err+'\');"/>' +'&nbsp;'
-                                     return msg;
-                                }
-                             }
-                           ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
-                         });
-                   }
-               })
-              }
-
-         function query_wtd(){
-                 $.ajax({
-                  url: "/wtd/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname : $("#name").val(),
-                      dsid  : $("#db_audit_source").val(),
-                      ver   : $("#db_ver").val()
-                  },
-                  success: function (dataSet) {
-                      $('#curr_userid').val(dataSet['userid'])
-                      $('#tab-wtd').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :"400px",
-                          scrollX    :false,
-                          scrollCollapse: true,
-                          paging:     false,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                             { "title": "工单编号" },
-                             { "title": "工单环境" },
-                             { "title": "工单类型" },
-                             { "title": "工单状态" },
-                             { "title": "发布人" },
-                             { "title": "发布时间" },
-                             { "title": "处理人"},
-                             { "title": "处理时间"},
-                             { "title": "操作"},
-                           ],
-                          columnDefs: [
-                            {
-                                targets: 8,
-                                render: function(data, type, row, meta){
-                                     console.log('row[0]='+row[0]);
-                                     var id=row[0]
-                                     var status = row[3]
-                                     var wtd_creator = row[4]
-                                     var wtd_release
-                                     var wtd_update
-                                     var wtd_delete
-                                     var wtd_detail
-
-                                     if(status=='已新增') {
-                                        wtd_release = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="发布" onclick="wtd_release(\''+id+'\');"/>' +'&nbsp;'
-                                        wtd_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showWtd_upd(\''+id+'\');"/>' +'&nbsp;'
-                                        wtd_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
-
-                                     } else {
-                                        wtd_release = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="发布" onclick="wtd_release(\''+id+'\');"/>' +'&nbsp;'
-                                        wtd_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="变更" onclick="showWtd_upd(\''+id+'\');"/>' +'&nbsp;'
-                                        wtd_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="删除" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
-
-                                     }
-                                     wtd_detail= '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showWtd(\''+id+'\');"/>' +'&nbsp;'
-                                     msg = wtd_release+wtd_update+wtd_delete+wtd_detail
-                                     return msg;
-
-                                }
-                             }
-                           ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
-                         });
-                   }
-               })
-              }
-
-         function wtd_release(p_wtd_no){
-            $.ajax({
-                    url: "/wtd/release",
-                    type: "post",
-                    datatype: "json",
-                    data:{wtd_no: p_wtd_no},
-                    success: function (dataSet) {
-                        console.log(dataSet.code, dataSet.message);
-                        swal(dataSet.message);
-                        query_wtd()
-                    }
-             })
-          }
-
-         $(document).ready(function() {
-              //ace editor
-              var editor = ace.edit("ace-editor");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/sql");
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(16);
-              editor.getSession().setUseSoftTabs(true);
-              editor.setReadOnly(true);
-
-              var editor2 = ace.edit("ace-editor2");
-              editor2.setTheme("ace/theme/xcode");
-              editor2.getSession().setMode("ace/mode/sql");
-              editor2.setShowPrintMargin(false);
-              editor2.setFontSize(16);
-              editor2.getSession().setUseSoftTabs(true);
-              editor2.setReadOnly(true);
-
-              $("#query_btn").click(function() {
-                    query_order()
-                    query_wtd()
-              });
-
-              $("#query_btn").click()
-
-              $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-                    var activeTab = $(e.target).text();
-                    var previousTab = $(e.relatedTarget).text();
-                    console.log(activeTab, previousTab)
-
-                    if (activeTab == 'SQL工单') {
-                        query_order()
-                    }
-
-                    if (activeTab == '问题单') {
-                       query_wtd()
-                    }
-              })
-
-         });
-
-         function showSql(row){
-            $.ajax({
-                    url: "/sql/audit/detail",
-                    type: "post",
-                    datatype: "json",
-                    data:{id: row},
-                    success: function (dataSet) {
-                        var sql = dataSet.message
-                        console.log('sql=',sql)
-                        $.ajax({
-                            type: 'post',
-                            url: '/sql/_format',
-                            data: {
-                                sql:sql.sqltext
-                            },
-                            success: function (dataSet) {
-                                console.log('sql2=',dataSet);
-                                var editor = ace.edit("ace-editor");
-                                editor.setValue('')
-                                editor.insert(dataSet.message);
-                                editor.setReadOnly(true);
-                                $('.modal').on('show.bs.modal', centerModals);
-                                $(window).on('resize', centerModals);
-                                $('#con-close-modal').modal({
-                                   keyboard: false,
-                                   backdrop:false
-                                });
-                             }
-                        })
-                    }
-            });
-        }
-
-         function DeleteSql() {
-
-         }
-
-         function showErr(err){
-            var editor2 = ace.edit("ace-editor2");
-            editor2.setValue('')
-            editor2.insert(unescape(err));
-            editor2.setReadOnly(true);
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-modal3').modal({
-                keyboard: false,
-                backdrop:false
-            });
-        }
-
-         function showWtd(p_wtd_no){
-            $.ajax({
-                    url: "/wtd/detail",
-                    type: "post",
-                    datatype: "json",
-                    data:{wtd_no: p_wtd_no},
-                    success: function (dataSet) {
-                        var wtd = dataSet
-                        console.log('wtd=',wtd,wtd['order_no'])
-                         $('#order_number_detail') .val(wtd['order_no'])
-
-                         $("#order_env_detail").empty();
-                         $("#order_env_detail").append("<option value='"+wtd['order_env']+"'>"+wtd['order_env_name']+"</option>");
-
-                         $("#order_type_detail").empty();
-                         $("#order_type_detail").append("<option value='"+wtd['order_type']+"'>"+wtd['order_type_name']+"</option>");
-
-                         $("#order_status_detail").empty();
-                         $("#order_status_detail").append("<option value='"+wtd['order_status']+"'>"+wtd['order_status_name']+"</option>");
-
-                         $("#order_handle_detail").empty();
-                         $("#order_handle_detail").append("<option value='"+wtd['order_handler']+"'>"+wtd['order_handler_name']+"</option>");
-
-                         $('#order_desc_detail') .val(wtd['order_desc'])
-
-                         $('.modal').on('show.bs.modal', centerModals);
-                         $(window).on('resize', centerModals);
-                         $('#con-close-modal5').modal({
-                            keyboard: false,
-                            backdrop:false
-                         });
-                    }
-            });
-        }
-
-         function showWtd_upd(p_wtd_no){
-            init_order_upd()
-            $.ajax({
-                    url: "/wtd/detail",
-                    type: "post",
-                    datatype: "json",
-                    data:{wtd_no: p_wtd_no},
-                    success: function (dataSet) {
-                        var wtd = dataSet
-                        $('#order_number_upd') .val(wtd['order_no'])
-                        $("#order_env_upd").empty();
-                        $.ajax({
-                              url: "/get_order_env",
-                              type: "post",
-                              datatype: "json",
-                              async:false,
-                              success: function (dataSet) {
-                                 $("#order_env_upd").append("<option value=''>...</option>");
-                                 for(i=0;i<dataSet['message'].length;i++){
-                                      var val  = dataSet['message'][i][0];
-                                      var text = dataSet['message'][i][1];
-                                      if (wtd['order_env'] == val) {
-                                          $("#order_env_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
-                                      } else {
-                                          $("#order_env_upd").append("<option value='"+val+"'>"+text+"</option>");
-                                      }
-
-                                 }
-                              }
-                         });
-
-                        $("#order_type_upd").empty();
-                        $.ajax({
-                              url: "/get_order_type",
-                              type: "post",
-                              datatype: "json",
-                              async:false,
-                              success: function (dataSet) {
-                                 $("#order_type_upd").append("<option value=''>...</option>");
-                                 for(i=0;i<dataSet['message'].length;i++){
-                                      var val  = dataSet['message'][i][0];
-                                      var text = dataSet['message'][i][1];
-                                      if (wtd['order_type'] == val) {
-                                          $("#order_type_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
-                                      } else {
-                                          $("#order_type_upd").append("<option value='"+val+"'>"+text+"</option>");
-                                      }
-
-                                 }
-                              }
-                         });
-
-                        $("#order_status_upd").empty();
-                        $.ajax({
-                              url: "/get_order_status",
-                              type: "post",
-                              datatype: "json",
-                              async:false,
-                              success: function (dataSet) {
-                                 console.log(dataSet)
-                                 $("#order_status_upd").append("<option value=''>...</option>");
-                                 for(i=0;i<dataSet['message'].length;i++){
-                                      var val  = dataSet['message'][i][0];
-                                      var text = dataSet['message'][i][1];
-                                      console.log('order_status_upd=',wtd,wtd['creator'],wtd['curr_user'])
-                                      if (wtd['creator'] = wtd['curr_user'] ) {
-                                          if  (val == '1' || val=='7'){
-                                              if (wtd['order_status'] == val) {
-                                                 $("#order_status_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
-                                              } else {
-                                                 $("#order_status_upd").append("<option value='"+val+"'>"+text+"</option>");
-                                              }
-                                          }
-                                      } else {
-                                          if  (val == '2' || val == '3' || val=='4' ||val == '5' || val=='6'){
-                                              if (wtd['order_status'] == val) {
-                                                 $("#order_status_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
-                                              } else {
-                                                 $("#order_status_upd").append("<option value='"+val+"'>"+text+"</option>");
-                                              }
-                                         }
-                                      }
-                                 }
-                              }
-                         });
-
-                        $("#order_handle_upd").empty();
-                        $.ajax({
-                              url: "/get_order_handler",
-                              type: "post",
-                              datatype: "json",
-                              async:false,
-                              success: function (dataSet) {
-                                 console.log('order_handle_upd=>dataSet=',dataSet['message'][0],dataSet['message'][0].length)
-                                 data = dataSet['message'][0]
-                                 $("#order_handle_upd").append("<option value=''>...</option>");
-                                 for(i=0;i<data.length;i++){
-                                      var val  = data[i][0];
-                                      var text = data[i][1];
-                                      console.log('order_handle_upd=',val,text,wtd['order_handler'])
-                                      if (wtd['order_handler'] == val) {
-                                          $("#order_handle_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
-                                      } else {
-                                          $("#order_handle_upd").append("<option value='"+val+"'>"+text+"</option>");
-                                      }
-
-                                 }
-                              }
-                         });
-
-                        $('#order_desc_upd') .val(wtd['order_desc'])
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-close-modal6').modal({
-                           keyboard: false,
-                           backdrop:false
-                        });
-
-                    }
-            });
-        }
-
-         function showWtd_del(p_wtd_no){
-              swal({
-                    title: "确认要删除吗?",
-                    text: "问题单["+p_wtd_no+"]将被删除！",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "是, 删除!",
-                    cancelButtonText:  "否, 取消!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                   }, function (isConfirm) {
-                           if (isConfirm) {
-                                 $.ajax({
-                                        url: "/wtd/delete",
-                                        type: "post",
-                                        datatype: "json",
-                                        data:{wtd_no: p_wtd_no},
-                                        success: function (dataSet) {
-                                            if (dataSet.code=='0') {
-                                                 swal("已删除!", "问题单["+p_wtd_no+"]已注销!", "success");
-                                                 query_wtd()
-                                            } else {
-                                                 swal("已取消!", "问题单["+p_wtd_no+"]"+dataSet.message+"!", "error");
-                                            }
-                                        }
-                                    });
-
-                          } else {
-                              swal("已取消", "问题单[" + p_wtd_no + "]已取消删除！", "error");
-                          }
-              })
-        }
-
-     </script>
 </head>
 
 <body>
     <p></p>
+    <input type='hidden' id='cur_release_num'>
     <div class="row">
         <div class="col-md-12">
            <div class="col-md-3">
@@ -618,46 +147,43 @@
      </div>
 
      <!--发布语句详情 -->
-     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg-detail">
+     <div id="con-close-modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-templete">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">发布语句</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"><span id='modal_title'>工单详情</span></h4>
             </div>
             <div class="modal-body">
-                <div class="row">
-                  <div id='ace-editor' class="col-md-12"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
+                 <div class="row">
+                    <div id="release_template" class="tab-pane active">
+                         <div class="row">
+                            <h5>执行语句：</h5>
+                            <div id='ace-editor-release' class="col-md-12"></div>
+                         </div>
+                    </div>
+                    <div id="rollback_templete" class="tab-pane">
+                        <div class="row">
+                            <h5>回滚语句：</h5>
+                            <div id='ace-editor-rollback' class="col-md-12"></div>
+                         </div>
+                    </div>
+                    <div id="error_templete" class="tab-pane">
+                        <div class="row">
+                            <h5>运行错误：</h5>
+                            <div id='ace-editor-error' class="col-md-12"></div>
+                         </div>
+                    </div>
+                 </div>
+             </div>
+             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
-    </div>
-   </div><!-- /.modal -->
-
-     <!--错误消息窗口 -->
-     <div id="con-close-modal3" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg-err">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">运行错误</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                  <div id='ace-editor2' class="col-md-12"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                </div>
-            </div>
-        </div>
-    </div>
-   </div><!-- /.modal -->
+       </div>
+     </div>
 
      <!--新增工单窗口 -->
      <div id="con-close-modal4" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
@@ -963,13 +489,9 @@
 
 </body>
 
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
+<!-- Sweet-Alert  -->
+<script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+
 <!-- File Upload js -->
 <script src="{{static_url('plugins/jquery.filer/js/jquery.filer.js')}}"></script>
 
@@ -977,6 +499,193 @@
 <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
 
 <script>
+
+    function query_order(){
+             $.ajax({
+              url: "/order/_query",
+              type: "post",
+              datatype: "json",
+              data:{
+                  qname : $("#name").val(),
+                  dsid  : $("#db_audit_source").val(),
+              },
+              success: function (dataSet) {
+                  $('#tab-sql').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      ordering   :false,
+                      scrollY    :false,
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging:     true,
+                      iDisplayLength: 13,
+                      data: dataSet,
+                      columns: [
+                         { "title": "工单编号" },
+                         { "title": "工单描述" },
+                         { "title": "工单状态" },
+                         { "title": "工单类型" },
+                         { "title": "数据库环境" },
+                         { "title": "发布人" },
+                         { "title": "发布时间" },
+                         { "title": "审核人"},
+                         { "title": "审核时间"},
+                         { "title": "错误","visible":false},
+                         { "title": "操作"},
+                       ],
+                      columnDefs: [
+                        {
+                            targets: 10,
+                            render: function(data, type, row, meta){
+                                 var id=row[0]
+                                 $('#cur_release_num').val(id)
+                                 msg ='&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;';
+                                 return msg;
+                            }
+                         }
+                       ],
+                      "language": {
+                             "search"       : "在表格中搜索:",
+                             "sProcessing"  : "处理中...",
+                             "sLengthMenu"  : "显示 _MENU_ 项结果",
+                             "sZeroRecords" : "没有匹配结果",
+                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                             "sInfoPostFix" : "",
+                             "sSearch"      : "搜索:",
+                             "sUrl"         : "",
+                             "sEmptyTable"  : "表中数据为空",
+                             "sLoadingRecords": "载入中...",
+                             "sInfoThousands": ",",
+                             "oPaginate": {
+                                 "sFirst"   : "首页",
+                                 "sPrevious": "上页",
+                                 "sNext"    : "下页",
+                                 "sLast"    : "末页"
+                             },
+                             "oAria": {
+                                 "sSortAscending" : ": 以升序排列此列",
+                                 "sSortDescending": ": 以降序排列此列"
+                             }
+                         }
+                     });
+               }
+           })
+          }
+
+    function query_wtd(){
+             $.ajax({
+              url: "/wtd/_query",
+              type: "post",
+              datatype: "json",
+              data:{
+                  qname : $("#name").val(),
+                  dsid  : $("#db_audit_source").val(),
+                  ver   : $("#db_ver").val()
+              },
+              success: function (dataSet) {
+                  $('#curr_userid').val(dataSet['userid'])
+                  $('#tab-wtd').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      ordering   :false,
+                      scrollY    :"400px",
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging:     false,
+                      iDisplayLength: 14,
+                      data: dataSet,
+                      columns: [
+                         { "title": "工单编号" },
+                         { "title": "工单环境" },
+                         { "title": "工单类型" },
+                         { "title": "工单状态" },
+                         { "title": "发布人" },
+                         { "title": "发布时间" },
+                         { "title": "处理人"},
+                         { "title": "处理时间"},
+                         { "title": "操作"},
+                       ],
+                      columnDefs: [
+                        {
+                            targets: 8,
+                            render: function(data, type, row, meta){
+                                 var id=row[0]
+                                 var status = row[3]
+                                 var wtd_creator = row[4]
+                                 var wtd_release
+                                 var wtd_update
+                                 var wtd_delete
+                                 var wtd_detail
+
+                                 if(status=='已新增') {
+                                    wtd_release = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="发布" onclick="wtd_release(\''+id+'\');"/>' +'&nbsp;'
+                                    wtd_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showWtd_upd(\''+id+'\');"/>' +'&nbsp;'
+                                    wtd_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+
+                                 } else {
+                                    wtd_release = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="发布" onclick="wtd_release(\''+id+'\');"/>' +'&nbsp;'
+                                    wtd_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="变更" onclick="showWtd_upd(\''+id+'\');"/>' +'&nbsp;'
+                                    wtd_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="删除" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+
+                                 }
+                                 wtd_detail= '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showWtd(\''+id+'\');"/>' +'&nbsp;'
+                                 msg = wtd_release+wtd_update+wtd_delete+wtd_detail
+                                 return msg;
+
+                            }
+                         }
+                       ],
+                      "language": {
+                             "search"       : "在表格中搜索:",
+                             "sProcessing"  : "处理中...",
+                             "sLengthMenu"  : "显示 _MENU_ 项结果",
+                             "sZeroRecords" : "没有匹配结果",
+                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                             "sInfoPostFix" : "",
+                             "sSearch"      : "搜索:",
+                             "sUrl"         : "",
+                             "sEmptyTable"  : "表中数据为空",
+                             "sLoadingRecords": "载入中...",
+                             "sInfoThousands": ",",
+                             "oPaginate": {
+                                 "sFirst"   : "首页",
+                                 "sPrevious": "上页",
+                                 "sNext"    : "下页",
+                                 "sLast"    : "末页"
+                             },
+                             "oAria": {
+                                 "sSortAscending" : ": 以升序排列此列",
+                                 "sSortDescending": ": 以降序排列此列"
+                             }
+                         }
+                     });
+               }
+           })
+          }
+
+    function wtd_release(p_wtd_no){
+        $.ajax({
+                url: "/wtd/release",
+                type: "post",
+                datatype: "json",
+                data:{wtd_no: p_wtd_no},
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    swal(dataSet.message);
+                    query_wtd()
+                }
+         })
+      }
 
     function centerModals() {
           $('.modal').each(function(i) {
@@ -1085,6 +794,291 @@
             order_name = 'other'
         }
         return order_name
+    }
+
+    function format_sql(sql) {
+           var res='';
+           $.ajax({
+                type: 'post',
+                url: '/sql/_format',
+                async:false,
+                data: {
+                    "sql":sql
+                },
+                success: function (dataSet) {
+                  res=dataSet.message
+                },
+            })
+            return res
+      }
+
+    function showSql(row){
+         $('#modal_title').text('工单详情[编号:'+row+']')
+         $.ajax({
+                url: "/sql/audit/detail",
+                type: "post",
+                datatype: "json",
+                data:{id: row},
+                success: function (dataSet) {
+                    var sql = dataSet.message
+                    console.log('sql=',sql)
+                    setEditor('ace-editor-release',dataSet.message.sqltext)
+                    setEditor('ace-editor-rollback',dataSet.message.rollback_statement)
+                    setEditor('ace-editor-error',dataSet.message.error)
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal-detail').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
+                }
+          });
+    }
+
+    function DeleteOrder(row) {
+         swal({
+                title: "确认要删除吗?",
+                text: "工单["+row+"]将被删除!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+            if (isConfirm) {
+                  $.ajax({
+                        url: "/order/_delete",
+                        type: "post",
+                        datatype: "json",
+                        data:{
+                            release_id: row
+                        },
+                        success: function (dataSet) {
+                            console.log('DeleteSql=',dataSet)
+                            if (dataSet.code=='0') {
+                               swal("已删除!", "工单["+row+"]已删除!", "success");
+                               query_order();
+                           } else {
+                               swal("删除失败!", "工单["+row+"]:"+dataSet.message+"!", "error");
+                           }
+                        }
+                   });
+            } else {
+                 swal("已取消", "工单["+row+"]未删除!", "error");
+            }
+         });
+
+     }
+
+    function showWtd(p_wtd_no){
+        $.ajax({
+                url: "/wtd/detail",
+                type: "post",
+                datatype: "json",
+                data:{wtd_no: p_wtd_no},
+                success: function (dataSet) {
+                    var wtd = dataSet
+                    console.log('wtd=',wtd,wtd['order_no'])
+                     $('#order_number_detail') .val(wtd['order_no'])
+
+                     $("#order_env_detail").empty();
+                     $("#order_env_detail").append("<option value='"+wtd['order_env']+"'>"+wtd['order_env_name']+"</option>");
+
+                     $("#order_type_detail").empty();
+                     $("#order_type_detail").append("<option value='"+wtd['order_type']+"'>"+wtd['order_type_name']+"</option>");
+
+                     $("#order_status_detail").empty();
+                     $("#order_status_detail").append("<option value='"+wtd['order_status']+"'>"+wtd['order_status_name']+"</option>");
+
+                     $("#order_handle_detail").empty();
+                     $("#order_handle_detail").append("<option value='"+wtd['order_handler']+"'>"+wtd['order_handler_name']+"</option>");
+
+                     $('#order_desc_detail') .val(wtd['order_desc'])
+
+                     $('.modal').on('show.bs.modal', centerModals);
+                     $(window).on('resize', centerModals);
+                     $('#con-close-modal5').modal({
+                        keyboard: false,
+                        backdrop:false
+                     });
+                }
+        });
+    }
+
+    function showWtd_upd(p_wtd_no){
+        init_order_upd()
+        $.ajax({
+                url: "/wtd/detail",
+                type: "post",
+                datatype: "json",
+                data:{wtd_no: p_wtd_no},
+                success: function (dataSet) {
+                    var wtd = dataSet
+                    $('#order_number_upd') .val(wtd['order_no'])
+                    $("#order_env_upd").empty();
+                    $.ajax({
+                          url: "/get_order_env",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          success: function (dataSet) {
+                             $("#order_env_upd").append("<option value=''>...</option>");
+                             for(i=0;i<dataSet['message'].length;i++){
+                                  var val  = dataSet['message'][i][0];
+                                  var text = dataSet['message'][i][1];
+                                  if (wtd['order_env'] == val) {
+                                      $("#order_env_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                  } else {
+                                      $("#order_env_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                  }
+
+                             }
+                          }
+                     });
+
+                    $("#order_type_upd").empty();
+                    $.ajax({
+                          url: "/get_order_type",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          success: function (dataSet) {
+                             $("#order_type_upd").append("<option value=''>...</option>");
+                             for(i=0;i<dataSet['message'].length;i++){
+                                  var val  = dataSet['message'][i][0];
+                                  var text = dataSet['message'][i][1];
+                                  if (wtd['order_type'] == val) {
+                                      $("#order_type_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                  } else {
+                                      $("#order_type_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                  }
+
+                             }
+                          }
+                     });
+
+                    $("#order_status_upd").empty();
+                    $.ajax({
+                          url: "/get_order_status",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          success: function (dataSet) {
+                             console.log(dataSet)
+                             $("#order_status_upd").append("<option value=''>...</option>");
+                             for(i=0;i<dataSet['message'].length;i++){
+                                  var val  = dataSet['message'][i][0];
+                                  var text = dataSet['message'][i][1];
+                                  console.log('order_status_upd=',wtd,wtd['creator'],wtd['curr_user'])
+                                  if (wtd['creator'] = wtd['curr_user'] ) {
+                                      if  (val == '1' || val=='7'){
+                                          if (wtd['order_status'] == val) {
+                                             $("#order_status_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                          } else {
+                                             $("#order_status_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                          }
+                                      }
+                                  } else {
+                                      if  (val == '2' || val == '3' || val=='4' ||val == '5' || val=='6'){
+                                          if (wtd['order_status'] == val) {
+                                             $("#order_status_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                          } else {
+                                             $("#order_status_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                          }
+                                     }
+                                  }
+                             }
+                          }
+                     });
+
+                    $("#order_handle_upd").empty();
+                    $.ajax({
+                          url: "/get_order_handler",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          success: function (dataSet) {
+                             console.log('order_handle_upd=>dataSet=',dataSet['message'][0],dataSet['message'][0].length)
+                             data = dataSet['message'][0]
+                             $("#order_handle_upd").append("<option value=''>...</option>");
+                             for(i=0;i<data.length;i++){
+                                  var val  = data[i][0];
+                                  var text = data[i][1];
+                                  console.log('order_handle_upd=',val,text,wtd['order_handler'])
+                                  if (wtd['order_handler'] == val) {
+                                      $("#order_handle_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
+                                  } else {
+                                      $("#order_handle_upd").append("<option value='"+val+"'>"+text+"</option>");
+                                  }
+
+                             }
+                          }
+                     });
+
+                    $('#order_desc_upd') .val(wtd['order_desc'])
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal6').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
+
+                }
+        });
+    }
+
+    function showWtd_del(p_wtd_no){
+          swal({
+                title: "确认要删除吗?",
+                text: "问题单["+p_wtd_no+"]将被删除！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+               }, function (isConfirm) {
+                       if (isConfirm) {
+                             $.ajax({
+                                    url: "/wtd/delete",
+                                    type: "post",
+                                    datatype: "json",
+                                    data:{wtd_no: p_wtd_no},
+                                    success: function (dataSet) {
+                                        if (dataSet.code=='0') {
+                                             swal("已删除!", "问题单["+p_wtd_no+"]已注销!", "success");
+                                             query_wtd()
+                                        } else {
+                                             swal("已取消!", "问题单["+p_wtd_no+"]"+dataSet.message+"!", "error");
+                                        }
+                                    }
+                                });
+
+                      } else {
+                          swal("已取消", "问题单[" + p_wtd_no + "]已取消删除！", "error");
+                      }
+          })
+    }
+
+    function initEditor(p_item) {
+          var editor = ace.edit(p_item);
+          editor.setTheme("ace/theme/xcode");
+          editor.getSession().setMode("ace/mode/sql");
+          editor.setShowPrintMargin(false);
+          editor.setFontSize(15);
+          editor.getSession().setUseSoftTabs(true);
+          editor.setReadOnly(true);
+    }
+
+    function setEditor(p_item,p_value) {
+         var editor = ace.edit(p_item);
+         editor.setValue('')
+         editor.insert(p_value);
+         // editor.setValue(p_value)
+         editor.setReadOnly(true);
     }
 
     $('#order_attach_upd').click(function(){
@@ -1385,6 +1379,45 @@
            $('#order_number').val('wtd_'+order_env+'_'+order_type+'_'+order_no)
         }
     });
+
+    $(document).ready(function() {
+              //init ace editor
+              initEditor('ace-editor-release');
+              initEditor('ace-editor-rollback');
+              initEditor('ace-editor-error');
+
+              $("#query_btn").click(function() {
+                    query_order()
+                    query_wtd()
+              });
+
+              $("#query_btn").click()
+
+              $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+                    var activeTab = $(e.target).text();
+                    var previousTab = $(e.relatedTarget).text();
+                    console.log(activeTab, previousTab)
+                    if (activeTab == 'SQL工单') {
+                        query_order()
+                    }
+                    if (activeTab == '问题单') {
+                       query_wtd()
+                    }
+
+                    if (activeTab == '发布语句') {
+                        $('#ace-editor-release').focus();
+                    }
+
+                    if (activeTab == '回滚语句') {
+                        $('#ace-editor-rollback').focus();
+                    }
+
+                    if (activeTab == '错误消息') {
+                        $('#ace-editor-error').focus();
+                    }
+              })
+
+         });
 
 </script>
 

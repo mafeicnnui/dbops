@@ -5,12 +5,9 @@
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
-
      <!-- Sweet Alert -->
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-
     <style>
         .modal-lg-detail {
             width:60%;
@@ -31,10 +28,7 @@
             text-align: center;
             vertical-align: middle!important;
         }
-
     </style>
-
-
 </head>
 
 <body>
@@ -94,21 +88,21 @@
       <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">执行详情</h4>
+                <h4 class="modal-title"><span id='order_title'></span></h4>
             </div>
             <div class="modal-body">
                 <div class="row">
-                  <span>执行语句：</span>
+                  <h5>执行语句：<span id ='run_time_detail' style="color:red"></span></h5>
                   <div id='ace-editor' class="col-md-12"></div>
                 </div>
                 <br>
                 <div class="row">
-                  <span>回滚语句：</span>
+                  <h5>回滚语句：</h5>
                   <div id='ace-editor3' class="col-md-12"></div>
                 </div>
                 <br>
                 <div class="row">
-                    <span>运行错误：</span>
+                    <h5>运行错误：</h5>
                     <div id='ace-editor2' class="col-md-12"></div>
                 </div>
             </div>
@@ -152,8 +146,7 @@
           editor3.getSession().setUseSoftTabs(true);
           editor3.setReadOnly(true);
 
-          $("#query_btn").click(function()
-          {
+          $("#query_btn").click(function() {
                 var name = $("#name").val();
                 var dsid = $("#db_run_source").val();
                 var creater  = $("#sql_creater").val();
@@ -185,31 +178,35 @@
                              { "title": "工单状态" },
                              { "title": "工单类型" },
                              { "title": "数据库环境" },
+                             { "title": "运行库" },
                              { "title": "发布人" },
                              { "title": "发布时间" },
                              { "title": "审核人"},
                              { "title": "审核时间"},
-                             { "title": "错误","visible":false},
                              { "title": "操作"},
                            ],
                             columnDefs: [
                             {
                                 targets: 10,
                                 render: function(data, type, row, meta){
-                                     console.log('row[0]='+row[0]);
                                      var id=row[0]
                                      var status=row[2]
-                                     var err=escape(row[9])
-                                     var par = id+'^^^'+err
+                                     var otype=row[3]
+                                     var db =row[5]
+                                     var par= id+','+db
 
-                                     if (status=='已发布') {
+                                    if (otype.match(/定时/) !=null) {
+                                        msg ='&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
+                                     } else if (status=='已发布') {
                                         msg ='&nbsp;'+
                                               '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
                                               '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
                                      } else if (status=='执行失败' || status == '已审核') {
                                         msg ='&nbsp;'+
                                               '<input class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\''+id+'\');"/>' +'&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
                                      } else {
                                         msg ='&nbsp;'+
                                               '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
@@ -284,8 +281,7 @@
             toastr[flag]('', content)
       }
 
-
-      function format_sql(sql) {
+     function format_sql(sql) {
            var res='';
            $.ajax({
                 type: 'post',
@@ -302,8 +298,10 @@
       }
 
      function showSql(row){
-        id  = row.split('^^^')[0];
-        err = unescape(row.split('^^^')[1]);
+        console.log('slowlog.....')
+        id = row.split(',')[0]
+        db = row.split(',')[1]
+        $('#order_title').text('运行详情[编号:'+id+',库:'+db+']')
         $.ajax({
                 url: "/sql/audit/detail",
                 type: "post",
@@ -323,6 +321,7 @@
                     editor.setValue('')
                     editor.insert(sql);
                     editor.setReadOnly(true);
+                    $('#run_time_detail').text(dataSet.message.run_time)
 
                     var editor3 = ace.edit("ace-editor3");
                     editor3.setValue('')
@@ -339,46 +338,6 @@
                         backdrop:false
                     });
 
-                    // $.ajax({
-                    //     type: 'post',
-                    //     url: '/sql/_format',
-                    //     data: {
-                    //         "sql":dataSet.message['sqltext']
-                    //     },
-                    //     success: function (dataSet) {
-                    //         // console.log('sql2=',dataSet);
-                    //
-                    //         var editor = ace.edit("ace-editor");
-                    //         editor.setValue('')
-                    //         editor.insert(dataSet.message['sqltext']);
-                    //         editor.setReadOnly(true);
-                    //
-                    //         var editor2 = ace.edit("ace-editor2");
-                    //         editor2.setValue('')
-                    //         editor2.insert(dataSet.message['error']);
-                    //         editor2.setReadOnly(true);
-                    //
-                    //         var editor3 = ace.edit("ace-editor");
-                    //         editor3.setValue('')
-                    //         editor3.insert(dataSet.message['rollback_statement']);
-                    //         editor3.setReadOnly(true);
-                    //
-                    //         $('#con-close-modal').modal({
-                    //             keyboard: false,
-                    //             backdrop:false
-                    //         });
-                    //     },
-                    //     error: function (jqXHR) {
-                    //         if (jqXHR.status==403){
-                    //            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                    //            setTimeout(" window.location.href='/login'",3000);
-                    //         } else if (jqXHR.status==502){
-                    //             swal("用户无权访问权限此功能!", "", "error")
-                    //         } else {
-                    //             swal("系统不可用,请稍后重试!", "", "error")
-                    //         }
-                    //     }
-                    // })
                 },
                 error: function (jqXHR) {
                     if (jqXHR.status==403){
@@ -399,7 +358,7 @@
             type    : "post",
             datatype: "json",
             data: {
-                id   :  id,
+                id  : id,
             },
             success: function (dataSet) {
                 console.log('sql_release=',dataSet);

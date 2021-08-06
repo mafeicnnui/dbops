@@ -47,13 +47,20 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid):
 
     sql = """SELECT  a.id, 
                      a.message,
-                     CASE a.status WHEN '0' THEN '已发布'
+                      CASE a.status 
+                           WHEN '0' THEN '已发布'
                            WHEN '1' THEN '已审核'
                            WHEN '2' THEN '审核失败'
-                           WHEN '3' THEN '已执行'
-                           WHEN '4' THEN '执行失败'
+                           WHEN '3' THEN '执行中'
+                           WHEN '4' THEN '执行成功'
+                           WHEN '5' THEN '执行失败'
+                           WHEN '6' THEN '已驳回'
                      END  STATUS,
-                     c.dmmc AS 'type',
+                     CASE  WHEN a.run_time IS NOT NULL OR a.run_time !='' THEN
+                        CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
+                     ELSE
+                        c.dmmc 
+                     END AS 'type',
                      b.db_desc,
                      (SELECT NAME FROM t_user d WHERE d.login_name=a.creator) creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
@@ -83,15 +90,22 @@ async def query_run(p_name,p_dsid,p_creator,p_userid):
 
     sql = """SELECT  a.id, 
                      a.message,
-                     CASE a.status WHEN '0' THEN '已发布'
-                       WHEN '1' THEN '已审核'
-                       WHEN '2' THEN '审核失败'
-                       WHEN '3' THEN '执行中'
-                       WHEN '4' THEN '已执行'
-                       WHEN '5' THEN '执行失败'
+                     CASE a.status 
+                           WHEN '0' THEN '已发布'
+                           WHEN '1' THEN '已审核'
+                           WHEN '2' THEN '审核失败'
+                           WHEN '3' THEN '执行中'
+                           WHEN '4' THEN '执行成功'
+                           WHEN '5' THEN '执行失败'
+                           WHEN '6' THEN '已驳回'
                      END  STATUS,
-                     c.dmmc AS 'type',
+                     CASE  WHEN a.run_time IS NOT NULL OR a.run_time !='' THEN
+                        CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
+                     ELSE
+                        c.dmmc 
+                     END AS 'type',
                      b.db_desc,
+                     a.db,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
@@ -114,12 +128,15 @@ async def query_order(p_name,p_dsid,p_username):
 
     sql = """SELECT  a.id, 
                      a.message,
-                     CASE a.status WHEN '0' THEN '已发布'
+                      CASE a.status 
+                           WHEN '0' THEN '已发布'
                            WHEN '1' THEN '已审核'
                            WHEN '2' THEN '审核失败'
-                           WHEN '3' THEN '已执行'
-                           WHEN '4' THEN '执行失败'
-                     END  STATUS,
+                           WHEN '3' THEN '执行中'
+                           WHEN '4' THEN '执行成功'
+                           WHEN '5' THEN '执行失败'
+                           WHEN '6' THEN '已驳回'
+                     END  STATUS,                     
                      c.dmmc AS 'type',
                      b.db_desc,
                      d.name AS creator,
@@ -234,10 +251,29 @@ async def upd_order(order_number, order_env, order_type, order_status,order_hand
         result['message'] = '更新失败!'
         return result
 
-async def delete_order(order_number):
+async def delete_wtd(order_number):
     result = {}
     try:
         sql = "delete from t_wtd  where order_no='{0}'".format(order_number)
+        await async_processer.exec_sql(sql)
+        result['code']='0'
+        result['message']='删除成功!'
+        return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '删除失败!'
+        return result
+
+async def delete_order(p_release_id):
+    result = {}
+    try:
+        release = await get_sql_release(p_release_id)
+        if release['status'] in('1','3','4','5'):
+            result['code'] = '-1'
+            result['message'] = '不能删除已审核工单!'
+            return result
+        sql = "delete from t_sql_release  where id='{0}'".format(p_release_id)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='删除成功!'
@@ -268,7 +304,7 @@ async def release_order(p_order_no,p_userid):
         return result
 
 async def query_audit_sql(id):
-    sql = """select a.sqltext,a.error,b.rollback_statement from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
+    sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(sql)
     result = {}
     result['code'] = '0'
@@ -327,7 +363,7 @@ async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
         result['message'] = '发布失败！'
         return result
 
-async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type):
+async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time):
     result = {}
     try:
         if check_validate(p_dbid,p_cdb,p_sql,desc,p_user,type)['code']!='0':
@@ -340,9 +376,9 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type):
             result['message'] = '发布失败!'
             return result
 
-        sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type) 
-                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')
-            """.format((await get_sqlid()),p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type)
+        sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type,run_time) 
+                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')
+            """.format((await get_sqlid()),p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type,time)
         print('release=>',sql)
         await async_processer.exec_sql(sql)
         result['code']='0'

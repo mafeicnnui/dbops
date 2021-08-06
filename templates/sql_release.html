@@ -71,7 +71,7 @@
              </div>
        </div>
 
-       <div class="col-md-5">
+       <div class="col-md-3">
            <div class="form-group">
                 <div id="div_sql_desc">
                     <div>
@@ -99,6 +99,20 @@
                 </div>
            </div>
        </div>
+
+        <div class="col-md-3">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-4 control-label"><span id="s_run_time">*</span>定时:</label>
+                </div>
+                <div class="col-md-8">
+                  <input  id="run_time"  type="text" class="form-control datetimepicker"  readonly >
+                 <i class="mdi mdi-calendar text-white"></i></span>
+                </div>
+           </div>
+       </div>
+
+
   </form>
    <div class="row">
        <div class="col-lg-3">
@@ -178,6 +192,7 @@
 
    <script src="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.js')}}"></script>
    <script src="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.js') }}"></script>
+   <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
 
    <script type="text/javascript">
 
@@ -461,24 +476,6 @@
         });
 
         $(document).ready(function() {
-              set_selected();
-              var table;
-              var editor = ace.edit("ace-editor");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/mysql");
-              editor.getSession().setUseSoftTabs(true);
-              editor.getSession().setUseWrapMode(true);
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(14);
-              editor.setOption("wrap", "free");
-
-              ace.require("ace/ext/language_tools");
-              editor.setOptions({
-                 enableBasicAutocompletion: true,
-                 enableSnippets: true,
-                 enableLiveAutocompletion: true
-              });
-              editor.setHighlightActiveLine(true);
 
               function centerModals() {
                   $('.modal').each(function(i) {
@@ -510,31 +507,6 @@
                     }
                     toastr[flag]('', content)
               }
-
-              $('#beauty_btn').click(function(){
-                    var editor = ace.edit("ace-editor");
-                    v_sql=editor.session.getTextRange(editor.getSelectionRange())
-                    $.ajax({
-                        type: 'post',
-                        url: '/sql/_format',
-                        data: {"sql":v_sql},
-                        success: function (dataSet) {
-                            console.log(dataSet);
-                             if (dataSet.code == '0') {
-                                var editor = ace.edit("ace-editor");
-                                editor.insert(dataSet.message);
-                             } else {
-                                showtips('error',dataSet.message);
-                             }
-                         }
-                     })
-
-                });
-
-              $('#find_btn').click(function(){
-                    var editor = ace.edit("ace-editor");
-                    editor.execCommand('find');
-              });
 
               function get_menu_result(key,db_type,curNode) {
                   if (key=='tab_definition') {
@@ -595,121 +567,6 @@
 
                   }
               }
-
-              $("#db_source").bind("input propertychange",function(){
-                   var db_type=''
-                   var db_source = ''
-                   if ($('#db_source').val()!='') {
-
-                       $.ajax({
-                           url     : "/ds/query/id",
-                           type    : "post",
-                           datatype: "json",
-                           async   : false,
-                           data    :{
-                              dsid : $('#db_source').val(),
-                           },
-                           success: function (ds) {
-                             db_source = ds
-                             db_type=ds['db_type']
-                           }
-                       });
-
-                       $.ajax({
-                            url     :"/get_tree",
-                            type    :"post",
-                            datatype:"json",
-                            data: {
-                                 dbid  :  $('#db_source').val()
-                            },
-                            beforeSend: function () {
-                                  $('.modal').on('show.bs.modal', centerModals);
-                                  $(window).on('resize', centerModals);
-                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});                            },
-                            complete: function () {
-                                  $('#con-close-modal').modal('hide');
-                            },
-                            success: function (dataSet) {
-
-                                $('#db_title').html(dataSet.url);
-                                $('#db_tree').treeview({
-                                     data              : dataSet.message,
-                                     collapseIcon      : "ion-minus-round",
-                                     expandIcon        : "mdi mdi-border-all",
-                                     highlightSelected : true,
-                                     levels            : 2,
-                                     showBorder        : false,
-                                     showIcon          : true,
-                                });
-
-                                $('#db_tree').treeview('collapseAll', { silent: true });
-
-                                $('#db_tree').on('nodeSelected', function(event, data) {
-                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
-                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-
-                                    if (curNode.state.expanded) {
-                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
-                                    } else {
-                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
-                                    }
-
-                                    if (data.parentId === undefined) {
-                                         console.log('curNode2=',curNode.text)
-                                         console.log('parNode2=',parNode.text)
-                                         $('#curr_db').text(curNode.text);
-                                    } else {
-                                        console.log('curNode3=', curNode.text)
-                                        console.log('parNode3=', parNode.text)
-                                        $('#curr_db').text(parNode.text);
-                                    }
-                                });
-
-                                $('#db_tree').on('nodeUnselected', function(event, data) {
-                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
-                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-
-                                    if (curNode.state.expanded) {
-                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
-                                    } else {
-                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
-                                    }
-
-                                    if (data.parentId === undefined) {
-                                         console.log('curNode22=',curNode.text)
-                                         console.log('parNode22=',parNode.text)
-                                         $('#curr_db').text(curNode.text);
-                                    } else {
-                                        console.log('curNode33=', curNode.text)
-                                        console.log('parNode33=', parNode.text)
-                                        $('#curr_db').text(parNode.text);
-                                    }
-                                });
-
-                                $('#db_tree').contextMenu({
-                                    selector: 'li',
-                                    callback: function(key, options) {
-                                        var m = "clicked: " + key + " on " + $(this).text();
-                                        var curNode = $('#db_tree').treeview('getSelected')[0];
-                                        var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-                                        console.log('curNode=',curNode);
-                                        console.log('parNode=',parNode);
-                                        console.log('options=',m);
-                                        get_menu_result(key,db_type,$(this).text())
-
-
-                                    },
-                                    items: {
-                                        "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
-                                        "idx_definition"   : {name: "索引定义",  icon: "fa-diamond"},
-                                        "query_tab_100"    : {name: "修改表结构", icon: "fa-pied-piper"},
-                                    }
-                                });
-
-                            }
-                        });
-                   }
-              });
 
               function query_release_result(sql){
                 $.ajax({
@@ -917,8 +774,147 @@
                   return true;
               }
 
-              $("#check_btn").click(function()
-              {
+              $('#beauty_btn').click(function(){
+                    var editor = ace.edit("ace-editor");
+                    v_sql=editor.session.getTextRange(editor.getSelectionRange())
+                    $.ajax({
+                        type: 'post',
+                        url: '/sql/_format',
+                        data: {"sql":v_sql},
+                        success: function (dataSet) {
+                            console.log(dataSet);
+                             if (dataSet.code == '0') {
+                                var editor = ace.edit("ace-editor");
+                                editor.insert(dataSet.message);
+                             } else {
+                                showtips('error',dataSet.message);
+                             }
+                         }
+                     })
+
+                });
+
+              $('#find_btn').click(function(){
+                    var editor = ace.edit("ace-editor");
+                    editor.execCommand('find');
+              });
+
+              $("#db_source").bind("input propertychange",function(){
+                   var db_type=''
+                   var db_source = ''
+                   if ($('#db_source').val()!='') {
+
+                       $.ajax({
+                           url     : "/ds/query/id",
+                           type    : "post",
+                           datatype: "json",
+                           async   : false,
+                           data    :{
+                              dsid : $('#db_source').val(),
+                           },
+                           success: function (ds) {
+                             db_source = ds
+                             db_type=ds['db_type']
+                           }
+                       });
+
+                       $.ajax({
+                            url     :"/get_tree",
+                            type    :"post",
+                            datatype:"json",
+                            data: {
+                                 dbid  :  $('#db_source').val()
+                            },
+                            beforeSend: function () {
+                                  $('.modal').on('show.bs.modal', centerModals);
+                                  $(window).on('resize', centerModals);
+                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});                            },
+                            complete: function () {
+                                  $('#con-close-modal').modal('hide');
+                            },
+                            success: function (dataSet) {
+
+                                $('#db_title').html(dataSet.url);
+                                $('#db_tree').treeview({
+                                     data              : dataSet.message,
+                                     collapseIcon      : "ion-minus-round",
+                                     expandIcon        : "mdi mdi-border-all",
+                                     highlightSelected : true,
+                                     levels            : 2,
+                                     showBorder        : false,
+                                     showIcon          : true,
+                                });
+
+                                $('#db_tree').treeview('collapseAll', { silent: true });
+
+                                $('#db_tree').on('nodeSelected', function(event, data) {
+                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                                    if (curNode.state.expanded) {
+                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                                    } else {
+                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
+                                    }
+
+                                    if (data.parentId === undefined) {
+                                         console.log('curNode2=',curNode.text)
+                                         console.log('parNode2=',parNode.text)
+                                         $('#curr_db').text(curNode.text);
+                                    } else {
+                                        console.log('curNode3=', curNode.text)
+                                        console.log('parNode3=', parNode.text)
+                                        $('#curr_db').text(parNode.text);
+                                    }
+                                });
+
+                                $('#db_tree').on('nodeUnselected', function(event, data) {
+                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                                    if (curNode.state.expanded) {
+                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                                    } else {
+                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
+                                    }
+
+                                    if (data.parentId === undefined) {
+                                         console.log('curNode22=',curNode.text)
+                                         console.log('parNode22=',parNode.text)
+                                         $('#curr_db').text(curNode.text);
+                                    } else {
+                                        console.log('curNode33=', curNode.text)
+                                        console.log('parNode33=', parNode.text)
+                                        $('#curr_db').text(parNode.text);
+                                    }
+                                });
+
+                                $('#db_tree').contextMenu({
+                                    selector: 'li',
+                                    callback: function(key, options) {
+                                        var m = "clicked: " + key + " on " + $(this).text();
+                                        var curNode = $('#db_tree').treeview('getSelected')[0];
+                                        var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+                                        console.log('curNode=',curNode);
+                                        console.log('parNode=',parNode);
+                                        console.log('options=',m);
+                                        get_menu_result(key,db_type,$(this).text())
+
+
+                                    },
+                                    items: {
+                                        "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
+                                        "idx_definition"   : {name: "索引定义",  icon: "fa-diamond"},
+                                        "query_tab_100"    : {name: "修改表结构", icon: "fa-pied-piper"},
+                                    }
+                                });
+
+                            }
+                        });
+                   }
+              });
+
+              $("#check_btn").click(function() {
                   var editor = ace.edit("ace-editor");
                   var v_sql  = editor.session.getTextRange(editor.getSelectionRange())
                   var v_type = $('#db_order_type').val()
@@ -990,8 +986,7 @@
                   }
               });
 
-              $("#release_btn").click(function()
-              {
+              $("#release_btn").click(function()  {
                   var editor = ace.edit("ace-editor")
                   v_sql=editor.session.getTextRange(editor.getSelectionRange())
                   console.log('v_sql=',v_sql)
@@ -1010,6 +1005,7 @@
                             sql   :  editor.session.getTextRange(editor.getSelectionRange()),
                             desc  :  $('#sql_desc').val(),
                             type  :  $('#db_order_type').val(),
+                            time  : $('#run_time').val()
                         },
                         success: function (dataSet) {
                             console.log(dataSet);
@@ -1051,6 +1047,25 @@
                   });
                   }
               });
+
+              set_selected();
+
+              var table;
+              var editor = ace.edit("ace-editor");
+              editor.setTheme("ace/theme/xcode");
+              editor.getSession().setMode("ace/mode/mysql");
+              editor.getSession().setUseSoftTabs(true);
+              editor.getSession().setUseWrapMode(true);
+              editor.setShowPrintMargin(false);
+              editor.setFontSize(14);
+              editor.setOption("wrap", "free");
+              ace.require("ace/ext/language_tools");
+              editor.setOptions({
+                 enableBasicAutocompletion: true,
+                 enableSnippets: true,
+                 enableLiveAutocompletion: true
+              });
+              editor.setHighlightActiveLine(true);
 
               $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);

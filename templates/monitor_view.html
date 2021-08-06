@@ -625,33 +625,33 @@
                                return result
                             }
                          },
-                         {
-                             "title":"MSSQL捷顺寻车",
-                             "className" : 'table_td_center',
-                             "render": function(data,type,row,meta) {
-                               var  tmp='';
-                               var  result='';
-                               for (i=0;i<row[4].split(',').length;i++) {
-                                   var  status = row[4].split(',')[i].split('@')[0]
-                                   var  dbid   = row[4].split(',')[i].split('@')[1]
-                                   var  rqq    = row[4].split(',')[i].split('@')[2]
-                                   var  rqz    = GetDate(2)
-                                   if (status=='1') {
-                                       if (GetDateDiff(rqq, rqz, "minute")>10) {
-                                           tmp='<i id="db@'+dbid+'@'+rqq+'" class="ion-ios7-lightbulb color-warning"></i>'
-                                       } else {
-                                           tmp='<i id="db@'+dbid+'@'+rqq+'" class="ion-ios7-lightbulb color-success"></i>'
-                                       }
-                                   } else if (status=='0') {
-                                      tmp='<i id="db@'+dbid+'@'+rqq+'" class="ion-ios7-lightbulb color-warning"></i>'
-                                   } else {
-                                      tmp=''
-                                   }
-                                   result=result+'&nbsp;&nbsp;'+tmp+'&nbsp;&nbsp;';
-                               }
-                               return result
-                            }
-                         },
+                         // {
+                         //     "title":"MSSQL捷顺寻车",
+                         //     "className" : 'table_td_center',
+                         //     "render": function(data,type,row,meta) {
+                         //       var  tmp='';
+                         //       var  result='';
+                         //       for (i=0;i<row[4].split(',').length;i++) {
+                         //           var  status = row[4].split(',')[i].split('@')[0]
+                         //           var  dbid   = row[4].split(',')[i].split('@')[1]
+                         //           var  rqq    = row[4].split(',')[i].split('@')[2]
+                         //           var  rqz    = GetDate(2)
+                         //           if (status=='1') {
+                         //               if (GetDateDiff(rqq, rqz, "minute")>10) {
+                         //                   tmp='<i id="db@'+dbid+'@'+rqq+'" class="ion-ios7-lightbulb color-warning"></i>'
+                         //               } else {
+                         //                   tmp='<i id="db@'+dbid+'@'+rqq+'" class="ion-ios7-lightbulb color-success"></i>'
+                         //               }
+                         //           } else if (status=='0') {
+                         //              tmp='<i id="db@'+dbid+'@'+rqq+'" class="ion-ios7-lightbulb color-warning"></i>'
+                         //           } else {
+                         //              tmp=''
+                         //           }
+                         //           result=result+'&nbsp;&nbsp;'+tmp+'&nbsp;&nbsp;';
+                         //       }
+                         //       return result
+                         //    }
+                         // },
                          {
                              "title":"MSSQL德利多富",
                              "className" : 'table_td_center',

@@ -1548,7 +1548,7 @@ def reReplace(p_sql):
         print('AAAA:', p_sql_pre)
 
     print('五: 通过$$$将p_sql_pre处理为列表...')
-    p_sql_pre = [i for i in p_sql_pre.split('$$$') if i != '']
+    p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
     print('AAAAA=', p_sql_pre)
     print('AAAAA-len=', len(p_sql_pre))
 
