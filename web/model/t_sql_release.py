@@ -62,6 +62,7 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid):
                         c.dmmc 
                      END AS 'type',
                      b.db_desc,
+                     a.db,
                      (SELECT NAME FROM t_user d WHERE d.login_name=a.creator) creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
@@ -277,7 +278,7 @@ async def delete_order(p_release_id):
             result['code'] = '-1'
             result['message'] = '不能删除已审核工单!'
             return result
-        sql = "delete from t_sql_release  where id='{0}'".format(p_release_id)
+        sql = "update from t_sql_release  where id='{0}'".format(p_release_id)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='删除成功!'
@@ -287,6 +288,27 @@ async def delete_order(p_release_id):
         result['code'] = '-1'
         result['message'] = '删除失败!'
         return result
+
+async def update_order(p_release_id,p_run_time):
+    result = {}
+    try:
+        release = await get_sql_release(p_release_id)
+        if release['status'] in('3','4','5'):
+            result['code'] = '-1'
+            result['message'] = '不能更新已执行工单!'
+            return result
+        sql = "update  t_sql_release set run_time='{}' where id='{}'".format(p_run_time,p_release_id)
+        print(sql)
+        await async_processer.exec_sql(sql)
+        result['code']='0'
+        result['message']='更新成功!'
+        return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '更新失败!'
+        return result
+
 
 async def release_order(p_order_no,p_userid):
     result = {}
@@ -307,8 +329,25 @@ async def release_order(p_order_no,p_userid):
         result['message'] = '发布失败!'
         return result
 
+async def get_order_xh(p_type,p_rq):
+    result = {}
+    try:
+        st ="""SELECT COUNT(0)+1  as xh FROM t_sql_release 
+                    WHERE TYPE='{}' AND DATE_FORMAT(creation_date,'%Y%m%d')='{}'""".format(p_type,p_rq)
+        res = await async_processer.query_dict_one(st)
+        print(st)
+        result['code']='0'
+        result['message']=res['xh']
+        return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = traceback.format_exc()
+        return result
+
+
 async def query_audit_sql(id):
-    sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
+    sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time,a.db from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(sql)
     result = {}
     result['code'] = '0'

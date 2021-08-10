@@ -18,7 +18,7 @@
             height:20%;
             margin-left:500px;
             margin-top:100px;
-        }
+       }
 
        #ace-editor-release,#ace-editor-rollback,#ace-editor-error{
            overflow-x:auto;
@@ -34,15 +34,24 @@
         #ace-editor-error{
            height:80px;
         }
+        #ace-editor-change{
+           height:280px;
+        }
 
         .modal-lg-order {
             width:40%;
             height:45%;
         }
+
+        #rollback-label,#error-label {
+            margin-top:8px;
+        }
+
         .table th{
             text-align: center;
             vertical-align: middle!important;
         }
+
         .jFiler-theme-default .jFiler-input {
             position: relative;
             display: block;
@@ -62,6 +71,7 @@
             border-radius: 4px;
             overflow: hidden;
         }
+
         .erh{
             margin-bottom: 5px;
             margin-bottom: 5px;
@@ -156,22 +166,28 @@
             </div>
             <div class="modal-body">
                  <div class="row">
+                    <div  class="tab-pane active">
+                       <div class="row">
+                            <h5>执行时间：</h5>
+                            <div id ='run_time_detail' style="color:red"></div>
+                       </div>
+                    </div>
                     <div id="release_template" class="tab-pane active">
                          <div class="row">
-                            <h5>执行语句：<span id ='run_time_detail' style="color:red"></span></h5>
+                            <h5>执行语句：</h5>
                             <div id='ace-editor-release' class="col-md-12"></div>
                          </div>
                     </div>
-                    <div id="rollback_templete" class="tab-pane">
+                    <div id="rollback_templete" class="tab-pane" >
                         <div class="row">
-                            <h5>回滚语句：</h5>
-                            <div id='ace-editor-rollback' class="col-md-12"></div>
+                            <label id="rollback-label">回滚语句：</label>
+                            <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
                          </div>
                     </div>
                     <div id="error_templete" class="tab-pane">
                         <div class="row">
-                            <h5>运行错误：</h5>
-                            <div id='ace-editor-error' class="col-md-12"></div>
+                            <label id="error-label">运行错误：</label>
+                            <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
                          </div>
                     </div>
                  </div>
@@ -388,6 +404,41 @@
      </div>
 
      <!--工单变更窗口 -->
+     <div id="con-close-modal-change" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-templete">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"><span id='modal_edit_title'>工单变更</span></h4>
+                <input type='hidden' id='order_edit_xh'>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div  class="tab-pane">
+                        <div class="row">
+                            <span>执行时间：<i class="ion-android-alarm"></i></span>
+                            <input id="run_time_change"  type="text" class="form-control datetimepicker"  readonly style="color:red" >
+                        </div>
+                    </div>
+                    <div id="release_template_edit" class="tab-pane active">
+                         <div class="row">
+                            <h5>执行语句：</h5>
+                            <div id='ace-editor-change' class="col-md-12"></div>
+                         </div>
+                    </div>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" id='order_change_btn' class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">变更</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+       </div>
+     </div>
+
+     <!--问题单变更窗口 -->
      <div id="con-close-modal6" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
        <div class="modal-dialog modal-lg-order">
         <div class="modal-content">
@@ -495,6 +546,8 @@
 <!-- File Upload js -->
 <script src="{{static_url('plugins/jquery.filer/js/jquery.filer.js')}}"></script>
 
+<script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+
  <!-- Toastr js -->
 <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
 
@@ -543,6 +596,7 @@
                                  $('#cur_release_num').val(id)
                                  msg ='&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;';
                                  return msg;
                             }
@@ -820,8 +874,6 @@
                 datatype: "json",
                 data:{id: row},
                 success: function (dataSet) {
-                    var sql = dataSet.message
-                    console.log('sql=',sql)
                     setEditor('ace-editor-release',format_sql(dataSet.message.sqltext))
                     setEditor('ace-editor-rollback',dataSet.message.rollback_statement)
                     setEditor('ace-editor-error',dataSet.message.error)
@@ -829,6 +881,27 @@
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
                     $('#con-close-modal-detail').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
+                }
+          });
+    }
+
+    function editSql(row){
+         $('#order_edit_xh').val(row)
+         $('#modal_edit_title').text('工单变更['+row+']')
+         $.ajax({
+                url: "/sql/audit/detail",
+                type: "post",
+                datatype: "json",
+                data:{id: row},
+                success: function (dataSet) {
+                    setEditor('ace-editor-change',format_sql(dataSet.message.sqltext))
+                    $('#run_time_change').val(dataSet.message.run_time)
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal-change').modal({
                        keyboard: false,
                        backdrop:false
                     });
@@ -1381,44 +1454,81 @@
         }
     });
 
+    $('#rollback-label').click(function(){
+        if ($('#ace-editor-rollback').css('display') == 'none') {
+            $('#ace-editor-rollback').css("display","block");
+        } else {
+            $('#ace-editor-rollback').css("display","none");
+        }
+    })
+
+    $('#error-label').click(function(){
+        if ($('#ace-editor-error').css('display') == 'none') {
+            $('#ace-editor-error').css("display","block");
+        } else {
+            $('#ace-editor-error').css("display","none");
+        }
+    })
+
+    $('#order_change_btn').click(function(){
+         $.ajax({
+                url : "/order/_update",
+                type: "post",
+                datatype: "json",
+                data:{
+                    release_id: $('#order_edit_xh').val(),
+                    run_time:$('#run_time_change').val()
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("更新成功", "", "success")
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                }
+          });
+    });
+
     $(document).ready(function() {
-              //init ace editor
-              initEditor('ace-editor-release');
-              initEditor('ace-editor-rollback');
-              initEditor('ace-editor-error');
+          //init ace editor
+          initEditor('ace-editor-release');
+          initEditor('ace-editor-rollback');
+          initEditor('ace-editor-error');
+          initEditor('ace-editor-change');
 
-              $("#query_btn").click(function() {
+          $("#query_btn").click(function() {
+                query_order()
+                query_wtd()
+          });
+
+          $("#query_btn").click()
+
+          $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+                var activeTab = $(e.target).text();
+                var previousTab = $(e.relatedTarget).text();
+                console.log(activeTab, previousTab)
+                if (activeTab == 'SQL工单') {
                     query_order()
-                    query_wtd()
-              });
+                }
+                if (activeTab == '问题单') {
+                   query_wtd()
+                }
 
-              $("#query_btn").click()
+                if (activeTab == '发布语句') {
+                    $('#ace-editor-release').focus();
+                }
 
-              $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-                    var activeTab = $(e.target).text();
-                    var previousTab = $(e.relatedTarget).text();
-                    console.log(activeTab, previousTab)
-                    if (activeTab == 'SQL工单') {
-                        query_order()
-                    }
-                    if (activeTab == '问题单') {
-                       query_wtd()
-                    }
+                if (activeTab == '回滚语句') {
+                    $('#ace-editor-rollback').focus();
+                }
 
-                    if (activeTab == '发布语句') {
-                        $('#ace-editor-release').focus();
-                    }
+                if (activeTab == '错误消息') {
+                    $('#ace-editor-error').focus();
+                }
+          })
 
-                    if (activeTab == '回滚语句') {
-                        $('#ace-editor-rollback').focus();
-                    }
-
-                    if (activeTab == '错误消息') {
-                        $('#ace-editor-error').focus();
-                    }
-              })
-
-         });
+     });
 
 </script>
 

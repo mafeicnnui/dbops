@@ -5,7 +5,7 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.sql   import orderquery,order_query,order_delete
+from web.services.sql   import orderquery,order_query,order_delete,order_query_xh,order_update
 from web.services.sql   import wtd_save,wtd_release,wtd_update,wtd_delete,\
                                get_order_no,wtd_query,wtd_detail,get_order_env,\
                                get_order_type,get_order_status,get_order_handler,\
@@ -16,7 +16,9 @@ wtd = [
 
         (r"/order/query", orderquery),
         (r"/order/_query", order_query),
+        (r"/order/_query/xh", order_query_xh),
         (r"/order/_delete", order_delete),
+        (r"/order/_update", order_update),
         (r"/wtd/_query", wtd_query),
         (r"/wtd/detail", wtd_detail),
         (r"/get/order/no", get_order_no),

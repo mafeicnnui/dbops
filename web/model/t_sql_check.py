@@ -20,6 +20,39 @@ def is_number(str):
   except ValueError:
     return False
 
+
+def get_db_name(p_sql):
+    if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
+            or p_sql.upper().count("TRUNCATE") > 0 and p_sql.upper().count("TABLE") > 0 \
+            or p_sql.upper().count("ALTER") > 0 and p_sql.upper().count("TABLE") > 0 \
+            or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("TABLE") > 0 \
+            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("VIEW") > 0 \
+            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("FUNCTION") > 0 \
+            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
+            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
+            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0:
+        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
+            obj = re.split(r'\s+', p_sql)[3].replace('`', '')
+        else:
+            obj = re.split(r'\s+', p_sql)[2].replace('`', '')
+
+        if ('(') in obj:
+            return obj.split('(')[0]
+        else:
+            return obj
+
+    if get_obj_op(p_sql) in ('INSERT', 'DELETE'):
+        if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').find('.') < 0:
+            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '')
+        else:
+            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').split('.')[1]
+
+    if get_obj_op(p_sql) in ('UPDATE'):
+        if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').find('.') < 0:
+            return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '')
+        else:
+            return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').split('.')[1]
+
 def get_obj_name(p_sql):
     if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
         or p_sql.upper().count("TRUNCATE") > 0 and p_sql.upper().count("TABLE") > 0 \
@@ -30,14 +63,17 @@ def get_obj_name(p_sql):
                 or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
                   or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
                     or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0  :
+
        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
            obj = re.split(r'\s+', p_sql)[3].replace('`', '')
        else:
            obj=re.split(r'\s+', p_sql)[2].replace('`', '')
+
        if ('(') in obj:
           return obj.split('(')[0]
        else:
           return obj
+
     if get_obj_op(p_sql) in('INSERT','DELETE'):
          if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','').find('.')<0:
             return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','')

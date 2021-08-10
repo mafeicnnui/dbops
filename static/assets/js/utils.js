@@ -16,6 +16,9 @@ function GetDate(format) {
      if (month <10) {
          month="0"+month
      }
+     if (date <10) {
+         date="0"+date
+     }
 
      if (format==1){
          _time = year+"-"+month+"-"+date
@@ -25,6 +28,8 @@ function GetDate(format) {
         _time = year+"-"+month+"-"+date+" 0:0:0"
      } else if (format==4) {
         _time = year+"-"+month
+     }  else if (format==5) {
+         _time = year + month + date
      }
     return _time
  }

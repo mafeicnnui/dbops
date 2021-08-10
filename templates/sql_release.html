@@ -78,7 +78,7 @@
                         <label class="col-md-3 control-label"><span id="s_sql_desc">*</span>描述:</label>
                     </div>
                     <div class="col-md-9">
-                        <input id="sql_desc"  type="text" class="form-control" placeholder="请输入工单说明">
+                        <input id="sql_desc"  type="text" class="form-control" readonly placeholder="请输入工单说明">
                     </div>
                 </div>
            </div>
@@ -100,18 +100,21 @@
            </div>
        </div>
 
-        <div class="col-md-3">
+       <div class="col-md-3">
            <div class="form-group">
                 <div>
-                    <label class="col-md-4 control-label"><span id="s_run_time">*</span>定时:</label>
+                    <label class="col-md-4 control-label"><span id="s_run_time">*</span>定时:<i class="ion-android-alarm"></i></label>
                 </div>
-                <div class="col-md-8">
-                  <input  id="run_time"  type="text" class="form-control datetimepicker"  readonly >
-                 <i class="mdi mdi-calendar text-white"></i></span>
+                <div class="col-md-6">
+                   <span class="input-group-btn">
+                      <input  id="run_time"  type="text" class="form-control datetimepicker"  readonly >
+                   </span>
+                </div>
+                <div>
+                   <label class="col-md-1 control-label"><i id='clear_btn' class="ion-loop"></i></label>
                 </div>
            </div>
        </div>
-
 
   </form>
    <div class="row">
@@ -139,6 +142,8 @@
                             <button type="button" id='release_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="发布"><i class="mdi mdi-transfer"></i></button>
                             <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
                             <button type="button" id='find_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="查询"><i class="fa fa-search"></i></button>
+                            <button type="button" id='import_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="导入"><i class="ion-android-folder"></i></button>
+                            <input  type="file" id="files" style="display: none" onchange="fileImport();">
                        </div>
                    </div>
                 </div>
@@ -189,10 +194,11 @@
    <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
-
    <script src="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.js')}}"></script>
    <script src="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.js') }}"></script>
    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+   <script src="{{static_url('assets/js/utils.js')}}"></script>
+
 
    <script type="text/javascript">
 
@@ -469,6 +475,26 @@
             document.all['s_order_type'].style.color="#ff0000";
             // document.all['s_sql_ver'].style.color="#ff0000";
         }
+
+        function fileImport() {
+　　　　　　　　//获取读取我文件的File对象
+　　　　　　　　var selectedFile = document.getElementById('files').files[0];
+　　　　　　　　var name = selectedFile.name;//读取选中文件的文件名
+　　　　　　　　var size = selectedFile.size;//读取选中文件的大小
+　　　　　　　　console.log("文件名:"+name+"大小:"+size);
+
+　　　　　　　　var reader = new FileReader();//这是核心,读取操作就是由它完成.
+　　　　　　　　reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL
+　　　　　　　　reader.onload = function () {
+　　　　　　　　　　//当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+　　　　　　　　　　console.log(this.result);
+　　　　　　　　　　$('#resultDiv').html(this.result);
+                 var editor = ace.edit("ace-editor");
+                 console.log(this.result);
+                 editor.setValue('')
+                 editor.insert(this.result)
+　　　　　　　　}
+　　　　　}
 
         //当浏览器大小变化时
         $(window).resize(function () {
@@ -774,6 +800,23 @@
                   return true;
               }
 
+              function get_order_xh(p_type,p_rq) {
+                   var res='';
+                   $.ajax({
+                        type: 'post',
+                        url: '/order/_query/xh',
+                        async:false,
+                        data: {
+                            type:p_type,
+                            rq:p_rq
+                        },
+                        success: function (dataSet) {
+                            res=dataSet.message
+                        },
+                    })
+                    return res
+              }
+
               $('#beauty_btn').click(function(){
                     var editor = ace.edit("ace-editor");
                     v_sql=editor.session.getTextRange(editor.getSelectionRange())
@@ -797,6 +840,10 @@
               $('#find_btn').click(function(){
                     var editor = ace.edit("ace-editor");
                     editor.execCommand('find');
+              });
+
+              $('#import_btn').click(function(){
+                   $("#files").click();
               });
 
               $("#db_source").bind("input propertychange",function(){
@@ -1046,6 +1093,26 @@
                         }
                   });
                   }
+              });
+
+              $('#db_order_type').change(function(){
+                   var tp = $('#db_order_type').val()
+                   if (tp==1) {
+                       tpl = 'ddl'
+                   } else if  (tp == 2 ) {
+                       tpl = 'dml'
+                  } else if (tp == 3) {
+                       tpl = 'dcl'
+                   } else if (tp == 4) {
+                       tpl='proc'
+                   }
+                   var rq =  GetDate(5)
+                   var xh = get_order_xh(tp,rq)
+                   $('#sql_desc').val(tpl+'-'+ rq+'-'+xh)
+              });
+
+              $('#clear_btn').click(function(){
+                  $('#run_time').val('')
               });
 
               set_selected();

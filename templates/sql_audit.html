@@ -84,9 +84,17 @@
             </div>
             <div class="modal-body">
                 <input id="sql_id" type="hidden"  value='' >
+                 <div class="row">
+                    <label>运行库 &nbsp;&nbsp;：</label>
+                    <span id ='run_db_detail' style="color:red"></span>
+                </div>
                 <input id="sql_status" type="hidden"  value='' >
                 <div class="row">
-                    <h5>执行语句：<span id ='run_time_detail' style="color:red"></span></h5>
+                    <label>运行时间：</label>
+                    <span id ='run_time_detail' style="color:red"></span>
+                </div>
+                <div class="row">
+                    <label>执行语句：</label>
                     <div id='ace-editor' class="col-md-12"></div>
                 </div>
                 <br>
@@ -148,8 +156,7 @@
 
           $('#audit').attr("disabled",true);
 
-          $("#query_btn").click(function()
-          {
+          $("#query_btn").click(function() {
                 var name = $("#name").val();
                 var dsid = $("#db_audit_source").val();
                 var creater  = $("#sql_creater").val();
@@ -181,6 +188,7 @@
                          { "title": "工单状态" },
                          { "title": "工单类型" },
                          { "title": "数据库环境"},
+                         { "title": "运行库" },
                          { "title": "发布人" },
                          { "title": "发布时间"},
                          { "title": "审核人"},
@@ -189,11 +197,10 @@
                        ],
                         columnDefs: [
                         {
-                            targets: 9,
+                            targets: 10,
                             render: function(data, type, row, meta){
                                  var id=row[0]
                                  var status=row[2]
-
                                  if (status=='已发布') {
                                     msg ='&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="show_audit(\''+id+','+status+'\');"/>' +'&nbsp;'
@@ -314,10 +321,8 @@
                     $('#sql_status').val(status);
                     console.log('status=',status);
                     if (status=='已发布') {
-                        console.log('A');
                         $('#auditSql').removeAttr("disabled");
                     } else {
-                        console.log('AAA');
                         $('#auditSql').attr("disabled","disabled");
                     }
 
@@ -327,6 +332,7 @@
                     editor.insert(format_sql(dataSet.message.sqltext))
                     editor.setReadOnly(true);
                     $('#run_time_detail').text(dataSet.message.run_time)
+                    $('#run_db_detail').text(dataSet.message.db)
 
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
