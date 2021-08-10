@@ -98,7 +98,7 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
         "passwd": "canal@Hopson2018",
         "db": p_ds['service']
     }
-    print(MYSQL_SETTINGS)
+    logging.info("MYSQL_SETTINGS=",MYSQL_SETTINGS)
 
     rollback_statments = []
     try:
