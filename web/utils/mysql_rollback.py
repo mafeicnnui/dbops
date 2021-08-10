@@ -8,6 +8,7 @@
 import re
 import pymysql
 import traceback
+import logging
 from pymysqlreplication import BinLogStreamReader
 from pymysqlreplication.event import *
 from pymysqlreplication.row_event import (DeleteRowsEvent,UpdateRowsEvent,WriteRowsEvent,)
@@ -45,9 +46,6 @@ def get_ins_values(event):
 
 def get_where(MYSQL_SETTINGS,event,p_where):
     db = get_db(MYSQL_SETTINGS)
-    # print('get_where=>pk_count=', check_tab_exists_pk(db, MYSQL_SETTINGS['db'], event['table']))
-    # print('get_where=>pk_name=', get_table_pk_names(db, MYSQL_SETTINGS['db'], event['table']))
-
     cols = get_table_pk_names(db,MYSQL_SETTINGS['db'], event['table'])
     v_where = ' where '
     for key in p_where:
@@ -86,7 +84,6 @@ def gen_ddl_sql(p_ddl):
        rsql = 'drop table {};'.format(tab)
        return rsql
     return p_ddl
-
 
 def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
 
@@ -198,12 +195,13 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
     try:
         db = get_connection()
         rollback= '\n'.join(get_binlog(p_ds,p_file,p_start_pos,p_end_pos))
+        logging.info(('rollback statement:',rollback))
         cr=db.cursor()
         cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
         cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,format_sql(rollback)))
         db.commit()
     except:
-      print('write_rollback error!!!')
+      logging.error('write_rollback error:',traceback.format_exc())
       traceback.print_exc()
 
 def delete_rollback(p_sql_id):

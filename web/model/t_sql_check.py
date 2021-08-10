@@ -6,6 +6,7 @@
 # @Software: PyCharm
 
 import re
+import logging
 import traceback
 from web.model.t_ds    import get_ds_by_dsid_by_cdb
 from web.utils.common  import get_connection_dict,get_connection_ds,format_sql,format_exception
@@ -37,21 +38,27 @@ def get_db_name(p_sql):
             obj = re.split(r'\s+', p_sql)[2].replace('`', '')
 
         if ('(') in obj:
-            return obj.split('(')[0]
+            if obj.find('.') < 0:
+                return None
+            else:
+                return obj.split('(')[0].split('.')[0]
         else:
-            return obj
+            if obj.find('.') < 0:
+                return None
+            else:
+                return obj.split('.')[0]
 
     if get_obj_op(p_sql) in ('INSERT', 'DELETE'):
         if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').find('.') < 0:
-            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '')
+            return None
         else:
-            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').split('.')[1]
+            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').split('.')[0]
 
     if get_obj_op(p_sql) in ('UPDATE'):
         if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').find('.') < 0:
-            return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '')
+            return None
         else:
-            return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').split('.')[1]
+            return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').split('.')[0]
 
 def get_obj_name(p_sql):
     if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
@@ -70,9 +77,15 @@ def get_obj_name(p_sql):
            obj=re.split(r'\s+', p_sql)[2].replace('`', '')
 
        if ('(') in obj:
-          return obj.split('(')[0]
+           if obj.find('.')<0:
+              return obj.split('(')[0]
+           else:
+              return obj.split('(')[0].split('.')[1]
        else:
-          return obj
+           if obj.find('.') < 0:
+              return obj
+           else:
+              return obj.split('.')[1]
 
     if get_obj_op(p_sql) in('INSERT','DELETE'):
          if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','').find('.')<0:
@@ -203,7 +216,14 @@ async def get_obj_privs_grammar(p_ds,p_sql):
     try:
         op = get_obj_op(p_sql)
         ob = get_obj_name(p_sql)
+        db = get_db_name(p_sql)
         dp = 'drop table {}'
+        print('db=',db)
+        print('ds=',p_ds['service'])
+        if db is not None:
+            if db != p_ds['service']:
+               return '语句中库名:{}与所选运行库名{}不同!'.format(db,p_ds['service'])
+
         if op == 'CREATE_TABLE':
             if await check_mysql_tab_exists(p_ds,ob) > 0:
                return '表:{0} 已存在!'.format(ob)
@@ -751,10 +771,7 @@ async def get_tab_char_col_len_multi(p_ds,p_sql,rule,config):
             config[ob] = dp.format(ob)
             return rs
         elif op == 'ALTER_TABLE_ADD':
-            #if config.get('dbops_' + ob) is None:
-            #await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
             rs = await async_processer.query_list_by_ds(p_ds, st.format(rule['rule_value'], 'dbops_' +ob))
-            #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
             config['dbops_' + ob] = dp.format('dbops_' + ob)
             return rs
     except Exception as e:
@@ -1111,6 +1128,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
     sxh    = 1
     res    = True
     ob     = get_obj_name(p_sql.strip())
+    db     = get_db_name(p_sql.strip())
     op     = get_obj_op(p_sql.strip())
     tp     = get_obj_type(p_sql.strip())
     ds     = await get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
@@ -1121,6 +1139,8 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
     print('输出检测项...')
     print('-'.ljust(150, '-'))
     print('ob:{}'.format(ob))
+    print('db:{}'.format(db))
+    print('ds:{}'.format(ds))
     print('op:{}'.format(op))
     print('tp:{}'.format(tp))
     print('-'.ljust(150, '-'))
@@ -1569,37 +1589,37 @@ def reReplace(p_sql):
     p_sql_pre=p_sql
     pattern0 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
     if pattern0.findall(p_sql) != []:
-       print('一: 将comment中的;替换为^^^ ...')
+       logging.info('一: 将comment中的;替换为^^^ ...')
        p_sql_pre = re.sub(pattern0,preProcesses,p_sql)
-       print('A:',p_sql_pre)
+       logging.info(('1:',p_sql_pre))
 
     pattern1 = re.compile(r'(\s*\)\s*;\s*)')
     if pattern1.findall(p_sql_pre)!=[]:
-       print('二: 将);替换为)$$$ ...')
+       logging.info('二: 将);替换为)$$$ ...')
        p_sql_pre = re.sub(pattern1, ')$$$', p_sql_pre)
-       print('AA:', p_sql_pre)
+       logging.info(('2:', p_sql_pre))
 
     pattern2 = re.compile(r'(\s*\'\s*;\s*)')
     if pattern2.findall(p_sql_pre) != []:
-       print('三: 将\';替换为\'$$$ ...')
+       logging.info('三: 将\';替换为\'$$$ ...')
        p_sql_pre = re.sub(pattern2, "'$$$", p_sql_pre)
-       print('AAA:', p_sql_pre)
+       logging.info(('3:', p_sql_pre))
 
     pattern3 = re.compile(r'(\s*;\s*)')
     if pattern3.findall(p_sql_pre) != []:
-        print('四: 将;替换为$$$')
+        logging.info('四: 将;替换为$$$')
         p_sql_pre = re.sub(pattern3, "$$$\n", p_sql_pre)
-        print('AAAA:', p_sql_pre)
+        logging.info(('4:', p_sql_pre))
 
-    print('五: 通过$$$将p_sql_pre处理为列表...')
+    logging.info('五: 通过$$$将p_sql_pre处理为列表...')
     p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
-    print('AAAAA=', p_sql_pre)
-    print('AAAAA-len=', len(p_sql_pre))
+    logging.info(('5=', p_sql_pre))
+    logging.info('5-len=', len(p_sql_pre))
 
-    print('六: 将列表中每个语句comment中的^^^替为;...')
+    logging.info(('六: 将列表中每个语句comment中的^^^替为;...'))
     p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
-    print('AAAAAA=', p_sql_pre)
-    print('AAAAAA-len2=', len(p_sql_pre))
+    logging.info(('6=', p_sql_pre))
+    logging.info(('6-len=', len(p_sql_pre)))
 
     if len(p_sql_pre) == 1:
        return [p_sql]
@@ -1608,9 +1628,9 @@ def reReplace(p_sql):
 
 def check_statement_count(p_sql):
     out = [i for i in reReplace(p_sql) if i != '']
-    print('check_statement_count=>p_sql:',p_sql)
-    print('check_statement_count=>out:',out)
-    print('check_statement_count=>len:',len(out))
+    logging.info('check_statement_count=>p_sql:',p_sql)
+    logging.info('check_statement_count=>out:',out)
+    logging.info('check_statement_count=>len:',len(out))
     return len(out)
 
 async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):

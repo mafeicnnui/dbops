@@ -48,6 +48,16 @@
           display:none;
       }
 
+      .modal-lg-detail {
+            width :60%;
+            height:30%;
+      }
+
+     .modal-lg-detail2 {
+            width:65%;
+            height:40%;
+      }
+
     </style>
 </head>
 
@@ -186,10 +196,57 @@
      </div>
    </div><!-- /.modal -->
 
+   <!--查看DDL详情  -->
+   <div id="con-close-modal-ddl" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id='ddl-header'></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor-tab-defi' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+   <!--查看列详情  -->
+   <div id="con-close-modal-col" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail2">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">列定义<span id='tab_stru'></span></h4>
+            </div>
+            <div class="modal-body">
+                <p></p>
+                <div class="row">
+                     <div class="col-md-12">
+                          <div id="div-tab">
+                               <table id="tab-cols" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" ></table>
+                          </div>
+                     </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+
    <input type='hidden' id='h_tab_height'>
-
    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-
    <!-- Toastr js -->
    <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
@@ -550,8 +607,16 @@
                                     if (dataSet.status=="1") {
                                         showtips('info',dataSet.message);
                                     } else {
-                                        var editor = ace.edit("ace-editor");
+                                        var editor = ace.edit("ace-editor-tab-defi");
+                                        editor.setValue('')
                                         editor.insert(dataSet.message);
+                                        $('#ddl-header').text('表结构信息')
+                                        $('.modal').on('show.bs.modal', centerModals);
+                                        $(window).on('resize', centerModals);
+                                        $('#con-close-modal-ddl').modal({
+                                           keyboard: false,
+                                           backdrop:false
+                                        })
                                    }
                                  }
                              });
@@ -570,26 +635,87 @@
                                     if (dataSet.status=="1") {
                                         showtips('info',dataSet.message);
                                     } else {
-                                        var editor = ace.edit("ace-editor");
+                                        var editor = ace.edit("ace-editor-tab-defi");
+                                        editor.setValue('')
                                         editor.insert(dataSet.message);
+                                        $('#ddl-header').text('索引定义')
+                                        $('.modal').on('show.bs.modal', centerModals);
+                                        $(window).on('resize', centerModals);
+                                        $('#con-close-modal-ddl').modal({
+                                           keyboard: false,
+                                           backdrop:false
+                                        })
                                    }
                                  }
                              });
-                  } else if (key=='tab_alter'){
+                  } else if (key=='col_definition'){
                             $.ajax({
-                                url     : "/alt_tab",
-                                type    : "post",
+                                url: "/get_tab_stru",
+                                type: "post",
                                 datatype: "json",
                                 data: {
-                                    dbid  :  $('#db_source').val(),
-                                    cur_db:  $('#curr_db').text(),
-                                    tab   :  curNode
+                                    dbid: $('#db_source').val(),
+                                    db_name: $('#curr_db').text(),
+                                    tab_name: curNode
                                 },
                                 success: function (dataSet) {
-                                    console.log(dataSet);
-                                    showtips('info',dataSet.message);
-                                 }
-                             });
+                                    console.log('col_definition=', dataSet)
+                                    $('.modal').on('show.bs.modal', centerModals);
+                                    $(window).on('resize', centerModals);
+                                    $('#con-close-modal-col').modal({
+                                       keyboard: false,
+                                       backdrop:false
+                                    })
+                                    $('#tab-cols').DataTable({
+                                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                        destroy: true,
+                                        async: true,
+                                        scrollY: "300px",
+                                        ordering: false,
+                                        bAutoWidth: true,
+                                        scrollX: true,
+                                        paging: false,
+                                        iDisplayLength: 10,
+                                        data: dataSet,
+                                        responsive: false,
+                                        columns: [
+                                            {"title": "列名"},
+                                            {"title": "列描述"},
+                                            {"title": "列类型"},
+                                            {"title": "是否自增"},
+                                            {"title": "是否主键"},
+                                            {"title": "是否非空"},
+                                        ],
+                                        "language": {
+                                            "search": "在表格中搜索:",
+                                            "sProcessing": "处理中...",
+                                            "sLengthMenu": "显示 _MENU_ 项结果",
+                                            "sZeroRecords": "没有匹配结果",
+                                            "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                            "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                                            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                            "sInfoPostFix": "",
+                                            "sSearch": "搜索:",
+                                            "sUrl": "",
+                                            "sEmptyTable": "表中数据为空",
+                                            "sLoadingRecords": "载入中...",
+                                            "sInfoThousands": ",",
+                                            "oPaginate": {
+                                                "sFirst": "首页",
+                                                "sPrevious": "上页",
+                                                "sNext": "下页",
+                                                "sLast": "末页"
+                                            },
+                                            "oAria": {
+                                                "sSortAscending": ": 以升序排列此列",
+                                                "sSortDescending": ": 以降序排列此列"
+                                            }
+                                        }
+                                    });
+
+                                }
+                            });
 
                   }
               }
@@ -946,13 +1072,11 @@
                                         console.log('parNode=',parNode);
                                         console.log('options=',m);
                                         get_menu_result(key,db_type,$(this).text())
-
-
                                     },
                                     items: {
                                         "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
-                                        "idx_definition"   : {name: "索引定义",  icon: "fa-diamond"},
-                                        "query_tab_100"    : {name: "修改表结构", icon: "fa-pied-piper"},
+                                        "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
+                                        "col_definition"   : {name: "列信息",   icon: "fa-pied-piper"},
                                     }
                                 });
 
@@ -1133,6 +1257,23 @@
                  enableLiveAutocompletion: true
               });
               editor.setHighlightActiveLine(true);
+
+              var editor2= ace.edit("ace-editor-tab-defi");
+              editor2.setTheme("ace/theme/xcode");
+              editor2.getSession().setMode("ace/mode/mysql");
+              editor2.getSession().setUseSoftTabs(true);
+              editor2.getSession().setUseWrapMode(true);
+              editor2.setShowPrintMargin(false);
+              editor2.setFontSize(14);
+              editor2.setOption("wrap", "free");
+              ace.require("ace/ext/language_tools");
+              editor2.setOptions({
+                 enableBasicAutocompletion: true,
+                 enableSnippets: true,
+                 enableLiveAutocompletion: true
+              });
+              editor2.setHighlightActiveLine(true);
+
 
               $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);

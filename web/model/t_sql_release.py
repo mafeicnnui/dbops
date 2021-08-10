@@ -8,6 +8,7 @@
 
 import sqlparse
 import traceback,re
+import logging
 from web.utils.common           import current_time
 from web.model.t_ds             import get_ds_by_dsid
 from web.model.t_sql_check      import check_mysql_ddl
@@ -17,6 +18,7 @@ from web.model.t_user           import get_user_by_userid
 from web.utils.mysql_async      import async_processer
 from web.utils.mysql_rollback   import write_rollback,delete_rollback
 from web.model.t_sql_check      import reReplace,check_statement_count
+
 
 async def get_sqlid():
     sql="select ifnull(max(id),0)+1 from t_sql_release"
@@ -309,7 +311,6 @@ async def update_order(p_release_id,p_run_time):
         result['message'] = '更新失败!'
         return result
 
-
 async def release_order(p_order_no,p_userid):
     result = {}
     try:
@@ -344,7 +345,6 @@ async def get_order_xh(p_type,p_rq):
         result['code'] = '-1'
         result['message'] = traceback.format_exc()
         return result
-
 
 async def query_audit_sql(id):
     sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time,a.db from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
@@ -457,35 +457,17 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message):
 async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,start_pos=None,stop_pos=None):
     try:
         if p_flag == 'before':
-            sql = """update t_sql_release 
-                      set  status ='3' ,
-                           last_update_date ='{0}' ,
-                           executor = '{1}',
-                           exec_start ='{2}'                    
-                    where id='{3}'""".format(current_time(),p_username,current_time(),str(p_sqlid))
+            sql = """update t_sql_release set  status ='3',last_update_date ='{0}',executor = '{1}',exec_start ='{2}' where id='{3}'""".format(current_time(),p_username,current_time(),str(p_sqlid))
         elif p_flag =='after':
-            sql = """update t_sql_release 
-                        set status ='4' ,
-                            last_update_date ='{0}' ,
-                            exec_end ='{1}',
-                            binlog_file='{2}',
-                            start_pos='{3}',
-                            stop_pos='{4}',
-                            error = ''
-                        where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
+            sql = """update t_sql_release set status ='4',last_update_date ='{0}',exec_end ='{1}',binlog_file='{2}',start_pos='{3}',stop_pos='{4}', error = '' where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
         elif p_flag=='error':
-            sql = """update t_sql_release 
-                        set  status ='5' ,
-                             last_update_date ='{0}' ,
-                             exec_end ='{1}',
-                             error = '{2}',
-                             failure_times=failure_times+1
-                        where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
+            sql = """update t_sql_release set  status ='5',last_update_date ='{0}',exec_end ='{1}',error = '{2}',failure_times=failure_times+1 where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
         else:
            pass
-        print(sql)
+        logging.info("upd_run_status:",sql)
         await async_processer.exec_sql(sql)
     except :
+        logging.error(traceback.format_exc())
         traceback.print_exc()
 
 async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
@@ -501,38 +483,35 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         binlog_file=rs1[0]
         start_position=rs1[1]
-        # await async_processer.exec_sql_by_ds(p_ds,sql)
-        print('check_statement_count(sql)=',check_statement_count(sql))
+        logging.info('check_statement_count(sql)=',check_statement_count(sql))
         if check_statement_count(sql) == 1:
-            print('exec single statement:')
-            print('-----------------------------------------')
-            print('statement:', sql)
+            logging.info(('exec single statement:'))
+            logging.info(('-----------------------------------------'))
+            logging.info(('statement:', sql))
             await async_processer.exec_sql_by_ds(p_ds, sql)
         elif check_statement_count(sql) > 1:
-            print('exec multi statement:')
-            print('-----------------------------------------')
+            logging.info(('exec multi statement:'))
+            logging.info(('-----------------------------------------'))
             for st in reReplace(sql):
-                print('st=',st)
+                logging.info(('statement=',st))
                 await async_processer.exec_sql_by_ds(p_ds, st)
         else:
             pass
-
         # get stop_position
         rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         stop_position=rs2[1]
-        print('binlog:',binlog_file,start_position,stop_position)
+        logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
         await upd_run_status(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
         # write rollback statement
         write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
-
         result['code'] = '0'
         result['message'] = '执行成功!'
         return result
     except Exception as e:
-        #traceback.print_exc()
         error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'
         result['code'] = '-1'
         result['message'] = '执行失败!'
+        logging.error(traceback.format_exc())
         await upd_run_status(p_sql_id, p_username, 'error', error)
         delete_rollback(p_sql_id)
         return result
