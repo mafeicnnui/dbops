@@ -14,6 +14,7 @@ import random
 import redis
 import json
 import smtplib
+import socket
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
 from web.utils.mysql_async import async_processer
@@ -393,6 +394,76 @@ def send_mail587(p_from_user,p_from_pass,p_to_user,p_title,p_content):
         server.quit()
     except smtplib.SMTPException as e:
         print(e)
+
+
+def socket_port(ip, port):
+    try:
+        socket.setdefaulttimeout(1)
+        s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result=s.connect_ex((ip, port))
+        if result==0:
+          return True
+        else:
+          return False
+    except:
+        return False
+
+def get_available_port():
+    for p in [465,25]:
+        if socket_port("smtp.exmail.qq.com",p):
+            return p
+
+def send_mail_25(p_sendserver,p_from_user,p_from_pass,p_to_user,p_title,p_content):
+    to_user=p_to_user.split(",")
+    try:
+        msg = MIMEText(p_content,'html','utf-8')
+        msg["Subject"] = p_title
+        msg["From"]    = p_from_user
+        msg["To"]      = ",".join(to_user)
+        server = smtplib.SMTP(p_sendserver, 25)
+        server.set_debuglevel(0)
+        server.login(p_from_user, p_from_pass)
+        server.sendmail(p_from_user, to_user, msg.as_string())
+        server.quit()
+    except smtplib.SMTPException as e:
+        print(e)
+
+def send_mail_465(p_sendserver,p_from_user,p_from_pass,p_to_user,p_title,p_content):
+    to_user=p_to_user.split(",")
+    try:
+        msg = MIMEText(p_content,'html','utf-8')
+        msg["Subject"] = p_title
+        msg["From"]    = p_from_user
+        msg["To"]      = ",".join(to_user)
+        server = smtplib.SMTP_SSL(p_sendserver, 465)
+        server.set_debuglevel(0)
+        server.login(p_from_user, p_from_pass)
+        server.sendmail(p_from_user, to_user, msg.as_string())
+        server.quit()
+    except smtplib.SMTPException as e:
+        print(e)
+
+def send_mail_param(p_sendserver,p_from_user, p_from_pass, p_to_user, p_title, p_content):
+    try:
+        port = get_available_port()
+        if port == 465:
+           print('send_mail_465')
+           send_mail_465(p_sendserver,p_from_user, p_from_pass, p_to_user, p_title, p_content)
+        else:
+           print('send_mail_25')
+           send_mail_25(p_sendserver,p_from_user, p_from_pass, p_to_user, p_title, p_content)
+        print('send_mail_param send success!')
+    except :
+        print("send_mail_param exception:")
+        traceback.print_exc()
+
+async def get_sys_settings():
+    st = "SELECT `key`,`value`,`desc` FROM  t_sys_settings"
+    rs = await async_processer.query_dict_list(st)
+    settings={}
+    for s in rs:
+       settings[s['key']] = s['value']
+    return settings
 
 def get_file_contents(filename):
     file_handle = open(filename, 'r')

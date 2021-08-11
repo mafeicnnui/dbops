@@ -475,11 +475,11 @@ async def get_tab_idx_by_tname(dbid,tab,cur_db):
         result['message'] = '未找到索引定义!'
     return result
 
-async def get_tree_by_dbid(dbid):
+async def get_tree_by_dbid(dbid,msg):
     try:
         result = {}
         p_ds   = await get_ds_by_dsid(dbid)
-        sql1   = "SELECT schema_name FROM information_schema.SCHEMATA order by 1"
+        sql1   = "SELECT schema_name FROM information_schema.SCHEMATA where instr(schema_name,'{}')>0 order by 1".format(msg.lower())
         sql2   = "SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1"
         n_tree = []
         rs1    = await async_processer.query_dict_list_by_ds(p_ds,sql1)

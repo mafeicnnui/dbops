@@ -9,7 +9,7 @@ import re
 import logging
 import traceback
 from web.model.t_ds    import get_ds_by_dsid_by_cdb
-from web.utils.common  import get_connection_dict,get_connection_ds,format_sql,format_exception
+from web.utils.common  import format_sql,format_exception
 from web.utils.mysql_async import async_processer
 
 def is_number(str):
@@ -222,7 +222,7 @@ async def get_obj_privs_grammar(p_ds,p_sql):
         print('ds=',p_ds['service'])
         if db is not None:
             if db != p_ds['service']:
-               return '语句中库名:{}与所选运行库名{}不同!'.format(db,p_ds['service'])
+               return '语句中库名:{}与运行库名{}不同!'.format(db,p_ds['service'])
 
         if op == 'CREATE_TABLE':
             if await check_mysql_tab_exists(p_ds,ob) > 0:
@@ -236,9 +236,12 @@ async def get_obj_privs_grammar(p_ds,p_sql):
             if await check_mysql_tab_exists(p_ds,ob) == 0:
                return '表:{0} 不存在!'.format(ob)
             else:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_'+ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               try:
+                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_'+ob))
+                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
+                   await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               except:
+                   await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                return '0'
     except :
         e = traceback.format_exc().split('Error: ')[1]
@@ -278,7 +281,6 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
                 return '表:{0}已存在!'.format(ob)
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
-                #await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
             config[ob] = dp.format(ob)
         elif op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
             tb = await f_get_table_ddl(p_ds, ob)
@@ -288,7 +290,6 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
                 else:
                    await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                    await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                   #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
             config['dbops_' +ob] = dp.format('dbops_' + ob)
         return '0'
     except Exception as e:
@@ -1018,8 +1019,6 @@ async def get_col_not_null_multi(p_ds,p_sql,config):
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                 rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
                 config['dbops_' + ob] = dp.format('dbops_' + dp)
-                #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-                #await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 return rs
     except Exception as e:
         return process_result(str(e))
@@ -1628,9 +1627,9 @@ def reReplace(p_sql):
 
 def check_statement_count(p_sql):
     out = [i for i in reReplace(p_sql) if i != '']
-    logging.info('check_statement_count=>p_sql:',p_sql)
-    logging.info('check_statement_count=>out:',out)
-    logging.info('check_statement_count=>len:',len(out))
+    logging.info(('check_statement_count=>p_sql:',p_sql))
+    logging.info(('check_statement_count=>out:',out))
+    logging.info(('check_statement_count=>len:',len(out)))
     return len(out)
 
 async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):

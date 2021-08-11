@@ -18,10 +18,10 @@
         #ace-editor{
            height:280px;
         }
-        #ace-editor3{
+        #ace-editor-rollback{
            height:200px;
         }
-        #ace-editor2{
+        #ace-editor-error{
            height:80px;
         }
         .table th{
@@ -91,19 +91,23 @@
                 <h4 class="modal-title"><span id='order_title'></span></h4>
             </div>
             <div class="modal-body">
+                 <div class="row">
+                   <h5>执行语句：</h5>
+                   <div id ='run_time_detail' style="color:red"></div>
+                </div>
                 <div class="row">
-                  <h5>执行语句：<span id ='run_time_detail' style="color:red"></span></h5>
-                  <div id='ace-editor' class="col-md-12"></div>
+                   <h5>执行语句：</h5>
+                   <div id='ace-editor' class="col-md-12"></div>
                 </div>
                 <br>
                 <div class="row">
-                  <h5>回滚语句：</h5>
-                  <div id='ace-editor3' class="col-md-12"></div>
+                   <label id="rollback-label">回滚语句：</label>
+                   <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
                 </div>
                 <br>
                 <div class="row">
-                    <h5>运行错误：</h5>
-                    <div id='ace-editor2' class="col-md-12"></div>
+                  <label id="error-label">运行错误：</label>
+                  <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -130,7 +134,7 @@
           editor.getSession().setUseSoftTabs(true);
           editor.setReadOnly(true);
 
-          var editor2 = ace.edit("ace-editor2");
+          var editor2 = ace.edit("ace-editor-rollback");
           editor2.setTheme("ace/theme/xcode");
           editor2.getSession().setMode("ace/mode/sql");
           editor2.setShowPrintMargin(false);
@@ -138,7 +142,7 @@
           editor2.getSession().setUseSoftTabs(true);
           editor2.setReadOnly(true);
 
-          var editor3 = ace.edit("ace-editor3");
+          var editor3 = ace.edit("ace-editor-error");
           editor3.setTheme("ace/theme/xcode");
           editor3.getSession().setMode("ace/mode/sql");
           editor3.setShowPrintMargin(false);
@@ -323,12 +327,12 @@
                     editor.setReadOnly(true);
                     $('#run_time_detail').text(dataSet.message.run_time)
 
-                    var editor3 = ace.edit("ace-editor3");
+                    var editor3 = ace.edit("ace-editor-rollback");
                     editor3.setValue('')
                     editor3.insert(format_sql(dataSet.message.rollback_statement));
                     editor3.setReadOnly(true);
 
-                    var editor2 = ace.edit("ace-editor2");
+                    var editor2 = ace.edit("ace-editor-error");
                     editor2.setValue('')
                     editor2.insert(dataSet.message.error);
                     editor2.setReadOnly(true);
@@ -406,6 +410,22 @@
             $("#db_name").append("<option value=''>...</option>");
         }
      });
+
+     $('#rollback-label').click(function(){
+        if ($('#ace-editor-rollback').css('display') == 'none') {
+            $('#ace-editor-rollback').css("display","block");
+        } else {
+            $('#ace-editor-rollback').css("display","none");
+        }
+    })
+
+    $('#error-label').click(function(){
+        if ($('#ace-editor-error').css('display') == 'none') {
+            $('#ace-editor-error').css("display","block");
+        } else {
+            $('#ace-editor-error').css("display","none");
+        }
+    })
 
 
  </script>

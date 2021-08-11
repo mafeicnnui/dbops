@@ -15,7 +15,7 @@ from web.model.t_user      import logon_user_check,check_forget_password,check_m
 from web.model.t_user      import upd_password,get_user_by_userid,get_user_by_loginame,get_user_roles,check_authcode,get_userid_by_auth
 from web.model.t_xtqx      import get_tree_by_userid
 from web.model.t_dmmx      import get_dmm_from_dm
-from web.utils.common      import send_mail,get_rand_str,current_time,china_rq,china_week,welcome,china_time
+from web.utils.common      import send_mail_param,get_sys_settings,get_rand_str,current_time,china_rq,china_week,welcome,china_time
 from PIL                   import Image,ImageDraw,ImageFont,ImageFilter
 from web.utils.basehandler import basehandler
 
@@ -166,17 +166,18 @@ class forget_password(tornado.web.RequestHandler):
 
 class forget_password_check_user(tornado.web.RequestHandler):
     async def post(self):
-        user        = self.get_argument("user")
-        email       = self.get_argument("email")
-        result      = await check_forget_password(user,email)
+        user    = self.get_argument("user")
+        email   = self.get_argument("email")
+        result  = await check_forget_password(user,email)
         if result['code']=='0':
            auth_string = get_rand_str(64)
            while await check_auth_str_exist(auth_string):
                auth_string = get_rand_str(64)
            await save_forget_authention_string(user,auth_string)
-           v_title='用户:{0} 口令变更激活邮件.{1}'.format(user,current_time())
+           v_title   = '用户:{0} 口令变更激活邮件.{1}'.format(user,current_time())
            v_content = """<p><h4>用户名：</h4>{}<p><h4>授权码：</h4>{}<p><h4>有效期：</h4>1分钟""".format(user,auth_string)
-           send_mail('190343@lifeat.cn', 'R86hyfjobMBYR76h', email, v_title, v_content)
+           settings  = await get_sys_settings()
+           send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'),email, v_title, v_content)
            self.write({"code": '0', "message": '授权码已发送至邮箱!'})
         else:
            self.write({"code": result['code'], "message": result['message']})

@@ -138,8 +138,6 @@ class sql_run(basehandler):
        db_name = self.get_argument("db_name")
        sql_id  = self.get_argument("sql_id")
        name    = str(self.get_secure_cookie("username"), encoding="utf-8")
-       # t       = threading.Thread(target=(await exe_sql(dbid,db_name,sql_id,name)))
-       # t.start()
        await exe_sql(dbid, db_name, sql_id, name)
        self.write({"code": 'threading', "message": ''})
 
@@ -182,13 +180,14 @@ class get_tree_by_sql(basehandler):
     @tornado.web.authenticated
     async def post(self):
         dbid   = self.get_argument("dbid")
+        msg    = self.get_argument("msg")
         p_ds   = await get_ds_by_dsid(dbid)
         result = {}
         if p_ds['db_type'] == '0':
             if p_ds['proxy_status'] == '1':
                 result = await get_tree_by_dbid_proxy(dbid)
             else:
-                result = await get_tree_by_dbid(dbid)
+                result = await get_tree_by_dbid(dbid,msg)
         elif p_ds['db_type'] == '2':
             if p_ds['proxy_status'] == '1':
                 result = await get_tree_by_dbid_mssql_proxy(dbid)

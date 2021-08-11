@@ -3,16 +3,13 @@
     <meta charset="utf-8">
     <title>数据库发布</title>
     <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
-     <!-- DataTables -->
+<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>-->
+<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>-->
+<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>-->
     <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <!-- Notification css (Toastr) -->
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
-
     <link href="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.css') }}"  rel="stylesheet" />
     <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
 
@@ -145,9 +142,24 @@
                 <div class="panel-heading">
                    <div class='row'>
                         <div  class="col-md-4">
-                             <label class="control-label text-left"><i class="mdi mdi-database"></i>&nbsp;<span class='h5 text-danger' id="curr_db"></span></label>
+                            <div class="col-md-1">
+                                <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ti-layout-menu-v"></i></i></button>
+                            </div>
+                            <div class="col-md-11">
+                                <select class="form-control select" id="curr_db" >
+                                    <option value='' selected = "selected">......</option>
+                                </select>
+                            </div>
                         </div>
-                        <div  class="col-md-8">
+                        <div  class="col-md-4">
+                            <div class="col-md-1">
+                                <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ion-android-timer"></i></i></button>
+                            </div>
+                            <div class="col-md-11">
+                                <input id="filter_db" type="text" class="form-control" placeholder="请输入过虑条件">
+                            </div>
+                        </div>
+                        <div  class="col-md-4">
                             <button type="button" id='check_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="检测"><i class="mdi mdi-spellcheck"></i></button>
                             <button type="button" id='release_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="发布"><i class="mdi mdi-transfer"></i></button>
                             <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
@@ -244,10 +256,8 @@
     </div>
    </div><!-- /.modal -->
 
-
    <input type='hidden' id='h_tab_height'>
    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <!-- Toastr js -->
    <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
@@ -256,13 +266,10 @@
    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
    <script src="{{static_url('assets/js/utils.js')}}"></script>
 
-
    <script type="text/javascript">
 
         function set_screen_size(n_height){
-
              console.log('height:'+n_height)
-
              //1366*768(100%)
              if (n_height <= 657)
              {
@@ -560,6 +567,8 @@
 
         $(document).ready(function() {
 
+              var lock = false;
+
               function centerModals() {
                   $('.modal').each(function(i) {
                     var $clone = $(this).clone().css('display', 'block').appendTo('body');
@@ -599,7 +608,7 @@
                                 datatype: "json",
                                 data: {
                                     dbid  :  $('#db_source').val(),
-                                    cur_db:  $('#curr_db').text(),
+                                    cur_db:  $('#curr_db').val(),
                                     tab   :  curNode
                                 },
                                 success: function (dataSet) {
@@ -627,7 +636,7 @@
                                 datatype: "json",
                                 data: {
                                     dbid  :  $('#db_source').val(),
-                                    cur_db:  $('#curr_db').text(),
+                                    cur_db:  $('#curr_db').val(),
                                     tab   :  curNode
                                 },
                                 success: function (dataSet) {
@@ -655,7 +664,7 @@
                                 datatype: "json",
                                 data: {
                                     dbid: $('#db_source').val(),
-                                    db_name: $('#curr_db').text(),
+                                    db_name: $('#curr_db').val(),
                                     tab_name: curNode
                                 },
                                 success: function (dataSet) {
@@ -728,7 +737,7 @@
                     data: {
                         dbid  :  $('#db_source').val(),
                         sql   :  sql,
-                        cur_db:  $('#curr_db').text()
+                        cur_db:  $('#curr_db').val()
                     },
                     beforeSend: function () {
                           $('.modal').on('show.bs.modal', centerModals);
@@ -811,7 +820,7 @@
                       showtips('error','请选择数据源!');
                       return false;
                   }
-                  if ($('#curr_db').text()=='') {
+                  if ($('#curr_db').val()=='') {
                       showtips('error','当前数据库不能为空!');
                       return false;
                   }
@@ -943,6 +952,163 @@
                     return res
               }
 
+              function set_editor(p_editor) {
+                  var editor = ace.edit(p_editor);
+                  editor.setTheme("ace/theme/xcode");
+                  editor.getSession().setMode("ace/mode/mysql");
+                  editor.getSession().setUseSoftTabs(true);
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                  editor.setFontSize(14);
+                  editor.setOption("wrap", "free");
+                  ace.require("ace/ext/language_tools");
+                  editor.setOptions({
+                     enableBasicAutocompletion: true,
+                     enableSnippets: true,
+                     enableLiveAutocompletion: true
+                  });
+                  editor.setHighlightActiveLine(true);
+              }
+
+              function upd_curr_db(dataSet){
+                   $("#curr_db").empty();
+                    $("#curr_db").append("<option value=''>...</option>");
+                    for (i=0;i<dataSet['message'].length;i++){
+                       var val  = dataSet['message'][i].id;
+                       var text = dataSet['message'][i].id;
+                       $("#curr_db").append("<option value='"+val+"'>"+text+"</option>");
+                   }
+              }
+
+              function refresh_tree(){
+                   var db_type=''
+                   var db_source = ''
+                   if ($('#db_source').val()!='') {
+
+                       $.ajax({
+                           url     : "/ds/query/id",
+                           type    : "post",
+                           datatype: "json",
+                           async   : false,
+                           data    :{
+                              dsid : $('#db_source').val(),
+                           },
+                           success: function (ds) {
+                             db_source = ds
+                             db_type=ds['db_type']
+                           }
+                       });
+
+                       $.ajax({
+                            url     :"/get_tree",
+                            type    :"post",
+                            datatype:"json",
+                            data: {
+                                 dbid  :  $('#db_source').val(),
+                                 msg   :  $('#filter_db').val()
+                            },
+                            beforeSend: function () {
+                                  $('.modal').on('show.bs.modal', centerModals);
+                                  $(window).on('resize', centerModals);
+                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});                            },
+                            complete: function () {
+                                  $('#con-close-modal').modal('hide');
+                            },
+                            success: function (dataSet) {
+                                console.log('dataSet.message=',dataSet.message)
+
+                                $('#db_title').html(dataSet.url);
+                                $('#db_tree').treeview({
+                                     data              : dataSet.message,
+                                     collapseIcon      : "ion-minus-round",
+                                     expandIcon        : "mdi mdi-border-all",
+                                     highlightSelected : true,
+                                     levels            : 2,
+                                     showBorder        : false,
+                                     showIcon          : true,
+                                });
+
+                                $('#db_tree').treeview('collapseAll', { silent: true });
+
+                                $('#db_tree').on('nodeSelected', function(event, data) {
+                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                                    if (curNode.state.expanded) {
+                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                                    } else {
+                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
+                                    }
+
+                                    if (data.parentId === undefined) {
+                                         console.log('curNode2=',curNode.text)
+                                         console.log('parNode2=',parNode.text)
+                                         $('#curr_db').val(curNode.text);
+                                    } else {
+                                        console.log('curNode3=', curNode.text)
+                                        console.log('parNode3=', parNode.text)
+                                        $('#curr_db').val(parNode.text);
+                                    }
+                                });
+
+                                $('#db_tree').on('nodeUnselected', function(event, data) {
+                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                                    if (curNode.state.expanded) {
+                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                                    } else {
+                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
+                                    }
+
+                                    if (data.parentId === undefined) {
+                                         console.log('curNode22=',curNode.text)
+                                         console.log('parNode22=',parNode.text)
+                                         $('#curr_db').val(curNode.text);
+                                    } else {
+                                        console.log('curNode33=', curNode.text)
+                                        console.log('parNode33=', parNode.text)
+                                        $('#curr_db').val(parNode.text);
+                                    }
+                                });
+
+                                $('#db_tree').contextMenu({
+                                    selector: 'li',
+                                    callback: function(key, options) {
+                                        var m = "clicked: " + key + " on " + $(this).text();
+                                        var curNode = $('#db_tree').treeview('getSelected')[0];
+                                        var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+                                        console.log('curNode=',curNode);
+                                        console.log('parNode=',parNode);
+                                        console.log('options=',m);
+                                        get_menu_result(key,db_type,$(this).text())
+                                    },
+                                    items: {
+                                        "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
+                                        "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
+                                        "col_definition"   : {name: "列信息",   icon: "fa-pied-piper"},
+                                    }
+                                });
+
+                                //加载数据库列表
+                                upd_curr_db(dataSet)
+                            }
+                        });
+                   }
+              }
+
+              $('#curr_db').change(function(){
+                 var pattern = $.trim($('#curr_db').val());
+                 var options = {
+                      ignoreCase: false,
+                      exactMatch: false,
+                      revealResults: true
+                  };
+                 var results = $('#db_tree').treeview('search', [ pattern, options ]);
+                 console.log('results=',results)
+
+              })
+
               $('#beauty_btn').click(function(){
                     var editor = ace.edit("ace-editor");
                     v_sql=editor.session.getTextRange(editor.getSelectionRange())
@@ -973,116 +1139,19 @@
               });
 
               $("#db_source").bind("input propertychange",function(){
-                   var db_type=''
-                   var db_source = ''
-                   if ($('#db_source').val()!='') {
+                 refresh_tree();
+              });
 
-                       $.ajax({
-                           url     : "/ds/query/id",
-                           type    : "post",
-                           datatype: "json",
-                           async   : false,
-                           data    :{
-                              dsid : $('#db_source').val(),
-                           },
-                           success: function (ds) {
-                             db_source = ds
-                             db_type=ds['db_type']
-                           }
-                       });
+              $("#filter_db").on('compositionstart',function() {
+                  lock = true;
+              });
 
-                       $.ajax({
-                            url     :"/get_tree",
-                            type    :"post",
-                            datatype:"json",
-                            data: {
-                                 dbid  :  $('#db_source').val()
-                            },
-                            beforeSend: function () {
-                                  $('.modal').on('show.bs.modal', centerModals);
-                                  $(window).on('resize', centerModals);
-                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});                            },
-                            complete: function () {
-                                  $('#con-close-modal').modal('hide');
-                            },
-                            success: function (dataSet) {
+              $("#filter_db").on('compositionend',function() {
+                  lock = false;
+              });
 
-                                $('#db_title').html(dataSet.url);
-                                $('#db_tree').treeview({
-                                     data              : dataSet.message,
-                                     collapseIcon      : "ion-minus-round",
-                                     expandIcon        : "mdi mdi-border-all",
-                                     highlightSelected : true,
-                                     levels            : 2,
-                                     showBorder        : false,
-                                     showIcon          : true,
-                                });
-
-                                $('#db_tree').treeview('collapseAll', { silent: true });
-
-                                $('#db_tree').on('nodeSelected', function(event, data) {
-                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
-                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-
-                                    if (curNode.state.expanded) {
-                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
-                                    } else {
-                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
-                                    }
-
-                                    if (data.parentId === undefined) {
-                                         console.log('curNode2=',curNode.text)
-                                         console.log('parNode2=',parNode.text)
-                                         $('#curr_db').text(curNode.text);
-                                    } else {
-                                        console.log('curNode3=', curNode.text)
-                                        console.log('parNode3=', parNode.text)
-                                        $('#curr_db').text(parNode.text);
-                                    }
-                                });
-
-                                $('#db_tree').on('nodeUnselected', function(event, data) {
-                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
-                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-
-                                    if (curNode.state.expanded) {
-                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
-                                    } else {
-                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
-                                    }
-
-                                    if (data.parentId === undefined) {
-                                         console.log('curNode22=',curNode.text)
-                                         console.log('parNode22=',parNode.text)
-                                         $('#curr_db').text(curNode.text);
-                                    } else {
-                                        console.log('curNode33=', curNode.text)
-                                        console.log('parNode33=', parNode.text)
-                                        $('#curr_db').text(parNode.text);
-                                    }
-                                });
-
-                                $('#db_tree').contextMenu({
-                                    selector: 'li',
-                                    callback: function(key, options) {
-                                        var m = "clicked: " + key + " on " + $(this).text();
-                                        var curNode = $('#db_tree').treeview('getSelected')[0];
-                                        var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-                                        console.log('curNode=',curNode);
-                                        console.log('parNode=',parNode);
-                                        console.log('options=',m);
-                                        get_menu_result(key,db_type,$(this).text())
-                                    },
-                                    items: {
-                                        "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
-                                        "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
-                                        "col_definition"   : {name: "列信息",   icon: "fa-pied-piper"},
-                                    }
-                                });
-
-                            }
-                        });
-                   }
+              $("#filter_db").bind("input propertychange",function(){
+                if (!lock) refresh_tree();
               });
 
               $("#check_btn").click(function() {
@@ -1101,7 +1170,7 @@
                           datatype: "json",
                           data: {
                               dbid  : $('#db_source').val(),
-                              cur_db: $('#curr_db').text(),
+                              cur_db: $('#curr_db').val(),
                               sql   : v_sql,
                               desc  : $('#sql_desc').val(),
                               type  : v_type,
@@ -1124,14 +1193,11 @@
                                       table.destroy();
                                       $('#example').empty();
                                   }
-                                  console.log(dataSet.code, dataSet.message);
                                   if (dataSet.code == '0') {
                                       showtips('success', '检测通过!');
-                                      // $("#release_btn").attr("disabled", false);
                                       $('#check_status').val('success')
 
                                   } else {
-                                      // $("#release_btn").attr("disabled", true);
                                       $('#check_status').val('failure')
                                   }
                                   query_release_result(editor.session.getTextRange(editor.getSelectionRange()))
@@ -1172,7 +1238,7 @@
                         datatype: "json",
                         data: {
                             dbid  :  $('#db_source').val(),
-                            cur_db:  $('#curr_db').text(),
+                            cur_db:  $('#curr_db').val(),
                             sql   :  editor.session.getTextRange(editor.getSelectionRange()),
                             desc  :  $('#sql_desc').val(),
                             type  :  $('#db_order_type').val(),
@@ -1188,24 +1254,15 @@
                                     table.destroy();
                                     $('#example').empty();
                                 }
-                                console.log(dataSet.code, dataSet.message);
                                 if (dataSet.code == '0') {
                                     showtips('success','发布成功!');
-                                    // $("#release_btn").attr("disabled", true);
-
                                 } else {
                                     showtips('error',dataSet.message);
                                 }
                                 query_release_result(editor.session.getTextRange(editor.getSelectionRange()))
                             }
                          },
-                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                         error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -1215,7 +1272,7 @@
                                 swal("系统不可用,请稍后重试!", "", "error")
                             }
                         }
-                  });
+                    });
                   }
               });
 
@@ -1242,38 +1299,12 @@
               set_selected();
 
               var table;
-              var editor = ace.edit("ace-editor");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/mysql");
-              editor.getSession().setUseSoftTabs(true);
-              editor.getSession().setUseWrapMode(true);
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(14);
-              editor.setOption("wrap", "free");
-              ace.require("ace/ext/language_tools");
-              editor.setOptions({
-                 enableBasicAutocompletion: true,
-                 enableSnippets: true,
-                 enableLiveAutocompletion: true
-              });
-              editor.setHighlightActiveLine(true);
-
-              var editor2= ace.edit("ace-editor-tab-defi");
-              editor2.setTheme("ace/theme/xcode");
-              editor2.getSession().setMode("ace/mode/mysql");
-              editor2.getSession().setUseSoftTabs(true);
-              editor2.getSession().setUseWrapMode(true);
-              editor2.setShowPrintMargin(false);
-              editor2.setFontSize(14);
-              editor2.setOption("wrap", "free");
-              ace.require("ace/ext/language_tools");
-              editor2.setOptions({
-                 enableBasicAutocompletion: true,
-                 enableSnippets: true,
-                 enableLiveAutocompletion: true
-              });
-              editor2.setHighlightActiveLine(true);
-
+              set_editor("ace-editor")
+              set_editor("ace-editor-tab-defi")
+              $('#curr_db').height(12);
+              $('#curr_db').css('font-size', 11);
+              $("#filter_db").height(12);
+              $('#filter_db').css('font-size', 11);
 
               $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);

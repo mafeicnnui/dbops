@@ -6,9 +6,9 @@
     <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
 
     <!-- ace code -->
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
+<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>-->
+<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>-->
+<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>-->
 
      <!-- DataTables -->
     <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
@@ -156,9 +156,7 @@
    <script type="text/javascript">
 
         function set_screen_size(n_height){
-
              // console.log('height:'+n_height)
-
              //1366*768(100%)
              if (n_height <= 657)
              {
@@ -473,7 +471,8 @@
                             type    :"post",
                             datatype:"json",
                             data: {
-                                dbid  :  $('#db_source').val()
+                                dbid  :  $('#db_source').val(),
+                                msg :''
                             },
                             beforeSend: function () {
                                  $('.modal').on('show.bs.modal', centerModals);

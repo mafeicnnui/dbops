@@ -23,7 +23,7 @@ async def main():
       while True:
             time.sleep(1)
             tasks = await get_tasks()
-            print('\rTime:{},Tasks:{}'.format(current_time(),len(tasks)), end='')
+            logging.info('\rTime:{},Tasks:{}'.format(current_time(),len(tasks)))
             for t in tasks:
                 if t['run_time']  == current_time()[0:16]:
                     logging.info('Processing Task: db_name={},release_id={},dbid={}...'.

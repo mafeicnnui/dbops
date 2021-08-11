@@ -5,7 +5,6 @@
 # @File    : t_sql.py
 # @Software: PyCharm
 
-
 import sqlparse
 import traceback,re
 import logging
@@ -18,7 +17,6 @@ from web.model.t_user           import get_user_by_userid
 from web.utils.mysql_async      import async_processer
 from web.utils.mysql_rollback   import write_rollback,delete_rollback
 from web.model.t_sql_check      import reReplace,check_statement_count
-
 
 async def get_sqlid():
     sql="select ifnull(max(id),0)+1 from t_sql_release"
@@ -280,7 +278,7 @@ async def delete_order(p_release_id):
             result['code'] = '-1'
             result['message'] = '不能删除已审核工单!'
             return result
-        sql = "update from t_sql_release  where id='{0}'".format(p_release_id)
+        sql = "delete from t_sql_release  where id='{0}'".format(p_release_id)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='删除成功!'
@@ -464,10 +462,10 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,s
             sql = """update t_sql_release set  status ='5',last_update_date ='{0}',exec_end ='{1}',error = '{2}',failure_times=failure_times+1 where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
         else:
            pass
-        logging.info("upd_run_status:",sql)
+        logging.info(("upd_run_status:",sql))
         await async_processer.exec_sql(sql)
     except :
-        logging.error(traceback.format_exc())
+        logging.error((traceback.format_exc()))
         traceback.print_exc()
 
 async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
@@ -483,7 +481,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         binlog_file=rs1[0]
         start_position=rs1[1]
-        logging.info('check_statement_count(sql)=',check_statement_count(sql))
+        logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
         if check_statement_count(sql) == 1:
             logging.info(('exec single statement:'))
             logging.info(('-----------------------------------------'))
