@@ -1,0 +1,23 @@
+CREATE TABLE `t_db_source` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `ip` varchar(100) NOT NULL COMMENT '数据库IP',
+  `port` varchar(20) NOT NULL COMMENT '数据库端口',
+  `service` varchar(40) NOT NULL COMMENT '数据库名称',
+  `status` varchar(1) DEFAULT NULL COMMENT '数据源状态',
+  `creation_date` date DEFAULT NULL COMMENT '创建时间',
+  `creator` varchar(20) DEFAULT NULL COMMENT '创建人',
+  `last_update_date` date DEFAULT NULL COMMENT '最近更新时间',
+  `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
+  `user` varchar(20) DEFAULT NULL COMMENT '用户名',
+  `password` varchar(200) DEFAULT NULL COMMENT '密码',
+  `db_type` varchar(20) DEFAULT NULL COMMENT '数据库类型',
+  `db_source_type` varchar(10) DEFAULT NULL COMMENT '？',
+  `db_desc` varchar(40) DEFAULT NULL COMMENT '数据源描述',
+  `db_env` varchar(1) DEFAULT NULL COMMENT '数据库环境',
+  `inst_type` varchar(10) DEFAULT NULL COMMENT '实例类型',
+  `proxy_status` varchar(1) DEFAULT NULL COMMENT '代理状态',
+  `proxy_server` varchar(50) DEFAULT NULL COMMENT '代理服务接口',
+  `market_id` varchar(10) DEFAULT NULL COMMENT '项目编码',
+  `flag1` varchar(100) DEFAULT NULL COMMENT '商管周报',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8;
