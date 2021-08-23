@@ -31,11 +31,30 @@
                        
     .\sql\view\cre_view.sql
                     
- 二、创建过程
+三、创建过程
                         
      .\sql\proc\proc_clear_log.sql
      .\sql\proc\proc_tj_service.sql
      .\sql\proc\proc_tj_sync_monitor.sql
      .\sql\proc\proc_trunc_log.sql
                          
+四、初始化数据
                         
+    .\sql\data\t_db_source.sql
+    .\sql\data\t_db_weekly_items.sql
+    .\sql\data\t_dmlx.sql
+    .\sql\data\t_dmmx.sql
+    .\sql\data\t_func.sql
+    .\sql\data\t_monitor_index.sql
+    .\sql\data\t_monitor_templete.sql
+    .\sql\data\t_role.sql
+    .\sql\data\t_role_privs.sql
+    .\sql\data\t_sql_audit_rule.sql
+    .\sql\data\t_sys_stats_idx.sql
+    .\sql\data\t_templete.sql
+    .\sql\data\t_user.sql
+    .\sql\data\t_user_proj_privs.sql
+    .\sql\data\t_user_role.sql
+    .\sql\data\t_xtqx.sql
+     
+     

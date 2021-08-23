@@ -19,52 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="order bug fix">
-      <change afterPath="$PROJECT_DIR$/sql/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_db_source.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_db_weekly_items.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_dmlx.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_dmmx.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_func.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_monitor_index.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_monitor_templete.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_role.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_role_privs.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_sql_audit_rule.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_sys_stats_idx.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_templete.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_user.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_user_proj_privs.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_user_role.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/t_xtqx.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/proc/proc_clear_log.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/proc/proc_tj_service.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/proc/proc_tj_sync_monitor.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/proc/proc_trunc_log.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/archive/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/backup/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/database/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/datax/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/dbsource/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/func/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/kpi/cre_kpi.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/menu/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/minio/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/monitor/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/order/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/port/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/public/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/role/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/server/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/slowlog/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/syncer/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/transfer/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/user/cre_user.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/tab/weekly/cre_tab.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/view/cre_view.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="upd sql script">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/puppet.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sql/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -496,14 +453,7 @@
       <workItem from="1629479746023" duration="3037000" />
       <workItem from="1629679252993" duration="4043000" />
       <workItem from="1629687872584" duration="4415000" />
-      <workItem from="1629698868307" duration="2121000" />
-    </task>
-    <task id="LOCAL-00002" summary="workspace.xml update">
-      <created>1612869768845</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1612869768845</updated>
+      <workItem from="1629698868307" duration="2519000" />
     </task>
     <task id="LOCAL-00003" summary="async model">
       <created>1613308076718</created>
@@ -841,7 +791,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628673886128</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="upd sql script">
+      <created>1629701043205</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1629701043205</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TodoView">
@@ -869,7 +826,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="archive templete update" />
     <MESSAGE value="backup log show error log" />
     <MESSAGE value="slow log bug fix" />
     <MESSAGE value="db sync fix" />
@@ -894,7 +850,8 @@
     <MESSAGE value="update timed order" />
     <MESSAGE value="update run order" />
     <MESSAGE value="order bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="order bug fix" />
+    <MESSAGE value="upd sql script" />
+    <option name="LAST_COMMIT_MESSAGE" value="upd sql script" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1628560155950">
@@ -949,10 +906,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="531" y="215" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1624603476052" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1628673891178">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1629701052346">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1628673891178" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1629701052346" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1627018556013">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
