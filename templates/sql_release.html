@@ -952,6 +952,23 @@
                     return res
               }
 
+              function check_order_xh(p_message) {
+                   var res='';
+                   $.ajax({
+                        type: 'post',
+                        url: '/order/_check/xh',
+                        async:false,
+                        data: {
+                            message:p_message,
+                        },
+                        success: function (dataSet) {
+                            res=dataSet.message
+                            console.log('check_order_xh=',res)
+                        },
+                    })
+                    return res
+              }
+
               function set_editor(p_editor) {
                   var editor = ace.edit(p_editor);
                   editor.setTheme("ace/theme/xcode");
@@ -1163,6 +1180,11 @@
                   console.log('v_sql=',v_sql)
                   console.log('db_source=',$('#db_source').val())
 
+                  if (check_order_xh($('#sql_desc').val())>0) {
+                      showtips('error', '工单已存在!');
+                      return
+                  }
+
                   if (sql_check(v_type,v_sql.toLowerCase().replace(/(^\s*)|(\s*$)/g, ""))) {
                       $.ajax({
                           url: "/sql/_check",
@@ -1228,6 +1250,11 @@
                   v_sql=editor.session.getTextRange(editor.getSelectionRange())
                   console.log('v_sql=',v_sql)
                   console.log('db_source=',$('#db_source').val())
+
+                  if (check_order_xh($('#sql_desc').val())>0) {
+                      showtips('error', '工单已存在!');
+                      return
+                  }
 
                   $("#check_btn").click()
 

@@ -100,7 +100,7 @@ async def query_run(p_name,p_dsid,p_creator,p_userid):
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
                      END  STATUS,
-                     CASE  WHEN a.run_time IS NOT NULL OR a.run_time !='' THEN
+                     CASE  WHEN a.run_time IS NOT NULL and a.run_time !='' THEN
                         CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
                      ELSE
                         c.dmmc 
@@ -333,6 +333,21 @@ async def get_order_xh(p_type,p_rq):
     try:
         st ="""SELECT COUNT(0)+1  as xh FROM t_sql_release 
                     WHERE TYPE='{}' AND DATE_FORMAT(creation_date,'%Y%m%d')='{}'""".format(p_type,p_rq)
+        res = await async_processer.query_dict_one(st)
+        print(st)
+        result['code']='0'
+        result['message']=res['xh']
+        return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = traceback.format_exc()
+        return result
+
+async def check_order_xh(p_message):
+    result = {}
+    try:
+        st ="""SELECT COUNT(0) as xh FROM t_sql_release WHERE message='{}'""".format(p_message)
         res = await async_processer.query_dict_one(st)
         print(st)
         result['code']='0'

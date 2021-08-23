@@ -59,7 +59,10 @@ def get_where(MYSQL_SETTINGS,event,p_where):
 def set_column(p_data):
     v_set = ' set '
     for key in p_data:
-        v_set = v_set + key + '=\''+ str(p_data[key]) + '\','
+        if p_data[key] is None:
+           v_set = v_set + key + '=null,'
+        else:
+           v_set = v_set + key + '=\''+ str(p_data[key]) + '\','
     return v_set[0:-1]
 
 def gen_sql(MYSQL_SETTINGS,event):
