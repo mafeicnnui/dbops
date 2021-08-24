@@ -245,13 +245,7 @@
                         $('#ds_user_id').val(p_row.split(',')[0])
                         project_query()
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
+                  error: function (jqXHR) {
                     if (jqXHR.status==403){
                         swal("登陆信息已过期，请重新登陆!", "", "error")
                         window.location.href='/login'
@@ -265,8 +259,7 @@
 
         }
 
-        function project_query()
-        {
+        function project_query() {
               $.ajax({
                   url: "/project/_query",
                   type: "post",
@@ -364,7 +357,7 @@
                                     "title":"选择",
                                     "width": "40px",
                                     "render": function(data,type,row,meta){
-                                        return data = '<input type="radio" name="userid" onclick="isSelect();" >'; }
+                                        return data = '<input type="radio" name="userid" >'; }
                                },
                           ],
                           "language": {
@@ -437,7 +430,7 @@
            }
          }
 
-         function isSeleAudit(my){
+        function isSeleAudit(my){
            if ($(my).is(':checked')){
              $(my).val("1")
            } else {
@@ -445,7 +438,7 @@
            }
          }
 
-         function isSeleExecute(my){
+        function isSeleExecute(my){
            if ($(my).is(':checked')){
              $(my).val("1")
            } else {
@@ -453,7 +446,7 @@
            }
          }
 
-         function isSeleOrder(my){
+        function isSeleOrder(my){
            if ($(my).is(':checked')){
              $(my).val("1")
            } else {
@@ -472,7 +465,7 @@
          }
 
          $('#save_user_proj_privs').on('click', function() {
-             $("#example2 tbody tr td input:checked").each( function() {
+             $("#example2 tbody tr td input:radio").each( function() {
                   var row=$(($(this).parent().parent().html()));
                   var userid=$('#ds_user_id').val()
                   var dsid =row[0].innerHTML
@@ -509,13 +502,7 @@
                                 swal(dataSet.message, "", "error")
                              }
                         },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                        error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'

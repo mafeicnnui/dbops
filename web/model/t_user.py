@@ -397,7 +397,7 @@ async def save_user(p_user):
 
 async def save_user_proj_privs(d_proj):
     result = {}
-    dsid = d_proj['dsid']
+    dsid   = d_proj['dsid']
     userid = d_proj['userid']
     priv_query   = d_proj['priv_query']
     priv_release = d_proj['priv_release']
