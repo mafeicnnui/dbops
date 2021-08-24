@@ -271,8 +271,7 @@
         function set_screen_size(n_height){
              console.log('height:'+n_height)
              //1366*768(100%)
-             if (n_height <= 657)
-             {
+             if (n_height <= 657)  {
                    console.log('1366*768(100%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.68);
@@ -1013,7 +1012,17 @@
                            success: function (ds) {
                              db_source = ds
                              db_type=ds['db_type']
-                           }
+                           },
+                           error: function (jqXHR) {
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                         }
                        });
 
                        $.ajax({
@@ -1147,8 +1156,8 @@
                 });
 
               $('#find_btn').click(function(){
-                    var editor = ace.edit("ace-editor");
-                    editor.execCommand('find');
+                 var editor = ace.edit("ace-editor");
+                 editor.execCommand('find');
               });
 
               $('#import_btn').click(function(){
