@@ -2,24 +2,13 @@
 <head>
     <meta charset="utf-8">
     <title>数据库查询</title>
-
     <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
-
-    <!-- ace code -->
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>-->
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>-->
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>-->
-
-     <!-- DataTables -->
     <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
-    <!-- Notification css (Toastr) -->
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}"     rel="stylesheet" type="text/css" />
     <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <link href="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.css') }}"  rel="stylesheet" />
     <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
-
     <style>
        .cur_db {
             font-size: 15px;
@@ -48,6 +37,12 @@
        #div-tree-panal,#ace-editor-panal,#div-table-panal {
           display:none;
        }
+
+      .modal-lg-detail {
+            width :60%;
+            height:30%;
+      }
+
     </style>
 
 </head>
@@ -72,13 +67,26 @@
                 </div>
            </div>
 
-           <div class="col-md-3">
-              <div class="form-group">
-                 <label class="control-label text-left"><i class="cur_db mdi mdi-database"></i>&nbsp;&nbsp;<span class='h5 text-danger' id="curr_db"></span></label>
-               </div>
+           <div  class="col-md-3">
+                <div class="col-md-1">
+                    <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ti-layout-menu-v"></i></i></button>
+                </div>
+                <div class="col-md-11">
+                    <select class="form-control select" id="curr_db" >
+                        <option value='' selected = "selected">......</option>
+                    </select>
+                </div>
+            </div>
+            <div  class="col-md-3">
+                <div class="col-md-1">
+                    <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ion-android-timer"></i></i></button>
+                </div>
+                <div class="col-md-11">
+                    <input id="filter_db" type="text" class="form-control" placeholder="请输入过虑条件">
+                </div>
            </div>
 
-           <div  class="col-md-6">
+           <div  class="col-md-3">
                 <div class="form-group">
                       <button type="button" id='query_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="查询"><i class="fa fa-search"></i></button>
                       <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
@@ -142,6 +150,27 @@
 
         </div>
      </div>
+   </div><!-- /.modal -->
+
+   <!--查看DDL详情  -->
+   <div id="con-close-modal-ddl" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id='ddl-header'></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor-tab-defi' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
    </div><!-- /.modal -->
 
    <input type='hidden' id='h_tab_height'>
@@ -425,23 +454,11 @@
         })
 
         $(document).ready(function() {
+              var lock = false;
               var table;
               var db_type;
-              var editor = ace.edit("ace-editor");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/mysql");
-              editor.getSession().setUseSoftTabs(true);
-              editor.getSession().setUseWrapMode(true);
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(14);
-              editor.setOption("wrap", "free");
-              ace.require("ace/ext/language_tools");
-              editor.setOptions({
-                 enableBasicAutocompletion: true,
-                 enableSnippets: true,
-                 enableLiveAutocompletion: true,
-              });
-              editor.setHighlightActiveLine(true);
+              set_editor("ace-editor")
+              set_editor("ace-editor-tab-defi")
 
               function get_db_type() {
                   var db_type=''
@@ -461,18 +478,54 @@
                   return db_type;
               }
 
-              $("#db_source").bind("input propertychange",function(){
+              function upd_curr_db(dataSet){
+                   $("#curr_db").empty();
+                    $("#curr_db").append("<option value=''>...</option>");
+                    for (i=0;i<dataSet['message'].length;i++){
+                       var val  = dataSet['message'][i].id;
+                       var text = dataSet['message'][i].id;
+                       $("#curr_db").append("<option value='"+val+"'>"+text+"</option>");
+                   }
+              }
 
-                   //var db_source = ''
-                   if ($('#db_source').val()!='') {
+              function refresh_tree() {
+                  var db_type = ''
+                  var db_source = ''
+                  if ($('#db_source').val() != '') {
+
+                      $.ajax({
+                          url: "/ds/query/id",
+                          type: "post",
+                          datatype: "json",
+                          async: false,
+                          data: {
+                              dsid: $('#db_source').val(),
+                          },
+                          success: function (ds) {
+                              db_source = ds
+                              db_type = ds['db_type']
+                          },
+                          error: function (jqXHR) {
+                              if (jqXHR.status == 403) {
+                                  swal("登陆信息已过期，请重新登陆!", "", "error")
+                                  window.location.href = '/login'
+                              } else if (jqXHR.status == 502) {
+                                  swal("用户无权访问权限此功能!", "", "error")
+                              } else {
+                                  swal("系统不可用,请稍后重试!", "", "error")
+                              }
+                          }
+                      });
+
+                      if ($('#db_source').val()!='') {
 
                        $.ajax({
                             url     :"/get_tree",
                             type    :"post",
                             datatype:"json",
                             data: {
-                                dbid  :  $('#db_source').val(),
-                                msg :''
+                                dbid : $('#db_source').val(),
+                                msg  : $('#filter_db').val()
                             },
                             beforeSend: function () {
                                  $('.modal').on('show.bs.modal', centerModals);
@@ -554,10 +607,16 @@
                                     }
                                 });
 
+                                 //加载数据库列表
+                                upd_curr_db(dataSet)
+
                             }
                         });
 
-                }});
+                   }
+
+                  }
+              }
 
               function centerModals() {
                   $('.modal').each(function(i) {
@@ -606,8 +665,16 @@
                                 if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
                                 } else {
-                                    var editor = ace.edit("ace-editor");
+                                   var editor = ace.edit("ace-editor-tab-defi");
+                                    editor.setValue('')
                                     editor.insert(dataSet.message);
+                                    $('#ddl-header').text('表结构信息')
+                                    $('.modal').on('show.bs.modal', centerModals);
+                                    $(window).on('resize', centerModals);
+                                    $('#con-close-modal-ddl').modal({
+                                       keyboard: false,
+                                       backdrop:false
+                                    })
                                }
                              }
                          });
@@ -626,8 +693,16 @@
                                 if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
                                 } else {
-                                    var editor = ace.edit("ace-editor");
+                                    var editor = ace.edit("ace-editor-tab-defi");
+                                    editor.setValue('')
                                     editor.insert(dataSet.message);
+                                    $('#ddl-header').text('索引定义')
+                                    $('.modal').on('show.bs.modal', centerModals);
+                                    $(window).on('resize', centerModals);
+                                    $('#con-close-modal-ddl').modal({
+                                       keyboard: false,
+                                       backdrop:false
+                                    })
                                }
                              }
                          });
@@ -733,6 +808,40 @@
                  });
               }
 
+              function set_editor(p_editor) {
+                  var editor = ace.edit(p_editor);
+                  editor.setTheme("ace/theme/xcode");
+                  editor.getSession().setMode("ace/mode/mysql");
+                  editor.getSession().setUseSoftTabs(true);
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                  editor.setFontSize(14);
+                  editor.setOption("wrap", "free");
+                  ace.require("ace/ext/language_tools");
+                  editor.setOptions({
+                     enableBasicAutocompletion: true,
+                     enableSnippets: true,
+                     enableLiveAutocompletion: true
+                  });
+                  editor.setHighlightActiveLine(true);
+              }
+
+              $("#filter_db").on('compositionstart',function() {
+                  lock = true;
+              });
+
+              $("#filter_db").on('compositionend',function() {
+                  lock = false;
+              });
+
+              $("#filter_db").bind("input propertychange",function(){
+                if (!lock) refresh_tree();
+              });
+
+              $("#db_source").bind("input propertychange",function(){
+                    refresh_tree();
+              });
+
               $('#beauty_btn').click(function(){
                     var editor = ace.edit("ace-editor");
                     v_sql=editor.session.getTextRange(editor.getSelectionRange())
@@ -752,8 +861,18 @@
                      })
               });
 
-              $("#query_btn").click(function()
-              {
+              $('#curr_db').change(function(){
+                     var pattern = $.trim($('#curr_db').val());
+                     var options = {
+                          ignoreCase: false,
+                          exactMatch: false,
+                          revealResults: true
+                      };
+                     var results = $('#db_tree').treeview('search', [ pattern, options ]);
+                     console.log('results=',results)
+              })
+
+              $("#query_btn").click(function() {
                   //sql=editor.session.getTextRange(editor.getSelectionRange())
                   v_sql=editor.session.getValue()
 
@@ -843,7 +962,6 @@
               $(window).on('resize', centerModals);
               $('#con-close-modal2').modal({ keyboard: false,backdrop:false});
               setTimeout("set_styles()",1000);
-
 
         });
  </script>

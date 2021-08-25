@@ -3,9 +3,6 @@
     <meta charset="utf-8">
     <title>数据库发布</title>
     <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>-->
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>-->
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>-->
     <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
@@ -601,130 +598,128 @@
 
               function get_menu_result(key,db_type,curNode) {
                   if (key=='tab_definition') {
-                            $.ajax({
-                                url     : "/get_tab_ddl",
-                                type    : "post",
-                                datatype: "json",
-                                data: {
-                                    dbid  :  $('#db_source').val(),
-                                    cur_db:  $('#curr_db').val(),
-                                    tab   :  curNode
-                                },
-                                success: function (dataSet) {
-                                    console.log(dataSet);
-                                    if (dataSet.status=="1") {
-                                        showtips('info',dataSet.message);
-                                    } else {
-                                        var editor = ace.edit("ace-editor-tab-defi");
-                                        editor.setValue('')
-                                        editor.insert(dataSet.message);
-                                        $('#ddl-header').text('表结构信息')
-                                        $('.modal').on('show.bs.modal', centerModals);
-                                        $(window).on('resize', centerModals);
-                                        $('#con-close-modal-ddl').modal({
-                                           keyboard: false,
-                                           backdrop:false
-                                        })
-                                   }
-                                 }
-                             });
-                  } else if (key =='idx_definition') {
-                            $.ajax({
-                                url     : "/get_tab_idx",
-                                type    : "post",
-                                datatype: "json",
-                                data: {
-                                    dbid  :  $('#db_source').val(),
-                                    cur_db:  $('#curr_db').val(),
-                                    tab   :  curNode
-                                },
-                                success: function (dataSet) {
-                                    console.log(dataSet);
-                                    if (dataSet.status=="1") {
-                                        showtips('info',dataSet.message);
-                                    } else {
-                                        var editor = ace.edit("ace-editor-tab-defi");
-                                        editor.setValue('')
-                                        editor.insert(dataSet.message);
-                                        $('#ddl-header').text('索引定义')
-                                        $('.modal').on('show.bs.modal', centerModals);
-                                        $(window).on('resize', centerModals);
-                                        $('#con-close-modal-ddl').modal({
-                                           keyboard: false,
-                                           backdrop:false
-                                        })
-                                   }
-                                 }
-                             });
-                  } else if (key=='col_definition'){
-                            $.ajax({
-                                url: "/get_tab_stru",
-                                type: "post",
-                                datatype: "json",
-                                data: {
-                                    dbid: $('#db_source').val(),
-                                    db_name: $('#curr_db').val(),
-                                    tab_name: curNode
-                                },
-                                success: function (dataSet) {
-                                    console.log('col_definition=', dataSet)
+                        $.ajax({
+                            url     : "/get_tab_ddl",
+                            type    : "post",
+                            datatype: "json",
+                            data: {
+                                dbid  :  $('#db_source').val(),
+                                cur_db:  $('#curr_db').val(),
+                                tab   :  curNode
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet);
+                                if (dataSet.status=="1") {
+                                    showtips('info',dataSet.message);
+                                } else {
+                                    var editor = ace.edit("ace-editor-tab-defi");
+                                    editor.setValue('')
+                                    editor.insert(dataSet.message);
+                                    $('#ddl-header').text('表结构信息')
                                     $('.modal').on('show.bs.modal', centerModals);
                                     $(window).on('resize', centerModals);
-                                    $('#con-close-modal-col').modal({
+                                    $('#con-close-modal-ddl').modal({
                                        keyboard: false,
                                        backdrop:false
                                     })
-                                    $('#tab-cols').DataTable({
-                                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
-                                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                        destroy: true,
-                                        async: true,
-                                        scrollY: "300px",
-                                        ordering: false,
-                                        bAutoWidth: true,
-                                        scrollX: true,
-                                        paging: false,
-                                        iDisplayLength: 10,
-                                        data: dataSet,
-                                        responsive: false,
-                                        columns: [
-                                            {"title": "列名"},
-                                            {"title": "列描述"},
-                                            {"title": "列类型"},
-                                            {"title": "是否自增"},
-                                            {"title": "是否主键"},
-                                            {"title": "是否非空"},
-                                        ],
-                                        "language": {
-                                            "search": "在表格中搜索:",
-                                            "sProcessing": "处理中...",
-                                            "sLengthMenu": "显示 _MENU_ 项结果",
-                                            "sZeroRecords": "没有匹配结果",
-                                            "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                            "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                                            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                            "sInfoPostFix": "",
-                                            "sSearch": "搜索:",
-                                            "sUrl": "",
-                                            "sEmptyTable": "表中数据为空",
-                                            "sLoadingRecords": "载入中...",
-                                            "sInfoThousands": ",",
-                                            "oPaginate": {
-                                                "sFirst": "首页",
-                                                "sPrevious": "上页",
-                                                "sNext": "下页",
-                                                "sLast": "末页"
-                                            },
-                                            "oAria": {
-                                                "sSortAscending": ": 以升序排列此列",
-                                                "sSortDescending": ": 以降序排列此列"
-                                            }
+                               }
+                             }
+                         });
+                  } else if (key =='idx_definition') {
+                        $.ajax({
+                            url     : "/get_tab_idx",
+                            type    : "post",
+                            datatype: "json",
+                            data: {
+                                dbid  :  $('#db_source').val(),
+                                cur_db:  $('#curr_db').val(),
+                                tab   :  curNode
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet);
+                                if (dataSet.status=="1") {
+                                    showtips('info',dataSet.message);
+                                } else {
+                                    var editor = ace.edit("ace-editor-tab-defi");
+                                    editor.setValue('')
+                                    editor.insert(dataSet.message);
+                                    $('#ddl-header').text('索引定义')
+                                    $('.modal').on('show.bs.modal', centerModals);
+                                    $(window).on('resize', centerModals);
+                                    $('#con-close-modal-ddl').modal({
+                                       keyboard: false,
+                                       backdrop:false
+                                    })
+                               }
+                             }
+                         });
+                  } else if (key=='col_definition'){
+                        $.ajax({
+                            url: "/get_tab_stru",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                dbid: $('#db_source').val(),
+                                db_name: $('#curr_db').val(),
+                                tab_name: curNode
+                            },
+                            success: function (dataSet) {
+                                console.log('col_definition=', dataSet)
+                                $('.modal').on('show.bs.modal', centerModals);
+                                $(window).on('resize', centerModals);
+                                $('#con-close-modal-col').modal({
+                                   keyboard: false,
+                                   backdrop:false
+                                })
+                                $('#tab-cols').DataTable({
+                                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                    destroy: true,
+                                    async: true,
+                                    scrollY: "300px",
+                                    ordering: false,
+                                    bAutoWidth: true,
+                                    scrollX: true,
+                                    paging: false,
+                                    iDisplayLength: 10,
+                                    data: dataSet,
+                                    responsive: false,
+                                    columns: [
+                                        {"title": "列名"},
+                                        {"title": "列描述"},
+                                        {"title": "列类型"},
+                                        {"title": "是否自增"},
+                                        {"title": "是否主键"},
+                                        {"title": "是否非空"},
+                                    ],
+                                    "language": {
+                                        "search": "在表格中搜索:",
+                                        "sProcessing": "处理中...",
+                                        "sLengthMenu": "显示 _MENU_ 项结果",
+                                        "sZeroRecords": "没有匹配结果",
+                                        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                                        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                                        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                                        "sInfoPostFix": "",
+                                        "sSearch": "搜索:",
+                                        "sUrl": "",
+                                        "sEmptyTable": "表中数据为空",
+                                        "sLoadingRecords": "载入中...",
+                                        "sInfoThousands": ",",
+                                        "oPaginate": {
+                                            "sFirst": "首页",
+                                            "sPrevious": "上页",
+                                            "sNext": "下页",
+                                            "sLast": "末页"
+                                        },
+                                        "oAria": {
+                                            "sSortAscending": ": 以升序排列此列",
+                                            "sSortDescending": ": 以降序排列此列"
                                         }
-                                    });
-
-                                }
-                            });
-
+                                    }
+                                });
+                            }
+                        });
                   }
               }
 
@@ -1115,7 +1110,6 @@
                                         "col_definition"   : {name: "列信息",   icon: "fa-pied-piper"},
                                     }
                                 });
-
                                 //加载数据库列表
                                 upd_curr_db(dataSet)
                             }
@@ -1132,7 +1126,6 @@
                   };
                  var results = $('#db_tree').treeview('search', [ pattern, options ]);
                  console.log('results=',results)
-
               })
 
               $('#beauty_btn').click(function(){
