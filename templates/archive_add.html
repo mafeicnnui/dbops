@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>新建归档</title>
+    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <style>
         .modal-lg {
             width:65%;
@@ -362,7 +363,6 @@
           </div>
        </div>
     </form>
-
     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -388,6 +388,9 @@
         </div>
     </div>
    </div><!-- /.modal -->
+    <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
+    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
+    <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
 
     <script>
         function set_selected(){
