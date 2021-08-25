@@ -1468,14 +1468,18 @@ async def get_dml_rows(p_ds,p_sql):
            rs = await async_processer.query_one_by_ds(p_ds,st)
            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
            return rs[0]
-        elif op in('UPDATE','DELETE'):
-           # st = 'select count(0) from {0} {1}'.format(ob,p_sql[p_sql.upper().find('WHERE'):])
+        elif op in('UPDATE'):
            st = '''select count(0) from {0} {1}'''.\
                    format(p_sql[p_sql.upper().find('UPDATE')+6:p_sql.upper().find('SET')],
                           p_sql[p_sql.upper().find('WHERE'):])
            print('st=',st)
            rs = await async_processer.query_one_by_ds(p_ds, st)
            return rs[0]
+        elif op in ('DELETE'):
+            st = p_sql.replace('DELETE','SELECT count(0) ')
+            print('st=', st)
+            rs = await async_processer.query_one_by_ds(p_ds, st)
+            return rs[0]
 
     except Exception as e:
         return process_result(str(e))

@@ -56,7 +56,7 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid):
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
                      END  STATUS,
-                     CASE  WHEN a.run_time IS NOT NULL OR a.run_time !='' THEN
+                     CASE  WHEN a.run_time IS NOT NULL and a.run_time !='' THEN
                         CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
                      ELSE
                         c.dmmc 
