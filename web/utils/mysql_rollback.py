@@ -203,9 +203,11 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
         cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
         cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,format_sql(rollback)))
         db.commit()
+        return format_sql(rollback)
     except:
       logging.error('write_rollback error:',traceback.format_exc())
       traceback.print_exc()
+      return None
 
 def delete_rollback(p_sql_id):
     try:

@@ -8,10 +8,13 @@
 import sqlparse
 import traceback,re
 import logging
+import datetime
 from web.utils.common           import current_time
+from web.model.t_user           import get_user_by_loginame
 from web.model.t_ds             import get_ds_by_dsid
+from web.model.t_dmmx           import get_dmmc_from_dm
 from web.model.t_sql_check      import check_mysql_ddl
-from web.utils.common           import send_mail
+from web.utils.common           import send_mail,send_mail_param,get_sys_settings
 from web.utils.common           import format_sql as fmt_sql
 from web.model.t_user           import get_user_by_userid
 from web.utils.mysql_async      import async_processer
@@ -483,19 +486,55 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,s
         logging.error((traceback.format_exc()))
         traceback.print_exc()
 
+def get_html_contents():
+    v_html='''<html>
+		<head>
+		   <style type="text/css">
+			   .xwtable {width: 90%;border-collapse: collapse;border: 1px solid #ccc;}
+			   .xwtable thead td {font-size: 12px;color: #333333;
+					      text-align: center;background: url(table_top.jpg) repeat-x top center;
+				              border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable thead th {font-size: 12px;color: #333333;
+				              text-align: center;background: url(table_top.jpg) repeat-x top center;
+					      border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
+			   .xwtable tbody tr.alt-row {background: #f2f7fc;}
+			   .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
+		   </style>
+		</head>
+		<body>
+              <table class='xwtable'>
+                  <tr><td width="10%">发送时间</td><td>$$TIME$$</td></tr>
+                  <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
+                  <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
+                  <tr><td>审核人员</td><td>$$AUDITOR$$</td></tr>
+                  <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
+                  <tr><td>执行语句</td><td>$$STATEMENT$$</td></tr>
+                  <tr><td>回滚语句</td><td>$$ROLLBACK$$</td></tr>
+                  <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
+              </table>    
+		</body>
+	    </html>'''
+    return v_html
+
 async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
     result = {}
     try:
         p_ds = await get_ds_by_dsid(p_dbid)
         p_ds['service'] = p_db_name
         await upd_run_status(p_sql_id,p_username,'before')
-        sql = await get_sql_by_sqlid(p_sql_id)
+
+        sql   = await get_sql_by_sqlid(p_sql_id)
+        email = (await get_user_by_loginame(p_username))['email']
+        wkno  = await get_sql_release(p_sql_id)
+
         # get binlog ,start_position
         await async_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
         await async_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
         rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         binlog_file=rs1[0]
         start_position=rs1[1]
+
         logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
         if check_statement_count(sql) == 1:
             logging.info(('exec single statement:'))
@@ -510,13 +549,35 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
                 await async_processer.exec_sql_by_ds(p_ds, st)
         else:
             pass
+
         # get stop_position
         rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
         stop_position=rs2[1]
         logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
         await upd_run_status(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
+
         # write rollback statement
-        write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
+        rollback = write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
+
+        # send mail
+        settings  = await get_sys_settings()
+        v_title   = '工单执行情况[{}]'.format(wkno['message'])
+        nowTime   = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        creator   = (await get_user_by_loginame(wkno['creator']))['name']
+        auditor   = (await get_user_by_loginame(wkno['auditor']))['name']
+        otype     = (await get_dmmc_from_dm('13',wkno['type']))[0]
+        status    = (await get_dmmc_from_dm('41',wkno['status']))[0]
+        v_content = get_html_contents()
+        v_content = v_content.replace('$$TIME$$',   nowTime)
+        v_content = v_content.replace('$$DBINFO$$',  p_ds['url']+p_ds['service'] if p_ds['url'].find(p_ds['service'])<0 else p_ds['url'])
+        v_content = v_content.replace('$$CREATOR$$', creator)
+        v_content = v_content.replace('$$AUDITOR$$', auditor )
+        v_content = v_content.replace('$$TYPE$$',    otype)
+        v_content = v_content.replace('$$STATUS$$',  status)
+        v_content = v_content.replace('$$STATEMENT$$', format_sql(sql)['message'])
+        v_content = v_content.replace('$$ROLLBACK$$', rollback)
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,v_content)
+
         result['code'] = '0'
         result['message'] = '执行成功!'
         return result
