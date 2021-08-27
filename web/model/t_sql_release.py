@@ -504,7 +504,7 @@ def get_html_contents():
 		</head>
 		<body>
               <table class='xwtable'>
-                  <tr><td width="10%">发送时间</td><td>$$TIME$$</td></tr>
+                  <tr><td width="20%">发送时间</td><td width="80%">$$TIME$$</td></tr>
                   <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
                   <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
                   <tr><td>审核人员</td><td>$$AUDITOR$$</td></tr>

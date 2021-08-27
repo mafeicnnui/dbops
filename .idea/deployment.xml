@@ -23,10 +23,24 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="hopson@10.2.39.17:65508_dbops2.0">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="hopson@10.2.39.17:65508_easebase">
         <serverdata>
           <mappings>
             <mapping deploy="easebase" local="C:/easebase" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.17:65508_searchgitlab">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
@@ -76,6 +90,20 @@
         <serverdata>
           <mappings>
             <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@192.168.20.128:22">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@192.168.20.13:22">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

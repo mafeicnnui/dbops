@@ -89,7 +89,6 @@ class sql_format(basehandler):
        res   = format_sql(sql)
        self.write({"code": res['code'], "message": res['message']})
 
-
 class sql_check_result(basehandler):
    @tornado.web.authenticated
    async def post(self):
