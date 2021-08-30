@@ -90,7 +90,6 @@ def gen_ddl_sql(p_ddl):
 
 def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
 
-    # 如果pos点未改变，返回空列表
     if p_start_pos == p_end_pos :
        return []
 
@@ -111,17 +110,14 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
                                     blocking=True,
                                     resume_stream=True,
                                     log_file=p_file,
-                                    log_pos=int(p_start_pos)
-                                    )
+                                    log_pos=int(p_start_pos))
 
         schema = MYSQL_SETTINGS['db']
         for binlogevent in stream:
-            #print('binlogeven=', binlogevent.event_type,binlogevent.packet.log_pos,binlogevent.schema)
             if binlogevent.event_type in (2,):
                 event = {"schema": bytes.decode(binlogevent.schema), "query": binlogevent.query.lower()}
                 if 'create' in event['query'] or 'drop' in event['query']  or 'alter' in event['query'] or 'truncate' in event['query']:
                     if event['schema'] == schema:
-                        #print(binlogevent.query.lower())
                         rollback_statments.append(gen_ddl_sql(binlogevent.query.lower()+';'))
 
             if isinstance(binlogevent, DeleteRowsEvent) or \
@@ -135,8 +131,6 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
                             event["action"] = "delete"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
-                            # print('Execute :', sql)
-                            # print('Rollback :', rsql)
                             rollback_statments.append(rsql)
 
                         elif isinstance(binlogevent, UpdateRowsEvent):
@@ -144,22 +138,15 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
                             event["after_values"] = row["after_values"]
                             event["before_values"] = row["before_values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
-                            # print('Execute :', sql)
-                            # print('Rollback :', rsql)
                             rollback_statments.append(rsql)
 
                         elif isinstance(binlogevent, WriteRowsEvent):
                             event["action"] = "insert"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
-                            # print('Execute :', sql)
-                            # print('Rollback :', rsql)
-                            # print(get_event_name(binlogevent.event_type),json.dumps(event, cls=DateEncoder))
-                            # print(json.dumps(event))
                             rollback_statments.append(rsql)
 
             if stream.log_pos + 31 == p_end_pos or stream.log_pos >=p_end_pos:
-                #print('rollback_statements:', rollback_statments[::-1])
                 stream.close()
                 break
 

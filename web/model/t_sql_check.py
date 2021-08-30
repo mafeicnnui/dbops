@@ -1251,6 +1251,8 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                 print('检查列默认值...')
                 v = await get_col_default_value(ds, st)
                 e = rule['error']
+                print('xxxxxxxxxxx=',v)
+                print('yyyyyyyyyyyy=',e)
                 try:
                     if v is not None:
                         for i in v:
@@ -1476,7 +1478,7 @@ async def get_dml_rows(p_ds,p_sql):
            rs = await async_processer.query_one_by_ds(p_ds, st)
            return rs[0]
         elif op in ('DELETE'):
-            st = p_sql.replace('DELETE','SELECT count(0) ')
+            st = p_sql.upper().replace('DELETE','SELECT count(0) ')
             print('st=', st)
             rs = await async_processer.query_one_by_ds(p_ds, st)
             return rs[0]

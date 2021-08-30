@@ -42,6 +42,26 @@ class sql_query(basehandler):
        v_json = json.dumps(v_dict)
        self.write(v_json)
 
+class sql_detail(basehandler):
+   async def get(self):
+       release_id = self.get_argument("release_id")
+       wkno = await get_sql_release(release_id)
+       #wkno['sqltext']= '<br>'.join(wkno['sqltext'].split(';'))
+       roll = await query_audit_sql(release_id)
+       #roll['message']['rollback_statement'] = '<br>'.join(roll['message']['rollback_statement'].split(';'))
+       ds  = await get_ds_by_dsid(wkno['dbid'])
+       ds['service'] = wkno['db']
+       print('host=',self.request.host)
+       print('wkno=',wkno)
+       print('roll=',roll)
+       print('dbinfo=',ds)
+       self.render("./sql_detail.html",
+                   wkno= json.loads(json.dumps(wkno,cls=DateEncoder)),
+                   roll = json.loads(json.dumps(roll,cls=DateEncoder)),
+                   dbinfo= ds['db_desc']+' ('+(ds['url']+ds['service'] if ds['url'].find(ds['service'])<0 else ds['url'])+')'
+       )
+
+
 class sqlrelease(basehandler):
     @tornado.web.authenticated
     async def get(self):
@@ -137,7 +157,8 @@ class sql_run(basehandler):
        db_name = self.get_argument("db_name")
        sql_id  = self.get_argument("sql_id")
        name    = str(self.get_secure_cookie("username"), encoding="utf-8")
-       await exe_sql(dbid, db_name, sql_id, name)
+       print('request.host=',self.request.host,self.request.path)
+       await exe_sql(dbid, db_name, sql_id, name,self.request.host)
        self.write({"code": 'threading', "message": ''})
 
 

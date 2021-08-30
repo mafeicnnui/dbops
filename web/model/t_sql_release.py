@@ -509,25 +509,23 @@ def get_html_contents():
                   <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
                   <tr><td>审核人员</td><td>$$AUDITOR$$</td></tr>
                   <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
-                  <tr><td>执行语句</td><td>$$STATEMENT$$</td></tr>
-                  <tr><td>回滚语句</td><td>$$ROLLBACK$$</td></tr>
                   <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
+                  <tr><td>工单详情</td><td>$$DETAIL$$</td></tr>
               </table>    
 		</body>
 	    </html>'''
     return v_html
 
-async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
-    result = {}
+async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
+    res = {}
+    p_ds = await get_ds_by_dsid(p_dbid)
+    p_ds['service'] = p_db_name
+    await upd_run_status(p_sql_id,p_username,'before')
+    sql   = await get_sql_by_sqlid(p_sql_id)
+    email = (await get_user_by_loginame(p_username))['email']
+    settings = await get_sys_settings()
+
     try:
-        p_ds = await get_ds_by_dsid(p_dbid)
-        p_ds['service'] = p_db_name
-        await upd_run_status(p_sql_id,p_username,'before')
-
-        sql   = await get_sql_by_sqlid(p_sql_id)
-        email = (await get_user_by_loginame(p_username))['email']
-        wkno  = await get_sql_release(p_sql_id)
-
         # get binlog ,start_position
         await async_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
         await async_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
@@ -559,8 +557,8 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         # write rollback statement
         rollback = write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
 
-        # send mail
-        settings  = await get_sys_settings()
+        # send success mail
+        wkno      = await get_sql_release(p_sql_id)
         v_title   = '工单执行情况[{}]'.format(wkno['message'])
         nowTime   = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         creator   = (await get_user_by_loginame(wkno['creator']))['name']
@@ -574,21 +572,46 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username):
         v_content = v_content.replace('$$AUDITOR$$', auditor )
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
-        v_content = v_content.replace('$$STATEMENT$$', format_sql(sql)['message'])
-        v_content = v_content.replace('$$ROLLBACK$$', rollback)
+        # v_content = v_content.replace('$$ERROR$$', '')
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
+        # v_content = v_content.replace('$$STATEMENT$$', format_sql(sql)['message'])
+        # v_content = v_content.replace('$$ROLLBACK$$', rollback)
+        v_content = v_content.replace('$$ERROR$$','')
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,v_content)
 
-        result['code'] = '0'
-        result['message'] = '执行成功!'
-        return result
+        res['code'] = '0'
+        res['message'] = '执行成功!'
+        return res
     except Exception as e:
         error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'
-        result['code'] = '-1'
-        result['message'] = '执行失败!'
+        res['code'] = '-1'
+        res['message'] = '执行失败!'
         logging.error(traceback.format_exc())
         await upd_run_status(p_sql_id, p_username, 'error', error)
         delete_rollback(p_sql_id)
-        return result
+
+        # send error mail
+        wkno    = await get_sql_release(p_sql_id)
+        v_title = '工单执行情况[{}]'.format(wkno['message'])
+        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        creator = (await get_user_by_loginame(wkno['creator']))['name']
+        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
+        otype   = (await get_dmmc_from_dm('13', wkno['type']))[0]
+        status  = (await get_dmmc_from_dm('41', wkno['status']))[0]
+        v_content = get_html_contents()
+        v_content = v_content.replace('$$TIME$$', nowTime)
+        v_content = v_content.replace('$$DBINFO$$',
+                                      p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds['url'])
+        v_content = v_content.replace('$$CREATOR$$', creator)
+        v_content = v_content.replace('$$AUDITOR$$', auditor)
+        v_content = v_content.replace('$$TYPE$$',    otype)
+        v_content = v_content.replace('$$STATUS$$',  status)
+        # v_content = v_content.replace('$$ERROR$$',   error)
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,
+                        v_content)
+
+        return res
 
 def check_validate(p_dbid,p_cdb,p_sql,desc,logon_user,type):
     result = {}
