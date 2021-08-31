@@ -169,7 +169,12 @@ async def check_mysql_proc_exists(ds,tab):
    return rs[0]
 
 async def query_check_result(user):
-    sql = """select xh,obj_name,rule_id,rule_name,rule_value,error 
+    sql = """select xh,obj_name,rule_id,rule_name,rule_value,
+                    case when error!='检测通过!' then
+                       concat("<span style='color:red;'>",error,"</span")
+                    else
+                       error 
+                    end error    
                 from  t_sql_audit_rule_err where user_id={} order by id""".format(user['userid'])
     return await async_processer.query_list(sql)
 
@@ -2012,7 +2017,9 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
             rule['error'] = '检测通过!'
             await save_check_results(rule, p_user, st, sxh)
 
-    return res
+        rss = rss and res
+        sxh = sxh + 1
+    return rss
 
 async def get_audit_rule(p_key):
     sql = "select * from t_sql_audit_rule where rule_code='{0}'".format(p_key)

@@ -57,7 +57,7 @@
 
 <body>
    <p></p>
-   <input type='hidden' id='check_status'>
+   <input type='hidden' id='check_status' value="failure">
    <form class="form-horizontal" role="form">
        <div class="col-md-3">
             <div class="form-group">
@@ -555,7 +555,6 @@
 　　　　　　　　}
 　　　　　}
 
-        //当浏览器大小变化时
         $(window).resize(function () {
             set_styles()
         });
@@ -1176,10 +1175,6 @@
                   var editor = ace.edit("ace-editor");
                   var v_sql  = editor.session.getTextRange(editor.getSelectionRange())
                   var v_type = $('#db_order_type').val()
-
-                  console.log('v_type=',v_type)
-                  console.log('v_sql=',v_sql)
-                  console.log('db_source=',$('#db_source').val())
 
                   if (check_order_xh($('#sql_desc').val())>0) {
                       showtips('error', '工单已存在!');
