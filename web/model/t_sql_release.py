@@ -35,11 +35,12 @@ async def get_sql_by_sqlid(p_sql_id):
     rs = await async_processer.query_one(sql)
     return rs[0]
 
-async def query_audit(p_name,p_dsid,p_creator,p_userid):
-    print('p_creator=',p_creator,'p_userid',p_userid)
+async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username):
+    print('p_creator=',p_creator,'p_userid',p_username)
     v_where = ''
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
+
     if p_dsid != '':
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)
     else:
@@ -47,6 +48,9 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid):
                                            where x.proj_id=b.id and x.user_id='{0}' and priv_id='3')""".format(p_userid)
     if p_creator != '':
         v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
+
+    if p_username != 'admin':
+        v_where = v_where + " and a.creator='{0}'\n".format(p_username)
 
     sql = """SELECT  a.id, 
                      a.message,
@@ -80,7 +84,7 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid):
     print(sql)
     return await async_processer.query_list(sql)
 
-async def query_run(p_name,p_dsid,p_creator,p_userid):
+async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
     v_where = ''
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
@@ -91,6 +95,9 @@ async def query_run(p_name,p_dsid,p_creator,p_userid):
                                    where x.proj_id=b.id and x.user_id='{0}' and priv_id='4')""".format(p_userid)
     if p_creator != '':
         v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
+
+    if p_username != 'admin':
+        v_where = v_where + " and a.creator='{0}'\n".format(p_username)
 
     sql = """SELECT  a.id, 
                      a.message,
@@ -141,7 +148,7 @@ async def query_order(p_name,p_dsid,p_username):
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
                      END  STATUS,                     
-                     CASE  WHEN a.run_time IS NOT NULL OR a.run_time !='' THEN
+                     CASE  WHEN a.run_time IS NOT NULL and a.run_time !='' THEN
                         CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
                      ELSE
                         c.dmmc 

@@ -169,8 +169,9 @@ class sql_audit_query(basehandler):
         qname   = self.get_argument("qname")
         dsid    = self.get_argument("dsid")
         creater = self.get_argument("creater")
-        userid  = str(self.get_secure_cookie("userid"), encoding="utf-8")
-        v_list  = await query_audit(qname,dsid,creater,userid)
+        userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
+        username= str(self.get_secure_cookie("username"), encoding="utf-8")
+        v_list  = await query_audit(qname,dsid,creater,userid,username)
         v_json  = json.dumps(v_list)
         self.write(v_json)
 
@@ -182,7 +183,8 @@ class sql_run_query(basehandler):
         dsid   = self.get_argument("dsid")
         creater= self.get_argument("creater")
         userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
-        v_list = await query_run(qname,dsid,creater,userid)
+        username= str(self.get_secure_cookie("username"), encoding="utf-8")
+        v_list = await query_run(qname,dsid,creater,userid,username)
         v_json = json.dumps(v_list)
         self.write(v_json)
 

@@ -533,7 +533,6 @@
             document.all['s_sql_desc'].style.color="#ff0000";
             document.all['s_db_source'].style.color="#ff0000";
             document.all['s_order_type'].style.color="#ff0000";
-            // document.all['s_sql_ver'].style.color="#ff0000";
         }
 
         function fileImport() {
@@ -1195,6 +1194,7 @@
                           data: {
                               dbid  : $('#db_source').val(),
                               cur_db: $('#curr_db').val(),
+                              async : false,
                               sql   : v_sql,
                               desc  : $('#sql_desc').val(),
                               type  : v_type,
@@ -1227,13 +1227,7 @@
                                   query_release_result(editor.session.getTextRange(editor.getSelectionRange()))
                               }
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
+                          error: function (jqXHR) {
                             if (jqXHR.status==403){
                                 swal("登陆信息已过期，请重新登陆!", "", "error")
                                 window.location.href='/login'
@@ -1250,9 +1244,6 @@
               $("#release_btn").click(function()  {
                   var editor = ace.edit("ace-editor")
                   v_sql=editor.session.getTextRange(editor.getSelectionRange())
-                  console.log('v_sql=',v_sql)
-                  console.log('db_source=',$('#db_source').val())
-
                   if (check_order_xh($('#sql_desc').val())>0) {
                       showtips('error', '工单已存在!');
                       return
@@ -1330,10 +1321,10 @@
               var table;
               set_editor("ace-editor")
               set_editor("ace-editor-tab-defi")
-              $('#curr_db').height(12);
-              $('#curr_db').css('font-size', 11);
-              $("#filter_db").height(12);
-              $('#filter_db').css('font-size', 11);
+              $('#curr_db').height(15);
+              $('#curr_db').css('font-size', 12);
+              $("#filter_db").height(15);
+              $('#filter_db').css('font-size', 12);
 
               $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);

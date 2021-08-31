@@ -1474,14 +1474,22 @@ async def get_dml_rows(p_ds,p_sql):
            st = '''select count(0) from {0} {1}'''.\
                    format(p_sql[p_sql.upper().find('UPDATE')+6:p_sql.upper().find('SET')],
                           p_sql[p_sql.upper().find('WHERE'):])
-           print('st=',st)
            rs = await async_processer.query_one_by_ds(p_ds, st)
-           return rs[0]
+           if rs[0] == 0:
+               return '表:{0}更新0行!'.format(ob)
+           else:
+               return rs[0]
         elif op in ('DELETE'):
-            st = p_sql.upper().replace('DELETE','SELECT count(0) ')
-            print('st=', st)
+            pattern = re.compile(r'(\s*delete\s*)',re.I)
+            if pattern.findall(p_sql) != []:
+                st = re.sub(pattern, "SELECT count(0) ", p_sql)
+            else:
+                st = p_sql
             rs = await async_processer.query_one_by_ds(p_ds, st)
-            return rs[0]
+            if rs[0] == 0:
+                return '表:{0}删除0行!'.format(ob)
+            else:
+                return rs[0]
 
     except Exception as e:
         return process_result(str(e))
@@ -1537,7 +1545,7 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
                       await save_check_results(rule,p_user,st,sxh)
                       res = False
                else:
-                   rule['error'] = rule['error'].format(format_exception(v))
+                   rule['error'] = format_exception(v)
                    await save_check_results(rule, p_user,st,sxh)
                    res = False
 

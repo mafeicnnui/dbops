@@ -5,9 +5,9 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.sql          import sqlquery,sql_query,sqlrelease,sql_check,sql_format,sql_check_result
-from web.services.sql          import sql_release,sqlaudit,sql_audit,sqlrun,sql_run,sql_audit_query,sql_audit_detail,sql_run_query
-from web.services.sql          import get_tree_by_sql,query_sql_release,sql_detail
+from web.services.sql    import sqlquery,sql_query,sqlrelease,sql_check,sql_format,sql_check_result
+from web.services.sql    import sql_release,sqlaudit,sql_audit,sqlrun,sql_run,sql_audit_query,sql_audit_detail,sql_run_query
+from web.services.sql    import get_tree_by_sql,query_sql_release,sql_detail
 
 sql = [
         (r"/sql/query", sqlquery),
