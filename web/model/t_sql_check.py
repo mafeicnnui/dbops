@@ -1498,6 +1498,7 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
     sxh  = 1
     res  = True
     op   = get_obj_op(p_sql.strip())
+    print('op=',op)
     ds   = await get_ds_by_dsid_by_cdb(p_dbid, p_cdb)
     st   = p_sql.strip()
     ru   = """select id,rule_code,rule_name,rule_value,error 
@@ -1513,6 +1514,12 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
     # check sql
     for rule in rs:
         rule['error'] = format_sql(rule['error'])
+
+        if op is None :
+            await save_check_results_exception('非法DML语句!', p_user, st, sxh)
+            res = False
+            break
+
         if rule['rule_code'] == 'switch_dml_where' and rule['rule_value'] == 'true':
             if op in('UPDATE','DELETE'):
                print('检测DML语句条件...')
@@ -1552,30 +1559,25 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
         if rule['rule_code'] == 'switch_dml_ins_exists_col' and rule['rule_value'] == 'true':
             if op in('INSERT'):
                print('检查插入语句那必须存在列名...')
-               print(re.split(r'\s+', p_sql.strip()))
-               print(re.split(r'\s+', p_sql.strip())[2])
-               print(re.split(r'\s+', p_sql.strip())[3])
                n_pos1 = re.split(r'\s+', p_sql.strip())[2].count('(')
                n_pos2 = re.split(r'\s+', p_sql.strip())[3].count('(')
-               # if n_pos == 0:
-               #     n_pos = re.split(r'\s+', p_sql.strip())[3].count(')')
                if n_pos1 == 0 and n_pos2 ==0:
                    await save_check_results(rule, p_user,st,sxh)
                    res = False
 
         if rule['rule_code'] == 'switch_dml_ins_cols':
-                ck = await get_audit_rule('switch_dml_ins_exists_col')
-                if ck['rule_value'] == 'true':
-                   if op in ('INSERT'):
-                       print('INSERT语句字段上限...')
-                       try:
-                           n_cols = re.split(r'\s+',  p_sql.strip())[2].split('(')[1].split(')')[0].count(',')+1
-                       except:
-                           n_cols = re.split(r'\s+', p_sql.strip())[3].split('(')[1].split(')')[0].count(',')+1
-                       if n_cols>int(rule['rule_value']):
-                          rule['error'] =rule['error'].format(rule['rule_value'])
-                          await save_check_results(rule, p_user, st, sxh)
-                          res = False
+            ck = await get_audit_rule('switch_dml_ins_exists_col')
+            if ck['rule_value'] == 'true':
+               if op in ('INSERT'):
+                   print('INSERT语句字段上限...')
+                   try:
+                       n_cols = re.split(r'\s+',  p_sql.strip())[2].split('(')[1].split(')')[0].count(',')+1
+                   except:
+                       n_cols = re.split(r'\s+', p_sql.strip())[3].split('(')[1].split(')')[0].count(',')+1
+                   if n_cols>int(rule['rule_value']):
+                      rule['error'] =rule['error'].format(rule['rule_value'])
+                      await save_check_results(rule, p_user, st, sxh)
+                      res = False
 
         if res:
             if rule['rule_code'] == 'switch_check_dml' and rule['rule_value'] == 'true':
@@ -1929,7 +1931,7 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
 
         print('输出检测项...')
         print('-'.ljust(150, '-'))
-        for r in ru:
+        for r in rs:
             print(r)
 
         # 逐个SQL进行检测
@@ -1968,20 +1970,15 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
                             await save_check_results(rule, p_user, st, sxh)
                             res = False
                     else:
-                        rule['error'] = rule['error'].format(format_exception(v))
+                        rule['error'] = format_sql(format_exception(v))
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
 
             if rule['rule_code'] == 'switch_dml_ins_exists_col' and rule['rule_value'] == 'true':
                 if op in ('INSERT'):
                     print('检查插入语句那必须存在列名...')
-                    print(re.split(r'\s+', p_sql.strip()))
-                    print(re.split(r'\s+', p_sql.strip())[2])
-                    print(re.split(r'\s+', p_sql.strip())[3])
                     n_pos1 = re.split(r'\s+', p_sql.strip())[2].count('(')
                     n_pos2 = re.split(r'\s+', p_sql.strip())[3].count('(')
-                    # if n_pos == 0:
-                    #     n_pos = re.split(r'\s+', p_sql.strip())[3].count(')')
                     if n_pos1 == 0 and n_pos2 == 0:
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
@@ -2015,7 +2012,7 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
             rule['error'] = '检测通过!'
             await save_check_results(rule, p_user, st, sxh)
 
-        return res
+    return res
 
 async def get_audit_rule(p_key):
     sql = "select * from t_sql_audit_rule where rule_code='{0}'".format(p_key)
@@ -2031,6 +2028,14 @@ async def save_check_results(rule,user,psql,sxh):
     else:
         sql = '''insert into t_sql_audit_rule_err(xh,obj_name,rule_id,rule_name,rule_value,user_id,error) values ('{}','{}','{}','{}','{}','{}','{}')
               '''.format(sxh,obj,rule['id'],rule['rule_name'],rule['rule_value'],user['userid'],rule['error'])
+    print('save_check_results=',sql)
+    await async_processer.exec_sql(sql)
+
+async def save_check_results_exception(error,user,psql,sxh):
+    print('检查结果：save_check_results_exception')
+    print('-'.ljust(150, '-'))
+    sql = '''insert into t_sql_audit_rule_err(xh,obj_name,rule_id,rule_name,rule_value,user_id,error) values ('{}','{}','{}','{}','{}','{}','{}')
+          '''.format(sxh, '','', '', '', user['userid'],error)
     print('save_check_results=',sql)
     await async_processer.exec_sql(sql)
 

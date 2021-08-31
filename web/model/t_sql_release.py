@@ -562,7 +562,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         await upd_run_status(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
 
         # write rollback statement
-        rollback = write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
+        write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
 
         # send success mail
         wkno      = await get_sql_release(p_sql_id)
@@ -579,10 +579,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$AUDITOR$$', auditor )
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
-        # v_content = v_content.replace('$$ERROR$$', '')
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
-        # v_content = v_content.replace('$$STATEMENT$$', format_sql(sql)['message'])
-        # v_content = v_content.replace('$$ROLLBACK$$', rollback)
         v_content = v_content.replace('$$ERROR$$','')
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,v_content)
 
@@ -613,7 +610,6 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$AUDITOR$$', auditor)
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
-        # v_content = v_content.replace('$$ERROR$$',   error)
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,
                         v_content)
