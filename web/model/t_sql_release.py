@@ -130,10 +130,18 @@ async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
           """.format(v_where)
     return await async_processer.query_list(sql)
 
-async def query_order(p_name,p_dsid,p_username):
-    v_where = "  and  a.creator='{0}'".format(p_username)
+async def query_order(p_name,p_dsid,p_creator,p_username):
+    v_where=''
+
+    if p_creator != '':
+        v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
+
+    if p_username != 'admin':
+       v_where = "  and  a.creator='{0}'".format(p_username)
+
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
+
     if p_dsid != '':
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)
 
@@ -154,16 +162,15 @@ async def query_order(p_name,p_dsid,p_username):
                         c.dmmc 
                      END AS 'type',
                      b.db_desc,
-                     d.name AS creator,
+                     (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
                      DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
                      DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
                      error
-            FROM t_sql_release a,t_db_source b,t_dmmx c,t_user d
+            FROM t_sql_release a,t_db_source b,t_dmmx c
             WHERE a.dbid=b.id
               AND c.dm='13'
               AND a.type=c.dmm
-              AND a.creator=d.login_name
               {0} order by a.creation_date desc
           """.format(v_where)
     print(sql)

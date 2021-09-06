@@ -473,6 +473,7 @@ async def query_monitor_sys(env,search_text):
             FROM t_monitor_task_server_log a  LEFT JOIN t_server b ON a.server_id=b.id 
             WHERE (a.server_id,a.create_date) IN(SELECT server_id,MAX(create_date) FROM `t_monitor_task_server_log` GROUP BY server_id) {}  ORDER BY STATUS, b.server_desc
           """.format(vw)
+   
     v_list = []
     for r in await async_processer.query_list(sql):
         v_temp =list(r)

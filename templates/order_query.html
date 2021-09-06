@@ -1,17 +1,11 @@
 <html>
 <head>
     <title>工单查询</title>
-    <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>-->
-<!--    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>-->
-    <!-- Sweet Alert -->
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
-     <!-- Notification css (Toastr) -->
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
-
     <style>
        .modal-lg-templete {
             width:60%;
@@ -78,7 +72,6 @@
         }
 
     </style>
-
 </head>
 
 <body>
@@ -103,6 +96,17 @@
                        </select>
                  </div>
             </div>
+            <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon">发布人</span>
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
+                            <option value='' selected = "selected">...</option>
+                            {% for var in creater %}
+                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                            {% end %}
+                       </select>
+                 </div>
+             </div>
              <div class="col-md-1">
                <div class="input-group">
                     <span class="input-group-btn">
@@ -561,6 +565,7 @@
               data:{
                   qname : $("#name").val(),
                   dsid  : $("#db_audit_source").val(),
+                  creater: $("#sql_creater").val(),
               },
               success: function (dataSet) {
                   $('#tab-sql').DataTable( {
@@ -1491,6 +1496,12 @@
     });
 
     $(document).ready(function() {
+         //可搜索选择框初始化
+          $('.selectpicker').selectpicker({
+              size: 10
+          });
+          $(":file").filestyle({input: false});
+
           //init ace editor
           initEditor('ace-editor-release');
           initEditor('ace-editor-rollback');

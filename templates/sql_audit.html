@@ -45,14 +45,15 @@
             <div class="col-md-3">
                  <div class="input-group">
                     <span class="input-group-addon">发布人</span>
-                    <select class="form-control select" id="sql_creater">
-                        <option value='' selected = "selected">...</option>
-                        {% for var in creater %}
-                          <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
-                    </select>
+                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
+                            <option value='' selected = "selected">...</option>
+                            {% for var in creater %}
+                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                            {% end %}
+                       </select>
                  </div>
              </div>
+
              <div class="col-md-1">
                <div class="input-group">
                     <span class="input-group-btn">
@@ -128,7 +129,6 @@
 
 </body>
 
-
 <script type="text/javascript">
 
       function centerModals() {
@@ -142,6 +142,12 @@
       }
 
       $(document).ready(function() {
+          //可搜索选择框初始化
+          $('.selectpicker').selectpicker({
+              size: 10
+          });
+          $(":file").filestyle({input: false});
+
           //ace editor
           var editor = ace.edit("ace-editor");
           editor.setTheme("ace/theme/xcode");

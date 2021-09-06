@@ -65,11 +65,13 @@ def get_obj_name(p_sql):
         or p_sql.upper().count("TRUNCATE") > 0 and p_sql.upper().count("TABLE") > 0 \
          or p_sql.upper().count("ALTER") > 0 and p_sql.upper().count("TABLE") > 0 \
            or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("TABLE") > 0 \
-             or  p_sql.upper().count("CREATE")>0 and p_sql.upper().count("VIEW")>0 \
-               or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("FUNCTION") > 0 \
-                or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
-                  or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
-                    or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0  :
+             or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("DATABASE") > 0 \
+                or  p_sql.upper().count("CREATE")>0 and p_sql.upper().count("VIEW")>0 \
+                   or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("FUNCTION") > 0 \
+                    or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
+                      or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
+                        or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0  \
+                           or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0:
 
        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
            obj = re.split(r'\s+', p_sql)[3].replace('`', '')
@@ -109,12 +111,14 @@ def get_obj_type(p_sql):
                    or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
                        or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("EVENT") > 0 \
                           or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0 \
-      or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("VIEW") > 0 \
+                              or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0 \
+        or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("VIEW") > 0 \
         or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("FUNCTION") > 0 \
           or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
             or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("INDEX") > 0 \
               or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("EVENT") > 0 \
-                or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("TRIGGER") > 0:
+                or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("TRIGGER") > 0 \
+                  or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("DATABASE") > 0:
        obj = re.split(r'\s+', p_sql)[1].replace('`', '')
        if ('(') in obj:
           return obj.split('(')[0].upper()
@@ -124,7 +128,7 @@ def get_obj_type(p_sql):
        return ''
 
 def get_obj_op(p_sql):
-    if re.split(r'\s+', p_sql)[0].upper() in('CREATE','DROP') and re.split(r'\s+', p_sql)[1].upper() in('TABLE','INDEX'):
+    if re.split(r'\s+', p_sql)[0].upper() in('CREATE','DROP') and re.split(r'\s+', p_sql)[1].upper() in('TABLE','INDEX','DATABASE'):
        return re.split(r'\s+', p_sql)[0].upper()+'_'+re.split(r'\s+', p_sql)[1].upper()
     if re.split(r'\s+', p_sql)[0].upper() in('TRUNCATE'):
        return 'TRUNCATE_TABLE'
@@ -1256,8 +1260,6 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                 print('检查列默认值...')
                 v = await get_col_default_value(ds, st)
                 e = rule['error']
-                print('xxxxxxxxxxx=',v)
-                print('yyyyyyyyyyyy=',e)
                 try:
                     if v is not None:
                         for i in v:
@@ -1348,19 +1350,35 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
 
         if rule['rule_code'] == 'switch_disable_trigger' and rule['rule_value'] == 'true':
             if get_obj_type(p_sql) == 'TRIGGER':
-               pass
+                res = False
+                await save_check_results(rule, p_user, st, sxh)
 
         if rule['rule_code'] == 'switch_disable_func' and rule['rule_value'] == 'true':
             if get_obj_type(p_sql) == 'FUNCTION':
-               pass
+                res = False
+                await save_check_results(rule, p_user, st, sxh)
 
         if rule['rule_code'] == 'switch_disable_proc' and rule['rule_value'] == 'true':
              if get_obj_type(p_sql) == 'PROCEDURE':
-                pass
+                 res = False
+                 await save_check_results(rule, p_user, st, sxh)
 
         if rule['rule_code'] == 'switch_disable_event' and rule['rule_value'] == 'true':
              if get_obj_type(p_sql) == 'EVENT':
-                pass
+                 res = False
+                 await save_check_results(rule, p_user, st, sxh)
+
+        if rule['rule_code'] == 'switch_drop_database' and tp == 'DATABASE'  and rule['rule_value'] == 'false' :
+            if get_obj_op(p_sql) == 'DROP_DATABASE':
+               res = False
+               await save_check_results(rule, p_user, st, sxh)
+
+
+        if rule['rule_code'] == 'switch_drop_table' and tp == 'TABLE'  and rule['rule_value'] == 'false' :
+            if get_obj_op(p_sql) in('DROP_TABLE','TRUNCATE_TABLE'):
+               res = False
+               await save_check_results(rule, p_user, st, sxh)
+
 
         if rule['rule_code'] == 'switch_tab_name_check' and tp == 'TABLE'  and rule['rule_value'] == 'true' :
             if get_obj_op(p_sql) == 'CREATE_TABLE':
@@ -1889,6 +1907,32 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                         res = False
                         rule['error'] = v
                         await save_check_results(rule, p_user,st,sxh)
+
+            if rule['rule_code'] == 'switch_disable_func' and rule['rule_value'] == 'true':
+                if get_obj_type(p_sql) == 'FUNCTION':
+                    res = False
+                    await save_check_results(rule, p_user, st, sxh)
+
+            if rule['rule_code'] == 'switch_disable_proc' and rule['rule_value'] == 'true':
+                if get_obj_type(p_sql) == 'PROCEDURE':
+                    res = False
+                    await save_check_results(rule, p_user, st, sxh)
+
+            if rule['rule_code'] == 'switch_disable_event' and rule['rule_value'] == 'true':
+                if get_obj_type(p_sql) == 'EVENT':
+                    res = False
+                    await save_check_results(rule, p_user, st, sxh)
+
+            if rule['rule_code'] == 'switch_drop_database' and tp == 'DATABASE' and rule['rule_value'] == 'false':
+                if get_obj_op(p_sql) == 'DROP_DATABASE':
+                    res = False
+                    await save_check_results(rule, p_user, st, sxh)
+
+            if rule['rule_code'] == 'switch_drop_table' and tp == 'TABLE' and rule['rule_value'] == 'false':
+                if get_obj_op(p_sql) in ('DROP_TABLE', 'TRUNCATE_TABLE'):
+                    res = False
+                    await save_check_results(rule, p_user, st, sxh)
+
 
         print('res=',res,ob)
         if res:

@@ -306,7 +306,8 @@ class orderquery(basehandler):
                     vers          = await get_dmm_from_dm('12'),
                     order_types   = await get_dmm_from_dm('17'),
                     order_handles = await get_users_from_proj(userid),
-                    order_status  = await get_dmm_from_dm('19'))
+                    order_status  = await get_dmm_from_dm('19'),
+                    creater = await get_users(user_name))
 
 class order_query(basehandler):
     @tornado.web.authenticated
@@ -315,7 +316,8 @@ class order_query(basehandler):
         username = str(self.get_secure_cookie("username"), encoding="utf-8")
         qname  = self.get_argument("qname")
         dsid   = self.get_argument("dsid")
-        v_list = await query_order(qname,dsid,username)
+        creater = self.get_argument("creater")
+        v_list = await query_order(qname,dsid,creater,username)
         v_json = json.dumps(v_list)
         self.write(v_json)
 

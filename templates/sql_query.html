@@ -9,6 +9,8 @@
     <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <link href="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.css') }}"  rel="stylesheet" />
     <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
+    <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
+    <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
     <style>
        .cur_db {
             font-size: 15px;
@@ -57,12 +59,21 @@
                         <label class="col-md-3 control-label">数据源：</label>
                     </div>
                     <div class="col-md-8">
-                        <select class="form-control select" id="db_source">
+<!--                        <select class="form-control select" id="db_source">-->
+<!--                            <option value='' selected = "selected">...</option>-->
+<!--                            {% for var in dss %}-->
+<!--                              <option value={{var[0]}}>{{var[1]}}</option>-->
+<!--                            {% end %}-->
+<!--                        </select>-->
+
+                         <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
                             <option value='' selected = "selected">...</option>
                             {% for var in dss %}
-                              <option value={{var[0]}}>{{var[1]}}</option>
+                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                             {% end %}
-                        </select>
+                         </select>
+
+
                    </div>
                 </div>
            </div>
@@ -72,9 +83,14 @@
                     <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ti-layout-menu-v"></i></i></button>
                 </div>
                 <div class="col-md-11">
-                    <select class="form-control select" id="curr_db" >
-                        <option value='' selected = "selected">......</option>
-                    </select>
+<!--                    <select class="form-control select" id="curr_db" >-->
+<!--                        <option value='' selected = "selected">......</option>-->
+<!--                    </select>-->
+
+                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="curr_db">
+                        <option value='' selected = "selected">...</option>
+                      </select>
+
                 </div>
             </div>
             <div  class="col-md-3">
@@ -181,6 +197,10 @@
    <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
    <script src="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.js')}}"></script>
    <script src="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
 
    <script type="text/javascript">
 
@@ -454,6 +474,10 @@
         })
 
         $(document).ready(function() {
+              //可搜索选择框初始化
+              $('.selectpicker').selectpicker({ size: 10 });
+              $(":file").filestyle({input: false});
+
               var lock = false;
               var table;
               var db_type;
@@ -480,12 +504,14 @@
 
               function upd_curr_db(dataSet){
                    $("#curr_db").empty();
-                    $("#curr_db").append("<option value=''>...</option>");
+                   $("#curr_db").append("<option value=''>...</option>");
                     for (i=0;i<dataSet['message'].length;i++){
                        var val  = dataSet['message'][i].id;
                        var text = dataSet['message'][i].id;
-                       $("#curr_db").append("<option value='"+val+"'>"+text+"</option>");
+                       //$("#curr_db").append("<option value='"+val+"'>"+text+"</option>");
+                       $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                    }
+                   $("#curr_db").selectpicker('refresh')
               }
 
               function refresh_tree() {
@@ -838,7 +864,11 @@
                 if (!lock) refresh_tree();
               });
 
-              $("#db_source").bind("input propertychange",function(){
+              // $("#db_source").bind("input propertychange",function(){
+              //       refresh_tree();
+              // });
+
+              $("#db_source").on("changed.bs.select",function(){
                     refresh_tree();
               });
 
@@ -875,6 +905,9 @@
               $("#query_btn").click(function() {
                   //sql=editor.session.getTextRange(editor.getSelectionRange())
                   v_sql=editor.session.getValue()
+
+
+                  console.log('dbsource=',$('#db_source').val())
 
                   if($('#db_source').val()=='') {
                       showtips('info','请选择数据源!');
