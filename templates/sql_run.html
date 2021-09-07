@@ -1,11 +1,9 @@
 <html>
 <head>
     <title>SQL执行</title>
-     <!-- ace code -->
     <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
     <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
     <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
-     <!-- Sweet Alert -->
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <style>
@@ -83,6 +81,18 @@
          </div>
     </div>
 
+    <!-- 遮照-->
+    <div id="con-close-modal-2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">正在运行中，请稍候...</h4>
+            </div>
+
+        </div>
+     </div>
+   </div><!-- /.modal -->
+
     <!--发布语句详情 -->
     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
       <div class="modal-dialog modal-lg-detail">
@@ -91,6 +101,10 @@
                 <h4 class="modal-title"><span id='order_title'></span></h4>
             </div>
             <div class="modal-body">
+                <div class="row">
+                    <label>运行库 &nbsp;&nbsp;：</label>
+                    <span id ='run_db_detail' style="color:red"></span>
+                </div>
                  <div class="row">
                    <h5>执行语句：</h5>
                    <div id ='run_time_detail' style="color:red"></div>
@@ -125,6 +139,17 @@
 <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
 
 <script type="text/javascript">
+
+     function set_editor(p_editor) {
+          var editor = ace.edit(p_editor);
+          editor.setTheme("ace/theme/xcode");
+          editor.getSession().setMode("ace/mode/sql");
+          editor.setShowPrintMargin(false);
+          editor.setFontSize(16);
+          editor.getSession().setUseSoftTabs(true);
+          editor.setReadOnly(true);
+     }
+
     $(document).ready(function() {
          //可搜索选择框初始化
           $('.selectpicker').selectpicker({
@@ -132,29 +157,9 @@
           });
           $(":file").filestyle({input: false});
 
-          var editor = ace.edit("ace-editor");
-          editor.setTheme("ace/theme/xcode");
-          editor.getSession().setMode("ace/mode/sql");
-          editor.setShowPrintMargin(false);
-          editor.setFontSize(16);
-          editor.getSession().setUseSoftTabs(true);
-          editor.setReadOnly(true);
-
-          var editor2 = ace.edit("ace-editor-rollback");
-          editor2.setTheme("ace/theme/xcode");
-          editor2.getSession().setMode("ace/mode/sql");
-          editor2.setShowPrintMargin(false);
-          editor2.setFontSize(16);
-          editor2.getSession().setUseSoftTabs(true);
-          editor2.setReadOnly(true);
-
-          var editor3 = ace.edit("ace-editor-error");
-          editor3.setTheme("ace/theme/xcode");
-          editor3.getSession().setMode("ace/mode/sql");
-          editor3.setShowPrintMargin(false);
-          editor3.setFontSize(16);
-          editor3.getSession().setUseSoftTabs(true);
-          editor3.setReadOnly(true);
+          set_editor('ace-editor');
+          set_editor('ace-editor-rollback');
+          set_editor('ace-editor-error');
 
           $("#query_btn").click(function() {
                 var name = $("#name").val();
@@ -320,13 +325,16 @@
                     id: id
                 },
                 success: function (dataSet) {
-                    // var sql = dataSet.message
-                    console.log('dataSet=',dataSet)
-                    console.log('a=',dataSet.message.sqltext)
-                    console.log('b=',dataSet.message.error)
-                    console.log('c=',dataSet.message.rollback_statement)
                     sql = format_sql(dataSet.message.sqltext)
-                    console.log('format_sql=',sql)
+
+                    if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
+                         console.log('aaa')
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
+                    } else {
+                        console.log('bbb')
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
+                    }
+
                     var editor = ace.edit("ace-editor");
                     editor.setValue('')
                     editor.insert(sql);
@@ -370,8 +378,12 @@
             data: {
                 id  : id,
             },
+            beforeSend: function () {
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-close-modal-2').modal({ keyboard: false,backdrop:false});
+            },
             success: function (dataSet) {
-                console.log('sql_release=',dataSet);
                 $.ajax({
                     url     : "/sql/_run",
                     type    : "post",
@@ -382,8 +394,9 @@
                         sql_id :  dataSet.id,
                     },
                     success: function (dataSet) {
-                        showtips('info','运行中...');
+                        //showtips('info','运行中...');
                         $("#query_btn").click();
+                         $('#con-close-modal-2').modal('hide');
                      }
                  });
              }

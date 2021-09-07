@@ -176,8 +176,8 @@
                             <button type="button" id='release_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="发布"><i class="mdi mdi-transfer"></i></button>
                             <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
                             <button type="button" id='find_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="查询"><i class="fa fa-search"></i></button>
-                            <button type="button" id='import_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="导入"><i class="ion-android-folder"></i></button>
-                            <input  type="file" id="files" style="display: none" onchange="fileImport();">
+<!--                            <button type="button" id='import_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="导入"><i class="ion-android-folder"></i></button>-->
+<!--                            <input  type="file" id="files" style="display: none" onchange="fileImport();">-->
                        </div>
                    </div>
                 </div>
@@ -959,7 +959,8 @@
                         async:false,
                         data: {
                             type:p_type,
-                            rq:p_rq
+                            rq:p_rq,
+                            dbid:$('#db_source').val(),
                         },
                         success: function (dataSet) {
                             res=dataSet.message
@@ -1301,6 +1302,7 @@
                                 }
                                 if (dataSet.code == '0') {
                                     showtips('success','发布成功!');
+                                    gen_order_xh()
                                 } else {
                                     showtips('error',dataSet.message);
                                 }
@@ -1321,7 +1323,7 @@
                   }
               });
 
-              $('#db_order_type').change(function(){
+              function gen_order_xh() {
                    var tp = $('#db_order_type').val()
                    if (tp==1) {
                        tpl = 'ddl'
@@ -1334,7 +1336,11 @@
                    }
                    var rq =  GetDate(5)
                    var xh = get_order_xh(tp,rq)
-                   $('#sql_desc').val(tpl+'-'+ rq+'-'+xh)
+                   $('#sql_desc').val('db'+$('#db_source').val()+'-'+tpl+'-'+ rq+'-'+xh)
+              }
+
+              $('#db_order_type').change(function(){
+                   gen_order_xh()
               });
 
               $('#clear_btn').click(function(){
