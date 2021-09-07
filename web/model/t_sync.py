@@ -586,7 +586,6 @@ async def get_sync_by_sync_tag(p_sync_tag):
     sql = "select * from t_db_sync_config where sync_tag='{0}'".format(p_sync_tag)
     return await async_processer.query_dict_one(sql)
 
-
 def get_health_api_server(api_servers):
     api_status  = {}
     for api in api_servers.split(','):
@@ -890,6 +889,7 @@ async def query_db_active_num(p_db_id,p_begin_date,p_end_date):
     res = {}
     sql = """SELECT 
                    DATE_FORMAT(create_date,'%Y-%m-%d %H') AS rq,
+                   ROUND(AVG(total_connect),2) AS val_total,
                    ROUND(AVG(active_connect),2) AS val_active,
                    ROUND(AVG(db_qps),2) AS val_qps,
                    ROUND(AVG(db_tps),2) AS val_tps
@@ -901,24 +901,52 @@ async def query_db_active_num(p_db_id,p_begin_date,p_end_date):
                ORDER BY 1 """.format(p_db_id, p_begin_date, p_end_date)
     x = []
     y = []
+    x_total = []
+    y_total = []
     x_qps = []
     y_qps = []
     x_tps = []
     y_tps = []
     for r in await async_processer.query_list(sql):
+        x_total.append(r[0])
+        y_total.append(r[1])
         x.append(r[0])
-        y.append(r[1])
+        y.append(r[2])
         x_qps.append(r[0])
-        y_qps.append(r[2])
+        y_qps.append(r[3])
         x_tps.append(r[0])
-        y_tps.append(r[3])
+        y_tps.append(r[4])
     res['amount'] = {}
     res['amount']['x'] = x
     res['amount']['y'] = y
+    res['amount']['x_total'] = x_total
+    res['amount']['y_total'] = y_total
     res['amount']['x_qps'] = x_qps
     res['amount']['y_qps'] = y_qps
     res['amount']['x_tps'] = x_tps
     res['amount']['y_tps'] = y_tps
+    return res
+
+async def query_db_order_num():
+    res = {}
+    sql = """
+            SELECT 
+               a.rq,
+               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=16 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hst,
+               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=84 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hft
+            FROM (SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -t.help_topic_id DAY),'%Y-%m-%d') AS 'rq'  
+            FROM mysql.help_topic t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
+    x = []
+    y_hst = []
+    y_hft = []
+
+    for r in await async_processer.query_list(sql):
+        x.append(r[0])
+        y_hst.append(r[1])
+        y_hft.append(r[2])
+    res['amount'] = {}
+    res['amount']['x'] = x
+    res['amount']['y'] = [y_hst,y_hft]
     return res
 
 async def query_db_slow_num(p_inst_id,p_ds_id,p_begin_date,p_end_date):
