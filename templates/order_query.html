@@ -5,6 +5,7 @@
     <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
     <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
     <style>
        .modal-lg-templete {
@@ -170,6 +171,10 @@
             </div>
             <div class="modal-body">
                  <div class="row">
+                    <div class="row">
+                        <label>运行库 &nbsp;&nbsp;：</label>
+                        <span id ='run_db_detail' style="color:red"></span>
+                   </div>
                     <div  class="tab-pane active">
                        <div class="row">
                             <h5>执行时间：</h5>
@@ -184,13 +189,13 @@
                     </div>
                     <div id="rollback_templete" class="tab-pane" >
                         <div class="row">
-                            <label id="rollback-label">回滚语句：</label>
+                            <label id="rollback-label">回滚语句&nbsp;</label><span id="span-rollback"><i class="ion-arrow-down-b"></i></span>
                             <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
                          </div>
                     </div>
                     <div id="error_templete" class="tab-pane">
                         <div class="row">
-                            <label id="error-label">运行错误：</label>
+                            <label id="error-label">运行错误&nbsp;</label><span id="span-error"><i class="ion-arrow-down-b"></i></span>
                             <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
                          </div>
                     </div>
@@ -882,6 +887,13 @@
                     setEditor('ace-editor-release',format_sql(dataSet.message.sqltext))
                     setEditor('ace-editor-rollback',dataSet.message.rollback_statement)
                     setEditor('ace-editor-error',dataSet.message.error)
+                      if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
+                         console.log('aaa')
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
+                    } else {
+                        console.log('bbb')
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
+                    }
                     $('#run_time_detail').text(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
@@ -1462,16 +1474,20 @@
     $('#rollback-label').click(function(){
         if ($('#ace-editor-rollback').css('display') == 'none') {
             $('#ace-editor-rollback').css("display","block");
+            $('#span-rollback').html('<i class="ion-arrow-up-b"></i>');
         } else {
             $('#ace-editor-rollback').css("display","none");
+            $('#span-rollback').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 
     $('#error-label').click(function(){
         if ($('#ace-editor-error').css('display') == 'none') {
             $('#ace-editor-error').css("display","block");
+            $('#span-error').html('<i class="ion-arrow-up-b"></i>');
         } else {
             $('#ace-editor-error').css("display","none");
+            $('#span-error').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 

@@ -115,12 +115,12 @@
                 </div>
                 <br>
                 <div class="row">
-                   <label id="rollback-label">回滚语句：</label>
+                   <label id="rollback-label">回滚语句&nbsp;</label><span id="span-rollback"><i class="ion-arrow-down-b"></i></span>
                    <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
                 </div>
                 <br>
                 <div class="row">
-                  <label id="error-label">运行错误：</label>
+                  <label id="error-label">运行错误&nbsp;</label><span id="span-error"><i class="ion-arrow-down-b"></i></span>
                   <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
                 </div>
             </div>
@@ -152,11 +152,8 @@
 
     $(document).ready(function() {
          //可搜索选择框初始化
-          $('.selectpicker').selectpicker({
-              size: 10
-          });
+          $('.selectpicker').selectpicker({ size: 10 });
           $(":file").filestyle({input: false});
-
           set_editor('ace-editor');
           set_editor('ace-editor-rollback');
           set_editor('ace-editor-error');
@@ -433,16 +430,20 @@
      $('#rollback-label').click(function(){
         if ($('#ace-editor-rollback').css('display') == 'none') {
             $('#ace-editor-rollback').css("display","block");
+            $('#span-rollback').html('<i class="ion-arrow-up-b"></i>');
         } else {
             $('#ace-editor-rollback').css("display","none");
+            $('#span-rollback').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 
     $('#error-label').click(function(){
         if ($('#ace-editor-error').css('display') == 'none') {
             $('#ace-editor-error').css("display","block");
+            $('#span-error').html('<i class="ion-arrow-up-b"></i>');
         } else {
             $('#ace-editor-error').css("display","none");
+            $('#span-error').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 
