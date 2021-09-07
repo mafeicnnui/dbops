@@ -345,11 +345,11 @@ async def release_order(p_order_no,p_userid):
         result['message'] = '发布失败!'
         return result
 
-async def get_order_xh(p_type,p_rq):
+async def get_order_xh(p_type,p_rq,p_dbid):
     result = {}
     try:
         st ="""SELECT COUNT(0)+1  as xh FROM t_sql_release 
-                    WHERE TYPE='{}' AND DATE_FORMAT(creation_date,'%Y%m%d')='{}'""".format(p_type,p_rq)
+                    WHERE dbid={} and TYPE='{}' AND DATE_FORMAT(creation_date,'%Y%m%d')='{}'""".format(p_dbid,p_type,p_rq)
         res = await async_processer.query_dict_one(st)
         print(st)
         result['code']='0'
@@ -377,8 +377,13 @@ async def check_order_xh(p_message):
         return result
 
 async def query_audit_sql(id):
-    sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time,a.db from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
+    sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time,a.db,a.dbid from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(sql)
+
+    ds = await get_ds_by_dsid(rs['dbid'])
+    ds['service'] = rs['db']
+    rs['ds'] = ds
+
     result = {}
     result['code'] = '0'
     result['message'] = rs
@@ -556,6 +561,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         elif check_statement_count(sql) > 1:
             logging.info(('exec multi statement:'))
             logging.info(('-----------------------------------------'))
+            #await async_processer.exec_sql_by_ds_multi(p_ds, sql)
             for st in reReplace(sql):
                 logging.info(('statement=',st))
                 await async_processer.exec_sql_by_ds(p_ds, st)
@@ -588,7 +594,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$STATUS$$',  status)
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
         v_content = v_content.replace('$$ERROR$$','')
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,v_content)
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,v_content)
 
         res['code'] = '0'
         res['message'] = '执行成功!'
@@ -618,7 +624,7 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email, v_title,
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,
                         v_content)
 
         return res

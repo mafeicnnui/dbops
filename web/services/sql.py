@@ -433,7 +433,8 @@ class order_query_xh(basehandler):
         userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
         tp     = self.get_argument("type")
         rq     = self.get_argument("rq")
-        v_list = await get_order_xh(tp, rq)
+        dbid   = self.get_argument("dbid")
+        v_list = await get_order_xh(tp, rq,dbid)
         v_json = json.dumps(v_list)
         self.write(v_json)
 

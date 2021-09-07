@@ -413,13 +413,15 @@ def get_available_port():
         if socket_port("smtp.exmail.qq.com",p):
             return p
 
-def send_mail_25(p_sendserver,p_from_user,p_from_pass,p_to_user,p_title,p_content):
+def send_mail_25(p_sendserver,p_from_user,p_from_pass,p_to_user,p_to_cc,p_title,p_content):
     to_user=p_to_user.split(",")
+    to_cc = p_to_cc.split(",")
     try:
         msg = MIMEText(p_content,'html','utf-8')
         msg["Subject"] = p_title
         msg["From"]    = p_from_user
         msg["To"]      = ",".join(to_user)
+        msg["Cc"]      = ",".join(to_cc)
         server = smtplib.SMTP(p_sendserver, 25)
         server.set_debuglevel(0)
         server.login(p_from_user, p_from_pass)
@@ -428,13 +430,15 @@ def send_mail_25(p_sendserver,p_from_user,p_from_pass,p_to_user,p_title,p_conten
     except smtplib.SMTPException as e:
         print(e)
 
-def send_mail_465(p_sendserver,p_from_user,p_from_pass,p_to_user,p_title,p_content):
-    to_user=p_to_user.split(",")
+def send_mail_465(p_sendserver,p_from_user,p_from_pass,p_to_user,p_to_cc,p_title,p_content):
+    to_user = p_to_user.split(",")
+    to_cc = p_to_cc.split(",")
     try:
         msg = MIMEText(p_content,'html','utf-8')
         msg["Subject"] = p_title
         msg["From"]    = p_from_user
         msg["To"]      = ",".join(to_user)
+        msg["Cc"]       = ",".join(to_cc)
         server = smtplib.SMTP_SSL(p_sendserver, 465)
         server.set_debuglevel(0)
         server.login(p_from_user, p_from_pass)
@@ -443,15 +447,15 @@ def send_mail_465(p_sendserver,p_from_user,p_from_pass,p_to_user,p_title,p_conte
     except smtplib.SMTPException as e:
         print(e)
 
-def send_mail_param(p_sendserver,p_from_user, p_from_pass, p_to_user, p_title, p_content):
+def send_mail_param(p_sendserver,p_from_user, p_from_pass, p_to_user, p_to_cc,p_title, p_content):
     try:
         port = get_available_port()
         if port == 465:
            print('send_mail_465')
-           send_mail_465(p_sendserver,p_from_user, p_from_pass, p_to_user, p_title, p_content)
+           send_mail_465(p_sendserver,p_from_user, p_from_pass, p_to_user,p_to_cc, p_title, p_content)
         else:
            print('send_mail_25')
-           send_mail_25(p_sendserver,p_from_user, p_from_pass, p_to_user, p_title, p_content)
+           send_mail_25(p_sendserver,p_from_user, p_from_pass, p_to_user,p_to_cc, p_title, p_content)
         print('send_mail_param send success!')
     except :
         print("send_mail_param exception:")

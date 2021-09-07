@@ -10,7 +10,7 @@ import logging
 import traceback
 from web.model.t_ds    import get_ds_by_dsid_by_cdb
 from web.utils.common  import format_sql,format_exception
-from web.utils.mysql_async import async_processer
+from web.utils.mysql_async import async_processer,reReplace
 
 def is_number(str):
   try:
@@ -1619,50 +1619,50 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
 
     return res
 
-def preProcesses(matched):
-    value = matched.group(0)
-    return value.replace(';','^^^')
+# def preProcesses(matched):
+#     value = matched.group(0)
+#     return value.replace(';','^^^')
 
-def reReplace(p_sql):
-    p_sql_pre=p_sql
-    pattern0 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
-    if pattern0.findall(p_sql) != []:
-       logging.info('一: 将comment中的;替换为^^^ ...')
-       p_sql_pre = re.sub(pattern0,preProcesses,p_sql)
-       logging.info(('1:',p_sql_pre))
-
-    pattern1 = re.compile(r'(\s*\)\s*;\s*)')
-    if pattern1.findall(p_sql_pre)!=[]:
-       logging.info('二: 将);替换为)$$$ ...')
-       p_sql_pre = re.sub(pattern1, ')$$$', p_sql_pre)
-       logging.info(('2:', p_sql_pre))
-
-    pattern2 = re.compile(r'(\s*\'\s*;\s*)')
-    if pattern2.findall(p_sql_pre) != []:
-       logging.info('三: 将\';替换为\'$$$ ...')
-       p_sql_pre = re.sub(pattern2, "'$$$", p_sql_pre)
-       logging.info(('3:', p_sql_pre))
-
-    pattern3 = re.compile(r'(\s*;\s*)')
-    if pattern3.findall(p_sql_pre) != []:
-        logging.info('四: 将;替换为$$$')
-        p_sql_pre = re.sub(pattern3, "$$$\n", p_sql_pre)
-        logging.info(('4:', p_sql_pre))
-
-    logging.info('五: 通过$$$将p_sql_pre处理为列表...')
-    p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
-    logging.info(('5=', p_sql_pre))
-    logging.info('5-len=', len(p_sql_pre))
-
-    logging.info(('六: 将列表中每个语句comment中的^^^替为;...'))
-    p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
-    logging.info(('6=', p_sql_pre))
-    logging.info(('6-len=', len(p_sql_pre)))
-
-    if len(p_sql_pre) == 1:
-       return [p_sql]
-    else:
-       return  p_sql_pre
+# def reReplace(p_sql):
+#     p_sql_pre=p_sql
+#     pattern0 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
+#     if pattern0.findall(p_sql) != []:
+#        logging.info('一: 将comment中的;替换为^^^ ...')
+#        p_sql_pre = re.sub(pattern0,preProcesses,p_sql)
+#        logging.info(('1:',p_sql_pre))
+#
+#     pattern1 = re.compile(r'(\s*\)\s*;\s*)')
+#     if pattern1.findall(p_sql_pre)!=[]:
+#        logging.info('二: 将);替换为)$$$ ...')
+#        p_sql_pre = re.sub(pattern1, ')$$$', p_sql_pre)
+#        logging.info(('2:', p_sql_pre))
+#
+#     pattern2 = re.compile(r'(\s*\'\s*;\s*)')
+#     if pattern2.findall(p_sql_pre) != []:
+#        logging.info('三: 将\';替换为\'$$$ ...')
+#        p_sql_pre = re.sub(pattern2, "'$$$", p_sql_pre)
+#        logging.info(('3:', p_sql_pre))
+#
+#     pattern3 = re.compile(r'(\s*;\s*)')
+#     if pattern3.findall(p_sql_pre) != []:
+#         logging.info('四: 将;替换为$$$')
+#         p_sql_pre = re.sub(pattern3, "$$$\n", p_sql_pre)
+#         logging.info(('4:', p_sql_pre))
+#
+#     logging.info('五: 通过$$$将p_sql_pre处理为列表...')
+#     p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
+#     logging.info(('5=', p_sql_pre))
+#     logging.info('5-len=', len(p_sql_pre))
+#
+#     logging.info(('六: 将列表中每个语句comment中的^^^替为;...'))
+#     p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
+#     logging.info(('6=', p_sql_pre))
+#     logging.info(('6-len=', len(p_sql_pre)))
+#
+#     if len(p_sql_pre) == 1:
+#        return [p_sql]
+#     else:
+#        return  p_sql_pre
 
 def check_statement_count(p_sql):
     out = [i for i in reReplace(p_sql) if i != '']
