@@ -28,7 +28,7 @@ from web.urls.monitor  import monitor
 from web.urls.inst     import inst
 from web.urls.slow     import slow
 from web.urls.minio    import minio
-from web.urls.bbtj    import bbtj
+from web.urls.bbtj     import bbtj
 
 
 urls = []

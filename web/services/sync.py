@@ -11,7 +11,7 @@ from   web.model.t_sync import query_sync,query_sync_tab,query_sync_tab_cfg,save
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
-from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx
+from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx,query_db_order_num
 from   web.utils.common import current_rq2,get_day_nday_ago,now,DateEncoder
 from   web.utils.basehandler import basehandler
 
@@ -487,6 +487,13 @@ class db_active_num(basehandler):
         begin_date  = self.get_argument("begin_date")
         end_date    = self.get_argument("end_date")
         v_list      = await query_db_active_num(db_id,begin_date,end_date)
+        v_json      = json.dumps(v_list)
+        self.write(v_json)
+
+class db_order_num(basehandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_list      = await query_db_order_num()
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
