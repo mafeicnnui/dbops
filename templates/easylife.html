@@ -34,15 +34,15 @@
           min-height: 180px;
         }
 
-        #active_num_hopson_biz_55,#slow_num_hopson_biz_23_55,#qps_num_hopson_biz_55,#tps_num_hopson_biz_55{
+        #active_num_hopson_biz_55,#total_num_hopson_biz_55,#qps_num_hopson_biz_55,#tps_num_hopson_biz_55{
             width:350px;
             height:165px;
         }
-        #active_num_hopson_biz_slave_88,#slow_num_hopson_biz_slave_38_88,#qps_num_hopson_biz_slave_88,#tps_num_hopson_biz_slave_88{
+        #active_num_hopson_biz_slave_88,#total_num_hopson_biz_slave_88,#qps_num_hopson_biz_slave_88,#tps_num_hopson_biz_slave_88{
             width:350px;
             height:165px;
         }
-        #active_num_hopson_bi_54,#slow_num_hopson_bi_24_54,#qps_num_hopson_bi_54,#tps_num_hopson_bi_54{
+        #active_num_hopson_bi_54,#total_num_hopson_bi_54,#qps_num_hopson_bi_54,#tps_num_hopson_bi_54{
             width:350px;
             height:165px;
         }
@@ -199,14 +199,14 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='active_num_hopson_biz_55'></div>
+                                <div id='total_num_hopson_biz_55'></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_hopson_biz_23_55'></div>
+                                <div id='active_num_hopson_biz_55'></div>
                              </div>
                         </div>
                     </div>
@@ -238,14 +238,14 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='active_num_hopson_biz_slave_88'></div>
+                                <div id='total_num_hopson_biz_slave_88'></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_hopson_biz_slave_38_88'></div>
+                                <div id='active_num_hopson_biz_slave_88'></div>
                              </div>
                         </div>
                     </div>
@@ -278,14 +278,14 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='active_num_hopson_bi_54'></div>
+                                <div id='total_num_hopson_bi_54'></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                 <div id='slow_num_hopson_bi_24_54'></div>
+                                 <div id='active_num_hopson_bi_54'></div>
                             </div>
                         </div>
                     </div>
@@ -573,16 +573,15 @@
         }
 
         function get_contents_from_div(p_id,p_render_id) {
-                var dbid=p_id.split('_')[p_id.split('_').length - 1];
-                if (p_id.indexOf("slow") >= 0 ) {
-                      var inst_id=p_id.split('_')[p_id.split('_').length - 2];
+                var db_id=p_id.split('_')[p_id.split('_').length - 1];
+                if (p_id.indexOf("total") >= 0 ) {
                       $.ajax({
-                            url: "/get/db/slow/num",
+                            url: "/get/db/active/num",
                             type: "post",
                             data: {
-                                'inst_id'   : inst_id,
-                                'begin_date': $('#begin_date').val(),
-                                'end_date'  : $('#end_date').val()
+                                 'db_id'     : db_id,
+                                 'begin_date': $('#begin_date').val(),
+                                 'end_date'  : $('#end_date').val()
                             },
                             datatype: "json",
                             beforeSend: function () {
@@ -592,19 +591,17 @@
                                 end_Loader(p_render_id)
                             },
                             success: function (dataSet) {
-                                get_charts(p_render_id,'慢查询条数',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                                get_charts(p_render_id, '总连接数',dataSet['amount']['x_total'], dataSet['amount']['y_total'],'#6495ED')
+                                get_charts(p_render_id.replace('total','active'), '活跃连接数',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                                get_charts(p_render_id.replace('total','qps'), '每秒查询数',dataSet['amount']['x_qps'], dataSet['amount']['y_qps'],'#6495ED')
+                                get_charts(p_render_id.replace('total','tps'), '每秒事务数',dataSet['amount']['x_tps'], dataSet['amount']['y_tps'],'#6495ED')
                             }
                       });
 
-                }  else if (p_id.indexOf("active") >= 0 ) {
+                }  else if (p_id.indexOf("order") >= 0 ) {
                     $.ajax({
-                        url: "/get/db/active/num",
+                        url: "/get/db/order/num",
                         type: "post",
-                        data: {
-                             'db_id'     : dbid,
-                             'begin_date': $('#begin_date').val(),
-                             'end_date'  : $('#end_date').val()
-                        },
                         datatype: "json",
                         beforeSend: function () {
                             start_Loader(p_render_id)
@@ -613,63 +610,21 @@
                             end_Loader(p_render_id)
                         },
                         success: function (dataSet) {
-                            get_charts(p_render_id, '活跃连接数',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                            console.log(dataSet)
+                            get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
                         }
                     });
-                }  else if (p_id.indexOf("qps") >= 0 ) {
-                     $.ajax({
-                        url: "/get/db/active/num",
-                        type: "post",
-                        data: {
-                             'db_id'     : dbid,
-                             'begin_date': $('#begin_date').val(),
-                             'end_date'  : $('#end_date').val()
-                        },
-                        datatype: "json",
-                        beforeSend: function () {
-                            start_Loader(p_render_id)
-                        },
-                        complete: function () {
-                            end_Loader(p_render_id)
-                        },
-                        success: function (dataSet) {
-                            get_charts(p_render_id, '每秒查询数',dataSet['amount']['x_qps'], dataSet['amount']['y_qps'],'#6495ED')
-                        }
-                    });
-
-                }  else if (p_id.indexOf("tps") >= 0 ) {
-                     $.ajax({
-                        url: "/get/db/active/num",
-                        type: "post",
-                        data: {
-                              'db_id'     : dbid,
-                              'begin_date': $('#begin_date').val(),
-                              'end_date'  : $('#end_date').val()
-                        },
-                        datatype: "json",
-                        beforeSend: function () {
-                            start_Loader(p_render_id)
-                        },
-                        complete: function () {
-                            end_Loader(p_render_id)
-                        },
-                        success: function (dataSet) {
-                            get_charts(p_render_id, '每秒事务数',dataSet['amount']['x_tps'], dataSet['amount']['y_tps'],'#6495ED')
-                        }
-                    });
-
                 }
             }
 
         function get_contents_from_div_large(p_id,p_render_id) {
                 var dbid=p_id.split('_')[p_id.split('_').length - 1];
-                if (p_id.indexOf("slow") >= 0 ) {
-                      var inst_id=p_id.split('_')[p_id.split('_').length - 2];
+                if (p_id.indexOf("total") >= 0 ) {
                       $.ajax({
-                            url: "/get/db/slow/num",
+                            url: "/get/db/active/num",
                             type: "post",
                             data: {
-                                'inst_id'   : inst_id,
+                                'db_id'     : dbid,
                                 'begin_date': $('#begin_date').val(),
                                 'end_date'  : $('#end_date').val()
                             },
@@ -681,7 +636,7 @@
                                 end_Loader(p_render_id)
                             },
                             success: function (dataSet) {
-                                get_charts_large(p_render_id,'慢查询条数',dataSet['amount']['x'], dataSet['amount']['y'],'#edc4a7')
+                                get_charts_large(p_render_id,'总连接数',dataSet['amount']['x_total'], dataSet['amount']['y_total'],'#edc4a7')
                             }
                       });
 
@@ -809,7 +764,7 @@
 
             $(".fixed-panel>div").each(function(){
                id = $(this).attr('id');
-               if (!(id===undefined) && (id!='monitor_review')) {
+               if (!(id===undefined) && (id!='monitor_review') &&(id.indexOf('total')>=0)) {
                    get_contents_from_div(id,id)
                }
             });

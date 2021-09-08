@@ -23,17 +23,17 @@
           min-height: 180px;
         }
 
-        #active_num_dbops_db1_153,#slow_num_dbops_db1_44_153,#qps_num_dbops_db1_153,#tps_num_dbops_db1_153{
+        #total_num_dbops_db1_153,#active_num_dbops_db1_153,#qps_num_dbops_db1_153,#tps_num_dbops_db1_153{
             width:350px;
             height:165px;
         }
 
-        #active_num_dbops_db2_154,#slow_num_dbops_db2_45_154,#qps_num_dbops_db2_154,#tps_num_dbops_db2_154{
+        #total_num_dbops_db2_154,#active_num_dbops_db2_154,#qps_num_dbops_db2_154,#tps_num_dbops_db2_154{
             width:350px;
             height:165px;
         }
 
-        #active_num_dbops_db3_155,#slow_num_dbops_db3_46_155,#qps_num_dbops_db3_155,#tps_num_dbops_db3_155{
+        #total_num_dbops_db3_155,#active_num_dbops_db3_155,#qps_num_dbops_db3_155,#tps_num_dbops_db3_155{
             width:350px;
             height:165px;
         }
@@ -296,14 +296,14 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='active_num_dbops_db1_153'></div>
+                                <div id='total_num_dbops_db1_153'></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_dbops_db1_44_153'></div>
+                                <div id='active_num_dbops_db1_153'></div>
                              </div>
                         </div>
                     </div>
@@ -335,14 +335,14 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='active_num_dbops_db2_154'></div>
+                                <div id='total_num_dbops_db2_154'></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_dbops_db2_45_154'></div>
+                                <div id='active_num_dbops_db2_154'></div>
                              </div>
                         </div>
                     </div>
@@ -375,14 +375,14 @@
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='active_num_dbops_db3_155'></div>
+                                <div id='total_num_dbops_db3_155'></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                          <div class="panel panel-border panel-primary">
                             <div class="panel-body fixed-panel">
-                                <div id='slow_num_dbops_db3_46_155'></div>
+                                <div id='active_num_dbops_db3_155'></div>
                              </div>
                         </div>
                     </div>
@@ -669,17 +669,15 @@
         }
 
         function get_contents_from_div(p_id,p_render_id) {
-                var dbid=p_id.split('_')[p_id.split('_').length - 1];
-                if (p_id.indexOf("slow") >= 0 ) {
-                      var inst_id=p_id.split('_')[p_id.split('_').length - 2];
-                      console.log('inst_id=',inst_id)
+                var db_id=p_id.split('_')[p_id.split('_').length - 1];
+                if (p_id.indexOf("total") >= 0 ) {
                       $.ajax({
-                            url: "/get/db/slow/num",
+                            url: "/get/db/active/num",
                             type: "post",
                             data: {
-                                'inst_id'   : inst_id,
-                                'begin_date': $('#begin_date').val(),
-                                'end_date'  : $('#end_date').val()
+                                 'db_id'     : db_id,
+                                 'begin_date': $('#begin_date').val(),
+                                 'end_date'  : $('#end_date').val()
                             },
                             datatype: "json",
                             beforeSend: function () {
@@ -689,20 +687,17 @@
                                 end_Loader(p_render_id)
                             },
                             success: function (dataSet) {
-                                get_charts(p_render_id,'慢查询条数',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                                get_charts(p_render_id, '总连接数',dataSet['amount']['x_total'], dataSet['amount']['y_total'],'#6495ED')
+                                get_charts(p_render_id.replace('total','active'), '活跃连接数',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                                get_charts(p_render_id.replace('total','qps'), '每秒查询数',dataSet['amount']['x_qps'], dataSet['amount']['y_qps'],'#6495ED')
+                                get_charts(p_render_id.replace('total','tps'), '每秒事务数',dataSet['amount']['x_tps'], dataSet['amount']['y_tps'],'#6495ED')
                             }
                       });
 
-                }  else if (p_id.indexOf("active") >= 0 ) {
-                    console.log('active=',dbid,p_id);
+                }  else if (p_id.indexOf("order") >= 0 ) {
                     $.ajax({
-                        url: "/get/db/active/num",
+                        url: "/get/db/order/num",
                         type: "post",
-                        data: {
-                             'db_id'     : dbid,
-                             'begin_date': $('#begin_date').val(),
-                             'end_date'  : $('#end_date').val()
-                        },
                         datatype: "json",
                         beforeSend: function () {
                             start_Loader(p_render_id)
@@ -711,102 +706,21 @@
                             end_Loader(p_render_id)
                         },
                         success: function (dataSet) {
-                            get_charts(p_render_id, '活跃连接数',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                            console.log(dataSet)
+                            get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
                         }
                     });
-                }  else if (p_id.indexOf("qps") >= 0 ) {
-                     $.ajax({
-                        url: "/get/db/active/num",
-                        type: "post",
-                        data: {
-                             'db_id'     : dbid,
-                             'begin_date': $('#begin_date').val(),
-                             'end_date'  : $('#end_date').val()
-                        },
-                        datatype: "json",
-                        beforeSend: function () {
-                            start_Loader(p_render_id)
-                        },
-                        complete: function () {
-                            end_Loader(p_render_id)
-                        },
-                        success: function (dataSet) {
-                            get_charts(p_render_id, '每秒查询数',dataSet['amount']['x_qps'], dataSet['amount']['y_qps'],'#6495ED')
-                        }
-                    });
-
-                }  else if (p_id.indexOf("tps") >= 0 ) {
-                     $.ajax({
-                        url: "/get/db/active/num",
-                        type: "post",
-                        data: {
-                              'db_id'     : dbid,
-                              'begin_date': $('#begin_date').val(),
-                              'end_date'  : $('#end_date').val()
-                        },
-                        datatype: "json",
-                        beforeSend: function () {
-                            start_Loader(p_render_id)
-                        },
-                        complete: function () {
-                            end_Loader(p_render_id)
-                        },
-                        success: function (dataSet) {
-                            get_charts(p_render_id, '每秒事务数',dataSet['amount']['x_tps'], dataSet['amount']['y_tps'],'#6495ED')
-                        }
-                    });
-
                 }
             }
 
-        function get_contents_from_div_server(p_id,p_render_id) {
-            var server_id=p_id.split('_')[p_id.split('_').length - 1];
-            $.ajax({
-                    url: "/get/sys/stats/num",
-                    type: "post",
-                    data: {
-                        'server_id'   : server_id,
-                        'begin_date': $('#begin_date').val(),
-                        'end_date'  : $('#end_date').val()
-                    },
-                    datatype: "json",
-                    beforeSend: function () {
-                        start_Loader(p_render_id)
-                    },
-                    complete: function () {
-                        end_Loader(p_render_id)
-                    },
-                    success: function (dataSet) {
-                        console.log('/get/sys/stats/num=',dataSet)
-                        if (p_id.indexOf("cpu") >= 0 ) {
-                            get_charts(p_render_id, 'CPU使用率[%]', dataSet['rq'], dataSet['cpu_usage'], '#6495ED')
-                        } else if (p_id.indexOf("mem") >= 0 ) {
-                            get_charts(p_render_id, '内存使用率[%]', dataSet['rq'], dataSet['mem_usage'], '#6495ED')
-                        } else if (p_id.indexOf("disk_usage") >= 0 ) {
-                            get_charts(p_render_id, '磁盘使用率[%]', dataSet['rq'], dataSet['disk_usage'], '#6495ED')
-                        } else if (p_id.indexOf("disk_read") >= 0 ) {
-                            get_charts(p_render_id, '磁盘读[kb]', dataSet['rq'], dataSet['disk_read'], '#6495ED')
-                        } else if (p_id.indexOf("disk_write") >= 0 ) {
-                            get_charts(p_render_id, '磁盘写[kb]', dataSet['rq'], dataSet['disk_write'], '#6495ED')
-                        } else if (p_id.indexOf("net_in") >= 0 ) {
-                            get_charts(p_render_id, '网络流入[kb]', dataSet['rq'], dataSet['net_in'], '#6495ED')
-                        } else if (p_id.indexOf("net_out") >= 0 ) {
-                            get_charts(p_render_id, '网络流出[kb]', dataSet['rq'], dataSet['net_out'], '#6495ED')
-                        }
-                    }
-              })
-        }
-
         function get_contents_from_div_large(p_id,p_render_id) {
                 var dbid=p_id.split('_')[p_id.split('_').length - 1];
-                if (p_id.indexOf("slow") >= 0 ) {
-                      var inst_id=p_id.split('_')[p_id.split('_').length - 2];
-                      console.log('inst_id=',inst_id)
+                if (p_id.indexOf("total") >= 0 ) {
                       $.ajax({
-                            url: "/get/db/slow/num",
+                            url: "/get/db/active/num",
                             type: "post",
                             data: {
-                                'inst_id'   : inst_id,
+                                'db_id'     : dbid,
                                 'begin_date': $('#begin_date').val(),
                                 'end_date'  : $('#end_date').val()
                             },
@@ -818,7 +732,7 @@
                                 end_Loader(p_render_id)
                             },
                             success: function (dataSet) {
-                                get_charts_large(p_render_id,'慢查询条数',dataSet['amount']['x'], dataSet['amount']['y'],'#edc4a7')
+                                get_charts_large(p_render_id,'总连接数',dataSet['amount']['x_total'], dataSet['amount']['y_total'],'#edc4a7')
                             }
                       });
 
@@ -886,6 +800,44 @@
 
                 }
             }
+
+        function get_contents_from_div_server(p_id,p_render_id) {
+            var server_id=p_id.split('_')[p_id.split('_').length - 1];
+            $.ajax({
+                    url: "/get/sys/stats/num",
+                    type: "post",
+                    data: {
+                        'server_id'   : server_id,
+                        'begin_date': $('#begin_date').val(),
+                        'end_date'  : $('#end_date').val()
+                    },
+                    datatype: "json",
+                    beforeSend: function () {
+                        start_Loader(p_render_id)
+                    },
+                    complete: function () {
+                        end_Loader(p_render_id)
+                    },
+                    success: function (dataSet) {
+                        console.log('/get/sys/stats/num=',dataSet)
+                        if (p_id.indexOf("cpu") >= 0 ) {
+                            get_charts(p_render_id, 'CPU使用率[%]', dataSet['rq'], dataSet['cpu_usage'], '#6495ED')
+                        } else if (p_id.indexOf("mem") >= 0 ) {
+                            get_charts(p_render_id, '内存使用率[%]', dataSet['rq'], dataSet['mem_usage'], '#6495ED')
+                        } else if (p_id.indexOf("disk_usage") >= 0 ) {
+                            get_charts(p_render_id, '磁盘使用率[%]', dataSet['rq'], dataSet['disk_usage'], '#6495ED')
+                        } else if (p_id.indexOf("disk_read") >= 0 ) {
+                            get_charts(p_render_id, '磁盘读[kb]', dataSet['rq'], dataSet['disk_read'], '#6495ED')
+                        } else if (p_id.indexOf("disk_write") >= 0 ) {
+                            get_charts(p_render_id, '磁盘写[kb]', dataSet['rq'], dataSet['disk_write'], '#6495ED')
+                        } else if (p_id.indexOf("net_in") >= 0 ) {
+                            get_charts(p_render_id, '网络流入[kb]', dataSet['rq'], dataSet['net_in'], '#6495ED')
+                        } else if (p_id.indexOf("net_out") >= 0 ) {
+                            get_charts(p_render_id, '网络流出[kb]', dataSet['rq'], dataSet['net_out'], '#6495ED')
+                        }
+                    }
+              })
+        }
 
         function get_contents_from_div_server_large(p_id,p_render_id) {
             var server_id=p_id.split('_')[p_id.split('_').length - 1];
