@@ -353,9 +353,10 @@ async def get_order_xh(p_type,p_rq,p_dbid):
         res = await async_processer.query_dict_one(st)
         print(st)
         result['code']='0'
-        if res['xh'] is None:
+        if res['xh']=='':
            result['message'] = 1
         else:
+           print('xh=',res['xh'])
            result['message']=int(res['xh'].split('-')[-1])+1
         return result
     except:
@@ -488,10 +489,12 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time,p_username,p_host):
         v_content = v_content.replace('$$CREATOR$$', creator)
         v_content = v_content.replace('$$TYPE$$', otype)
         v_content = v_content.replace('$$STATUS$$', status)
-        if p_host=="124.127.103.190":
-           p_host = "124.127.103.190:65482"
-        elif p_host.find(':')>=0:
-           p_host = p_host+':81'
+        if p_host == "124.127.103.190":
+            p_host = "124.127.103.190:65482"
+        elif p_host.find(':') >= 0:
+            p_host = p_host
+        else:
+            p_host = p_host + ':81'
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sqlid))
         v_content = v_content.replace('$$ERROR$$', '')
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
@@ -527,6 +530,9 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message,p_host):
         v_title = '工单审核情况[{}]'.format(wkno['message'])
         nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         creator = (await get_user_by_loginame(wkno['creator']))['name']
+        print('creater=',creator)
+        creater_mail =  (await get_user_by_loginame(wkno['creator']))['email']
+        print('creater_mail=', creater_mail)
         auditor = (await get_user_by_loginame(wkno['auditor']))['name']
         otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
         status = (await get_dmmc_from_dm('41', wkno['status']))[0]
@@ -541,11 +547,13 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message,p_host):
         if p_host=="124.127.103.190":
            p_host = "124.127.103.190:65482"
         elif p_host.find(':')>=0:
+           p_host = p_host
+        else:
            p_host = p_host+':81'
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sqlid))
         v_content = v_content.replace('$$ERROR$$', '')
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
-                        settings.get('CC'), v_title, v_content)
+                        creater_mail, v_title, v_content)
 
         result['code']='0'
         result['message']='审核成功!'
@@ -688,10 +696,12 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$AUDITOR$$', auditor )
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
-        if p_host=="124.127.103.190":
-           p_host = "124.127.103.190:65482"
-        elif p_host.find(':')>=0:
-           p_host = p_host+':81'
+        if p_host == "124.127.103.190":
+            p_host = "124.127.103.190:65482"
+        elif p_host.find(':') >= 0:
+            p_host = p_host
+        else:
+            p_host = p_host + ':81'
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sql_id))
         v_content = v_content.replace('$$ERROR$$','')
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,v_content)
@@ -722,7 +732,13 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$AUDITOR$$', auditor)
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
+        if p_host == "124.127.103.190":
+            p_host = "124.127.103.190:65482"
+        elif p_host.find(':') >= 0:
+            p_host = p_host
+        else:
+            p_host = p_host + ':81'
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,
                         v_content)
 

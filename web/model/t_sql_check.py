@@ -1494,9 +1494,13 @@ async def get_dml_rows(p_ds,p_sql):
            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
            return rs[0]
         elif op in('UPDATE'):
-           st = '''select count(0) from {0} {1}'''.\
-                   format(p_sql[p_sql.upper().find('UPDATE')+6:p_sql.upper().find('SET')],
-                          p_sql[p_sql.upper().find('WHERE'):])
+           if p_sql.upper().find('WHERE')>=0:
+               st = '''select count(0) from {0} {1}'''.\
+                       format(p_sql[p_sql.upper().find('UPDATE')+6:p_sql.upper().find('SET')],
+                              p_sql[p_sql.upper().find('WHERE'):])
+           else:
+               st = '''select count(0) from {0} '''. \
+                   format(p_sql[p_sql.upper().find('UPDATE') + 6:p_sql.upper().find('SET')])
            rs = await async_processer.query_one_by_ds(p_ds, st)
            if rs[0] == 0:
                return '表:{0}更新0行!'.format(ob)
@@ -1990,7 +1994,7 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
                 if op in ('UPDATE', 'DELETE'):
                     print('检测DML语句条件...')
                     match = re.search(r'(\s*where\s*)', p_sql.upper().strip(), re.IGNORECASE)
-                    if match.group() is None:
+                    if match is None:
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
 

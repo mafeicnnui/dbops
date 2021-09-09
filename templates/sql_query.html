@@ -576,7 +576,12 @@
                                  $('#con-close-modal').modal('hide');
                             },
                             success: function (dataSet) {
-                                $('#db_title').html(dataSet.url);
+                                if (dataSet.url.length>30) {
+                                    $('#db_title').html(dataSet.url.slice(1,30)+'.../');
+                                } else {
+                                    $('#db_title').html(dataSet.url);
+                                }
+
                                 $('#db_tree').treeview({
                                      data              : dataSet.message,
                                      collapseIcon      : "ion-minus-round",
