@@ -797,7 +797,7 @@
                       }
                     },
                     legend: {
-                        data: ['合生通', '会付通']
+                        data: ['合生通', '会付通','开发','测试']
                     },
                     series: [{
                                 name: '合生通',
@@ -817,6 +817,35 @@
                             {
                                 name: '会付通',
                                 data: p_y_data[1],
+                                type: 'bar',
+                                itemStyle : {
+                                    normal : {
+                                      lineStyle:{
+                                        color:p_color
+                                      }
+                                    }
+                                },
+                                showAllSymbol: false,
+                                symbolSize:1,
+                                smooth: true
+                            },{
+                                name: '开发',
+                                data: p_y_data[2],
+                                type: 'bar',
+                                itemStyle : {
+                                    normal : {
+                                      lineStyle:{
+                                        color:p_color
+                                      }
+                                    }
+                                },
+                                showAllSymbol: false,
+                                symbolSize:1,
+                                smooth: true
+                            },
+                            {
+                                name: '测试',
+                                data: p_y_data[3],
                                 type: 'bar',
                                 itemStyle : {
                                     normal : {

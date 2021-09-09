@@ -64,45 +64,17 @@
                 width: 45px;
             }
 
-           .app-search1 .form-control1{
+           .app-search2 .form-control2{
                 border: 1px solid rgba(152, 166, 173, 0.15);
                 font-size: 13px;
                 height: 34px;
                 color: #313a46;
-                padding: 7px 20px 7px 20px;
+                padding: 7px 40px 7px 20px;
                 margin: 19px 12px 0 5px;
                 background: rgba(152, 166, 173, 0.1);
                 box-shadow: none;
                 border-radius: 30px;
-                width: 310px;
-                display: block;
-            }
-
-             .app-search2 .form-control2{
-                border: 1px solid rgba(152, 166, 173, 0.15);
-                font-size: 13px;
-                height: 34px;
-                color: #313a46;
-                padding: 7px 20px 7px 20px;
-                margin: 19px 12px 0 5px;
-                background: rgba(152, 166, 173, 0.1);
-                box-shadow: none;
-                border-radius: 30px;
-                display: block;
-                width: 150px;
-            }
-
-           .app-search3 .form-control3{
-                border: 1px solid rgba(152, 166, 173, 0.15);
-                font-size: 13px;
-                height: 34px;
-                color: #313a46;
-                padding: 7px 20px 7px 20px;
-                margin: 19px 12px 0 5px;
-                background: rgba(152, 166, 173, 0.1);
-                box-shadow: none;
-                border-radius: 30px;
-                width: 340px;
+                width: 350px;
                 display: block;
             }
         </style>
@@ -121,25 +93,36 @@
                 <div class="navbar navbar-default" role="navigation">
                     <div class="container">
                         <!-- Navbar-left -->
-                        <ul class="nav navbar-nav navbar-left" >
+                        <ul class="nav navbar-nav navbar-left">
                             <li>
                                 <button class="button-menu-mobile open-left waves-effect">
                                     <i class="mdi mdi-menu"></i>
                                 </button>
                             </li>
-                            <li class="col-md-4">
-                                <form class="app-search1">
-                                     <span class="form-control1">{{china_rq}}&nbsp;&nbsp;<span  id='span_time'>{{china_time}}</span>&nbsp;&nbsp;{{china_week}} </span>
+                            <li class="hidden-xs">
+                                <form role="search" class="app-search">
+                                     <span class="form-control">{{china_rq}}</span>
+                                </form>
+
+                            </li>
+                            <li class="hidden-xs">
+                                <form role="search" class="app-search">
+                                     <span class="form-control">{{china_week}}</span>
                                 </form>
                             </li>
-                            <li class="col-md-2">
-                                 <form class="app-search2">
-                                     <span class="form-control2">{{welcome}}</span>
+                            <li class="hidden-xs">
+                                <form role="search" class="app-search">
+                                     <span  id='span_time' class="form-control">{{china_time}}</span>
                                 </form>
                             </li>
-                            <li class="col-md-4">
-                                 <form id='form-search' role="search" class="app-search3">
-                                     <span class="form-control3">主面板&nbsp;&nbsp;
+                            <li class="hidden-xs">
+                                 <form role="search" class="app-search">
+                                     <span class="form-control">{{welcome}}</span>
+                                </form>
+                            </li>
+                            <li class="hidden-xs hidden-xs-big">
+                                 <form id='form-search2' role="search" class="app-search2">
+                                     <span class="form-control2">主面板&nbsp;&nbsp;
                                          <div class="radio radio-info radio-inline">
                                              <input type="radio" id="radio_hopson" value="hopson" name="radio_main" checked>
                                              <label class="label-body" for="radio_hopson">合生通</label>
@@ -158,6 +141,123 @@
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="{{static_url('doc/easebase_help.pdf')}}" target="_blank"  class="right-menu-item dropdown-toggle">
+                                    <i class="ion-help"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="right-menu-item dropdown-toggle" data-toggle="dropdown">
+                                    <i class="mdi mdi-bell"></i>
+                                    <span class="badge up bg-success">3</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right dropdown-lg user-list notify-list">
+
+                                    <li>
+                                        <h5>通知</h5>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="icon bg-info">
+                                                <i class="mdi mdi-account"></i>
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">张三发布了DML操作</span>
+                                                <span class="time">1小时前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="icon bg-danger">
+                                                <i class="mdi mdi-comment"></i>
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">系统新增李四用户</span>
+                                                <span class="time">20分钟前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="icon bg-warning">
+                                                <i class="mdi mdi-settings"></i>
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">管理员新增代码</span>
+                                                <span class="time">3天前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="all-msgs text-center">
+                                        <p class="m-0"><a href="#">查看所有通知</a></p>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="#" class="right-menu-item dropdown-toggle" data-toggle="dropdown">
+                                    <i class="mdi mdi-email"></i>
+                                    <span class="badge up bg-danger">4</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right dropdown-lg user-list notify-list">
+                                    <li>
+                                        <h5>邮件</h5>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="avatar">
+                                                <img src="{{static_url('assets/images/users/avatar-2.jpg')}}" alt="">
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">张三 Beach</span>
+                                                <span class="desc">[合生通]卡券升级会议记录</span>
+                                                <span class="time">2小时前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="avatar">
+                                                <img src="{{ static_url('assets/images/users/avatar-3.jpg')}}" alt="">
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">李四</span>
+                                                <span class="desc">实时车流数据同步测试</span>
+                                                <span class="time">1小时前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="avatar">
+                                                <img src="{{ static_url('assets/images/users/avatar-4.jpg')}}" alt="">
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">王五</span>
+                                                <span class="desc">关于预生产环境升级的通知</span>
+                                                <span class="time">3小时前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="user-list-item">
+                                            <div class="avatar">
+                                                <img src="{{ static_url('assets/images/users/avatar-7.jpg')}}" alt="">
+                                            </div>
+                                            <div class="user-desc">
+                                                <span class="name">赵六</span>
+                                                <span class="desc">生产环境上线K8S通知</span>
+                                                <span class="time">5小时前</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="all-msgs text-center">
+                                        <p class="m-0"><a href="#">查看所有邮件</a></p>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <li class="dropdown user-box">
                                 <a href="" class="dropdown-toggle waves-effect user-link" data-toggle="dropdown" aria-expanded="true">
                                     <img id='user-img-id' src="" alt="user-img" class="img-circle user-img">
@@ -172,7 +272,6 @@
                                 </ul>
                             </li>
                         </ul>
-
                     </div><!-- end container -->
                 </div><!-- end navbar -->
             </div>
@@ -206,7 +305,55 @@
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>邮箱:</b>zhdn_791005@163.com</span></div>
                 </footer>
             </div>
+            <!-- Right Sidebar -->
+<!--            <div class="side-bar right-bar">-->
+<!--                <a href="javascript:void(0);" class="right-bar-toggle">-->
+<!--                    <i class="mdi mdi-close-circle-outline"></i>-->
+<!--                </a>-->
+<!--                <h4 class="">Settings</h4>-->
+<!--                <div class="setting-list nicescroll">-->
+<!--                    <div class="row m-t-20">-->
+<!--                        <div class="col-xs-8">-->
+<!--                            <h5 class="m-0">Notifications</h5>-->
+<!--                            <p class="text-muted m-b-0"><small>Do you need them?</small></p>-->
+<!--                        </div>-->
+<!--                        <div class="col-xs-4 text-right">-->
+<!--                            <input type="checkbox" checked data-plugin="switchery" data-color="#7fc1fc" data-size="small"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
+<!--                    <div class="row m-t-20">-->
+<!--                        <div class="col-xs-8">-->
+<!--                            <h5 class="m-0">API Access</h5>-->
+<!--                            <p class="m-b-0 text-muted"><small>Enable/Disable access</small></p>-->
+<!--                        </div>-->
+<!--                        <div class="col-xs-4 text-right">-->
+<!--                            <input type="checkbox" checked data-plugin="switchery" data-color="#7fc1fc" data-size="small"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="row m-t-20">-->
+<!--                        <div class="col-xs-8">-->
+<!--                            <h5 class="m-0">Auto Updates</h5>-->
+<!--                            <p class="m-b-0 text-muted"><small>Keep up to date</small></p>-->
+<!--                        </div>-->
+<!--                        <div class="col-xs-4 text-right">-->
+<!--                            <input type="checkbox" checked data-plugin="switchery" data-color="#7fc1fc" data-size="small"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="row m-t-20">-->
+<!--                        <div class="col-xs-8">-->
+<!--                            <h5 class="m-0">Online Status</h5>-->
+<!--                            <p class="m-b-0 text-muted"><small>Show your status to all</small></p>-->
+<!--                        </div>-->
+<!--                        <div class="col-xs-4 text-right">-->
+<!--                            <input type="checkbox" checked data-plugin="switchery" data-color="#7fc1fc" data-size="small"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+            <!-- /Right-bar -->
         </div>
         <!-- END wrapper -->
 
