@@ -18,7 +18,10 @@ def read_json(file):
 def capital_to_lower(dict_info):
     new_dict = {}
     for i, j in dict_info.items():
-        new_dict[i.lower()] = j
+        if j is None:
+            new_dict[i.lower()] = ''
+        else:
+            new_dict[i.lower()] = j
     return new_dict
 
 db = read_json('./config/config.json')

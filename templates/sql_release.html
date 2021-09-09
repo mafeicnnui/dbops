@@ -9,8 +9,8 @@
     <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <link href="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.css') }}"  rel="stylesheet" />
     <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
-    <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
-    <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
+<!--    <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />-->
+<!--    <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />-->
 
     <style>
      .cur_db {
@@ -171,13 +171,14 @@
                                 <input id="filter_db" type="text" class="form-control" placeholder="请输入过虑条件">
                             </div>
                         </div>
+
                         <div  class="col-md-4">
-                            <button type="button" id='check_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="检测"><i class="mdi mdi-spellcheck"></i></button>
-                            <button type="button" id='release_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="发布"><i class="mdi mdi-transfer"></i></button>
-                            <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
-                            <button type="button" id='find_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="查询"><i class="fa fa-search"></i></button>
-<!--                            <button type="button" id='import_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="导入"><i class="ion-android-folder"></i></button>-->
-<!--                            <input  type="file" id="files" style="display: none" onchange="fileImport();">-->
+                            <button type="button" id='check_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="检测" data-original-title="检测"><i class="mdi mdi-spellcheck"></i></button>
+                            <button type="button" id='release_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="发布" data-original-title="发布"><i class="mdi mdi-walk"></i></button>
+                            <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="美化" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
+                            <button type="button" id='find_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
+                            <button type="button" id='import_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="导入" data-original-title="导入"><i class="ion-android-folder"></i></button>
+                            <span style="display:none"><input type="file" id="files"  onchange="fileImport();"></span>
                        </div>
                    </div>
                 </div>
@@ -1016,6 +1017,20 @@
                    $("#curr_db").selectpicker('refresh')
               }
 
+              function upd_curr_db_select(dataSet,curdb){
+                    $("#curr_db").empty();
+                    $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
+                    for (i=0;i<dataSet['message'].length;i++){
+                       var val  = dataSet['message'][i].id;
+                       var text = dataSet['message'][i].id;
+                       if (val!=curdb) {
+                              $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                       }
+                   }
+                   $("#curr_db").append("<option value=''>...</option>");
+                   $("#curr_db").selectpicker('refresh')
+              }
+
               function refresh_tree(){
                    var db_type=''
                    var db_source = ''
@@ -1089,11 +1104,13 @@
                                     if (data.parentId === undefined) {
                                          console.log('curNode2=',curNode.text)
                                          console.log('parNode2=',parNode.text)
-                                         $('#curr_db').val(curNode.text);
+                                         //$('#curr_db').val(curNode.text);
+                                         upd_curr_db_select(dataSet,curNode.text)
                                     } else {
                                         console.log('curNode3=', curNode.text)
                                         console.log('parNode3=', parNode.text)
-                                        $('#curr_db').val(parNode.text);
+                                        //$('#curr_db').val(parNode.text);
+                                        upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
 
@@ -1110,11 +1127,13 @@
                                     if (data.parentId === undefined) {
                                          console.log('curNode22=',curNode.text)
                                          console.log('parNode22=',parNode.text)
-                                         $('#curr_db').val(curNode.text);
+                                         //$('#curr_db').val(curNode.text);
+                                         upd_curr_db_select(dataSet,curNode.text)
                                     } else {
                                         console.log('curNode33=', curNode.text)
                                         console.log('parNode33=', parNode.text)
-                                        $('#curr_db').val(parNode.text);
+                                        //$('#curr_db').val(parNode.text);
+                                        upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
 
@@ -1217,6 +1236,7 @@
                           url: "/sql/_check",
                           type: "post",
                           datatype: "json",
+                          async: false,
                           data: {
                               dbid  : $('#db_source').val(),
                               cur_db: $('#curr_db').val(),
@@ -1237,6 +1257,7 @@
                               console.log(dataSet);
                               if (dataSet.status == "1") {
                                   showtips('error', dataSet.msg);
+                                  $('#check_status').val('failure')
                               } else {
                                   if (table != undefined) {
                                       console.log("table is defined=", table);
@@ -1288,7 +1309,7 @@
                             sql   :  editor.session.getTextRange(editor.getSelectionRange()),
                             desc  :  $('#sql_desc').val(),
                             type  :  $('#db_order_type').val(),
-                            time  : $('#run_time').val()
+                            time  :  $('#run_time').val()
                         },
                         success: function (dataSet) {
                             console.log(dataSet);

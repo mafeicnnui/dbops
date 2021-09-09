@@ -348,12 +348,15 @@ async def release_order(p_order_no,p_userid):
 async def get_order_xh(p_type,p_rq,p_dbid):
     result = {}
     try:
-        st ="""SELECT COUNT(0)+1  as xh FROM t_sql_release 
+        st ="""SELECT MAX(message)  as xh FROM t_sql_release 
                     WHERE dbid={} and TYPE='{}' AND DATE_FORMAT(creation_date,'%Y%m%d')='{}'""".format(p_dbid,p_type,p_rq)
         res = await async_processer.query_dict_one(st)
         print(st)
         result['code']='0'
-        result['message']=res['xh']
+        if res['xh'] is None:
+           result['message'] = 1
+        else:
+           result['message']=int(res['xh'].split('-')[-1])+1
         return result
     except:
         traceback.print_exc()
@@ -441,14 +444,18 @@ async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
         result['message'] = '发布失败！'
         return result
 
-async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time):
+async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time,p_username,p_host):
     result = {}
     try:
         if check_validate(p_dbid,p_cdb,p_sql,desc,p_user,type)['code']!='0':
            return check_validate(p_dbid,p_cdb,p_sql,desc,p_user,type)
+
         p_ds = await get_ds_by_dsid(p_dbid)
+        p_sqlid = await get_sqlid()
+
         if p_ds['db_type'] == '0':
             val = check_mysql_ddl(p_dbid,p_cdb, p_sql,p_user,type)
+
         if val == False:
             result['code'] = '1'
             result['message'] = '发布失败!'
@@ -456,11 +463,40 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time):
 
         sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type,run_time) 
                  values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')
-            """.format((await get_sqlid()),p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type,time)
+            """.format(p_sqlid,p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type,time)
+
         print('release=>',sql)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='发布成功！'
+
+        # 2021.09.09 add send mail
+        p_ds['service'] = p_cdb
+        sql = await get_sql_by_sqlid(p_sqlid)
+        email = (await get_user_by_loginame(p_username))['email']
+        settings = await get_sys_settings()
+        # send success mail
+        wkno = await get_sql_release(p_sqlid)
+        v_title = '工单发布情况[{}]'.format(wkno['message'])
+        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        creator = (await get_user_by_loginame(wkno['creator']))['name']
+        otype   = (await get_dmmc_from_dm('13', wkno['type']))[0]
+        status  = (await get_dmmc_from_dm('41', wkno['status']))[0]
+        v_content = get_html_contents_release()
+        v_content = v_content.replace('$$TIME$$', nowTime)
+        v_content = v_content.replace('$$DBINFO$$',  p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds['url'])
+        v_content = v_content.replace('$$CREATOR$$', creator)
+        v_content = v_content.replace('$$TYPE$$', otype)
+        v_content = v_content.replace('$$STATUS$$', status)
+        if p_host=="124.127.103.190":
+           p_host = "124.127.103.190:65482"
+        elif p_host.find(':')>=0:
+           p_host = p_host+':81'
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sqlid))
+        v_content = v_content.replace('$$ERROR$$', '')
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
+                        settings.get('CC'), v_title, v_content)
+
         return result
     except:
         traceback.print_exc()
@@ -468,7 +504,7 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time):
         result['message'] = '发布失败!'
         return result
 
-async def upd_sql(p_sqlid,p_username,p_status,p_message):
+async def upd_sql(p_sqlid,p_username,p_status,p_message,p_host):
     result={}
     try:
         sql="""update t_sql_release 
@@ -480,6 +516,37 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message):
                        audit_message='{}'
                 where id='{}'""".format(p_status,p_username,p_username,p_message,p_sqlid)
         await async_processer.exec_sql(sql)
+
+        # send audit mail
+        wkno = await get_sql_release(p_sqlid)
+        p_ds = await get_ds_by_dsid(wkno['dbid'])
+        p_ds['service'] = wkno['db']
+        email = (await get_user_by_loginame(p_username))['email']
+        settings = await get_sys_settings()
+
+        v_title = '工单审核情况[{}]'.format(wkno['message'])
+        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        creator = (await get_user_by_loginame(wkno['creator']))['name']
+        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
+        otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
+        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+        v_content = get_html_contents()
+        v_content = v_content.replace('$$TIME$$', nowTime)
+        v_content = v_content.replace('$$DBINFO$$',p_ds['url'] + p_ds['service']
+                                                   if p_ds['url'].find(p_ds['service']) < 0 else p_ds['url'])
+        v_content = v_content.replace('$$CREATOR$$', creator)
+        v_content = v_content.replace('$$AUDITOR$$', auditor)
+        v_content = v_content.replace('$$TYPE$$', otype)
+        v_content = v_content.replace('$$STATUS$$', status)
+        if p_host=="124.127.103.190":
+           p_host = "124.127.103.190:65482"
+        elif p_host.find(':')>=0:
+           p_host = p_host+':81'
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sqlid))
+        v_content = v_content.replace('$$ERROR$$', '')
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
+                        settings.get('CC'), v_title, v_content)
+
         result['code']='0'
         result['message']='审核成功!'
         return result
@@ -504,6 +571,35 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,s
     except :
         logging.error((traceback.format_exc()))
         traceback.print_exc()
+
+def get_html_contents_release():
+    v_html='''<html>
+		<head>
+		   <style type="text/css">
+			   .xwtable {width: 90%;border-collapse: collapse;border: 1px solid #ccc;}
+			   .xwtable thead td {font-size: 12px;color: #333333;
+					      text-align: center;background: url(table_top.jpg) repeat-x top center;
+				              border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable thead th {font-size: 12px;color: #333333;
+				              text-align: center;background: url(table_top.jpg) repeat-x top center;
+					      border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
+			   .xwtable tbody tr.alt-row {background: #f2f7fc;}
+			   .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
+		   </style>
+		</head>
+		<body>
+              <table class='xwtable'>
+                  <tr><td width="20%">发送时间</td><td width="80%">$$TIME$$</td></tr>
+                  <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
+                  <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
+                  <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
+                  <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
+                  <tr><td>工单详情</td><td>$$DETAIL$$</td></tr>
+              </table>    
+		</body>
+	    </html>'''
+    return v_html
 
 def get_html_contents():
     v_html='''<html>
@@ -592,10 +688,13 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content = v_content.replace('$$AUDITOR$$', auditor )
         v_content = v_content.replace('$$TYPE$$',    otype)
         v_content = v_content.replace('$$STATUS$$',  status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host if p_host.find(':')>=0 else p_host+':81',p_sql_id))
+        if p_host=="124.127.103.190":
+           p_host = "124.127.103.190:65482"
+        elif p_host.find(':')>=0:
+           p_host = p_host+':81'
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sql_id))
         v_content = v_content.replace('$$ERROR$$','')
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,v_content)
-
         res['code'] = '0'
         res['message'] = '执行成功!'
         return res

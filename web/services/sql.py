@@ -46,15 +46,15 @@ class sql_detail(basehandler):
    async def get(self):
        release_id = self.get_argument("release_id")
        wkno = await get_sql_release(release_id)
-       #wkno['sqltext']= '<br>'.join(wkno['sqltext'].split(';'))
        roll = await query_audit_sql(release_id)
+       #wkno['sqltext']= '<br>'.join(wkno['sqltext'].split(';'))
        #roll['message']['rollback_statement'] = '<br>'.join(roll['message']['rollback_statement'].split(';'))
        ds  = await get_ds_by_dsid(wkno['dbid'])
        ds['service'] = wkno['db']
-       print('host=',self.request.host)
-       print('wkno=',wkno)
-       print('roll=',roll)
-       print('dbinfo=',ds)
+       # print('host=',self.request.host)
+       # print('wkno=',wkno)
+       # print('roll=',roll)
+       # print('dbinfo=',ds)
        self.render("./sql_detail.html",
                    wkno= json.loads(json.dumps(wkno,cls=DateEncoder)),
                    roll = json.loads(json.dumps(roll,cls=DateEncoder)),
@@ -84,7 +84,7 @@ class sql_release(basehandler):
        desc       = self.get_argument("desc")
        type       = self.get_argument("type")
        time       = self.get_argument("time")
-       result     = await save_sql(dbid,cdb,sql,desc,user,type,time)
+       result     = await save_sql(dbid,cdb,sql,desc,user,type,time,name,self.request.host)
        self.write({"code": result['code'], "message": result['message']})
 
 class sql_check(basehandler):
@@ -137,7 +137,7 @@ class sql_audit(basehandler):
        sqlid    = self.get_argument("sqlid")
        status   = self.get_argument("status")
        message  = self.get_argument("message")
-       result   = await upd_sql(sqlid,name,status,message)
+       result   = await upd_sql(sqlid,name,status,message,self.request.host)
        self.write({"code": result['code'], "message": result['message']})
 
 class sqlrun(basehandler):

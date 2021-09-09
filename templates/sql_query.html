@@ -9,8 +9,8 @@
     <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <link href="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.css') }}"  rel="stylesheet" />
     <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
-    <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
-    <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
+<!--    <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />-->
+<!--    <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />-->
     <style>
        .cur_db {
             font-size: 15px;
@@ -104,8 +104,8 @@
 
            <div  class="col-md-3">
                 <div class="form-group">
-                      <button type="button" id='query_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="查询"><i class="fa fa-search"></i></button>
-                      <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
+                      <button type="button" id='query_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
+                      <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="美化" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
                  </div>
            </div>
          </form>
@@ -514,6 +514,20 @@
                    $("#curr_db").selectpicker('refresh')
               }
 
+              function upd_curr_db_select(dataSet,curdb){
+                    $("#curr_db").empty();
+                    $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
+                    for (i=0;i<dataSet['message'].length;i++){
+                       var val  = dataSet['message'][i].id;
+                       var text = dataSet['message'][i].id;
+                       if (val!=curdb) {
+                              $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                       }
+                   }
+                   $("#curr_db").append("<option value=''>...</option>");
+                   $("#curr_db").selectpicker('refresh')
+              }
+
               function refresh_tree() {
                   var db_type = ''
                   var db_source = ''
@@ -586,9 +600,11 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         $('#curr_db').text(curNode.text);
+                                         //$('#curr_db').text(curNode.text);
+                                         upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                        $('#curr_db').text(parNode.text);
+                                        //$('#curr_db').text(parNode.text);
+                                        upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
 
@@ -603,9 +619,12 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         $('#curr_db').text(curNode.text);
+                                         //$('#curr_db').text(curNode.text);
+                                         upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                        $('#curr_db').text(parNode.text);
+                                        //$('#curr_db').text(parNode.text);
+                                        upd_curr_db_select(dataSet,parNode.text)
+
                                     }
                                 });
 

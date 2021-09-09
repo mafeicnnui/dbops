@@ -933,20 +933,27 @@ async def query_db_order_num():
             SELECT 
                a.rq,
                (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=16 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hst,
-               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=84 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hft
+               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=84 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hft,
+               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=1 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_dev,
+               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=2 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_uat
             FROM (SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -t.help_topic_id DAY),'%Y-%m-%d') AS 'rq'  
             FROM mysql.help_topic t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
     x = []
     y_hst = []
     y_hft = []
+    y_dev = []
+    y_uat = []
 
     for r in await async_processer.query_list(sql):
         x.append(r[0])
         y_hst.append(r[1])
         y_hft.append(r[2])
+        y_dev.append(r[3])
+        y_uat.append(r[4])
+
     res['amount'] = {}
     res['amount']['x'] = x
-    res['amount']['y'] = [y_hst,y_hft]
+    res['amount']['y'] = [y_hst,y_hft,y_dev,y_uat]
     return res
 
 async def query_db_slow_num(p_inst_id,p_ds_id,p_begin_date,p_end_date):
