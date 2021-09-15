@@ -809,15 +809,19 @@
 
             $(document).ready(function() {
                  var timer ;
+                 var tabStatus = new Array;
 
                  setInterval("updateTime();",1000);
                  // setInterval("check_lock_screen();",30000);
 
                  $(".file").click(function() {
-                     tabId =$(this).attr("id").split('^')[0]
-                     url=$(this).attr("id").split('^')[1]
-                     console.log('file=',this)
-                     console.log(id,url)
+                      tabId =$(this).attr("id").split('^')[0]
+                      url=$(this).attr("id").split('^')[1]
+
+                      // Object.keys(tabStatus).forEach(function(key){
+                      //      console.log(key,tabStatus[key]);
+                      // })
+
                       $.ajax({
                             url: url,
                             type: "get",
@@ -839,10 +843,18 @@
                       clearInterval(timer);
 
                       $('#ul_tabs').find('li').each(function() {
-                          $(this).removeClass("active")
+                           $(this).removeClass("active")
                       });
 
-                      $('#ul_tabs').append('<li class="active"><a href="#"  id="'+tabId+'" data-toggle="tab" aria-expanded="false">'+$(this).text()+'<button id="close_'+tabId+'" type="button" class="close" >×</button></a></li>')
+                      if (tabStatus[tabId] == true) {
+                          $('#'+tabId).parent().addClass("active")
+                      } else {
+                          $('#ul_tabs').append('<li class="active"><a href="#"  id="'+tabId+'" data-toggle="tab" aria-expanded="false">'+$(this).text()+'<button id="close_'+tabId+'" type="button" class="close" >×</button></a></li>')
+                          if (tabStatus[tabId] == undefined) {
+                              tabStatus[tabId]=true;
+                          }
+                      }
+
                       $('#main-container-div').load(url);
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
