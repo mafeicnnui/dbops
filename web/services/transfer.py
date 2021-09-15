@@ -17,7 +17,7 @@ from   web.utils.basehandler import basehandler
 class transferquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./transfer_query.html")
+        self.render("./transfer/transfer_query.html")
 
 class transfer_query(basehandler):
     @tornado.web.authenticated
@@ -41,7 +41,7 @@ class transfer_query_detail(basehandler):
 class transferadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./transfer_add.html",
+        self.render("./transfer/transfer_add.html",
                     sync_server = await get_sync_server(),
                     db_server   = await get_sync_db_server(),
                     dm_transfer_type = await get_dmm_from_dm('09'),
@@ -73,14 +73,14 @@ class transferadd_save(basehandler):
 class transferchange(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./transfer_change.html")
+        self.render("./transfer/transfer_change.html")
 
 class transferedit(basehandler):
     @tornado.web.authenticated
     async def get(self):
         transfer_id   = self.get_argument("transferid")
         d_transfer    = await get_transfer_by_transferid(transfer_id)
-        self.render("./transfer_edit.html",
+        self.render("./transfer/transfer_edit.html",
                     transfer_server      = await get_sync_server(),
                     dm_transfer_type     = await get_dmm_from_dm('09'),
                     db_server            = await get_sync_db_server(),
@@ -136,16 +136,6 @@ class transferedit_del(basehandler):
         result = await del_transfer(transfer_id)
         self.write({"code": result['code'], "message": result['message']})
 
-class transferlogquery(basehandler):
-    @tornado.web.authenticated
-    async def get(self):
-        self.render("./sync_log_query.html",
-                    dm_proj_type = await get_dmm_from_dm('05'),
-                    dm_sync_ywlx = await get_dmm_from_dm('08'),
-                    begin_date=current_rq2(),
-                    end_date=current_rq2()
-                    )
-
 class transfer_log_query(basehandler):
     @tornado.web.authenticated
     async def post(self):
@@ -194,7 +184,7 @@ class transferclone(basehandler):
     async def get(self):
         transfer_id   = self.get_argument("transfer_id")
         d_transfer    = get_transfer_by_transferid(transfer_id)
-        self.render("./transfer_clone.html",
+        self.render("./transfer/transfer_clone.html",
                     transfer_server   = await get_sync_server(),
                     dm_transfer_type  = await get_dmm_from_dm('09'),
                     db_server         = await get_sync_db_server(),
@@ -245,7 +235,7 @@ class transferclone_save(basehandler):
 class transferlogquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./transfer_log_query.html",
+        self.render("./transfer/transfer_log_query.html",
                     begin_date=current_rq2(),
                     end_date=current_rq2()
                     )

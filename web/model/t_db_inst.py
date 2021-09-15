@@ -321,16 +321,16 @@ async def get_tree_by_instid(instid):
     try:
         v_html = ""
         p_ds   = await get_ds_by_instid(instid)
-        rs1 = await async_processer.query_list("SELECT schema_name FROM information_schema.SCHEMATA order by 1")
+        rs1 = await async_processer.query_list_by_ds(p_ds,"SELECT schema_name FROM information_schema.SCHEMATA order by 1")
         for i in range(len(rs1)):
-            rs2 = await async_processer.query_list("SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1".format(rs1[i][0]))
+            rs2 = await async_processer.query_list_by_ds(p_ds,"SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1".format(rs1[i][0]))
             v_node = """<li><span class="folder">{0}</span><ul>""".format(rs1[i][0])
             v_html=v_html+v_node
             for j in range(len(rs2)):
                 v_node = """<li><span class="file">{0}<div style="display:none">{1}</div></span></li>""".format(rs2[j][0],rs2[j][0])
                 v_html = v_html + "\n" + v_node;
             v_html=v_html+"\n"+"</ul></li>"+"\n"
-        return {'code': '0', 'message': v_html,'dbsc':p_ds['db_desc'],'db_url':p_ds['db_desc']}
+        return {'code': '0', 'message': v_html,'desc':p_ds['db_desc'],'db_url':p_ds['db_desc']}
     except Exception as e:
         traceback.print_exc()
         return {'code': '-1', 'message': '加载失败!','dbsc':'','db_url':''}
@@ -485,7 +485,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
     p_env    = ''
 
     #get read timeout
-    read_timeout = int(await get_audit_rule('switch_timeout')['rule_value'])
+    read_timeout = int((await get_audit_rule('switch_timeout'))['rule_value'])
 
     p_ds['service'] = curdb
     db = get_connection_ds_read_limit(p_ds, read_timeout)
@@ -494,7 +494,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         cr.execute(p_sql)
         rs = cr.fetchall()
         #get sensitive column
-        c_sensitive = await get_audit_rule('switch_sensitive_columns')['rule_value'].split(',')
+        c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
         #process desc
         i_sensitive = []
         desc = cr.description
@@ -504,7 +504,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
             columns.append({"title": desc[i][0]})
 
         #check sql rwos
-        rule = get_audit_rule('switch_query_rows')
+        rule = await get_audit_rule('switch_query_rows')
         if len(rs)>int(rule['rule_value']):
             result['status'] = '1'
             result['msg'] = rule['error'].format(rule['rule_value'])
@@ -601,7 +601,7 @@ def get_sqlserver_result(p_ds,p_sql,p_curdb):
         result['column'] = ''
         return result
 
-def exe_query(p_userid,p_instid,p_sql,curdb):
+async def exe_query(p_userid,p_instid,p_sql,curdb):
     result = {}
 
     # 查询校验
@@ -609,14 +609,14 @@ def exe_query(p_userid,p_instid,p_sql,curdb):
     if val['status'] != '0':
         return val
 
-    p_ds = get_ds_by_instid(p_instid)
+    p_ds = await get_ds_by_instid(p_instid)
 
     # mysql
     if p_ds['db_type']=='0':
         if len(re.findall(r'^select',p_sql.strip().lower(),re.M))>0 or len(re.findall(r'^show', p_sql.strip().lower(), re.M)) > 0:
-           result=get_mysql_result(p_ds,p_sql,curdb)
+           result = await get_mysql_result(p_ds,p_sql,curdb)
         else:
-           result=write_mysql_opr_log(p_userid,p_instid,p_sql,curdb)
+           result = await write_mysql_opr_log(p_userid,p_instid,p_sql,curdb)
 
     # sqlserver
     if p_ds['db_type'] == '2':
@@ -730,3 +730,46 @@ async def query_db_inst_log(p_log_name):
               AND a.status=d.dmm
               AND d.dm='28' {0} ORDER BY a.start_time desc ,a.db,a.id""".format(v_where)
     return await async_processer.query_list(sql)
+
+async def query_db_config(p_inst_env,p_inst_id):
+    v_where =''
+    if p_inst_id != '':
+        v_where = v_where + " and  a.inst_id= '{0}'".format(p_inst_id)
+    if p_inst_env != '':
+        v_where = v_where + " and  b.inst_env= '{0}'".format(p_inst_env)
+    sql = """SELECT 
+                  a.id as para_id,
+                  SUBSTR(a.value,1,INSTR(a.value,'=')-1) AS para_name,
+                  SUBSTR(a.VALUE,INSTR(a.value,'=')+1) AS para_val,
+                  a.type AS para_type,
+                  a.name AS para_desc,
+                  DATE_FORMAT(a.create_date,'%Y-%m-%d %h:%i:%s')  AS create_date
+            FROM `t_db_inst_parameter` a ,t_db_inst b
+              WHERE a.inst_id = b.id 
+                 and SUBSTR(a.value,1,INSTR(a.value,'=')-1) 
+                    NOT IN('basedir','port','socket','log-error','pid-file','datadir')
+              {}
+          """.format(v_where)
+    return await async_processer.query_list(sql)
+
+async def update_db_config(d_db_para):
+    val = check_db_para(d_db_para)
+    if val['code']=='-1':
+        return val
+    try:
+        sql="""update t_db_inst_parameter set value='{}={}',last_update_date=now() where id={}""".format(d_db_para['para_name'], d_db_para['para_val'],d_db_para['para_id'])
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '更新成功!'}
+    except:
+        traceback.print_exc()
+        return {'code': '-1', 'message': '更新失败!'}
+
+def check_db_para(p_db_para):
+    result = {}
+    if p_db_para["para_val"]=="":
+        result['code']='-1'
+        result['message']='参数值不能为空!'
+        return result
+    result['code'] = '0'
+    result['message'] = '验证通过'
+    return result

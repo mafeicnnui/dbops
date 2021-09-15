@@ -7,6 +7,7 @@
 
 import traceback
 from web.utils.mysql_async import async_processer
+from web.utils.mysql_sync import sync_processer
 
 async def get_dmm_from_dm(p_dm):
     sql = "select dmm,dmmc from t_dmmx where dm='{0}'".format(p_dm)
@@ -20,6 +21,10 @@ async def get_dmm_from_dm2(p_dm,p_dmm):
 async def get_dmmc_from_dm(p_dm,p_dmm):
     sql = "select dmmc from t_dmmx where dm='{0}' and dmm={1}".format(p_dm,p_dmm)
     return await async_processer.query_one(sql)
+
+def get_dmmc_from_dm_sync(p_dm,p_dmm):
+    sql = "select dmmc from t_dmmx where dm='{0}' and dmm={1}".format(p_dm,p_dmm)
+    return  sync_processer.query_one(sql)
 
 async def get_users_from_proj(p_userid):
     sql = """select id,concat(name,'(',wkno,')') from t_user 

@@ -21,7 +21,7 @@ from   web.model.t_ds        import get_dss
 class monitorindexquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./monitor_index.html",
+        self.render("./monitor/monitor_index.html",
                     index_types= await get_dmm_from_dm('23'),
                     index_val_types = await get_dmm_from_dm('24'),
                     index_db_types  = await get_dmm_from_dm('02'),
@@ -88,7 +88,7 @@ class monitorindexedit_del(basehandler):
 class monitortempletequery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./monitor_templete.html",
+        self.render("./monitor/monitor_templete.html",
                     monitor_indexes = await get_monitor_indexes(),
                     templete_types  = await get_dmm_from_dm('23'),
                     )
@@ -156,7 +156,7 @@ class monitor_templete_indexes(basehandler):
 class monitortaskquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./monitor_task.html",
+        self.render("./monitor/monitor_task.html",
                     gather_servers    = await get_gather_server(),
                     templete_names    = await get_templete_names(),
                     task_db_servers   = await get_sync_db_server(),
@@ -294,7 +294,7 @@ class monitortask_stop(basehandler):
 class monitorgraphquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./monitor_log_analyze.html",
+        self.render("./monitor/monitor_log_analyze.html",
                     gather_server   = await get_gather_server(),
                     monitor_dss     = await get_dss(''),
                     monitor_indexes = await get_monitor_indexes2(''),
@@ -341,7 +341,7 @@ class get_monitor_index(basehandler):
 
 class get_monitor_view(basehandler):
     def get(self):
-        self.render("./monitor_view.html")
+        self.render("./monitor/monitor_view.html")
 
 class get_monitor_view_sys(basehandler):
     async def post(self):

@@ -13,7 +13,7 @@ from web.utils.basehandler import basehandler
 class menuquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./menu_query.html")
+        self.render("./menu/menu_query.html")
 
 class menu_query(basehandler):
     @tornado.web.authenticated
@@ -36,7 +36,7 @@ class menu_init(basehandler):
 class menuadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./menu_add.html",
+        self.render("./menu/menu_add.html",
                     menus = await get_parent_menus())
 
 class menuadd_save(basehandler):
@@ -57,14 +57,14 @@ class menuadd_save(basehandler):
 class menuchange(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./menu_change.html")
+        self.render("./menu/menu_change.html")
 
 class menuedit(basehandler):
     @tornado.web.authenticated
     async def get(self):
         menuid = self.get_argument("menuid")
         d_menu = await get_menu_by_menuid(menuid)
-        self.render("./menu_edit.html",
+        self.render("./menu/menu_edit.html",
                      menuid    = d_menu['menuid'],
                      name      = d_menu['name'],
                      status    = d_menu['status'],

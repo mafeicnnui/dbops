@@ -11,14 +11,15 @@ from  web.utils.basehandler   import basehandler
 from  web.model.t_db_inst     import query_inst,save_db_inst,upd_db_inst,query_inst_by_id,get_dss_for_inst,get_ds_by_instid,get_tree_by_instid_mssql
 from  web.model.t_db_inst     import get_tree_by_instid,exe_query,del_db_inst,get_tab_ddl_by_instid,get_idx_ddl_by_instid,drop_tab_by_instid
 from  web.model.t_db_inst     import query_db_inst_para,save_db_inst_para,upd_db_inst_para,del_db_inst_para,query_db_inst_log
-from  web.model.t_db_inst     import create_db_inst,destroy_db_inst,log_db_inst,manager_db_inst
-from  web.model.t_dmmx        import get_dmm_from_dm,get_gather_server,get_sys_dmlx_from_dm
+from  web.model.t_db_inst     import create_db_inst,destroy_db_inst,log_db_inst,manager_db_inst,update_db_config,query_db_config
+from  web.model.t_dmmx        import get_dmm_from_dm,get_gather_server,get_sys_dmlx_from_dm,get_slow_inst_names
+
 
 '''新增实例'''
 class dbinstquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./db_inst_mgr.html",
+        self.render("./db/db_inst_mgr.html",
                     dm_inst_type = await get_dmm_from_dm('02'),
                     dm_inst_env = await get_dmm_from_dm('03'))
 
@@ -136,7 +137,9 @@ class dbinstmgr(basehandler):
     async def get(self):
         inst_id   = self.get_argument("inst_id")
         inst_type = self.get_argument("inst_type")
-        self.render("./db_inst_console.html", dss = await get_dss_for_inst(inst_id),inst_type=inst_type)
+        dss = await get_dss_for_inst(inst_id)
+        print('dss=',dss)
+        self.render("./db/db_inst_console.html", dss = dss,inst_type=inst_type)
 
 
 class get_tree_by_inst(basehandler):
@@ -195,7 +198,7 @@ class db_inst_sql_query(basehandler):
 class dbinstcrtquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./db_inst_create.html",
+        self.render("./db/db_inst_create.html",
                     dm_inst_type = await get_dmm_from_dm('02'),
                     dm_inst_env  = await get_dmm_from_dm('03'),
                     dm_db_server = await get_gather_server(),
@@ -216,7 +219,7 @@ class db_inst_crt_query(basehandler):
 class dbinstparaquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./db_inst_para.html",
+        self.render("./db/db_inst_para.html",
                     index_types = await get_dmm_from_dm('23'),
                     index_val_types = await get_dmm_from_dm('24'),
                     index_db_types   = await get_dmm_from_dm('02'))
@@ -269,7 +272,7 @@ class dbinstparaedit_del(basehandler):
 class dbinstoptlogquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./db_inst_opt_log_query.html" )
+        self.render("./db/db_inst_opt_log_query.html" )
 
 class dbinstoptlog_query(basehandler):
     @tornado.web.authenticated
@@ -279,3 +282,33 @@ class dbinstoptlog_query(basehandler):
         v_list       = await query_db_inst_log(log_name)
         v_json       = json.dumps(v_list)
         self.write(v_json)
+
+
+class dbinstcfgquery(basehandler):
+    @tornado.web.authenticated
+    async def get(self):
+        self.render("./db/db_inst_cfg_query.html",
+                    dm_env_type     = await get_dmm_from_dm('03'),
+                    dm_inst_names   = await get_slow_inst_names(''),
+                 )
+
+class db_inst_cfg_query(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        inst_env   = self.get_argument("inst_env")
+        inst_id    = self.get_argument("inst_id")
+        v_list     = await query_db_config(inst_env,inst_id)
+        v_json     = json.dumps(v_list)
+        self.write(v_json)
+
+
+class db_inst_cfg_update(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        d_db_para = {}
+        d_db_para['para_id']    = self.get_argument("para_id")
+        d_db_para['para_name']  = self.get_argument("para_name")
+        d_db_para['para_val']   = self.get_argument("para_val")
+        result = await update_db_config(d_db_para)
+        self.write({"code": result['code'], "message": result['message']})

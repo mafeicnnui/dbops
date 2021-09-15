@@ -6,11 +6,12 @@
 # @Software: PyCharm
 
 import re
-from web.utils.common      import exception_info,current_rq,aes_encrypt,aes_decrypt,format_sql
+from web.utils.common      import exception_info,current_rq,aes_encrypt,aes_decrypt,format_sql,aes_decrypt_sync
 from web.utils.common      import get_connection_ds,get_connection_ds_sqlserver,get_connection_ds_oracle
 from web.utils.common      import get_connection_ds_pg,get_connection_ds_mongo,get_connection_ds_redis,get_connection_ds_es
 from web.model.t_user      import get_user_by_loginame
 from web.utils.mysql_async import async_processer
+from web.utils.mysql_sync  import sync_processer
 
 def check_ds(p_ds,p_flag):
     result = {}
@@ -179,6 +180,31 @@ async def get_ds_by_dsid(p_dsid):
            from t_db_source where id={0}""".format(p_dsid)
     ds = await async_processer.query_dict_one(sql)
     ds['password'] = await aes_decrypt(ds['password'],ds['user'])
+    ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])
+    return ds
+
+def get_ds_by_dsid_sync(p_dsid):
+    sql="""select cast(id as char) as dsid,
+                  db_type,
+                  db_desc,
+                  ip,
+                  port,
+                  service,
+                  user,
+                  password,
+                  status,
+                  date_format(creation_date,'%Y-%m-%d %H:%i:%s') as creation_date,
+                  creator,
+                  date_format(last_update_date,'%Y-%m-%d %H:%i:%s') as last_update_date,
+                  updator ,
+                  db_env,
+                  inst_type,
+                  market_id,
+                  proxy_status,
+                  proxy_server
+           from t_db_source where id={0}""".format(p_dsid)
+    ds = sync_processer.query_dict_one(sql)
+    ds['password'] = aes_decrypt_sync(ds['password'],ds['user'])
     ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])
     return ds
 

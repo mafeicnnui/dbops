@@ -14,7 +14,7 @@ from web.utils.basehandler import basehandler
 class funcquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./func_query.html")
+        self.render("./func/func_query.html")
 
 class func_query(basehandler):
     @tornado.web.authenticated
@@ -28,7 +28,7 @@ class func_query(basehandler):
 class funcadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./func_add.html",
+        self.render("./func/func_add.html",
                     menus = await get_privs())
 
 class funcadd_save(basehandler):
@@ -46,14 +46,14 @@ class funcadd_save(basehandler):
 class funcchange(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./func_change.html")
+        self.render("./func/func_change.html")
 
 class funcedit(basehandler):
     @tornado.web.authenticated
     async def get(self):
         funcid = self.get_argument("funcid")
         d_func = await get_func_by_funcid(funcid)
-        self.render("./func_edit.html",
+        self.render("./func/func_edit.html",
                     funcid    = d_func['funcid'],
                     func_name = d_func['func_name'],
                     func_url  = d_func['func_url'],

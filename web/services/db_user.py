@@ -15,7 +15,7 @@ from  web.model.t_dmmx        import get_dmm_from_dm,get_slow_inst_names
 class dbuserquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./db_user_query.html",
+        self.render("./db/db_user_query.html",
                     dm_inst_list    = await query_inst_list(),
                     mysql_sys_privs = await get_dmm_from_dm('31'),
                     dm_user_status  = await get_dmm_from_dm('25'),

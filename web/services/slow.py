@@ -19,7 +19,7 @@ from   web.model.t_ds        import get_ds_by_dsid
 class slowquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./slow_log_query.html",
+        self.render("./slow/slow_log_query.html",
                      begin_date    = current_rq3(-1),
                      end_date      = current_rq2(),
                      dm_inst_names = await get_slow_inst_names(''),
@@ -41,7 +41,7 @@ class slow_query(basehandler):
 class slowadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./slow_add.html",
+        self.render("./slow/slow_add.html",
                     dm_db_type      = await get_dmm_from_dm('02'),
                     dm_inst_names   = await get_slow_inst_names(''),
                     dm_db_server    = await get_gather_server(),
@@ -82,7 +82,7 @@ class slow_check(basehandler):
 class slowchange(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./slow_change.html",
+        self.render("./slow/slow_change.html",
                     dm_env_type   = await get_dmm_from_dm('03'),
                     dm_inst_type  = await get_dmm_from_dm('38'),
                     dm_inst_names = await get_slow_inst_names(''),
@@ -140,7 +140,7 @@ class slowedit_push(basehandler):
 class slowlogquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./slow_log_query.html",
+        self.render("./slow/slow_log_query.html",
                      begin_date    = current_rq4(0,1),
                      end_date      = current_rq4(0,-1),
                      dm_inst_names = await get_slow_inst_names(''),
@@ -265,7 +265,7 @@ class query_user_by_slowlog_dsid(basehandler):
 class slowloganalyze(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./slow_log_analyze.html",
+        self.render("./slow/slow_log_analyze.html",
                      begin_date    = current_rq4(0,1),
                      end_date      = current_rq4(0,-1),
                      dm_inst_names = await get_slow_inst_names(''),

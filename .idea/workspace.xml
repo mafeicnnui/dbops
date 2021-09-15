@@ -20,11 +20,281 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sql order bug fix">
+      <change afterPath="$PROJECT_DIR$/start_schedule_multi.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/main/main.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/menu/menu_query.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/task/schedule_multi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/urls/datax.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/utils/mysql_sync.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sql_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sql_release.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/animat-customize-color.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/animat-diamond-color.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/animat-rocket-color.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/animat-search-color.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/bg-pattern.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/email/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/email/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/email/3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/happy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/loading.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logo2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logo3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logo4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logo5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logo_sm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logon/demo.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/images/logon/readme" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logon/demo.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/logon/verify40126.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/map-marker.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/properties/8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/shots/shot-1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/shots/shot-2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/shots/shot-3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/small/img-7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/team/team1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/team/team2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/team/team3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-10.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/users/avatar-9.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_sync_08_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_sync_08_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_sync_13_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_sync_13_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_06_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_07_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_07_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_10_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_10_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_10_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_elasticsearch_transfer_10_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_backup_11_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_backup_11_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_sql_08_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_sql_08_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_sync_08_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_sync_08_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_transfer_09_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mongo_transfer_09_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_sync_01_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_sync_01_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_transfer_01_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_transfer_05_0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_transfer_10_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_transfer_10_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_user_02_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/images/wtd/wtd_mysql_user_02_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/pages/jquery.tooltipster.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/pages/jquery.tooltipster.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/24.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/39.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_hopsonone_activity.activity_promotion_detail_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_hopsonone_park.orders_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_hopsonone_park_gz_junjing_real_time.tc_record_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_hopsonone_park_gz_junjing_real_time.tc_recordarchive_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_hopsonone_park_sh_real_time.tc_record_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_hopsonone_park_sh_real_time.tc_recordarchive_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_shop_side_operation.sales_report_day.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_shop_side_operation.sales_report_day_v1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/datax_shop_side_operation_sales_report_day.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_dev_transsku.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_dev_transskumedia.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_hft_business.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_hft_business_sku.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_hft_intel_order.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_hft_intel_order_detail.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_hft_intel_order_discounted.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_hft_intel_order_payment.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_datax_mysql_hbase_v20.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/datax/sync_hopsonone_order_center_orders_detail_plusvip_uat.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/downloads/kpi/readme" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/img/bootstrap-colorpicker/alpha-horizontal.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/img/bootstrap-colorpicker/alpha.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/img/bootstrap-colorpicker/hue-horizontal.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/img/bootstrap-colorpicker/hue.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/img/bootstrap-colorpicker/saturation.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/jtopo/jtopo-0.4.8-min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/moment/moment.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/audit_rule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/audit_rule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_guide.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_inst_cfg_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_cfg_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_inst_console.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_console.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_inst_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_create.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_inst_mgr.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_inst_opt_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_opt_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_inst_para.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_para.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db_user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_user_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_test.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/easylife.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/easylife.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/forget_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/forget_password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index-backup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index-20210914.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/kpi_generate.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_generate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/kpi_hst_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_hst_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/kpi_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/kpi_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main-20210914.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor_graph.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_graph.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_task.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor_templete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_templete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order_attachment.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/order_attachment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/order_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page-404.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page-500.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-500.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page-lock-screen.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-lock-screen.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page-login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page-logout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-logout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/page-register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/platform.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/platform.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/projectquery.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/projectquery.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sql_audit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_audit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sql_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_release.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sql_run.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_run.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_bigdata_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_code.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys_setting.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_setting.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tree.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_inst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_dmmx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_dmmx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_ds.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_xtqx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_xtqx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/archive.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/archive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/db_config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/db_inst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/db_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/db_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/ds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/func.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/kpi.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/kpi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/logon.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/logon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/minio.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/minio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/port.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/port.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/role.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/slow.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/slow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sync_bigdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sys.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/transfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/transfer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/bigdata.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/sys.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/sys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +345,7 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/plugins/bootstrap-closable-tab" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -83,18 +353,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\templates" />
-      <recent name="D:\work\dbops\static\plugins" />
+      <recent name="D:\work\dbops\static\plugins\bootstrap-closable-tab" />
+      <recent name="D:\work\dbops\templates\login" />
+      <recent name="D:\work\dbops\templates\main" />
+      <recent name="D:\work\dbops\templates\menu" />
       <recent name="D:\work\dbops" />
-      <recent name="D:\work\dbops\static\assets\images\blog" />
-      <recent name="D:\work\dbops\static\assets\pages" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\sql\tab\kpi" />
-      <recent name="D:\work\dbops\sql\tab" />
-      <recent name="D:\work\dbops\sql\view" />
-      <recent name="C:\dbops\doc" />
-      <recent name="C:\dbops\static\plugins\layui\css" />
+      <recent name="D:\work\dbops\templates\login" />
+      <recent name="D:\work\dbops\templates\main" />
+      <recent name="D:\work\dbops\templates\sys" />
+      <recent name="D:\work\dbops\templates\order" />
+      <recent name="D:\work\dbops\templates\port" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -480,14 +750,11 @@
       <workItem from="1631005174513" duration="38000" />
       <workItem from="1631091629585" duration="1231000" />
       <workItem from="1631149301460" duration="17756000" />
-      <workItem from="1631173632853" duration="5317000" />
-    </task>
-    <task id="LOCAL-00031" summary="slow log update">
-      <created>1623296160577</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1623296160577</updated>
+      <workItem from="1631173632853" duration="5650000" />
+      <workItem from="1631240127910" duration="17754000" />
+      <workItem from="1631494317056" duration="20543000" />
+      <workItem from="1631582385264" duration="21820000" />
+      <workItem from="1631667768332" duration="5802000" />
     </task>
     <task id="LOCAL-00032" summary="bug fix">
       <created>1623296205336</created>
@@ -825,7 +1092,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631171648842</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="sql order bug fix">
+      <created>1631179425909</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1631179425910</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TodoView">
@@ -902,29 +1176,29 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1630908459837" />
-    <state width="1877" height="200" key="GridCell.Tab.0.bottom" timestamp="1631178882386">
+    <state width="1877" height="261" key="GridCell.Tab.0.bottom" timestamp="1631668360428">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="200" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631178882386" />
+    <state width="1877" height="261" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631668360428" />
     <state width="1877" height="882" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555671" />
-    <state width="1877" height="200" key="GridCell.Tab.0.center" timestamp="1631178882386">
+    <state width="1877" height="261" key="GridCell.Tab.0.center" timestamp="1631668360428">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="200" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631178882386" />
+    <state width="1877" height="261" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631668360428" />
     <state width="1877" height="882" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555668" />
-    <state width="1877" height="200" key="GridCell.Tab.0.left" timestamp="1631178882386">
+    <state width="1877" height="261" key="GridCell.Tab.0.left" timestamp="1631668360428">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="200" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631178882386" />
+    <state width="1877" height="261" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631668360428" />
     <state width="1877" height="882" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555666" />
-    <state width="1877" height="200" key="GridCell.Tab.0.right" timestamp="1631178882386">
+    <state width="1877" height="261" key="GridCell.Tab.0.right" timestamp="1631668360428">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="200" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631178882386" />
+    <state width="1877" height="261" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631668360428" />
     <state width="1877" height="882" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555670" />
     <state width="1877" height="306" key="GridCell.Tab.1.bottom" timestamp="1628243183385">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -946,10 +1220,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="378" y="275" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1630404029126" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1631171660421">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1631179430302">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631171660421" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631179430302" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1629795507466">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -958,14 +1232,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="668" y="496" width="722" height="268" key="com.jetbrains.plugins.remotesdk.ui.RemoteMappingsConfiguration/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1629860058481" />
-    <state x="537" y="315" width="1178" height="556" key="find.popup" timestamp="1631000995160">
+    <state x="589" y="376" width="1178" height="556" key="find.popup" timestamp="1631672137726">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="537" y="315" width="1178" height="556" key="find.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631000995160" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1631173744159">
+    <state x="589" y="376" width="1178" height="556" key="find.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631672137726" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1631672885697">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631173744159" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631672885697" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -980,7 +1254,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1631179212894" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1631667776657" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

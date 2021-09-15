@@ -19,7 +19,7 @@ class userquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
         await self.check_valid()
-        self.render("user_query.html")
+        self.render("./user/user_query.html")
 
 class useradd(basehandler):
     @tornado.web.authenticated
@@ -29,7 +29,7 @@ class useradd(basehandler):
         gender = await get_dmm_from_dm('04')
         dept   = await get_dmm_from_dm('01')
         proj_group = await get_dmm_from_dm('18')
-        self.render("./user_add.html",
+        self.render("./user/user_add.html",
                     roles=roles,
                     gender=gender,
                     dept=dept,
@@ -79,7 +79,7 @@ class userchange(basehandler):
     @tornado.web.authenticated
     async def get(self):
         await self.check_valid()
-        self.render("./user_change.html")
+        self.render("./user/user_change.html")
 
 class useredit(basehandler):
     @tornado.web.authenticated
@@ -90,7 +90,7 @@ class useredit(basehandler):
         genders = await get_dmm_from_dm('04')
         depts   = await get_dmm_from_dm('01')
         proj_groups = await get_dmm_from_dm('18')
-        self.render("./user_edit.html",
+        self.render("./user/user_edit.html",
                      userid      = d_user['userid'],
                      loginname   = d_user['loginname'],
                      wkno        = d_user['wkno'],
@@ -162,7 +162,7 @@ class projectquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
         await self.check_valid()
-        self.render("./projectquery.html")
+        self.render("./user/projectquery.html")
 
 class project_query(basehandler):
     @tornado.web.authenticated

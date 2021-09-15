@@ -18,7 +18,7 @@ from   web.utils.basehandler import basehandler
 class syncquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./sync_query.html",
+        self.render("./sync/sync_query.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_sync_ywlx = await get_dmm_from_dm('08'),
                     dm_sync_data_type = await get_dmm_from_dm('09'),
@@ -60,7 +60,7 @@ class sync_query_sync_tabs(basehandler):
 class syncadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./sync_add.html",
+        self.render("./sync/sync_add.html",
                     sync_server       = await get_sync_server(),
                     db_server         = await get_sync_db_server(),
                     dm_db_type        = await get_dmm_from_dm('02'),
@@ -126,7 +126,7 @@ class syncadd_del_tab(basehandler):
 class syncchange(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./sync_change.html" ,
+        self.render("./sync/sync_change.html" ,
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_sync_ywlx = await get_dmm_from_dm('08'),
                     dm_sync_data_type = await get_dmm_from_dm('09'),)
@@ -136,7 +136,7 @@ class syncedit(basehandler):
     async def get(self):
         sync_id   = self.get_argument("sync_id")
         d_sync    = await get_sync_by_syncid(sync_id)
-        self.render("./sync_edit.html",
+        self.render("./sync/sync_edit.html",
                     sync_id              = sync_id,
                     sync_server          = await get_sync_server(),
                     db_server            = await get_sync_db_server(),
@@ -207,7 +207,7 @@ class syncclone(basehandler):
     async def get(self):
         sync_id   = self.get_argument("sync_id")
         d_sync    = await get_sync_by_syncid(sync_id)
-        self.render("./sync_clone.html",
+        self.render("./sync/sync_clone.html",
                     sync_server          = await get_sync_server(),
                     db_server            = await get_sync_db_server(),
                     dm_db_type           = await get_dmm_from_dm('02'),
@@ -282,7 +282,7 @@ class syncedit_del(basehandler):
 class synclogquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./sync_log_query.html",
+        self.render("./sync/sync_log_query.html",
                     dm_proj_type= await get_dmm_from_dm('05'),
                     dm_sync_ywlx= await get_dmm_from_dm('08'),
                     begin_date=current_rq2(),
@@ -318,7 +318,7 @@ class sync_log_query_detail(basehandler):
 class syncloganalyze(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./sync_log_analyze.html",
+        self.render("./sync/sync_log_analyze.html",
                       dm_proj_type = await get_dmm_from_dm('05'),
                       db_sync_tags = await get_db_sync_tags(),
                       begin_date   = get_day_nday_ago(now(),0),
@@ -343,7 +343,7 @@ class sync_log_analyze(basehandler):
 class syncloganalyze2(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./sync_log_analyze2.html",
+        self.render("./sync/sync_log_analyze2.html",
                       dm_proj_type = await get_dmm_from_dm('05'),
                       db_sync_ywlx = await get_db_sync_ywlx(),
                       begin_date   = get_day_nday_ago(now(),0),

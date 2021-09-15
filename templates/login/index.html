@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" href="{{static_url('assets/images/favicon.ico')}}">
+        <title>数据库自动化运维平台</title>
+        <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('assets/css/core.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('assets/css/pages.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('assets/css/menu.css')}}"  rel="stylesheet" type="text/css" />
+        <link href="{{static_url('assets/css/responsive.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('plugins/custombox/css/custombox.min.css')}}" rel="stylesheet">
+		<link href="{{static_url('plugins/switchery/switchery.min.css')}}" rel="stylesheet" >
+        <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
+        <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
+        <link href="{{static_url('assets/css/icons/icomoon/styles.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{static_url('plugins/form_wizard/css/components.min.css')}}" rel="stylesheet" type="text/css" />
+
+        <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+        <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+        <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+        <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
+        <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
+        <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
+
+        <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
+        <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
+
+        <link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
+
+        <style>
+            .modal-lg {
+                width:650px;
+                height:500px;
+                margin-left:35%;
+                margin-top:5%;
+            }
+
+            .logo {
+                color: #ffffff !important;
+                font-size: 25px !important;
+                text-transform: capitalize !important;
+                font-family: 'Hind Madurai', sans-serif;
+                font-weight: 500 !important;
+                letter-spacing: 1px;
+                line-height: 50px !important;
+            }
+            .logo i {
+                display: block !important;
+            }
+            .logo_span {
+                color: #59aed5 !important;
+                font-size: 25px;
+            }
+
+            #unlock-btn{
+                margin-top:15px;
+                margin-bottom:15px;
+            }
+
+            .label-body {
+                display: inline-block;
+                width: 45px;
+            }
+
+           .app-search1 .form-control1{
+                border: 1px solid rgba(152, 166, 173, 0.15);
+                font-size: 13px;
+                height: 34px;
+                color: #313a46;
+                padding: 7px 20px 7px 20px;
+                margin: 19px 12px 0 5px;
+                background: rgba(152, 166, 173, 0.1);
+                box-shadow: none;
+                border-radius: 30px;
+                width: 310px;
+                display: block;
+            }
+
+             .app-search2 .form-control2{
+                border: 1px solid rgba(152, 166, 173, 0.15);
+                font-size: 13px;
+                height: 34px;
+                color: #313a46;
+                padding: 7px 20px 7px 20px;
+                margin: 19px 12px 0 5px;
+                background: rgba(152, 166, 173, 0.1);
+                box-shadow: none;
+                border-radius: 30px;
+                display: block;
+                width: 150px;
+            }
+
+           .app-search3 .form-control3{
+                border: 1px solid rgba(152, 166, 173, 0.15);
+                font-size: 13px;
+                height: 34px;
+                color: #313a46;
+                padding: 7px 20px 7px 20px;
+                margin: 19px 12px 0 5px;
+                background: rgba(152, 166, 173, 0.1);
+                box-shadow: none;
+                border-radius: 30px;
+                width: 340px;
+                display: block;
+            }
+        </style>
+    </head>
+
+    <body  class="fixed-left">
+        <!-- Begin page -->
+        <div id="wrapper">
+            <!-- Top Bar Start -->
+            <div class="topbar">
+                <!-- LOGO -->
+                <div class="topbar-left">
+                    <a id="windows_main" href="#" class="logo" style="size:4px;"><span class="logo_span ion-coffee"></span><span>&nbsp;Ease<span>Base</span></span></a>
+                </div>
+                <!-- Button mobile view to collapse sidebar menu -->
+                <div class="navbar navbar-default" role="navigation">
+                    <div class="container">
+                        <!-- Navbar-left -->
+                        <ul class="nav navbar-nav navbar-left" >
+                            <li>
+                                <button class="button-menu-mobile open-left waves-effect">
+                                    <i class="mdi mdi-menu"></i>
+                                </button>
+                            </li>
+                            <li class="col-md-4">
+                                <form class="app-search1">
+                                     <span class="form-control1">{{china_rq}}&nbsp;&nbsp;<span  id='span_time'>{{china_time}}</span>&nbsp;&nbsp;{{china_week}} </span>
+                                </form>
+                            </li>
+                            <li class="col-md-2">
+                                 <form class="app-search2">
+                                     <span class="form-control2">{{welcome}}</span>
+                                </form>
+                            </li>
+                            <li class="col-md-4">
+                                 <form id='form-search' role="search" class="app-search3">
+                                     <span class="form-control3">主面板&nbsp;&nbsp;
+                                         <div class="radio radio-info radio-inline">
+                                             <input type="radio" id="radio_hopson" value="hopson" name="radio_main" checked>
+                                             <label class="label-body" for="radio_hopson">合生通</label>
+                                         </div>
+                                         <div class="radio radio-info radio-inline">
+                                             <input type="radio" id="radio_easylife" value="easylife" name="radio_main">
+                                             <label class="label-body" for="radio_easylife">好房</label>
+                                         </div>
+                                         <div class="radio radio-info radio-inline">
+                                             <input type="radio" id="radio_platform" value="platform" name="radio_main" >
+                                             <label class="label-body" for="radio_platform">平台</label>
+                                         </div>
+                                     </span>
+                                </form>
+                            </li>
+                        </ul>
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown user-box">
+                                <a href="" class="dropdown-toggle waves-effect user-link" data-toggle="dropdown" aria-expanded="true">
+                                    <img id='user-img-id' src="" alt="user-img" class="img-circle user-img">
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right user-list notify-list">
+                                    <li>
+                                        <h5>你好, {{username}}</h5>
+                                    </li>
+                                    <li><a href="javascript:void(0)" onclick="userinfo()"><i class="ti-user m-r-5"></i>用户详情</a></li>
+                                    <li><a href="javascript:void(0)" onclick="lock_screen()"><i class="ti-lock m-r-5"></i>锁定系统</a></li>
+                                    <li><a href="/logout"><i class="ti-power-off m-r-5"></i>系统注销</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </div><!-- end container -->
+                </div><!-- end navbar -->
+            </div>
+            <!-- Top Bar End -->
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="left side-menu">
+                <span class="menu-title">数据库自动化运维平台</span>
+                <div class="sidebar-inner slimscrollleft">
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+                        <ul id="ul-menu">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Sidebar -left -->
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- Start right Content here -->
+            <div class="content-page">
+                <!-- Start content -->
+                <div class="content">
+
+                     <div class="panel-body">
+                        <ul id="ul_tabs" class="nav nav-tabs tabs-bordered">
+<!--                        <li class="active"><a href="#main" data-toggle="tab" aria-expanded="true">主面板<button type="button" class="close" >×</button></a></li>-->
+                        </ul>
+                        <div class="tab-content br-n pn">
+                             <div id="main" class="tab-pane active">
+                                <div id='main-container-div' class="container"></div> <!-- container -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- content -->
+                <footer class="footer text-right">
+                    <div class="col-lg-3 col-md-4 col-sm-6"><span><b>作者:</b>一切随风</span></div>
+                    <div class="col-lg-3 col-md-4 col-sm-6"><span><b>版本:</b>V1.0</span></div>
+                    <div class="col-lg-3 col-md-4 col-sm-6"><span><b>博客:</b><a href="http://www.zhitbar.cn" target="_blank">www.zhitbar.cn</a></span></div>
+                    <div class="col-lg-3 col-md-4 col-sm-6"><span><b>邮箱:</b>zhdn_791005@163.com</span></div>
+                </footer>
+            </div>
+
+        </div>
+        <!-- END wrapper -->
+
+        <div id="con-userinfo-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">用户详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                               <input  id="userid" type="hidden" name="userid" value={{userid}} >
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">用户名</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="login"  type="text" class="form-control" placeholder="请输入用户名" value={{loginname}} disabled>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <form class="form-horizontal" action=""  method="POST" enctype="multipart/form-data" >
+                            <div class="row">
+                               <div class="form-group">
+                                    <div>
+                                        <label class="col-md-2 control-label">用户头像</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="file" name="files[]" id="user_detail_filer_input"  multiple="multiple">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input  id="user_detail_image_path" type="hidden" value="{{file_path}}" >
+                                        <input  id="user_detail_image_file" type="hidden" value="{{file_name}}" >
+                                        <image  id="user_image" width="50px"  src="{{user_image}}" alt=''></image>
+                                    </div>
+                               </div>
+                            </div>
+                        </form>
+                        <form class="form-horizontal" role="form" >
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">姓名</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="user" name="user" type="text" class="form-control" placeholder="请输入姓名" value={{username}} disabled>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                               <div class="row">
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">工号</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                           <input id="wkno" name="wkno" type="text" class="form-control" placeholder="请输入工号" value={{wkno}} disabled>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">密码</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入密码" value={{password}}>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                               </div>
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">性别</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <select class="form-control select" id="gender" name="gender" disabled>
+                                                {% if gender=='1' %}
+                                                    <option value="1" selected = "selected">男</option>
+                                                    <option value="2">女</option>
+                                                {% end %}
+                                                {% if gender=='2' %}
+                                                    <option value='2' selected = "selected">女</option>
+                                                    <option value={{gender}}>男</option>
+                                                {% end %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                   </div>
+                               </div>
+
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">项目组</label>
+                                        </div>
+                                       <div class="col-md-8">
+                                            <select class="form-control select" id="proj_group" disabled>
+                                               {% for var in proj_groups %}
+                                                   {% if proj_group==var[0] %}
+                                                      <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                                   {% else %}
+                                                      <option value={{var[0]}} >{{var[1]}}</option>
+                                                   {% end  %}
+                                              {% end %}
+                                            </select>
+                                       </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                               </div>
+                               <div class="row">
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">部门</label>
+                                        </div>
+                                       <div class="col-md-8">
+                                            <select class="form-control select" id="dept" name="dept" disabled>
+                                               {% for var in depts %}
+                                                   {% if dept==var[0] %}
+                                                      <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                                   {% else %}
+                                                      <option value={{var[0]}} >{{var[1]}}</option>
+                                                   {% end  %}
+                                              {% end %}
+                                            </select>
+                                       </div>
+                                      <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">电子邮箱</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="email" name="email" type="text" class="form-control" placeholder="请输入电子邮箱" value={{email}}>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                   </div>
+                                </div>
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">联系方式</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="phone" name="phone" type="text" class="form-control" placeholder="请输入联系方式" value={{phone}}>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                   </div>
+                                </div>
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">过期日期</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input  id="expire_date" name="expire_date" type="text" disabled class="form-control datepicker" placeholder="yyyy/mm/dd" id="datepicker" value={{expire_date}}>
+                                                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                   </div>
+                                </div>
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">用户状态</label>
+                                        </div>
+                                       <div class="col-md-8">
+                                            <select class="form-control select" id="status" name="status" disabled>
+                                                {% if status=='1' %}
+                                                    <option value="1" selected = "selected">启用</option>
+                                                    <option value="0">禁用</option>
+                                                {% end %}
+                                                {% if status=='0' %}
+                                                    <option value="1" >启用</option>
+                                                    <option value="0" selected = "selected">禁用</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                       <div class="col-md-2"></div>
+                                   </div>
+                               </div>
+
+                               <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label">用户角色</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <select multiple="multiple" class="form-control" id="sele_role_priv" name="roles" >
+                                              {% for var in user_roles %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                              {% end %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                   </div>
+                               </div>
+                           </form>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-4"></div>
+                         <div class="col-md-4">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">关闭</button>
+                                <button type="button" class="btn btn-info waves-effect waves-light" id='btn-user-change'>变更</button>
+                             </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal -->
+
+        <div id="custom-modal" class="modal-demo">
+            <div class="custom-modal-text">
+                <div class="row">
+                    <div class="account-content">
+                        <div class="text-center m-b-20">
+                            <div class="m-b-20">
+                                 <input  id="image_path" type="hidden" value="{{file_path}}" >
+                                 <input  id="image_file" type="hidden" value="{{file_name}}">
+                                 <img id='account-img-id' src="" class="img-circle img-thumbnail thumb-lg" alt="thumbnail">
+                            </div>
+                            <p class="text-muted m-b-0 font-13">输入密码访问. </p>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <input id='unlock_password' class="form-control" type="password" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group account-btn text-center m-t-10">
+                            <div class="col-xs-12">
+                                <button id='unlock-btn' class="btn w-md btn-bordered btn-danger waves-effect waves-light" >解锁</button>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="col-sm-12 text-center">
+                        <p class="text-muted">没有登陆，请先<a href="/" class="text-primary m-l-5"><b>登陆</b></a></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var resizefunc = [];
+        </script>
+
+         <!-- jQuery  -->
+        <script src="{{static_url('assets/js/jquery.min.js')}}"></script>
+
+        <script>
+              $.ajax({
+                      url: "/tree",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{},
+                      success: function (dataSet) {
+                        $("#ul-menu").append(dataSet.message);
+                        $('#main-container-div').load("/main");
+                     }
+               });
+        </script>
+
+        <script src="{{static_url('assets/js/bootstrap.min.js')}}"></script>
+        <script src="{{static_url('assets/js/detect.js')}}"></script>
+        <script src="{{static_url('assets/js/fastclick.js')}}"></script>
+        <script src="{{static_url('assets/js/jquery.slimscroll.js')}}"></script>
+        <script src="{{static_url('assets/js/jquery.scrollTo.min.js')}}"></script>
+        <script src="{{static_url('plugins/switchery/switchery.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+        <script src="{{static_url('plugins/custombox/js/custombox.min.js')}}"></script>
+        <script src="{{static_url('plugins/custombox/js/legacy.min.js')}}"></script>
+        <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
+        <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
+        <script src="{{static_url('plugins/jquery.filer/js/jquery.filer.js')}}"></script>
+        <script src="{{static_url('plugins/jquery.cookie/jquery.cookie.js')}}"></script>
+        <script src="{{static_url('plugins/loaders/blockui.min.js')}}"></script>
+        <script src="{{static_url('plugins/raphael/raphael-min.js')}}"></script>
+        <script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
+        <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
+        <script src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
+        <script src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
+        <script src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
+        <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
+        <script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
+        <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+        <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+        <script src="{{static_url('assets/js/utils.js')}}"></script>
+        <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
+        <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
+
+        <script>
+            var screen_lock_status = 'unlock';
+            var bind_status = new Array()
+
+            // function lock_screen() {
+            //      $('#unlock_password').val('');
+            //      Custombox.open({
+            //         target:'#custom-modal',
+            //         effect:'door',
+            //         overlayClose:'',
+            //         escKey:false,
+            //         overlaySpeed:"100",
+            //         overlayColor:"#36404a",
+            //         plugin:"custommodal"
+            //      });
+            //
+            //      screen_lock_status = 'locked';
+            //      $.ajax({
+            //           url: "/lock",
+            //           type: "post",
+            //           datatype: "json",
+            //           async:false,
+            //           success: function (dataSet) {
+            //              console.log('/lock ok!')
+            //          }
+            //      });
+            // }
+            //
+            // function check_lock_screen () {
+            //       var cookie_screen_lock_status;
+            //       var cookie_heartbeat;
+            //
+            //       $.ajax({
+            //           url: "/lock_status",
+            //           type: "post",
+            //           datatype: "json",
+            //           async:false,
+            //           success: function (dataSet) {
+            //             // console.log('lock_status=',dataSet.code)
+            //             cookie_screen_lock_status = dataSet.code;
+            //          },
+            //      });
+            //
+            //       $.ajax({
+            //           url: "/heartbeat",
+            //           type: "post",
+            //           datatype: "json",
+            //           async:false,
+            //           success: function (dataSet) {
+            //             // console.log('heartbeat=',dataSet.code)
+            //             cookie_heartbeat = dataSet.code;
+            //          },
+            //          error: function (jqXHR, textStatus, errorThrown) {
+            //             console.log('jqXHR.responseText=',jqXHR.responseText);
+            //             console.log('jqXHR.status=',jqXHR.status);
+            //             console.log('jqXHR.readyState=',jqXHR.readyState);
+            //             console.log('jqXHR.statusText=',jqXHR.statusText);
+            //             console.log('textStatus=',textStatus);
+            //             console.log('errorThrown=',errorThrown);
+            //             if (jqXHR.status==403){
+            //                 swal("登陆信息已过期，请重新登陆!", "", "error")
+            //                 window.location.href='/login'
+            //             } else if (jqXHR.status==502){
+            //                 swal("用户无权访问权限此功能!", "", "error")
+            //             } else {
+            //                 swal("系统不可用,请稍后重试!", "", "error")
+            //             }
+            //          }
+            //       });
+            //
+            //       // console.log('check_lock_screen:',get_curr_time());
+            //       // console.log('screen_lock_status=',screen_lock_status);
+            //       // console.log('cookie_screen_lock_status=',cookie_screen_lock_status);
+            //       // console.log('cookie_heartbeat=',cookie_heartbeat);
+            //
+            //       if (cookie_screen_lock_status == 'locked') {
+            //          if (screen_lock_status == 'unlock') {
+            //              lock_screen();
+            //          }
+            //       } else if (cookie_heartbeat == 'undefined') {
+            //          if (screen_lock_status == 'unlock') {
+            //              lock_screen();
+            //          }
+            //       }
+            // }
+
+            $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
+                e = window.event || e;  //解决浏览器兼容的问题
+                if(e.keyCode == 116) {  //F5按下
+                　　e.keyCode = 0;
+                　　return false;
+                }
+                // if (e.keyCode == 13) { //判断为Enter键
+                //     $("#unlock-btn").click();
+                // }
+            });
+
+            function userinfo() {
+               $('#con-userinfo-modal').modal({
+                 keyboard: false,
+                 backdrop:false
+               });
+             }
+
+            function get_privs(){
+                 var tmp='';
+                 var val='';
+                 $('#sele_role_priv option').each(function(){
+                   val=$(this).val();
+                   tmp=tmp+','+val;
+                 });
+                 return tmp.substr(1);
+            }
+
+            function get_curr_time() {
+                var date    = new Date();
+                this.hour   = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+                var currentTime = this.hour + "时" + this.minute + "分" + this.second + '秒';
+                return currentTime
+            }
+
+            function updateTime() {
+                $("#span_time").text(get_curr_time());
+            }
+
+            function start_Loader(p_id) {
+                var light = $('#'+p_id).parent();
+                $(light).block({
+                    message: '<i class="icon-spinner spinner"></i>',
+                    overlayCSS: {
+                        backgroundColor: '#a3c2ed',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        padding: 0,
+                        backgroundColor: 'none'
+                    }
+                });
+            }
+
+            function end_Loader(p_id) {
+                var light = $('#'+p_id).parent();
+                $(light).unblock();
+            }
+
+            $('#btn-user-change').click(function(){
+
+                 if ($("#user_detail_filer_input").get(0).files.length>0){
+                      var fd = new FormData();
+                      files  = $("#user_detail_filer_input").get(0).files;
+                      fd.append("file", files[0]);
+                      fd.append("username", $('#login').val());
+                      $.ajax({
+                            url: "/user/add/uploadImage",
+                            type: "POST",
+                            processData: false,
+                            contentType: false,
+                            data : fd,
+                            async:false,
+                            dataType: 'JSON',
+                            success: function (dataSet) {
+                                if (dataSet.code==0) {
+                                    console.log('/user/add/uploadImage1=', dataSet);
+                                    console.log('/user/add/uploadImage2=',dataSet.file_path+'/'+dataSet.file_name)
+                                    $('#user_detail_image_path').val(dataSet.file_path)
+                                    $('#user_detail_image_file').attr('src',dataSet.file_path+'/'+dataSet.file_name)
+
+                                    $.ajax({
+                                        url: "/user/edit/save",
+                                        type: "post",
+                                        datatype: "json",
+                                        data: {
+                                            userid     : $('#userid').val(),
+                                            loginname  : $('#login').val(),
+                                            username   : $('#user').val(),
+                                            wkno       : $('#wkno').val(),
+                                            password   : $('#pass').val(),
+                                            gender     : $('#gender').val(),
+                                            email      : $('#email').val(),
+                                            phone      : $('#phone').val(),
+                                            proj_group : $('#proj_group').val(),
+                                            dept       : $('#dept').val(),
+                                            expire_date: $('#expire_date').val(),
+                                            status     : $('#status').val(),
+                                            roles      : get_privs(),
+                                            file_path  : dataSet.file_path,
+                                            file_name  : dataSet.file_name,
+                                        },
+                                        success: function (dataSet) {
+                                            console.log(dataSet.code, dataSet.message);
+                                            if (dataSet.code==0) {
+                                               swal("变更成功", "", "success")
+                                            } else {
+                                               swal(dataSet.message, "", "error")
+                                            }
+                                        }
+                                     });
+
+                                } else {
+                                    console.log('/user/add/uploadImage=', dataSet.message);
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=',jqXHR.responseText);
+                                console.log('jqXHR.status=',jqXHR.status);
+                                console.log('jqXHR.readyState=',jqXHR.readyState);
+                                console.log('jqXHR.statusText=',jqXHR.statusText);
+                                console.log('textStatus=',textStatus);
+                                console.log('errorThrown=',errorThrown);
+                                if (jqXHR.status==403){
+                                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                                    window.location.href='/login'
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                       });
+                  } else {
+                      $.ajax({
+                            url: "/user/edit/save",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                userid     : $('#userid').val(),
+                                loginname  : $('#login').val(),
+                                username   : $('#user').val(),
+                                wkno       : $('#wkno').val(),
+                                password   : $('#pass').val(),
+                                gender     : $('#gender').val(),
+                                email      : $('#email').val(),
+                                phone      : $('#phone').val(),
+                                proj_group : $('#proj_group').val(),
+                                dept       : $('#dept').val(),
+                                expire_date: $('#expire_date').val(),
+                                status     : $('#status').val(),
+                                roles      : get_privs(),
+                                file_path  : $('#user_detail_image_path').val(),
+                                file_name  : $('#user_detail_image_file').val(),
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code==0) {
+                                   swal("变更成功", "", "success")
+                                } else {
+                                   swal(dataSet.message, "", "error")
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=',jqXHR.responseText);
+                                console.log('jqXHR.status=',jqXHR.status);
+                                console.log('jqXHR.readyState=',jqXHR.readyState);
+                                console.log('jqXHR.statusText=',jqXHR.statusText);
+                                console.log('textStatus=',textStatus);
+                                console.log('errorThrown=',errorThrown);
+                                if (jqXHR.status==403){
+                                    swal("登陆信息已过期，请重新登陆!", "", "error")
+                                    window.location.href='/login'
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                         });
+                  }
+
+            });
+
+            $('input[type=radio][name=radio_main]').change(function() {
+                  console.log('radio_main=',$("input[name='radio_main']:checked").val())
+                  var val = $("input[name='radio_main']:checked").val()
+                  if (val =='hopson') {
+                      start_Loader('form-search2')
+                      $('#main-container-div').load("/main");
+                      end_Loader('form-search2')
+                  } else if  (val =='easylife') {
+                      start_Loader('form-search2')
+                      $('#main-container-div').load("/easylife");
+                      end_Loader('form-search2')
+                  } else if  (val =='platform') {
+                      start_Loader('form-search2')
+                      $('#main-container-div').load("/platform");
+                      end_Loader('form-search2')
+                  }
+            });
+
+            $(document).ready(function() {
+                 var timer ;
+                 setInterval("updateTime();",1000);
+                 // setInterval("check_lock_screen();",30000);
+
+                 $(".file").click(function() {
+                     tabId =$(this).attr("id").split('^')[0]
+                     url=$(this).attr("id").split('^')[1]
+                     console.log('file=',this)
+                     console.log(id,url)
+                      $.ajax({
+                            url: url,
+                            type: "get",
+                            datatype: "html",
+                            error: function (jqXHR) {
+                                if (jqXHR.status==403){
+                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
+                                    setTimeout(" window.location.href='/login'",3000);
+                                } else if (jqXHR.status==502){
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                    return
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                    return
+                                }
+                            }
+                       })
+
+                      clearInterval(timer);
+
+                      $('#ul_tabs').find('li').each(function() {
+                          $(this).removeClass("active")
+                      });
+
+                      $('#ul_tabs').append('<li class="active"><a href="#"  id="'+tabId+'" data-toggle="tab" aria-expanded="false">'+$(this).text()+'<button id="close_'+tabId+'" type="button" class="close" >×</button></a></li>')
+                      $('#main-container-div').load(url);
+
+                      $('#'+tabId).on('show.bs.tab', function (e) {
+                         id = $(e.target).attr('id')
+                         url = '/'+id.replace(/_/g,'/')
+                         console.log('id=',id,'url=',url)
+                         $('#main-container-div').load(url);
+                      })
+
+                      $('#'+'close_'+tabId).click(function(){
+                         console.log('close=',$(this))
+                         console.log('close.parent=',$(this).parent())
+                         console.log('close.parent.parent=',$(this).parent().parent())
+                         $(this).parent().parent().remove()
+                         $('#ul_tabs').find('li:last').addClass("active")
+                         lastId=$('#ul_tabs').find('li:last').children().attr('id')
+                         if (lastId ==undefined) {
+                              $('#main-container-div').load('/main');
+                         } else {
+                              lastHref= '/'+lastId.replace(/_/g,'/')
+                              $('#main-container-div').load(lastHref);
+                         }
+                      })
+
+                 });
+
+                 $('#windows_main').click(function(){
+                    $('#main-container-div').load("/main");
+                 });
+
+                 $('#user_detail_filer_input').filer({
+                        limit: 1,
+                        maxSize: 3,
+                        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+                        changeInput: true,
+                        showThumbs: true,
+                        addMore: true
+                  });
+
+                 //load user image
+                 $('#account-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
+                 $('#user-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
+
+                 $('#unlock-btn').click(function () {
+                    $.ajax({
+                        url: "/unlock",
+                        type: "post",
+                        datatype: "json",
+                        data: {
+                            unlock_password: $('#unlock_password').val(),
+                        },
+                        success: function (dataSet) {
+                            console.log(dataSet.code);
+                            if (dataSet.code==0) {
+                                console.log('unlock success');
+                                screen_lock_status  = 'unlock';
+                                Custombox.close('#custom-modal',function(){return true;})
+                                return false
+                            } else {
+                                console.log('unlock failure');
+                                $('#unlock_password').val('')
+                                $('#unlock_password').attr('placeholder','口令有误!')
+                                return false
+                            }
+                        },
+                       error: function (jqXHR, textStatus, errorThrown) {
+                            if (jqXHR.status==403){
+                                swal("登陆信息已过期，请重新登陆!", "", "error")
+                                window.location.href='/login'
+                            } else if (jqXHR.status==502){
+                                swal("用户无权访问权限此功能!", "", "error")
+                            } else {
+                                swal("系统不可用,请稍后重试!", "", "error")
+                            }
+                        }
+                     });
+
+                 });
+                 // check_lock_screen();
+
+            });
+
+        </script>
+
+    </body>
+</html>

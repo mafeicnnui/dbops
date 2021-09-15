@@ -7,11 +7,12 @@
 
 import traceback
 import datetime
-from web.utils.common      import current_rq,aes_encrypt,aes_decrypt
+from web.utils.common      import current_rq,aes_encrypt,aes_decrypt,aes_decrypt_sync
 from web.model.t_user_role import del_user_roles,save_user_role,upd_user_role
 from web.utils.common      import now,exception_info
-from web.model.t_dmmx      import get_dmmc_from_dm
+from web.model.t_dmmx      import get_dmmc_from_dm,get_dmmc_from_dm_sync
 from web.utils.mysql_async import async_processer
+from web.utils.mysql_sync  import sync_processer
 
 def check_modify_password(user,newpass,reppass,auth_str):
     result={}
@@ -290,6 +291,31 @@ async def get_user_by_loginame(p_login_name):
     d_user['password']  = await aes_decrypt(d_user['password'], d_user['login_name'])
     d_user['gender_cn'] = await get_dmmc_from_dm('04', d_user['gender'])
     d_user['dept_cn']   = await get_dmmc_from_dm('01', d_user['dept'])
+    return d_user
+
+def get_user_by_loginame_sync(p_login_name):
+    sql= """select cast(id as char) as id,
+                name,
+                login_name,
+                password,
+                gender,
+                email,
+                phone,
+                dept,
+                date_format(expire_date,'%Y-%m-%d') as expire_date,
+                status,
+                file_path,
+                file_name,
+                project_group,
+                wkno
+         from t_user where login_name='{0}'
+        """.format(p_login_name)
+    d_user              = sync_processer.query_dict_one(sql)
+    d_user['userid']    = d_user['id']
+    d_user['username']  = d_user['name']
+    d_user['password']  = aes_decrypt_sync(d_user['password'], d_user['login_name'])
+    d_user['gender_cn'] = get_dmmc_from_dm_sync('04', d_user['gender'])
+    d_user['dept_cn']   = get_dmmc_from_dm_sync('01', d_user['dept'])
     return d_user
 
 async def check_user(p_user):

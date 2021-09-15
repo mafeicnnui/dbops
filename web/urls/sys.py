@@ -5,7 +5,7 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.sys  import audit_rule,audit_rule_save,sys_setting,sys_code,sys_code_type_query,sys_code_detail_query,sys_test
+from web.services.sys  import audit_rule,audit_rule_save,sys_setting,sys_code,sys_code_type_query,sys_code_detail_query
 from web.services.sys  import sys_query_rule,sys_code_type_add_save,sys_code_type_upd_save,sys_code_type_del
 from web.services.sys  import sys_code_detail_add_save,sys_code_detail_upd_save,sys_code_detail_del,sys_code_type
 
@@ -23,6 +23,5 @@ sys = [
         (r"/sys/code/detail/add/save", sys_code_detail_add_save),
         (r"/sys/code/detail/upd/save", sys_code_detail_upd_save),
         (r"/sys/code/detail/del", sys_code_detail_del),
-        (r"/sys/test", sys_test),
         (r"/sys/get/code/type", sys_code_type),
 ]

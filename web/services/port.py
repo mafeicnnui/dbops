@@ -15,7 +15,7 @@ from   web.model.t_dmmx      import get_dmm_from_dm
 class portquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./port_query.html",
+        self.render("./port/port_query.html",
                     dm_proj_type= await get_dmm_from_dm('05'),)
 
 class port_query(basehandler):
@@ -30,7 +30,7 @@ class port_query(basehandler):
 class portadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./port_add.html",
+        self.render("./port/port_add.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_mapping_type = await get_dmm_from_dm('35'),
                    )
@@ -54,7 +54,7 @@ class portadd_save(basehandler):
 class portchange(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./port_change.html",
+        self.render("./port/port_change.html",
                     dm_proj_type = await get_dmm_from_dm('05'))
 
 class portedit(basehandler):
@@ -62,7 +62,7 @@ class portedit(basehandler):
     async def get(self):
         port_id  = self.get_argument("port_id")
         d_port   = await get_port_by_portid(port_id)
-        self.render("./port_edit.html",
+        self.render("./port/port_edit.html",
                     p_port=d_port,
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_mapping_type = await get_dmm_from_dm('35'))

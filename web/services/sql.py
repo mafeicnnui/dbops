@@ -12,7 +12,7 @@ import traceback
 
 from web.model.t_sql           import exe_query
 from web.model.t_sql_check     import query_check_result
-from web.model.t_sql_release   import upd_sql,exe_sql,save_sql,query_audit,query_run,query_order,query_audit_sql,check_sql,format_sql,get_sql_release,get_order_xh,check_order_xh,update_order
+from web.model.t_sql_release   import upd_sql,exe_sql,upd_sql_run_status,save_sql,query_audit,query_run,query_order,query_audit_sql,check_sql,format_sql,get_sql_release,get_order_xh,check_order_xh,update_order
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd
 from web.model.t_ds            import get_dss_sql_query,get_dss_sql_run,get_dss_order,get_dss_sql_release,get_dss_sql_audit
 from web.model.t_user          import get_user_by_loginame
@@ -28,7 +28,7 @@ class sqlquery(basehandler):
    @tornado.web.authenticated
    async def get(self):
        name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       self.render("./sql_query.html", dss= await get_dss_sql_query(name))
+       self.render("./order/sql_query.html", dss= await get_dss_sql_query(name))
 
 class sql_query(basehandler):
    @tornado.web.authenticated
@@ -37,6 +37,7 @@ class sql_query(basehandler):
        dbid   = self.get_argument("dbid")
        sql    = self.get_argument("sql")
        curdb  = self.get_argument("cur_db")
+       print(curdb,dbid,sql)
        result = await exe_query(dbid,sql,curdb)
        v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
        v_json = json.dumps(v_dict)
@@ -47,15 +48,9 @@ class sql_detail(basehandler):
        release_id = self.get_argument("release_id")
        wkno = await get_sql_release(release_id)
        roll = await query_audit_sql(release_id)
-       #wkno['sqltext']= '<br>'.join(wkno['sqltext'].split(';'))
-       #roll['message']['rollback_statement'] = '<br>'.join(roll['message']['rollback_statement'].split(';'))
        ds  = await get_ds_by_dsid(wkno['dbid'])
        ds['service'] = wkno['db']
-       # print('host=',self.request.host)
-       # print('wkno=',wkno)
-       # print('roll=',roll)
-       # print('dbinfo=',ds)
-       self.render("./sql_detail.html",
+       self.render("./order/sql_detail.html",
                    wkno= json.loads(json.dumps(wkno,cls=DateEncoder)),
                    roll = json.loads(json.dumps(roll,cls=DateEncoder)),
                    dbinfo= ds['db_desc']+' ('+(ds['url']+ds['service'] if ds['url'].find(ds['service'])<0 else ds['url'])+')'
@@ -66,7 +61,7 @@ class sqlrelease(basehandler):
     @tornado.web.authenticated
     async def get(self):
        name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       self.render("./sql_release.html",
+       self.render("./order/sql_release.html",
                    dss    = await get_dss_sql_release(name),
                    vers   = await get_dmm_from_dm('12'),
                    orders = await get_dmm_from_dm('13'),
@@ -124,7 +119,7 @@ class sqlaudit(basehandler):
    @tornado.web.authenticated
    async def get(self):
        name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       self.render("./sql_audit.html",
+       self.render("./order/sql_audit.html",
                    audit_dss = await get_dss_sql_audit(name),
                    creater = await get_users(name)
                    )
@@ -144,7 +139,7 @@ class sqlrun(basehandler):
    @tornado.web.authenticated
    async def get(self):
        name = str(self.get_secure_cookie("username"), encoding="utf-8")
-       self.render("./sql_run.html",
+       self.render("./order/sql_run.html",
                    run_dss = await get_dss_sql_run(name),
                    creater = await get_users(name))
 
@@ -156,10 +151,10 @@ class sql_run(basehandler):
        dbid    = self.get_argument("dbid")
        db_name = self.get_argument("db_name")
        sql_id  = self.get_argument("sql_id")
-       name    = str(self.get_secure_cookie("username"), encoding="utf-8")
        print('request.host=',self.request.host,self.request.path)
-       await exe_sql(dbid, db_name, sql_id, name,self.request.host)
-       self.write({"code": 'threading', "message": ''})
+       # result = await exe_sql(dbid, db_name, sql_id, name,self.request.host)
+       result = await upd_sql_run_status(sql_id)
+       self.write({"code": result['code'], "message": result['message']})
 
 
 class sql_audit_query(basehandler):
@@ -301,7 +296,7 @@ class orderquery(basehandler):
     async def get(self):
         user_name = str(self.get_secure_cookie("username"), encoding="utf-8")
         userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
-        self.render("./order_query.html",
+        self.render("./order/order_query.html",
                     order_dss     = await get_dss_order(user_name),
                     vers          = await get_dmm_from_dm('12'),
                     order_types   = await get_dmm_from_dm('17'),
@@ -504,7 +499,7 @@ class wtd_attachment(basehandler):
         v_attach = []
         for i in  range(len(v_list['attachment_path'].split(','))):
             v_attach.append([i+1,'http://10.2.39.17:8300'+v_list['attachment_path'].split(',')[i]+'/'+v_list['attachment_name'].split(',')[i]])
-        self.render("./order_attachment.html", order_attachments=v_attach)
+        self.render("./order/order_attachment.html", order_attachments=v_attach)
 
 class wtd_attachment_number(basehandler):
     @tornado.web.authenticated

@@ -27,6 +27,7 @@ async def query_db_user(p_user_name,p_inst_env,p_inst_id):
                      b.description,date_format(b.created_date,'%Y-%m-%d %h:%i:%s')  as created_date
             FROM  t_db_inst a,t_db_user b
             where  a.id=b.inst_id {0}""".format(v_where)
+    print(sql)
     return await async_processer.query_list(sql)
 
 async def save_db_user(d_db_user):

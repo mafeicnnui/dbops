@@ -16,7 +16,7 @@ from   web.utils.basehandler import basehandler
 class minioquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./minio_query.html")
+        self.render("./minio/minio_query.html")
 
 class minio_query(basehandler):
     @tornado.web.authenticated
@@ -38,7 +38,7 @@ class minio_case(basehandler):
 class minioadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./minio_add.html",
+        self.render("./minio/minio_add.html",
                     dm_sync_server= await get_sync_server(),
                     dm_sync_type  = await get_dmm_from_dm('34'),
                     dm_sync_time_type = await get_dmm_from_dm('10'))
@@ -72,14 +72,14 @@ class minioadd_save(basehandler):
 class miniochange(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./minio_change.html")
+        self.render("./minio/minio_change.html")
 
 class minioedit(basehandler):
     @tornado.web.authenticated
     async def get(self):
         sync_tag   = self.get_argument("sync_tag")
         d_sync     = await get_minio_by_minioid(sync_tag)
-        self.render("./minio_edit.html",
+        self.render("./minio/minio_edit.html",
                     sync_tag       = d_sync['sync_tag'],
                     task_desc      = d_sync['comments'],
                     sync_server    = d_sync['server_id'],
@@ -108,7 +108,7 @@ class minioclone(basehandler):
     async def get(self):
         sync_tag = self.get_argument("sync_tag")
         d_sync   = await get_minio_by_minioid(sync_tag)
-        self.render("./minio_clone.html",
+        self.render("./minio/minio_clone.html",
                     sync_tag         = d_sync['sync_tag']+'_clone',
                     task_desc        = d_sync['comments']+'_clone',
                     sync_server      = d_sync['server_id'],
@@ -171,7 +171,7 @@ class minioedit_del(basehandler):
 class miniologquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./minio_log_query.html",
+        self.render("./minio/minio_log_query.html",
                     begin_date=current_rq3(-1),
                     end_date=current_rq2())
 
@@ -189,7 +189,7 @@ class minio_log_query(basehandler):
 class miniologanalyze(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./minio_log_analyze.html",
+        self.render("./minio/minio_log_analyze.html",
                       minio_tags     = await get_minio_tags(),
                       begin_date     = get_day_nday_ago(now(),15),
                       end_date       = get_day_nday_ago(now(),0))

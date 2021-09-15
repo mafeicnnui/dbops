@@ -283,7 +283,7 @@ async def get_tree_by_userid(p_username):
             v_node = v_menu_header.format(rs1[i][2],rs1[i][1])
             v_html = v_html+v_node
             for j in range(len(rs2)):
-                v_node = """<li><a id="{0}" class="file" href="#">{1}</a></li>""".format(rs2[j][2],rs2[j][1])
+                v_node = """<li><a id="{0}^{1}" class="file" href="#">{2}</a></li>""".format(rs2[j][2][1:].replace('/','_'),rs2[j][2],rs2[j][1])
                 v_html = v_html + "\n" + v_node;
             v_html=v_html+"\n"+v_menu_footer+"\n"
         result['code'] = '0'

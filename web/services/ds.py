@@ -14,7 +14,7 @@ from   web.utils.basehandler import basehandler
 class dsquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./ds_query.html",
+        self.render("./ds/ds_query.html",
                     dm_proj_type=await get_dmm_from_dm('05'),
                     dm_env_type=await get_dmm_from_dm('03'))
 
@@ -44,7 +44,7 @@ class ds_query_id(basehandler):
 class dsadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./ds_add.html",
+        self.render("./ds/ds_add.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_db_type   = await get_dmm_from_dm('02'),
                     dm_inst_type = await get_dmm_from_dm('07'),
@@ -75,7 +75,7 @@ class dsadd_save(basehandler):
 class dschange(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./ds_change.html",
+        self.render("./ds/ds_change.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_env_type = await get_dmm_from_dm('03'))
 
@@ -84,7 +84,7 @@ class dsedit(basehandler):
     async def get(self):
         dsid   = self.get_argument("dsid")
         d_ds   = await get_ds_by_dsid(dsid)
-        self.render("./ds_edit.html",
+        self.render("./ds/ds_edit.html",
                      dsid         = d_ds['dsid'],
                      market_id    = d_ds['market_id'],
                      inst_type    = d_ds['inst_type'],
@@ -134,7 +134,7 @@ class dsclone(basehandler):
     async def get(self):
         dsid=self.get_argument("dsid")
         d_ds  = await get_ds_by_dsid(dsid)
-        self.render("./ds_clone.html",
+        self.render("./ds/ds_clone.html",
                      market_id    = d_ds['market_id'],
                      inst_type    = d_ds['inst_type'],
                      db_type      = d_ds['db_type'],
@@ -187,7 +187,7 @@ class dsedit_del(basehandler):
 class dstest(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./ds_test.html",
+        self.render("./ds/ds_test.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_env_type  = await get_dmm_from_dm('03')
                     )

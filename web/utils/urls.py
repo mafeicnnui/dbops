@@ -19,13 +19,13 @@ from web.urls.wtd      import wtd
 from web.urls.backup   import backup
 from web.urls.sync     import sync
 from web.urls.transfer import transfer
-from web.urls.bigdata  import bigdata
+from web.urls.datax    import datax
 from web.urls.port     import port
 from web.urls.sys      import sys
 from web.urls.archive  import archive
 from web.urls.tools    import tools
 from web.urls.monitor  import monitor
-from web.urls.inst     import inst
+from web.urls.db       import db
 from web.urls.slow     import slow
 from web.urls.minio    import minio
 from web.urls.bbtj     import bbtj
@@ -46,13 +46,13 @@ urls.extend(wtd)
 urls.extend(backup)
 urls.extend(sync)
 urls.extend(transfer)
-urls.extend(bigdata)
+urls.extend(datax)
 urls.extend(port)
 urls.extend(sys)
 urls.extend(archive)
 urls.extend(tools)
 urls.extend(monitor)
-urls.extend(inst)
+urls.extend(db)
 urls.extend(slow)
 urls.extend(minio)
 urls.extend(bbtj)

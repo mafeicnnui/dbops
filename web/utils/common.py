@@ -15,9 +15,14 @@ import redis
 import json
 import smtplib
 import socket
+import string
+
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
 from web.utils.mysql_async import async_processer
+from web.utils.mysql_sync import sync_processer
+from PIL  import Image,ImageDraw,ImageFont,ImageFilter
+
 
 def read_json(file):
     with open(file, 'r') as f:
@@ -342,6 +347,13 @@ async def aes_decrypt(p_password,p_key):
         rs = await async_processer.query_one(sql)
         return str(rs[0],encoding = "utf-8")
 
+
+def aes_decrypt_sync(p_password, p_key):
+    sql = """select aes_decrypt(unhex('{0}'),'{1}')""".format(p_password, p_key[::-1])
+    rs = sync_processer.query_one(sql)
+    return str(rs[0], encoding="utf-8")
+
+
 def get_rand_str(p_len):
     rand=''
     for i in range(p_len):
@@ -439,7 +451,7 @@ def send_mail_465(p_sendserver,p_from_user,p_from_pass,p_to_user,p_to_cc,p_title
         msg["From"]    = p_from_user
         msg["To"]      = ",".join(to_user)
         msg["Cc"]       = ",".join(to_cc)
-        server = smtplib.SMTP_SSL(p_sendserver, 465)
+        server = smtplib.SMTP_SSL(p_sendserver, 465,timeout = 10)
         server.set_debuglevel(0)
         server.login(p_from_user, p_from_pass)
         server.sendmail(p_from_user, to_user, msg.as_string())
@@ -464,6 +476,14 @@ def send_mail_param(p_sendserver,p_from_user, p_from_pass, p_to_user, p_to_cc,p_
 async def get_sys_settings():
     st = "SELECT `key`,`value`,`desc` FROM  t_sys_settings"
     rs = await async_processer.query_dict_list(st)
+    settings={}
+    for s in rs:
+       settings[s['key']] = s['value']
+    return settings
+
+def get_sys_settings_sync():
+    st = "SELECT `key`,`value`,`desc` FROM  t_sys_settings"
+    rs = sync_processer.query_dict_list(st)
     settings={}
     for s in rs:
        settings[s['key']] = s['value']
@@ -504,3 +524,88 @@ class DateEncoder(json.JSONEncoder):
 
         else:
             return json.JSONEncoder.default(self, obj)
+
+
+class create_captcha:
+    def __init__(self):
+        '''
+          install font
+          #sudo yum install ttf-dejavu
+          #sudo mkdir /usr/share/fonts/dejavu
+          #sudo cp /usr/local/lib64/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf /usr/share/fonts/dejavu
+          #fc-cache
+          #fc-list
+        '''
+        self.font_path = 'DejaVuSans.ttf'
+
+        # 生成验证码位数
+        self.text_num = 5
+        # 生成图片尺寸
+        self.pic_size = (100, 40)
+        # 背景颜色，默认为白色
+        self.bg_color = (255, 255, 255)
+        # 字体颜色，默认为蓝色
+        self.text_color = (0, 0, 255)
+        # 干扰线颜色，默认为红色
+        self.line_color = (255, 0, 0)
+        # 是否加入干扰线
+        self.draw_line = True
+        # 加入干扰线条数上下限
+        self.line_number = (1, 5)
+        # 是否加入干扰点
+        self.draw_points = True
+        # 干扰点出现的概率(%)
+        self.point_chance = 2
+
+        self.image = Image.new('RGBA', (self.pic_size[0], self.pic_size[1]), self.bg_color)
+        self.font = ImageFont.truetype(self.font_path, 25)
+        self.draw = ImageDraw.Draw(self.image)
+        self.text = self.gene_text()
+
+    def gene_text(self):
+        # 随机生成一个字符串
+        source = list(string.ascii_letters)
+        for i in range(0, 10):
+            source.append(str(i))
+        return ''.join(random.sample(source, self.text_num))
+
+    def gene_line(self):
+        # 随机生成干扰线
+        begin = (random.randint(0, self.pic_size[0]), random.randint(0, self.pic_size[1]))
+        end = (random.randint(0, self.pic_size[0]), random.randint(0, self.pic_size[1]))
+        self.draw.line([begin, end], fill=self.line_color)
+
+    def gene_points(self):
+        # 随机绘制干扰点
+        for w in range(self.pic_size[0]):
+            for h in range(self.pic_size[1]):
+                tmp = random.randint(0, 100)
+                if tmp > 100 - self.point_chance:
+                    self.draw.point((w, h), fill=(0, 0, 0))
+
+    def gene_code(self):
+        # 生成验证码图片
+        font_width, font_height = self.font.getsize(self.text)
+        self.draw.text(
+            ((self.pic_size[0] - font_width) / self.text_num, (self.pic_size[1] - font_height) / self.text_num), self.text,
+            font=self.font,
+            fill=self.text_color)
+        if self.draw_line:
+            n = random.randint(self.line_number[0],self.line_number[1])
+            print(n)
+            for i in range(n):
+                self.gene_line()
+        if self.draw_points:
+            self.gene_points()
+        params = [1 - float(random.randint(1, 2)) / 100,
+                  0,
+                  0,
+                  0,
+                  1 - float(random.randint(1, 10)) / 100,
+                  float(random.randint(1, 2)) / 500,
+                  0.001,
+                  float(random.randint(1, 2)) / 500
+                  ]
+        self.image = self.image.transform((self.pic_size[0], self.pic_size[1]), Image.PERSPECTIVE, params)  # 创建扭曲
+        self.image = self.image.filter(ImageFilter.EDGE_ENHANCE_MORE)  # 滤镜，边界加强
+        return self.image

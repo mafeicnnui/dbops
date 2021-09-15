@@ -16,14 +16,14 @@ from   web.utils.basehandler import basehandler
 class kpi_item_query(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./kpi_item.html",
+        self.render("./bbtj/kpi_item.html",
                     dm_item_market= await query_kpi_item_market()
                     )
 
 class kpi_create(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./kpi_generate.html",
+        self.render("./bbtj/kpi_generate.html",
                     sync_server    = await get_sync_server(),
               )
 
@@ -59,7 +59,7 @@ class _kpi_item_market(basehandler):
 class kpi_query(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./kpi_query.html",
+        self.render("./bbtj/kpi_query.html",
                     dm_item_market=await query_kpi_item_market()
                     )
 
@@ -76,7 +76,7 @@ class _kpi_query(basehandler):
 class kpi_hst_query(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./kpi_hst_query.html",
+        self.render("./bbtj/kpi_hst_query.html",
                     dm_item_market=await query_kpi_item_market()
                     )
 

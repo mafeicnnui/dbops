@@ -16,7 +16,7 @@ from   web.utils.basehandler import basehandler
 class archivequery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./archive_query.html")
+        self.render("./archive/archive_query.html")
 
 class archive_query(basehandler):
     @tornado.web.authenticated
@@ -39,7 +39,7 @@ class archive_query_detail(basehandler):
 class archiveadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./archive_add.html",
+        self.render("./archive/archive_add.html",
                     archive_server  = await get_sync_server(),
                     dm_db_type      = await get_dmm_from_dm('02'),
                     dm_archive_type = await get_dmm_from_dm('09'),
@@ -79,14 +79,14 @@ class archiveadd_save(basehandler):
 class archivechange(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./archive_change.html")
+        self.render("./archive/archive_change.html")
 
 class archiveedit(basehandler):
     @tornado.web.authenticated
     async def get(self):
         archive_id   = self.get_argument("archiveid")
         d_archive    = await get_archive_by_archiveid(archive_id)
-        self.render("./archive_edit.html",
+        self.render("./archive/archive_edit.html",
                     dm_db_type           = await get_dmm_from_dm('02'),
                     dm_archive_server    = await get_sync_server(),
                     dm_archive_type      = await get_dmm_from_dm('09'),
@@ -159,7 +159,7 @@ class archiveedit_del(basehandler):
 class archivelogquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./archive_log_query.html",
+        self.render("./archive/archive_log_query.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_sync_ywlx = await get_dmm_from_dm('08'),
                     begin_date=current_rq2(),
@@ -214,7 +214,7 @@ class archiveclone(basehandler):
     async def get(self):
         archive_id   = self.get_argument("archive_id")
         d_archive    = await get_archive_by_archiveid(archive_id)
-        self.render("./archive_clone.html",
+        self.render("./archive/archive_clone.html",
                     dm_db_type          = await get_dmm_from_dm('02'),
                     dm_archive_server   = await get_sync_server(),
                     dm_archive_type     = await get_dmm_from_dm('09'),
@@ -277,7 +277,7 @@ class archiveclone_save(basehandler):
 class archivelogquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./archive_log_query.html",
+        self.render("./archive/archive_log_query.html",
                     begin_date=current_rq2(),
                     end_date=current_rq2()
                     )

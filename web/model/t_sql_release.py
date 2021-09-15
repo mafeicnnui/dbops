@@ -9,15 +9,17 @@ import sqlparse
 import traceback,re
 import logging
 import datetime
+import json
 from web.utils.common           import current_time
 from web.model.t_user           import get_user_by_loginame
-from web.model.t_ds             import get_ds_by_dsid
-from web.model.t_dmmx           import get_dmmc_from_dm
+from web.model.t_ds             import get_ds_by_dsid,get_ds_by_dsid_sync
+from web.model.t_dmmx           import get_dmmc_from_dm,get_dmmc_from_dm_sync
 from web.model.t_sql_check      import check_mysql_ddl
-from web.utils.common           import send_mail,send_mail_param,get_sys_settings
+from web.utils.common           import send_mail,send_mail_param,get_sys_settings,get_sys_settings_sync
 from web.utils.common           import format_sql as fmt_sql
-from web.model.t_user           import get_user_by_userid
+from web.model.t_user           import get_user_by_userid,get_user_by_loginame_sync
 from web.utils.mysql_async      import async_processer
+from web.utils.mysql_sync       import sync_processer
 from web.utils.mysql_rollback   import write_rollback,delete_rollback
 from web.model.t_sql_check      import reReplace,check_statement_count
 
@@ -30,9 +32,18 @@ async def get_sql_release(p_id):
     sql="select * from t_sql_release where id={}".format(p_id)
     return await async_processer.query_dict_one(sql)
 
+def get_sql_release_sync(p_id):
+    sql="select * from t_sql_release where id={}".format(p_id)
+    return sync_processer.query_dict_one(sql)
+
 async def get_sql_by_sqlid(p_sql_id):
     sql="select sqltext from t_sql_release where id={0}".format(p_sql_id)
     rs = await async_processer.query_one(sql)
+    return rs[0]
+
+def get_sql_by_sqlid_sync(p_sql_id):
+    sql="select sqltext from t_sql_release where id={0}".format(p_sql_id)
+    rs = sync_processer.query_one(sql)
     return rs[0]
 
 async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username):
@@ -62,6 +73,7 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username):
                            WHEN '4' THEN '执行成功'
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
+                           WHEN '7' THEN '准备执行'
                      END  STATUS,
                      CASE  WHEN a.run_time IS NOT NULL and a.run_time !='' THEN
                         CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
@@ -109,6 +121,7 @@ async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
                            WHEN '4' THEN '执行成功'
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
+                           WHEN '7' THEN '准备执行'
                      END  STATUS,
                      CASE  WHEN a.run_time IS NOT NULL and a.run_time !='' THEN
                         CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
@@ -155,6 +168,7 @@ async def query_order(p_name,p_dsid,p_creator,p_username):
                            WHEN '4' THEN '执行成功'
                            WHEN '5' THEN '执行失败'
                            WHEN '6' THEN '已驳回'
+                           WHEN '7' THEN '准备执行'
                      END  STATUS,                     
                      CASE  WHEN a.run_time IS NOT NULL and a.run_time !='' THEN
                         CONCAT(c.dmmc,'(<span style="color:red">定时</span>)')
@@ -348,8 +362,15 @@ async def release_order(p_order_no,p_userid):
 async def get_order_xh(p_type,p_rq,p_dbid):
     result = {}
     try:
-        st ="""SELECT MAX(message)  as xh FROM t_sql_release 
-                    WHERE dbid={} and TYPE='{}' AND DATE_FORMAT(creation_date,'%Y%m%d')='{}'""".format(p_dbid,p_type,p_rq)
+        st ="""SELECT MAX(a.message)  as xh FROM t_sql_release a
+                    WHERE a.dbid={} 
+                      and a.TYPE='{}' 
+                      and a.creation_date=(SELECT MAX(creation_date) 
+                                           FROM t_sql_release b 
+                                           WHERE b.dbid=a.dbid 
+                                             and b.TYPE=a.type
+                                             and DATE_FORMAT(b.creation_date,'%Y%m%d')='{}')
+                     """.format(p_dbid,p_type,p_rq)
         res = await async_processer.query_dict_one(st)
         print(st)
         result['code']='0'
@@ -564,6 +585,20 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message,p_host):
         result['message'] = '审核异常!'
         return result
 
+async def upd_sql_run_status(p_sqlid):
+    result={}
+    try:
+        sql="""update t_sql_release  set  status ='7' ,last_update_date =now() where id='{}'""".format(p_sqlid)
+        await async_processer.exec_sql(sql)
+        result['code']='0'
+        result['message']='已在后台运行!'
+        return result
+    except :
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '设置运行状态异常!'
+        return result
+
 async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,start_pos=None,stop_pos=None):
     try:
         if p_flag == 'before':
@@ -576,6 +611,22 @@ async def upd_run_status(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,s
            pass
         logging.info(("upd_run_status:",sql))
         await async_processer.exec_sql(sql)
+    except :
+        logging.error((traceback.format_exc()))
+        traceback.print_exc()
+
+def upd_run_status_sync(p_sqlid,p_username,p_flag,p_err=None,binlog_file=None,start_pos=None,stop_pos=None):
+    try:
+        if p_flag == 'before':
+            sql = """update t_sql_release set  status ='3',last_update_date ='{0}',executor = '{1}',exec_start ='{2}' where id='{3}'""".format(current_time(),p_username,current_time(),str(p_sqlid))
+        elif p_flag =='after':
+            sql = """update t_sql_release set status ='4',last_update_date ='{0}',exec_end ='{1}',binlog_file='{2}',start_pos='{3}',stop_pos='{4}', error = '' where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
+        elif p_flag=='error':
+            sql = """update t_sql_release set  status ='5',last_update_date ='{0}',exec_end ='{1}',error = '{2}',failure_times=failure_times+1 where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
+        else:
+           pass
+        logging.info(("upd_run_status:",sql))
+        sync_processer.exec_sql(sql)
     except :
         logging.error((traceback.format_exc()))
         traceback.print_exc()
@@ -742,6 +793,94 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,
                         v_content)
 
+        return res
+
+def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username):
+    res = {}
+    p_ds = get_ds_by_dsid_sync(p_dbid)
+    p_ds['service'] = p_db_name
+    upd_run_status_sync(p_sql_id,p_username,'before')
+    sql   = get_sql_by_sqlid_sync(p_sql_id)
+    email = get_user_by_loginame_sync(p_username)['email']
+    settings = get_sys_settings_sync()
+
+    try:
+        # get binlog ,start_position
+        sync_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
+        sync_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
+        rs1 = sync_processer.query_one_by_ds(p_ds, 'show master status')
+        binlog_file=rs1[0]
+        start_position=rs1[1]
+
+        logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
+        if check_statement_count(sql) == 1:
+            sync_processer.exec_sql_by_ds(p_ds, sql)
+        elif check_statement_count(sql) > 1:
+            for st in reReplace(sql):
+                sync_processer.exec_sql_by_ds(p_ds, st)
+        else:
+            pass
+
+        # get stop_position
+        rs2 = sync_processer.query_one_by_ds(p_ds, 'show master status')
+        stop_position=rs2[1]
+        logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
+        upd_run_status_sync(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
+
+        # write rollback statement
+        write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
+
+        # send success mail
+        wkno      =  get_sql_release_sync(p_sql_id)
+        v_title   = '工单执行情况[{}]'.format(wkno['message'])
+        nowTime   = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        creator   = get_user_by_loginame_sync(wkno['creator'])['name']
+        auditor   = get_user_by_loginame_sync(wkno['auditor'])['name']
+        otype     = get_dmmc_from_dm_sync('13',wkno['type'])[0]
+        status    = get_dmmc_from_dm_sync('41',wkno['status'])[0]
+        v_content = get_html_contents()
+        v_content = v_content.replace('$$TIME$$',   nowTime)
+        v_content = v_content.replace('$$DBINFO$$',  p_ds['url']+p_ds['service'] if p_ds['url'].find(p_ds['service'])<0 else p_ds['url'])
+        v_content = v_content.replace('$$CREATOR$$', creator)
+        v_content = v_content.replace('$$AUDITOR$$', auditor )
+        v_content = v_content.replace('$$TYPE$$',    otype)
+        v_content = v_content.replace('$$STATUS$$',  status)
+        p_host = "124.127.103.190:65482"
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host,p_sql_id))
+        v_content = v_content.replace('$$ERROR$$','')
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,v_content)
+        res['code'] = '0'
+        res['message'] = '工单:{}执行成功!'.format(wkno['message'])
+        #return json.dumps(res)
+        return res
+    except Exception as e:
+        error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'
+        logging.error(traceback.format_exc())
+        upd_run_status_sync(p_sql_id, p_username, 'error', error)
+        delete_rollback(p_sql_id)
+        # send error mail
+        wkno    =  get_sql_release_sync(p_sql_id)
+        v_title = '工单执行情况[{}]'.format(wkno['message'])
+        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        creator = get_user_by_loginame_sync(wkno['creator'])['name']
+        auditor = get_user_by_loginame_sync(wkno['auditor'])['name']
+        otype   = get_dmmc_from_dm_sync('13', wkno['type'])[0]
+        status  = get_dmmc_from_dm_sync('41', wkno['status'])[0]
+        v_content = get_html_contents()
+        v_content = v_content.replace('$$TIME$$', nowTime)
+        v_content = v_content.replace('$$DBINFO$$',
+                                       p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds['url'])
+        v_content = v_content.replace('$$CREATOR$$', creator)
+        v_content = v_content.replace('$$AUDITOR$$', auditor)
+        v_content = v_content.replace('$$TYPE$$',    otype)
+        v_content = v_content.replace('$$STATUS$$',  status)
+        p_host = "124.127.103.190:65482"
+        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
+        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,
+                        v_content)
+        res['code'] = '-1'
+        res['message'] = '工单执行失败!'
+        #return json.dumps(res)
         return res
 
 def check_validate(p_dbid,p_cdb,p_sql,desc,logon_user,type):

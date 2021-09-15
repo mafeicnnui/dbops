@@ -15,7 +15,7 @@ from   web.utils.basehandler import basehandler
 class serverquery(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./server_query.html")
+        self.render("./server/server_query.html")
 
 class server_query(basehandler):
     @tornado.web.authenticated
@@ -29,7 +29,7 @@ class server_query(basehandler):
 class serveradd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./server_add.html",
+        self.render("./server/server_add.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_server_type = await  get_dmm_from_dm('06'))
 
@@ -54,7 +54,7 @@ class serveradd_save(basehandler):
 class serverchange(basehandler):
     @tornado.web.authenticated
     def get(self):
-        self.render("./server_change.html")
+        self.render("./server/server_change.html")
 
 class serveredit(basehandler):
     @tornado.web.authenticated
@@ -62,7 +62,7 @@ class serveredit(basehandler):
         server_id = self.get_argument("serverid")
         d_server  = await get_server_by_serverid(server_id)
         markets   = await get_dmm_from_dm('05')
-        self.render("./server_edit.html",
+        self.render("./server/server_edit.html",
                     markets        = markets,
                     dm_server_type = await get_dmm_from_dm('06'),
                     server_id      = d_server['server_id'],

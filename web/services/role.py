@@ -16,13 +16,13 @@ class rolequery(basehandler):
     @tornado.web.authenticated
     async def get(self):
         await self.check_valid()
-        self.render("./role_query.html")
+        self.render("./role/role_query.html")
 
 class roleadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
         await self.check_valid()
-        self.render("./role_add.html",
+        self.render("./role/role_add.html",
                     privs=await get_privs(),
                     func_privs=await get_func_privs())
 
@@ -63,7 +63,7 @@ class rolechange(basehandler):
     @tornado.web.authenticated
     async def get(self):
         await self.check_valid()
-        self.render("./role_change.html")
+        self.render("./role/role_change.html")
 
 class roleedit(basehandler):
     @tornado.web.authenticated
@@ -71,7 +71,7 @@ class roleedit(basehandler):
         await self.check_valid()
         roleid = self.get_argument("roleid")
         d_role = await get_role_by_roleid(roleid)
-        self.render("./role_edit.html",
+        self.render("./role/role_edit.html",
                      roleid    = d_role['roleid'],
                      name      = d_role['name'],
                      status    = d_role['status'],

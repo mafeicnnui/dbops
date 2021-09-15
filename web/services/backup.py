@@ -16,7 +16,7 @@ from   web.utils.basehandler import basehandler
 class backupquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./backup_query.html",
+        self.render("./backup/backup_query.html",
                     dm_env_type = await get_dmm_from_dm('03'),
                     dm_db_type  = await get_dmm_from_dm('02')
                     )
@@ -43,7 +43,7 @@ class backup_case(basehandler):
 class backupadd(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./backup_add.html",
+        self.render("./backup/backup_add.html",
                     backup_server = await get_backup_server(),
                     db_server     = await get_db_backup_server(),
                     dm_db_type    = await get_dmm_from_dm('02'),
@@ -75,7 +75,7 @@ class backupadd_save(basehandler):
 class backupchange(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./backup_change.html",
+        self.render("./backup/backup_change.html",
                     dm_env_type=await get_dmm_from_dm('03'),
                     dm_db_type=await get_dmm_from_dm('02'))
 
@@ -84,7 +84,7 @@ class backupedit(basehandler):
     async def get(self):
         backup_id = self.get_argument("backupid")
         d_backup  = await get_backup_by_backupid(backup_id)
-        self.render("./backup_edit.html",
+        self.render("./backup/backup_edit.html",
                     backup_id        = d_backup['backup_id'],
                     server_id        = d_backup['server_id'] ,
                     db_id            = d_backup['db_id'] ,
@@ -142,7 +142,7 @@ class backupedit_del(basehandler):
 class backuplogquery(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./backup_log_query.html",
+        self.render("./backup/backup_log_query.html",
                     dm_env_type = await get_dmm_from_dm('03'),
                     begin_date = current_rq3(-1),
                     end_date = current_rq2())
@@ -172,7 +172,7 @@ class backup_log_query_detail(basehandler):
 class backuploganalyze(basehandler):
     @tornado.web.authenticated
     async def get(self):
-        self.render("./backup_log_analyze.html",
+        self.render("./backup/backup_log_analyze.html",
                       dm_env_type    = await get_dmm_from_dm('03'),
                       dm_db_type     = await get_dmm_from_dm('02'),
                       db_backup_tags = await get_db_backup_tags(),

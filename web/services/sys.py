@@ -15,7 +15,7 @@ from web.utils.basehandler import basehandler
 class audit_rule(basehandler):
    @tornado.web.authenticated
    def get(self):
-       self.render("./audit_rule.html")
+       self.render("./sys/audit_rule.html")
 
 class audit_rule_save(basehandler):
    @tornado.web.authenticated
@@ -98,12 +98,12 @@ class audit_rule_save(basehandler):
 class sys_setting(basehandler):
    @tornado.web.authenticated
    def get(self):
-       self.render("./sys_setting.html")
+       self.render("./sys/sys_setting.html")
 
 class sys_code(basehandler):
    @tornado.web.authenticated
    async def get(self):
-       self.render("./sys_code.html",
+       self.render("./sys/sys_code.html",
                    sys_code_type= await get_sys_dmlx())
 
 class sys_code_type(basehandler):
@@ -197,11 +197,6 @@ class sys_code_detail_del(basehandler):
         result = await del_sys_code_detail(code,detail)
         self.write({"code": result['code'], "message": result['message']})
 
-
-class sys_test(basehandler):
-   @tornado.web.authenticated
-   def get(self):
-       self.render("test.html")
 
 class sys_query_rule(basehandler):
     @tornado.web.authenticated
