@@ -706,7 +706,6 @@
                             end_Loader(p_render_id)
                         },
                         success: function (dataSet) {
-                            console.log(dataSet)
                             get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
                         }
                     });
@@ -819,7 +818,6 @@
                         end_Loader(p_render_id)
                     },
                     success: function (dataSet) {
-                        console.log('/get/sys/stats/num=',dataSet)
                         if (p_id.indexOf("cpu") >= 0 ) {
                             get_charts(p_render_id, 'CPU使用率[%]', dataSet['rq'], dataSet['cpu_usage'], '#6495ED')
                         } else if (p_id.indexOf("mem") >= 0 ) {
@@ -841,8 +839,6 @@
 
         function get_contents_from_div_server_large(p_id,p_render_id) {
             var server_id=p_id.split('_')[p_id.split('_').length - 1];
-            console.log('p_id=',p_id)
-            console.log('server_id=',server_id)
             $.ajax({
                     url: "/get/sys/stats/num",
                     type: "post",
@@ -880,10 +876,8 @@
         }
 
         $(document).ready(function() {
-
             $('#begin_date').val(GetDate(3));
             $('#end_date').val(GetDate(2));
-
             $(".fixed-panel>div").each(function(){
                id = $(this).attr('id');
                if (!(id===undefined) && (id!='monitor_review')) {
@@ -892,7 +886,6 @@
                    get_contents_from_div(id,id)
                }
             });
-
         });
 
         $('.fixed-panel>div').click(function(){
@@ -918,8 +911,6 @@
 
         $('#query_btn').click(function(){
            id = $('#monitor_review_title_hidden').val()
-           console.log('id=',id)
-
            if (id.indexOf('cpu')>=0 || id.indexOf('mem')>=0 || id.indexOf('disk')>=0 || id.indexOf('net')>=0 ){
                  get_contents_from_div_server_large(id,'monitor_review');
            } else {

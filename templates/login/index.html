@@ -540,7 +540,6 @@
 
         <script>
             var screen_lock_status = 'unlock';
-            var bind_status = new Array()
 
             // function lock_screen() {
             //      $('#unlock_password').val('');
@@ -663,28 +662,6 @@
 
             function updateTime() {
                 $("#span_time").text(get_curr_time());
-            }
-
-            function start_Loader(p_id) {
-                var light = $('#'+p_id).parent();
-                $(light).block({
-                    message: '<i class="icon-spinner spinner"></i>',
-                    overlayCSS: {
-                        backgroundColor: '#a3c2ed',
-                        opacity: 0.8,
-                        cursor: 'wait'
-                    },
-                    css: {
-                        border: 0,
-                        padding: 0,
-                        backgroundColor: 'none'
-                    }
-                });
-            }
-
-            function end_Loader(p_id) {
-                var light = $('#'+p_id).parent();
-                $(light).unblock();
             }
 
             $('#btn-user-change').click(function(){
@@ -816,22 +793,23 @@
                   console.log('radio_main=',$("input[name='radio_main']:checked").val())
                   var val = $("input[name='radio_main']:checked").val()
                   if (val =='hopson') {
-                      start_Loader('form-search2')
+                      start_Loader('wrapper')
                       $('#main-container-div').load("/main");
-                      end_Loader('form-search2')
+                      end_Loader('wrapper')
                   } else if  (val =='easylife') {
-                      start_Loader('form-search2')
+                      start_Loader('wrapper')
                       $('#main-container-div').load("/easylife");
-                      end_Loader('form-search2')
+                      end_Loader('wrapper')
                   } else if  (val =='platform') {
-                      start_Loader('form-search2')
+                      start_Loader('wrapper')
                       $('#main-container-div').load("/platform");
-                      end_Loader('form-search2')
+                      end_Loader('wrapper')
                   }
             });
 
             $(document).ready(function() {
                  var timer ;
+
                  setInterval("updateTime();",1000);
                  // setInterval("check_lock_screen();",30000);
 

@@ -16,6 +16,8 @@ import json
 import smtplib
 import socket
 import string
+import sqlparse
+import re
 
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
@@ -508,6 +510,21 @@ def format_exception(v_sql):
 
 def format_sql(v_sql):
     return v_sql.replace("\\","\\\\").replace("'","\\'")
+
+def beauty_sql(p_sql):
+    result = {}
+    result['code'] = '0'
+    v_sql_list=sqlparse.split(p_sql)
+    v_ret=''
+    for v in v_sql_list:
+        v_sql = sqlparse.format(v, reindent=True, keyword_case='upper')
+        if v_sql.upper().count('CREATE') > 0 or v_sql.upper().count('ALTER') > 0:
+            v_tmp = re.sub(' {5,}', '  ', v_sql).strip()
+        else:
+            v_tmp = re.sub('\n{2,}', '\n\n', v_sql).strip(' ')
+        v_ret=v_ret+v_tmp+'\n\n'
+    result['message'] = v_ret[0:-2]
+    return result
 
 
 '''

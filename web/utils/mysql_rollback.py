@@ -13,7 +13,7 @@ from pymysqlreplication import BinLogStreamReader
 from pymysqlreplication.event import *
 from pymysqlreplication.row_event import (DeleteRowsEvent,UpdateRowsEvent,WriteRowsEvent,)
 from web.utils.common import get_connection
-from web.utils.common import format_sql
+from web.utils.common import format_sql,beauty_sql
 from web.model.t_sql_check import get_obj_name
 
 def get_db(MYSQL_SETTINGS):
@@ -188,7 +188,7 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
         logging.info(('rollback statement:',rollback))
         cr=db.cursor()
         cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
-        cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,format_sql(rollback)))
+        cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,beauty_sql(format_sql(rollback))))
         db.commit()
         return format_sql(rollback)
     except:

@@ -34,17 +34,14 @@ function GetDate(format) {
     return _time
  }
 
- /*
-  * 获得时间差,时间格式为 年-月-日 小时:分钟:秒 或者 年/月/日 小时：分钟：秒
-  * 其中，年月日为全格式，例如 ： 2010-10-12 01:00:00
-  * 返回精度为：秒，分，小时，天
-*/
 function GetDateDiff(startTime, endTime, diffType) {
-    //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式
-    // console.log("GetDateDiff1=",startTime,endTime,diffType)
+    /*
+      * 获得时间差,时间格式为 年-月-日 小时:分钟:秒 或者 年/月/日 小时：分钟：秒
+      * 其中，年月日为全格式，例如 ： 2010-10-12 01:00:00
+      * 返回精度为：秒，分，小时，天
+    */
     startTime = startTime.replace(/\-/g, "/");
     endTime   = endTime.replace(/\-/g, "/");
-    // console.log("GetDateDiff2=",startTime,endTime)
 
     //将计算间隔类性字符转换为小写
     diffType = diffType.toLowerCase();
@@ -73,24 +70,46 @@ function GetDateDiff(startTime, endTime, diffType) {
 
 }
 
-  //警告提醒
-  function showtips(flag,title,content){
-        toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "3000",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            toastr[flag](content,title)
+function showtips(flag,title,content){
+    //警告提醒
+    toastr.options = {
+          "closeButton": false,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "3000",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+        toastr[flag](content,title)
   }
+
+function start_Loader(p_id) {
+    var light = $('#'+p_id).parent();
+    $(light).block({
+        message: '<i class="icon-spinner spinner"></i>',
+        overlayCSS: {
+            backgroundColor: '#a3edaa',
+            opacity: 0.8,
+            cursor: 'wait'
+        },
+        css: {
+            border: 0,
+            padding: 0,
+            backgroundColor: 'none'
+        }
+    });
+}
+
+function end_Loader(p_id) {
+    var light = $('#'+p_id).parent();
+    $(light).unblock();
+}

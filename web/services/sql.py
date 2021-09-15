@@ -9,7 +9,6 @@ import json
 import tornado.web
 import threading
 import traceback
-
 from web.model.t_sql           import exe_query
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release   import upd_sql,exe_sql,upd_sql_run_status,save_sql,query_audit,query_run,query_order,query_audit_sql,check_sql,format_sql,get_sql_release,get_order_xh,check_order_xh,update_order
@@ -48,14 +47,13 @@ class sql_detail(basehandler):
        release_id = self.get_argument("release_id")
        wkno = await get_sql_release(release_id)
        roll = await query_audit_sql(release_id)
-       ds  = await get_ds_by_dsid(wkno['dbid'])
+       ds  =  await get_ds_by_dsid(wkno['dbid'])
        ds['service'] = wkno['db']
        self.render("./order/sql_detail.html",
                    wkno= json.loads(json.dumps(wkno,cls=DateEncoder)),
                    roll = json.loads(json.dumps(roll,cls=DateEncoder)),
                    dbinfo= ds['db_desc']+' ('+(ds['url']+ds['service'] if ds['url'].find(ds['service'])<0 else ds['url'])+')'
        )
-
 
 class sqlrelease(basehandler):
     @tornado.web.authenticated

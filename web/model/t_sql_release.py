@@ -924,3 +924,4 @@ def format_sql(p_sql):
         v_ret=v_ret+v_tmp+'\n\n'
     result['message'] = v_ret[0:-2]
     return result
+
