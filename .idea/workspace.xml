@@ -22,19 +22,10 @@
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="web page optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/role/role_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/role/role_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/role/role_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/projectquery.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/projectquery.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/controller/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/controller/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_xtqx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_xtqx.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/basehandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/basehandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_query.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -496,14 +487,7 @@
       <workItem from="1631582385264" duration="21820000" />
       <workItem from="1631667768332" duration="13879000" />
       <workItem from="1631689074587" duration="5655000" />
-      <workItem from="1631770392829" duration="9777000" />
-    </task>
-    <task id="LOCAL-00036" summary="sql bug fix">
-      <created>1626860594786</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1626860594786</updated>
+      <workItem from="1631770392829" duration="12263000" />
     </task>
     <task id="LOCAL-00037" summary="sql run fix">
       <created>1627028373739</created>
@@ -841,7 +825,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631698673878</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="web page optimize">
+      <created>1631781266521</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1631781266522</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TodoView">
@@ -918,29 +909,29 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1630908459837" />
-    <state width="1877" height="197" key="GridCell.Tab.0.bottom" timestamp="1631781164163">
+    <state width="1877" height="197" key="GridCell.Tab.0.bottom" timestamp="1631781490759">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781164163" />
+    <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781490759" />
     <state width="1877" height="882" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555671" />
-    <state width="1877" height="197" key="GridCell.Tab.0.center" timestamp="1631781164163">
+    <state width="1877" height="197" key="GridCell.Tab.0.center" timestamp="1631781490759">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781164163" />
+    <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781490759" />
     <state width="1877" height="882" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555668" />
-    <state width="1877" height="197" key="GridCell.Tab.0.left" timestamp="1631781164163">
+    <state width="1877" height="197" key="GridCell.Tab.0.left" timestamp="1631781490759">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781164163" />
+    <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781490759" />
     <state width="1877" height="882" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555666" />
-    <state width="1877" height="197" key="GridCell.Tab.0.right" timestamp="1631781164163">
+    <state width="1877" height="197" key="GridCell.Tab.0.right" timestamp="1631781490759">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781164163" />
+    <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1631781490759" />
     <state width="1877" height="882" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555670" />
     <state width="1877" height="306" key="GridCell.Tab.1.bottom" timestamp="1628243183385">
       <screen x="0" y="0" width="1920" height="1040" />

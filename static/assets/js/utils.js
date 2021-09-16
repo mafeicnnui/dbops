@@ -97,7 +97,7 @@ function start_Loader(p_id) {
     $(light).block({
         message: '<i class="icon-spinner spinner"></i>',
         overlayCSS: {
-            backgroundColor: '#a3edaa',
+            backgroundColor: '#FFFAFA',
             opacity: 0.8,
             cursor: 'wait'
         },
@@ -142,4 +142,8 @@ function get_languages() {
      }
 }
 
-
+function set_selected(){
+    $("label:contains('*')").each(function(){
+        $(this).children().css('color','red')
+    })
+}

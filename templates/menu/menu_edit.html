@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>菜单变更</title>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body>
   <p></p>
@@ -12,7 +11,7 @@
            <input  id="menuid" type="hidden" name="menuid" value={{menuid}} >
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_menu_name">*</span>菜单名称</label>
+                    <label class="col-md-2 control-label"><span>*</span>菜单名称</label>
                 </div>
                 <div class="col-md-10">
                     <input id="name"  type="text" class="form-control" value={{name}}>
@@ -28,7 +27,7 @@
            </div>
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_menu_status">*</span>菜单状态</label>
+                    <label class="col-md-2 control-label"><span>*</span>菜单状态</label>
                 </div>
                <div class="col-md-10">
                     <select class="form-control select" id="status" name="status">
@@ -47,7 +46,7 @@
 
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_menu_parent">*</span>父级节点</label>
+                    <label class="col-md-2 control-label"><span>*</span>父级节点</label>
                 </div>
                 <div class="col-md-10">
                     <select class="form-control" id="parent_id" >
@@ -71,16 +70,7 @@
        </form>
     </div>
 
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
     <script>
-       function set_selected(){
-            document.all['s_menu_name'].style.color="#ff0000";
-            document.all['s_menu_status'].style.color="#ff0000";
-            document.all['s_menu_parent'].style.color="#ff0000";
-        }
-
         $(document).ready(function() {
             set_selected()
         });
@@ -108,23 +98,7 @@
                     } else {
                        swal(dataSet.message, "", "error")
                     }
-                } ,
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
+                },
              });
         });
    </script>
