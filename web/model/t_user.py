@@ -264,6 +264,25 @@ async def get_user_by_userid(p_userid):
     user['password'] = await aes_decrypt(user['password'],user['loginname'])
     return user
 
+def get_user_by_userid_sync(p_userid):
+    sql="""select cast(id as char) as userid,
+                  login_name as loginname, 
+                  name as username,
+                  password,
+                  gender,
+                  email,
+                  phone,dept,
+                  date_format(expire_date,'%Y-%m-%d') as expire_date,
+                  status,
+                  ifnull(file_path,' ') as image_path,
+                  ifnull(file_name,' ') as image_name,
+                  project_group,
+                  wkno
+        from t_user where id={0}""".format(p_userid)
+    user = sync_processer.query_dict_one(sql)
+    user['password'] = aes_decrypt_sync(user['password'],user['loginname'])
+    return user
+
 async def get_users(p_dept):
     sql = """select id,name from t_user  WHERE dept='{0}' order by id""".format(p_dept)
     return await async_processer.query_list(sql)

@@ -8,12 +8,13 @@
 import time
 import tornado.web
 from tornado.web import HTTPError
-from web.model.t_xtqx  import check_url
+from web.model.t_xtqx  import check_url,check_url_sync
 
 class basehandler(tornado.web.RequestHandler):
      # def __init__(self):
      #     self.userid= str(self.get_secure_cookie("userid"), encoding="utf-8")
      #     self.username = str(self.get_secure_cookie("username"), encoding="utf-8")
+
 
      def get_current_user(self):
         userid = ''
@@ -30,6 +31,10 @@ class basehandler(tornado.web.RequestHandler):
                    return self.get_secure_cookie("userid")
                else:
                    raise HTTPError(403,'登陆信息已过期，请重新登陆!')
+
+           flag = check_url_sync(userid, self.request.uri.split('?')[0])
+           if not flag:
+               raise HTTPError(502, "basehandler=>用户:{}({})无权访问URL`'{}'`!".format(username, userid, self.request.uri))
 
            self.set_secure_cookie("username", username, expires=time.time() + 1800)
            self.set_secure_cookie("userid", userid, expires=time.time() + 1800)

@@ -3,10 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>用户变更</title>
-<!--    <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet">-->
-<!--    <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>-->
-<!--    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">-->
-<!--    <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />-->
     <style>
         .jFiler-theme-default .jFiler-input {
             position: relative;
@@ -249,20 +245,6 @@
         </div>
      </form>
 
-<!--    &lt;!&ndash; jQuery  &ndash;&gt;-->
-<!--    <script src="{{static_url('plugins/bootstrap-datepicker/js/locales/bootstrap-datepicker.zh-CN.js')}}"></script>-->
-
-<!--    &lt;!&ndash; Counter js  &ndash;&gt;-->
-<!--    <script src="{{static_url('plugins/waypoints/jquery.waypoints.min.js')}}"></script>-->
-<!--    <script src="{{static_url('plugins/counterup/jquery.counterup.min.js')}}"></script>-->
-<!--    <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>-->
-
-<!--    &lt;!&ndash; Sweet-Alert  &ndash;&gt;-->
-<!--    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>-->
-
-<!--    &lt;!&ndash; File Upload js &ndash;&gt;-->
-<!--    <script src="{{static_url('plugins/jquery.filer/js/jquery.filer.js')}}"></script>-->
-
     <!-- Init js -->
     <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
 
@@ -290,40 +272,31 @@
 
           $("#ue_sele_sys_priv").click(function () {
                var options=$('#ue_sele_sys_priv option:selected');
-               console.log('ue_sele_sys_priv=>options.length=',options.length)
                if(options.length>0){
                 for (var i=0;i<options.length;i++){
                       value=$(options[i]).val();
                       text =$(options[i]).text();
                       $('#ue_sele_role_priv').append("<option value='"+value+"'>"+text+"</option>");
-                      console.log(value,text,$('#ue_sele_sys_priv option').length,$('#ue_sele_role_priv option').length)
                 }
                 $('#ue_sele_sys_priv option:selected').remove();
-                console.log('ue_sele_sys_priv1=',$('#ue_sele_sys_priv').text())
-                console.log('ue_sele_role_priv1=',$('#ue_sele_role_priv').text())
                }
           });
 
           $("#ue_sele_role_priv").click(function () {
-               options=$('#ue_sele_role_priv option:selected');
-               console.log('ue_sele_role_priv=>options.length=',options.length)
                if(options.length>0){
                 for (var i=0;i<options.length;i++){
                       value=$(options[i]).val();
                       text =$(options[i]).text();
                       $('#ue_sele_sys_priv').append("<option value='"+value+"'>"+text+"</option>");
-                      console.log(value,text,$('#ue_sele_sys_priv option').length,$('#ue_sele_role_priv option').length)
                 }
                 $('#ue_sele_role_priv option:selected').remove();
-                console.log('ue_sele_sys_priv2=',$('#ue_sele_sys_priv').text())
-                console.log('ue_sele_role_priv2=',$('#ue_sele_role_priv').text())
                }
           });
 
         });
 
         $('#return').on('click', function() {
-           $('#main-container-div').load('/user/change');
+            $('#main-container-div').load('/user/change');
         });
 
         function get_privs(){
@@ -338,13 +311,6 @@
         };
 
         $("#save").click(function () {
-
-           console.log('user_image=',$('#user_image')[0].src)
-           console.log('file_path=',$('#image_path').val())
-           console.log('file_name=',$('#image_name').val())
-           console.log('filer_input1=',$("#filer_input1").get(0).files)
-           console.log('filer_input2=',$("#filer_input1").get(0).files.length)
-
 
           if ($("#filer_input1").get(0).files.length>0){
               var fd = new FormData();
@@ -416,22 +382,6 @@
                         } else {
                             console.log('/user/add/uploadImage=', dataSet.message);
                         }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                            setTimeout(" window.location.href='/login'",3000);
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
                     }
                });
           } else {
@@ -462,22 +412,6 @@
                            swal("变更成功", "", "success")
                         } else {
                            swal(dataSet.message, "", "error")
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                            setTimeout(" window.location.href='/login'",3000);
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
                         }
                     }
                  });

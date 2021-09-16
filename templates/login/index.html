@@ -28,7 +28,6 @@
 
         <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
         <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
-
         <link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
 
         <style>
@@ -540,27 +539,26 @@
 
         <script>
             var screen_lock_status = 'unlock';
+            var timer ;
+            var tabStatus = new Array;
 
             function lock_screen() {
-                 $('#unlock_password').val('');
-                 Custombox.open({
-                    target:'#custom-modal',
-                    effect:'door',
-                    overlayClose:'',
-                    escKey:false,
-                    overlaySpeed:"100",
-                    overlayColor:"#36404a",
-                    plugin:"custommodal"
-                 });
-
-                 screen_lock_status = 'locked';
                  $.ajax({
                       url: "/lock",
                       type: "post",
                       datatype: "json",
-                      async:false,
                       success: function (dataSet) {
                          console.log('/lock ok!')
+                         $('#unlock_password').val('');
+                         Custombox.open({
+                            target:'#custom-modal',
+                            effect:'door',
+                            overlayClose:'',
+                            escKey:false,
+                            overlaySpeed:"100",
+                            overlayColor:"#36404a",
+                            plugin:"custommodal"
+                         });
                      }
                  });
             }
@@ -575,10 +573,9 @@
                       datatype: "json",
                       async:false,
                       success: function (dataSet) {
-                        // console.log('lock_status=',dataSet.code)
                         cookie_screen_lock_status = dataSet.code;
                      },
-                 });
+                  });
 
                   $.ajax({
                       url: "/heartbeat",
@@ -586,31 +583,10 @@
                       datatype: "json",
                       async:false,
                       success: function (dataSet) {
-                        // console.log('heartbeat=',dataSet.code)
                         cookie_heartbeat = dataSet.code;
-                     },
-                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
                      }
                   });
 
-                  // console.log('check_lock_screen:',get_curr_time());
-                  // console.log('screen_lock_status=',screen_lock_status);
-                  // console.log('cookie_screen_lock_status=',cookie_screen_lock_status);
-                  // console.log('cookie_heartbeat=',cookie_heartbeat);
 
                   if (cookie_screen_lock_status == 'locked') {
                      if (screen_lock_status == 'unlock') {
@@ -623,23 +599,18 @@
                   }
             }
 
-            $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
-                e = window.event || e;  //解决浏览器兼容的问题
-                if(e.keyCode == 116) {  //F5按下
-                　　e.keyCode = 0;
-                　　return false;
-                }
-                // if (e.keyCode == 13) { //判断为Enter键
-                //     $("#unlock-btn").click();
-                // }
-            });
-
             function userinfo() {
                $('#con-userinfo-modal').modal({
                  keyboard: false,
                  backdrop:false
                });
              }
+
+            function set_user_image(){
+                 //load user image
+                 $('#account-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
+                 $('#user-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
+            }
 
             function get_privs(){
                  var tmp='';
@@ -665,7 +636,6 @@
             }
 
             $('#btn-user-change').click(function(){
-
                  if ($("#user_detail_filer_input").get(0).files.length>0){
                       var fd = new FormData();
                       files  = $("#user_detail_filer_input").get(0).files;
@@ -681,11 +651,8 @@
                             dataType: 'JSON',
                             success: function (dataSet) {
                                 if (dataSet.code==0) {
-                                    console.log('/user/add/uploadImage1=', dataSet);
-                                    console.log('/user/add/uploadImage2=',dataSet.file_path+'/'+dataSet.file_name)
                                     $('#user_detail_image_path').val(dataSet.file_path)
                                     $('#user_detail_image_file').attr('src',dataSet.file_path+'/'+dataSet.file_name)
-
                                     $.ajax({
                                         url: "/user/edit/save",
                                         type: "post",
@@ -708,7 +675,6 @@
                                             file_name  : dataSet.file_name,
                                         },
                                         success: function (dataSet) {
-                                            console.log(dataSet.code, dataSet.message);
                                             if (dataSet.code==0) {
                                                swal("变更成功", "", "success")
                                             } else {
@@ -716,25 +682,8 @@
                                             }
                                         }
                                      });
-
                                 } else {
                                     console.log('/user/add/uploadImage=', dataSet.message);
-                                }
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                                    window.location.href='/login'
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
                                 }
                             }
                        });
@@ -767,54 +716,13 @@
                                 } else {
                                    swal(dataSet.message, "", "error")
                                 }
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                                    window.location.href='/login'
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
                             }
                          });
                   }
 
             });
 
-            $('input[type=radio][name=radio_main]').change(function() {
-                  console.log('radio_main=',$("input[name='radio_main']:checked").val())
-                  var val = $("input[name='radio_main']:checked").val()
-                  if (val =='hopson') {
-                      start_Loader('wrapper')
-                      $('#main-container-div').load("/main");
-                      end_Loader('wrapper')
-                  } else if  (val =='easylife') {
-                      start_Loader('wrapper')
-                      $('#main-container-div').load("/easylife");
-                      end_Loader('wrapper')
-                  } else if  (val =='platform') {
-                      start_Loader('wrapper')
-                      $('#main-container-div').load("/platform");
-                      end_Loader('wrapper')
-                  }
-            });
-
-            $(document).ready(function() {
-                 var timer ;
-                 var tabStatus = new Array;
-
-                 setInterval("updateTime();",1000);
-                 setInterval("check_lock_screen();",30000);
-
-                 $(".file").click(function() {
+            $(".file").click(function() {
                       tabId =$(this).attr("id").split('^')[0]
                       url=$(this).attr("id").split('^')[1]
 
@@ -822,23 +730,8 @@
                       //      console.log(key,tabStatus[key]);
                       // })
 
-                      $.ajax({
-                            url: url,
-                            type: "get",
-                            datatype: "html",
-                            error: function (jqXHR) {
-                                if (jqXHR.status==403){
-                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                    setTimeout(" window.location.href='/login'",3000);
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                    return
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                    return
-                                }
-                            }
-                       })
+                      //测试用户点击菜单是否可用
+                      // $.ajax({url: url,type: "get",datatype: "html"})
 
                       clearInterval(timer);
 
@@ -860,14 +753,10 @@
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
                          url = '/'+id.replace(/_/g,'/')
-                         console.log('id=',id,'url=',url)
                          $('#main-container-div').load(url);
                       })
 
                       $('#'+'close_'+tabId).click(function(){
-                         console.log('close=',$(this))
-                         console.log('close.parent=',$(this).parent())
-                         console.log('close.parent.parent=',$(this).parent().parent())
                          $(this).parent().parent().remove()
                          $('#ul_tabs').find('li:last').addClass("active")
                          lastId=$('#ul_tabs').find('li:last').children().attr('id')
@@ -881,62 +770,119 @@
 
                  });
 
-                 $('#windows_main').click(function(){
-                    $('#main-container-div').load("/main");
-                 });
-
-                 $('#user_detail_filer_input').filer({
-                        limit: 1,
-                        maxSize: 3,
-                        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
-                        changeInput: true,
-                        showThumbs: true,
-                        addMore: true
-                  });
-
-                 //load user image
-                 $('#account-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
-                 $('#user-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
-
-                 $('#unlock-btn').click(function () {
-                    $.ajax({
-                        url: "/unlock",
-                        type: "post",
-                        datatype: "json",
-                        data: {
-                            unlock_password: $('#unlock_password').val(),
-                        },
-                        success: function (dataSet) {
-                            console.log(dataSet.code);
-                            if (dataSet.code==0) {
-                                console.log('unlock success');
-                                screen_lock_status  = 'unlock';
-                                Custombox.close('#custom-modal',function(){return true;})
-                                return false
-                            } else {
-                                console.log('unlock failure');
-                                $('#unlock_password').val('')
-                                $('#unlock_password').attr('placeholder','口令有误!')
-                                return false
-                            }
-                        },
-                       error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
-                     });
-
-                 });
-
-                 check_lock_screen();
-
+            $('#windows_main').click(function(){
+                 $('#main-container-div').load("/main");
             });
+
+            $('#user_detail_filer_input').filer({
+                    limit: 1,
+                    maxSize: 3,
+                    extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+                    changeInput: true,
+                    showThumbs: true,
+                    addMore: true
+             });
+
+            $('#unlock-btn').click(function () {
+                $.ajax({
+                    url: "/unlock",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        unlock_password: $('#unlock_password').val(),
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.code==0) {
+                            screen_lock_status ='unlock';
+                            Custombox.close('#custom-modal',function(){return true;})
+                            return false
+                        } else {
+                            $('#unlock_password').val('')
+                            $('#unlock_password').attr('placeholder','口令有误!')
+                            return false
+                        }
+                    },
+                   error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('jqXHR.responseText=',jqXHR.responseText);
+                        console.log('jqXHR.status=',jqXHR.status);
+                        console.log('jqXHR.readyState=',jqXHR.readyState);
+                        console.log('jqXHR.statusText=',jqXHR.statusText);
+                        console.log('textStatus=',textStatus);
+                        console.log('errorThrown=',errorThrown);
+                        if (jqXHR.status==403){
+                            swal("登陆信息已过期，请重新登陆!", "", "error")
+                            window.location.href='/login'
+                        } else if (jqXHR.status==502){
+                            swal("用户无权访问权限此功能!", "", "error")
+                        } else {
+                            Custombox.close('#custom-modal',function(){return true;})
+                            swal("系统不可用,请稍后重试!", "", "error")
+                        }
+                 }
+                 });
+
+           });
+
+            $('input[type=radio][name=radio_main]').change(function() {
+                  console.log('radio_main=',$("input[name='radio_main']:checked").val())
+                  var val = $("input[name='radio_main']:checked").val()
+                  if (val =='hopson') {
+                      //start_Loader('wrapper')
+                      $('#main-container-div').load("/main");
+                      //end_Loader('wrapper')
+                  } else if  (val =='easylife') {
+                      //start_Loader('wrapper')
+                      $('#main-container-div').load("/easylife");
+                      //end_Loader('wrapper')
+                  } else if  (val =='platform') {
+                      //start_Loader('wrapper')
+                      $('#main-container-div').load("/platform");
+                      //end_Loader('wrapper')
+                  }
+            });
+
+            $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
+                e = window.event || e;  //解决浏览器兼容的问题
+                if(e.keyCode == 116) {  //F5按下
+                　　e.keyCode = 0;
+                　　return false;
+                }
+                // if (e.keyCode == 13) { //判断为Enter键
+                //     $("#unlock-btn").click();
+                // }
+            });
+
+            $(document).ready(function() {
+                 setInterval("updateTime();",1000);
+                 //setInterval("check_lock_screen();",30000);
+                 set_user_image();
+                 //check_lock_screen();
+            });
+
+            $(document).ajaxError(function( event, request,options ) {
+               if (request.status==403){
+                   swal("登陆信息已过期，请重新登陆!", "", "error")
+                   window.location.href='/login'
+               } else if (request.status==502) {
+                   swal("用户无权访问权限此功能!", "", "error")
+               } else if (request.status==503){
+                   swal("系统不可用,请联系管理员!", "", "error")
+               } else {
+                   swal("系统不可用,请稍后重试!", "", "error")
+               }
+            });
+
+            //设置ajax超时时间为3s
+            $.ajaxSetup({
+               timeout:3000
+            });
+
+            //可以实现统计增加遮照功能
+            $(document).ajaxStart(function(){
+                start_Loader('main-container-div')
+            }).ajaxStop(function(){
+                end_Loader('main-container-div')
+            })
 
         </script>
 

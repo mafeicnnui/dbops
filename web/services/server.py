@@ -20,6 +20,7 @@ class serverquery(basehandler):
 class server_query(basehandler):
     @tornado.web.authenticated
     async def post(self):
+        #await self.check_valid()
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname  = self.get_argument("qname")
         v_list = await query_server(qname)

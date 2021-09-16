@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>角色变更</title>
-    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <style>
         #re_sele_sys_priv,#re_sele_role_priv,#re_sele_func_priv,#re_sele_role_func_priv {
             height: 290px;
@@ -124,10 +122,7 @@
        </form>
     </div>
 
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
-    <script>
+   <script>
         function set_selected(){
             document.all['s_role_name'].style.color="#ff0000";
             document.all['s_role_status'].style.color="#ff0000";
@@ -229,22 +224,6 @@
                    swal(dataSet.message, "", "error")
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('jqXHR.responseText=',jqXHR.responseText);
-                console.log('jqXHR.status=',jqXHR.status);
-                console.log('jqXHR.readyState=',jqXHR.readyState);
-                console.log('jqXHR.statusText=',jqXHR.statusText);
-                console.log('textStatus=',textStatus);
-                console.log('errorThrown=',errorThrown);
-                if (jqXHR.status==403){
-                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                    setTimeout(" window.location.href='/login'",3000);
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-           }
          })
       })
 
@@ -253,7 +232,6 @@
                options=$('#re_sele_sys_priv option');
                if(options.length>0){
                     for (var i=0;i<options.length;i++){
-                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
                           value=$(options[i]).val();
                           text =$(options[i]).text();
                           $('#re_sele_role_priv').append("<option value='"+value+"'>"+text+"</option>");

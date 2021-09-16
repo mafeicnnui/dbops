@@ -7,10 +7,11 @@
 
 import traceback
 from web.utils.common      import current_rq,get_connection_ds_sqlserver
-from web.model.t_user      import get_user_by_loginame,get_user_by_userid
+from web.model.t_user      import get_user_by_loginame,get_user_by_userid,get_user_by_userid_sync
 from web.model.t_ds        import get_ds_by_dsid
 from web.model.t_sql       import get_mysql_proxy_result_dict,get_sqlserver_proxy_result_dict
 from web.utils.mysql_async import async_processer
+from web.utils.mysql_sync import  sync_processer
 
 async def upd_menu(p_menu):
     try:
@@ -132,9 +133,46 @@ async def get_url_by_userid(p_userid):
                uris.append(j)
     return uris
 
+def get_url_by_userid_sync(p_userid):
+    sql ="""SELECT url
+             FROM t_xtqx
+              WHERE STATUS='1'
+                 AND id IN(SELECT b.priv_id
+                   FROM t_user_role a ,t_role_privs b
+                   WHERE a.role_id=b.role_id
+                     AND a.user_id='{0}')
+            UNION
+            SELECT func_url
+              FROM t_func
+                   WHERE STATUS='1'
+                 AND id IN(SELECT b.func_id
+                       FROM t_user_role a ,t_role_func_privs b
+                       WHERE a.role_id=b.role_id
+                         AND a.user_id='{1}')
+         """.format(p_userid,p_userid)
+    rs =  sync_processer.query_list(sql)
+    uris = []
+    for i in range(len(rs)):
+        if rs[i][0] is not None:
+            for j in rs[i][0].split(','):
+               uris.append(j)
+    return uris
+
 async def check_url(userid,uri):
     uuri = await get_url_by_userid(userid)
+    print('uuri=',uuri)
     user = await get_user_by_userid(userid)
+    if user['loginname'] =='admin':
+       return True
+    if uri not in uuri:
+        return False
+    else:
+        return True
+
+def check_url_sync(userid,uri):
+    uuri =  get_url_by_userid_sync(userid)
+    print('uuri=',uuri)
+    user =  get_user_by_userid_sync(userid)
     if user['loginname'] =='admin':
        return True
     if uri not in uuri:
