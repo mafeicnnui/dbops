@@ -1,10 +1,5 @@
   <head>
         <meta charset="utf-8">
-        <!--Morris Chart CSS -->
-		<link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
-        <link href="{{static_url('assets/css/core.css')}}"       rel="stylesheet" type="text/css" />
-        <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" >
-        <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
  </head>
  <body>
     <br>
@@ -89,55 +84,27 @@
         <!-- end row -->
     </div>
 
-     <!-- jQuery  -->
-    <script src="{{static_url('assets/js/jquery.min.js')}}"></script>
-    <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-
-
     <script>
          $(document).ready(function() {
               $('#backup-container').hide();
-              function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
-                Morris.Bar({
-                    element: element,
-                    data: data,
-                    xkey: xkey,
-                    ykeys: ykeys,
-                    labels: labels,
-                    hideHover: 'auto',
-                    resize: true, //defaulted to true
-                    gridLineColor: '#65d9b2',
-                    barSizeRatio: 0.6,
-                    barColors: lineColors,
-                    postUnits: 'Mb'
-                });
-              }
-              function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors) {
-                Morris.Line({
-                      element: element,
-                      data: data,
-                      xkey: xkey,
-                      ykeys: ykeys,
-                      labels: labels,
-                      fillOpacity: opacity,
-                      pointFillColors: Pfillcolor,
-                      pointStrokeColors: Pstockcolor,
-                      behaveLikeLine: true,
-                      gridLineColor: '#8b9285',
-                      hideHover: 'auto',
-                      resize: true, //defaulted to true
-                      pointSize: 0,
-                      lineColors: lineColors,
-                      postUnits: 's',
-                      lineWidth:2
-                });
-              }
-
               $('#begin_date').attr("readonly", "readonly");
               $('#end_date').attr("readonly", "readonly");
+              $("#query_btn").click();
+          })
 
-              $("#query_btn").click(function() {
+         $("#tagname").bind("input propertychange",function(){
+           $("#query_btn").click();
+         });
+
+         $("#begin_date").bind("input propertychange",function(){
+           $("#query_btn").click();
+         });
+
+         $("#end_date").bind("input propertychange",function(){
+           $("#query_btn").click();
+         });
+
+         $("#query_btn").click(function() {
 
                 if ($('#tagname').val()==''){
                     swal("请选择备份任务!", "", "info");
@@ -182,83 +149,9 @@
                          createBarChart('db-backup-size',  $barData_db_backup_size, 'y', ['a'], ['备份大小'], ['#59aed5'],'s');
                          createLineChart('db-backup-time', $barData_db_backup_time, 'y', ['a','b'], ['备份时长','压缩时长'],['0.9'],['#ffffff'],['#999999'], ['#FFBD33','#88A110']);
                       },
-                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                    }
                  });
 
               });
-
-              $("#query_btn").click();
-          })
-
-         $("#tagname").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
-
-         $("#begin_date").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
-
-         $("#end_date").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
-
-
-         function get_backup_tasks(){
-            console.log('db_env=',$('#db_env').val());
-            console.log('db_type=',$('#db_type').val());
-            $.ajax({
-                      url: "/get/backup/task",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          db_env    : $('#db_env').val(),
-                          db_type   : $('#db_type').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#tagname").empty();
-                         $("#tagname").append("<option value=''>请选择任务...</option>");
-                         for(i=0;i<dataSet['data'].length;i++){
-                             console.log('i=',i)
-                              var val  = dataSet['data'][i][0];
-                              var text = dataSet['data'][i][1];
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
-                              $("#tagname").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                      }
-                 });
-         }
-
 
          $('#db_env').change(function() {
             get_backup_tasks();

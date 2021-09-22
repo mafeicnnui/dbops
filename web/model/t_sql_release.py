@@ -10,6 +10,9 @@ import traceback,re
 import logging
 import datetime
 import json
+import xlrd,xlwt
+import os,zipfile
+
 from web.utils.common           import current_time
 from web.model.t_user           import get_user_by_loginame
 from web.model.t_ds             import get_ds_by_dsid,get_ds_by_dsid_sync
@@ -925,3 +928,235 @@ def format_sql(p_sql):
     result['message'] = v_ret[0:-2]
     return result
 
+def set_header_styles(p_fontsize,p_color):
+    header_borders = xlwt.Borders()
+    header_styles  = xlwt.XFStyle()
+    # add table header style
+    header_borders.left   = xlwt.Borders.THIN
+    header_borders.right  = xlwt.Borders.THIN
+    header_borders.top    = xlwt.Borders.THIN
+    header_borders.bottom = xlwt.Borders.THIN
+    header_styles.borders = header_borders
+    header_pattern = xlwt.Pattern()
+    header_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    header_pattern.pattern_fore_colour = p_color
+    # add font
+    font = xlwt.Font()
+    font.name = u'微软雅黑'
+    font.bold = True
+    font.size = p_fontsize
+    header_styles.font = font
+    #add alignment
+    header_alignment = xlwt.Alignment()
+    header_alignment.horz = xlwt.Alignment.HORZ_CENTER
+    header_alignment.vert = xlwt.Alignment.VERT_CENTER
+    header_styles.alignment = header_alignment
+    header_styles.borders = header_borders
+    header_styles.pattern = header_pattern
+    return header_styles
+
+def set_row_styles(p_fontsize,p_color):
+    cell_borders   = xlwt.Borders()
+    cell_styles    = xlwt.XFStyle()
+
+    # add font
+    font = xlwt.Font()
+    font.name = u'微软雅黑'
+    font.bold = True
+    font.size = p_fontsize
+    cell_styles.font = font
+
+    #add col style
+    cell_borders.left     = xlwt.Borders.THIN
+    cell_borders.right    = xlwt.Borders.THIN
+    cell_borders.top      = xlwt.Borders.THIN
+    cell_borders.bottom   = xlwt.Borders.THIN
+
+    row_pattern           = xlwt.Pattern()
+    row_pattern.pattern   = xlwt.Pattern.SOLID_PATTERN
+    row_pattern.pattern_fore_colour = p_color
+
+    # add alignment
+    cell_alignment        = xlwt.Alignment()
+    cell_alignment.horz   = xlwt.Alignment.HORZ_LEFT
+    cell_alignment.vert   = xlwt.Alignment.VERT_CENTER
+
+    cell_styles.alignment = cell_alignment
+    cell_styles.borders   = cell_borders
+    cell_styles.pattern   = row_pattern
+    cell_styles.font      = font
+    return cell_styles
+
+async def exp_sql_xls(static_path,p_month,p_market_id):
+    row_data  = 0
+    workbook  = xlwt.Workbook(encoding='utf8')
+    worksheet = workbook.add_sheet('kpi')
+    header_styles = set_header_styles(45,1)
+    os.system('cd {0}'.format(static_path + '/downloads/kpi'))
+    file_name   = static_path + '/downloads/port/exp_kpi_{0}.xls'.format(current_rq())
+    file_name_s = 'exp_kpi_{0}.xls'.format(current_rq())
+
+    v_where = ' '
+    if p_market_id != '':
+        v_where = v_where + " and a.market_id='{0}'\n".format(p_market_id)
+
+    sql_header = """select date_format(a.bbrq,'%Y-%m-%d') as "报表日期",
+                       a.month                 as "报表月",
+                       a.market_id             as "项目编码	",
+                       a.market_name           as "项目名称",
+                       a.item_code             as "指标编码",
+                       a.item_name             as "指标名称",
+                       (select case when type=1 then '当月考核' else '累计考核' end  from kpi_item x where x.code=a.item_code) as "指标说明",
+                       a.goal                  as "月度指标",
+                       a.actual_completion     as "月度完成",
+                       a.completion_rate       as "月度完成率",
+                       a.`annual_target`       as "年度指标",
+                       a.completion_sum_finish as "年度完成	",
+                       a.completion_sum_rate   as "年度完成率"
+               from kpi_po_hz a,kpi_po b ,kpi_item_sql c
+               WHERE a.market_id=b.market_id  AND a.`item_code`=c.`item_code`
+                 and a.item_code not in('9','13','2.1','2.2','12.1','12.2') 
+                 and a.month='{}' {}
+                   ORDER BY b.sxh,a.item_code+0 limit 1""".format(p_month, v_where)
+
+
+    sql_content = """select 
+                       date_format(a.bbrq,'%Y-%m-%d') as bbrq,
+                       a.month,
+                       a.market_id,a.market_name,
+                       a.item_code,a.item_name,
+                       (select case when type=1 then '当月考核' else '累计考核' end  from kpi_item x where x.code=a.item_code) as item_type,
+                       a.goal,a.actual_completion,a.completion_rate,
+                       a.`annual_target`,a.completion_sum_finish,a.completion_sum_rate
+               from kpi_po_hz a,kpi_po b ,kpi_item_sql c
+               WHERE a.market_id=b.market_id  AND a.`item_code`=c.`item_code`
+                 and a.item_code not in('9','13','2.1','2.2','12.1','12.2') 
+                 and a.month='{}' {}
+                   ORDER BY b.sxh,a.item_code+0""".format(p_month, v_where)
+
+    # 写表头
+    desc = await async_processer.query_one_desc(sql_header)
+    for k in range(len(desc)):
+        worksheet.write(row_data, k, desc[k][0], header_styles)
+        if k in (3, 5):
+            worksheet.col(k).width = 8000
+        else:
+            worksheet.col(k).width = 4000
+
+    #循环项目写单元格
+    row_data = row_data + 1
+    rs3 = await async_processer.query_list(sql_content)
+    for i in rs3:
+        for j in range(len(i)):
+            cell_styles = set_row_styles(45, 1)
+            if i[j] is None:
+                worksheet.write(row_data, j, '')
+            else:
+                worksheet.write(row_data, j, str(i[j]))
+        row_data = row_data + 1
+
+    workbook.save(file_name)
+    print("{0} export complete!".format(file_name))
+
+    #生成zip压缩文件
+    zip_file = static_path + '/downloads/port/exp_kpi_{0}.zip'.format(current_rq())
+    rzip_file = '/static/downloads/port/exp_kpi_{0}.zip'.format(current_rq())
+
+    #若文件存在则删除
+    if os.path.exists(zip_file):
+        os.system('rm -f {0}'.format(zip_file))
+
+    z = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+    z.write(file_name, arcname=file_name_s)
+    z.close()
+
+    # 删除json文件
+    os.system('rm -f {0}'.format(file_name))
+    return rzip_file
+
+async def exp_sql_pdf(static_path,p_month,p_market_id):
+    row_data  = 0
+    workbook  = xlwt.Workbook(encoding='utf8')
+    worksheet = workbook.add_sheet('kpi')
+    header_styles = set_header_styles(45,1)
+    os.system('cd {0}'.format(static_path + '/downloads/kpi'))
+    file_name   = static_path + '/downloads/port/exp_kpi_{0}.xls'.format(current_rq())
+    file_name_s = 'exp_kpi_{0}.xls'.format(current_rq())
+
+    v_where = ' '
+    if p_market_id != '':
+        v_where = v_where + " and a.market_id='{0}'\n".format(p_market_id)
+
+    sql_header = """select date_format(a.bbrq,'%Y-%m-%d') as "报表日期",
+                       a.month                 as "报表月",
+                       a.market_id             as "项目编码	",
+                       a.market_name           as "项目名称",
+                       a.item_code             as "指标编码",
+                       a.item_name             as "指标名称",
+                       (select case when type=1 then '当月考核' else '累计考核' end  from kpi_item x where x.code=a.item_code) as "指标说明",
+                       a.goal                  as "月度指标",
+                       a.actual_completion     as "月度完成",
+                       a.completion_rate       as "月度完成率",
+                       a.`annual_target`       as "年度指标",
+                       a.completion_sum_finish as "年度完成	",
+                       a.completion_sum_rate   as "年度完成率"
+               from kpi_po_hz a,kpi_po b ,kpi_item_sql c
+               WHERE a.market_id=b.market_id  AND a.`item_code`=c.`item_code`
+                 and a.item_code not in('9','13','2.1','2.2','12.1','12.2') 
+                 and a.month='{}' {}
+                   ORDER BY b.sxh,a.item_code+0 limit 1""".format(p_month, v_where)
+
+
+    sql_content = """select 
+                       date_format(a.bbrq,'%Y-%m-%d') as bbrq,
+                       a.month,
+                       a.market_id,a.market_name,
+                       a.item_code,a.item_name,
+                       (select case when type=1 then '当月考核' else '累计考核' end  from kpi_item x where x.code=a.item_code) as item_type,
+                       a.goal,a.actual_completion,a.completion_rate,
+                       a.`annual_target`,a.completion_sum_finish,a.completion_sum_rate
+               from kpi_po_hz a,kpi_po b ,kpi_item_sql c
+               WHERE a.market_id=b.market_id  AND a.`item_code`=c.`item_code`
+                 and a.item_code not in('9','13','2.1','2.2','12.1','12.2') 
+                 and a.month='{}' {}
+                   ORDER BY b.sxh,a.item_code+0""".format(p_month, v_where)
+
+    # 写表头
+    desc = await async_processer.query_one_desc(sql_header)
+    for k in range(len(desc)):
+        worksheet.write(row_data, k, desc[k][0], header_styles)
+        if k in (3, 5):
+            worksheet.col(k).width = 8000
+        else:
+            worksheet.col(k).width = 4000
+
+    #循环项目写单元格
+    row_data = row_data + 1
+    rs3 = await async_processer.query_list(sql_content)
+    for i in rs3:
+        for j in range(len(i)):
+            cell_styles = set_row_styles(45, 1)
+            if i[j] is None:
+                worksheet.write(row_data, j, '')
+            else:
+                worksheet.write(row_data, j, str(i[j]))
+        row_data = row_data + 1
+
+    workbook.save(file_name)
+    print("{0} export complete!".format(file_name))
+
+    #生成zip压缩文件
+    zip_file = static_path + '/downloads/port/exp_kpi_{0}.zip'.format(current_rq())
+    rzip_file = '/static/downloads/port/exp_kpi_{0}.zip'.format(current_rq())
+
+    #若文件存在则删除
+    if os.path.exists(zip_file):
+        os.system('rm -f {0}'.format(zip_file))
+
+    z = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+    z.write(file_name, arcname=file_name_s)
+    z.close()
+
+    # 删除json文件
+    os.system('rm -f {0}'.format(file_name))
+    return rzip_file

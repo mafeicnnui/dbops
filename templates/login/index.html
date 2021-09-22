@@ -29,6 +29,8 @@
         <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
         <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
         <link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
+        <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
+
 
         <style>
             .modal-lg {
@@ -531,6 +533,7 @@
         <script src="{{static_url('plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
         <script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
+        <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
         <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/js/utils.js')}}"></script>
@@ -847,9 +850,6 @@
                 　　e.keyCode = 0;
                 　　return false;
                 }
-                // if (e.keyCode == 13) { //判断为Enter键
-                //     $("#unlock-btn").click();
-                // }
             });
 
             $(document).ready(function() {

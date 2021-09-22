@@ -72,11 +72,11 @@
          <p></p>
          <div class="row">
               <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
-                   <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
-                   <input  id='dsdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
-                   <input  id='push' type='button' class="btn waves-effect waves-light btn-primary"  value="推送"/>
-                   <input  id='run' type='button' class="btn waves-effect waves-light btn-primary"   value="启动"/>
-                   <input  id='stop' type='button' class="btn waves-effect waves-light btn-primary"  value="停止"/>
+                   <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary"  value="变更"/>
+                   <input  id='dsdel' type='button' class="btn waves-effect waves-light btn-primary"  value="删除"/>
+                   <input  id='push'  type='button' class="btn waves-effect waves-light btn-primary"  value="推送"/>
+                   <input  id='run'   type='button' class="btn waves-effect waves-light btn-primary"  value="启动"/>
+                   <input  id='stop'  type='button' class="btn waves-effect waves-light btn-primary"  value="停止"/>
              </div>
          </div>
     </div>
@@ -102,30 +102,16 @@
       </div>
     </div><!-- /.modal -->
 
+    <script src="{{static_url('assets/js/utils.js')}}"></script>
     <script>
 
         function isSelect() {
-           var rec=0;
-           $("#example tbody tr td input:checked").each( function() {
-              rec=rec+1;
-           });
-
-           if ( rec==1 ){
+           if ( isSelectTable('example') ){
               set_button_status(false);
            } else {
               set_button_status(true);
            }
         }
-
-        function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-         }
 
         function set_button_status(p_status) {
            $('#dsupd').attr("disabled",p_status);
@@ -173,7 +159,7 @@
                           scrollX    :true,
                           scrollCollapse: true,
                           paging: true,
-                          iDisplayLength: 16,
+                          iDisplayLength: 12,
                           data: dataSet,
                           columns: [
                                 { "title": "标识符"},
@@ -192,45 +178,11 @@
                                          return '<input type="radio" name="userid" onclick="isSelect();" >'; }
                                 },
                           ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                          });
                       set_button_status(true)
                  },
-                 error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
-             });
+              });
             });
 
         $("#push").click(function() {
@@ -275,16 +227,6 @@
                               $('#push').attr("disabled",true);
                               $('#run').attr("disabled",true);
                           },
-                         error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                   });
               });
 
@@ -314,16 +256,6 @@
                               }
                               query_data();
                           },
-                         error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                   });
               });
 
@@ -346,7 +278,6 @@
                               api: v_api
                           },
                           success: function (dataSet) {
-                              console.log(dataSet);
                               if (dataSet.code== 200) {
                                   swal("停止成功!", "任务["+v_desc+"]已运行成功!","success");
                               } else if (dataSet.code== -2) {
@@ -356,16 +287,6 @@
                               }
                               query_data();
                           },
-                          error: function (jqXHR) {
-                                if (jqXHR.status==403){
-                                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                                    window.location.href='/login'
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                            }
                   });
               });
 
@@ -376,7 +297,6 @@
              $("#example tbody tr td input:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
                   backupid=row[0].innerHTML;
-                  console.log("backupid=",backupid)
              });
 
              $.ajax({
@@ -389,16 +309,6 @@
                 success: function () {
                    $('#main-container-div').load("/backup/edit?backupid="+backupid);
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
 
         });
@@ -414,8 +324,8 @@
              });
             swal({
                 title: "确认要删除吗?",
-                text: "数据源["+backupdesc+"]将被删除了！",
-                type: "warning",
+                text:  "数据源["+backupdesc+"]将被删除了！",
+                type:  "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "是, 删除!",
@@ -436,16 +346,6 @@
                                     swal("删除失败!", "用户["+backupdesc+"]"+dataSet.message+"!", "error");
                                 }
                             },
-                            error: function (jqXHR) {
-                                if (jqXHR.status==403){
-                                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                                    window.location.href='/login'
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                            }
                        });
 
                 } else {
@@ -461,7 +361,6 @@
         });
 
         $(document).ready(function() {
-              //timer = setInterval("query_data()",3000);
               $("#query_btn").click();
         });
 

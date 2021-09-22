@@ -160,7 +160,6 @@ def get_url_by_userid_sync(p_userid):
 
 async def check_url(userid,uri):
     uuri = await get_url_by_userid(userid)
-    print('uuri=',uuri)
     user = await get_user_by_userid(userid)
     if user['loginname'] =='admin':
        return True

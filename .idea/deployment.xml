@@ -2,6 +2,13 @@
 <project version="4">
   <component name="PublishConfigData" autoUpload="Always" serverName="hopson@10.2.39.17:65508_dbops">
     <serverData>
+      <paths name="hopson@10.2.39.17:65508/python-web-demo">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="hopson@10.2.39.17:65508_dba_syncer">
         <serverdata>
           <mappings>

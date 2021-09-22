@@ -565,14 +565,14 @@
                                 dbid : $('#db_source').val(),
                                 msg  : $('#filter_db').val()
                             },
-                            beforeSend: function () {
-                                 $('.modal').on('show.bs.modal', centerModals);
-                                 $(window).on('resize', centerModals);
-                                 $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                            },
-                            complete: function () {
-                                 $('#con-close-modal').modal('hide');
-                            },
+                            // beforeSend: function () {
+                            //      $('.modal').on('show.bs.modal', centerModals);
+                            //      $(window).on('resize', centerModals);
+                            //      $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+                            // },
+                            // complete: function () {
+                            //      $('#con-close-modal').modal('hide');
+                            // },
                             success: function (dataSet) {
                                 if (dataSet.url.length>30) {
                                     $('#db_title').html(dataSet.url.slice(1,30)+'.../');
@@ -809,31 +809,7 @@
                                 scrollY       :$("#h_tab_height").val(),
                                 scrollCollapse: true,
                                 paging        : false,
-                                "language"    : {
-                                     "search"         : "在表格中搜索:",
-                                     "sProcessing"    : "处理中...",
-                                     "sLengthMenu"    : "显示 _MENU_ 项结果",
-                                     "sZeroRecords"   : "没有匹配结果",
-                                     "sInfo"          : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"     : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered"  : "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix"   : "",
-                                     "sSearch"        : "搜索:",
-                                     "sUrl"           : "",
-                                     "sEmptyTable"    : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands" : ",",
-                                     "oPaginate"    : {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                               }
+                                "language"    : get_languages()
                             });
                        }
                     },
@@ -950,14 +926,14 @@
                         sql   :  v_sql,//editor.session.getTextRange(editor.getSelectionRange()),
                         cur_db:  $('#curr_db').text()
                     },
-                    beforeSend: function () {
-                         $('.modal').on('show.bs.modal', centerModals);
-                         $(window).on('resize', centerModals);
-                         $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                    },
-                    complete: function () {
-                         $('#con-close-modal').modal('hide');
-                    },
+                    // beforeSend: function () {
+                    //      $('.modal').on('show.bs.modal', centerModals);
+                    //      $(window).on('resize', centerModals);
+                    //      $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+                    // },
+                    // complete: function () {
+                    //      $('#con-close-modal').modal('hide');
+                    // },
                     success: function (dataSet) {
                         console.log(dataSet);
                         if (dataSet.status=="1") {
@@ -982,31 +958,7 @@
                                     scrollY       : $("#h_tab_height").val(),
                                     scrollCollapse: true,
                                     paging        : false,
-                                    "language"    : {
-                                         "search"         : "在表格中搜索:",
-                                         "sProcessing"    : "处理中...",
-                                         "sLengthMenu"    : "显示 _MENU_ 项结果",
-                                         "sZeroRecords"   : "没有匹配结果",
-                                         "sInfo"          : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                         "sInfoEmpty"     : "显示第 0 至 0 项结果，共 0 项",
-                                         "sInfoFiltered"  : "(由 _MAX_ 项结果过滤)",
-                                         "sInfoPostFix"   : "",
-                                         "sSearch"        : "搜索:",
-                                         "sUrl"           : "",
-                                         "sEmptyTable"    : "表中数据为空",
-                                         "sLoadingRecords": "载入中...",
-                                         "sInfoThousands" : ",",
-                                         "oPaginate"    : {
-                                             "sFirst"   : "首页",
-                                             "sPrevious": "上页",
-                                             "sNext"    : "下页",
-                                             "sLast"    : "末页"
-                                         },
-                                         "oAria": {
-                                             "sSortAscending" : ": 以升序排列此列",
-                                             "sSortDescending": ": 以降序排列此列"
-                                         }
-                                       }
+                                    "language"    : get_languages()
                             });
                        }
                      }

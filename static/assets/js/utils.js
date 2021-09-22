@@ -1,3 +1,8 @@
+//引入外部js
+document.write("<script src='./static/plugins/morris/morris.min.js'></script>");
+document.write("<script src='./static/plugins/toastr/toastr.min.js'></script>");
+
+//获取当前日期
 function GetDate(format) {
      /**
      * format=1 表示获取年月日
@@ -34,6 +39,7 @@ function GetDate(format) {
     return _time
  }
 
+ //日期比较
 function GetDateDiff(startTime, endTime, diffType) {
     /*
       * 获得时间差,时间格式为 年-月-日 小时:分钟:秒 或者 年/月/日 小时：分钟：秒
@@ -70,6 +76,7 @@ function GetDateDiff(startTime, endTime, diffType) {
 
 }
 
+//左上角显示提示
 function showtips(flag,title,content){
     //警告提醒
     toastr.options = {
@@ -92,6 +99,7 @@ function showtips(flag,title,content){
         toastr[flag](content,title)
   }
 
+//开始显示遮照
 function start_Loader(p_id) {
     var light = $('#'+p_id).parent();
     $(light).block({
@@ -109,11 +117,13 @@ function start_Loader(p_id) {
     });
 }
 
+//结束显示遮照
 function end_Loader(p_id) {
     var light = $('#'+p_id).parent();
     $(light).unblock();
 }
 
+//返回dataTable语言对象
 function get_languages() {
     return {
          "search"       : "在表格中搜索:",
@@ -142,8 +152,94 @@ function get_languages() {
      }
 }
 
+//设置页面上标签为必选项
 function set_selected(){
     $("label:contains('*')").each(function(){
         $(this).children().css('color','red')
     })
+}
+
+//检测当前表格是否选中记录
+function isSelectTable(table_id) {
+       var rec=0;
+       $("#"+table_id+" tbody tr td input:checked").each( function() {
+          rec=rec+1;
+       });
+       if ( rec==1 ){
+          return true
+       } else {
+          return false
+       }
+}
+
+//窗口居中
+function centerModals() {
+      $('.modal').each(function(i) {
+        var $clone = $(this).clone().css('display', 'block').appendTo('body');
+        var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+        top = top > 50 ? top : 0;
+        $clone.remove();
+        $(this).find('.modal-content').css("margin-top", top - 50);
+      });
+ }
+
+ //画柱状图
+function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
+        Morris.Bar({
+            element: element,
+            data: data,
+            xkey: xkey,
+            ykeys: ykeys,
+            labels: labels,
+            hideHover: 'auto',
+            resize: true, //defaulted to true
+            gridLineColor: '#65d9b2',
+            barSizeRatio: 0.6,
+            barColors: lineColors,
+            postUnits: 'Mb'
+        });
+}
+
+//画曲线图
+function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors) {
+    Morris.Line({
+          element: element,
+          data: data,
+          xkey: xkey,
+          ykeys: ykeys,
+          labels: labels,
+          fillOpacity: opacity,
+          pointFillColors: Pfillcolor,
+          pointStrokeColors: Pstockcolor,
+          behaveLikeLine: true,
+          gridLineColor: '#8b9285',
+          hideHover: 'auto',
+          resize: true, //defaulted to true
+          pointSize: 0,
+          lineColors: lineColors,
+          postUnits: 's',
+          lineWidth:2
+    });
+}
+
+//返回备份任务数组
+function get_backup_tasks(){
+    $.ajax({
+              url: "/get/backup/task",
+              type: "post",
+              datatype: "json",
+              data:{
+                  db_env    : $('#db_env').val(),
+                  db_type   : $('#db_type').val(),
+              },
+              success: function (dataSet) {
+                 $("#tagname").empty();
+                 $("#tagname").append("<option value=''>请选择任务...</option>");
+                 for(i=0;i<dataSet['data'].length;i++){
+                      var val  = dataSet['data'][i][0];
+                      var text = dataSet['data'][i][1];
+                      $("#tagname").append("<option value='"+val+"'>"+text+"</option>");
+                 }
+              },
+         });
 }

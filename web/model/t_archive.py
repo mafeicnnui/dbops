@@ -53,7 +53,7 @@ async def query_archive_detail(archive_id):
                 AND a.id='{0}'
             ORDER BY a.id
              """.format(archive_id)
-    return await async_processer.query_one(sql)
+    return await async_processer.query_dict_one(sql)
 
 async def query_archive_log(transfer_tag,begin_date,end_date):
     v_where=' and 1=1 '

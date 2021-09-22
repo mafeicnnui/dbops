@@ -12,7 +12,7 @@ import traceback
 from web.model.t_sql           import exe_query
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release   import upd_sql,exe_sql,upd_sql_run_status,save_sql,query_audit,query_run,query_order,query_audit_sql,check_sql,format_sql,get_sql_release,get_order_xh,check_order_xh,update_order
-from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd
+from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds            import get_dss_sql_query,get_dss_sql_run,get_dss_order,get_dss_sql_release,get_dss_sql_audit
 from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx          import get_tab_ddl_by_tname,get_tab_idx_by_tname,get_tree_by_dbid,get_tree_by_dbid_mssql
@@ -517,3 +517,22 @@ class query_sql_release(basehandler):
         v_json = json.dumps(v_list, cls=DateEncoder)
         self.write(v_json)
 
+class sql_exp_xls(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        month = self.get_argument("month")
+        market_id = self.get_argument("market_id")
+        static_path = self.get_template_path().replace("templates", "static");
+        zipfile = await exp_sql_xls(static_path,month,market_id)
+        self.write({"code": 0, "message": zipfile})
+
+class sql_exp_pdf(basehandler):
+    @tornado.web.authenticated
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        month = self.get_argument("month")
+        market_id = self.get_argument("market_id")
+        static_path = self.get_template_path().replace("templates", "static");
+        zipfile = await exp_sql_pdf(static_path,month,market_id)
+        self.write({"code": 0, "message": zipfile})

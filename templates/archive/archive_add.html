@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>新建归档</title>
     <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
+
     <style>
         .modal-lg {
             width:65%;
@@ -33,7 +34,7 @@
            <div class="col-md-6">
                <div class="form-group">
                     <div>
-                        <label class="col-md-2 control-label"><span id="s_archive_tag">*</span>归档标识号</label>
+                        <label class="col-md-2 control-label">归档标识</label>
                     </div>
                     <div class="col-md-10">
                         <input id="archive_tag"  type="text" readonly class="form-control" placeholder="自动生成归档标识号">
@@ -45,7 +46,7 @@
          <div class="col-md-6">
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                    <label class="col-md-2 control-label">任务描述</label>
                 </div>
                 <div class="col-md-10">
                     <input id="task_desc"  type="text"  readonly class="form-control"  placeholder="自动生成任务描述">
@@ -391,45 +392,15 @@
     <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
     <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
     <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
-
     <script>
-        function set_selected(){
-            document.all['s_archive_tag'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_archive_server'].style.color="#ff0000";
-            document.all['s_archive_db_type'].style.color="#ff0000";
-            document.all['s_sour_db_server'].style.color="#ff0000";
-            document.all['s_sour_db_name'].style.color="#ff0000";
-            document.all['s_sour_tab_name'].style.color="#ff0000";
-            document.all['s_archive_time_col'].style.color="#ff0000";
-            document.all['s_archive_rentition'].style.color="#ff0000";
-            document.all['s_rentition_time'].style.color="#ff0000";
-            document.all['s_archive_time_type'].style.color="#ff0000";
-            document.all['s_if_cover'].style.color="#ff0000";
-            document.all['s_dest_db_server'].style.color="#ff0000";
-            document.all['s_dest_db_name'].style.color="#ff0000";
-            document.all['s_python3_home'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_script_name'].style.color="#ff0000";
-            document.all['s_run_time'].style.color="#ff0000";
-            document.all['s_batch_size'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-        }
 
         function set_archive_tag(){
-            var db_type =  $("#archive_db_type").find("option:selected").text()
-            var sour_db =  $("#sour_db_name").val()
-            var sour_tab = $("#sour_tab_name").val()
-            if (db_type == null) {
-                db_type=''
-            }
-             if (sour_db == null) {
-                sour_db=''
-            }
-             if (sour_tab == null) {
-                sour_tab=''
-            }
+            var db_type  =  $("#archive_db_type").find("option:selected").text()
+            var sour_db  =  $("#sour_db_name").val()
+            var sour_tab =  $("#sour_tab_name").val()
+            db_type  =  db_type != null ? db_type:''
+            sour_db  =  sour_db != null ? sour_db:''
+            sour_tab =  sour_tab != null ? sour_tab:''
             $('#archive_tag').val('archive_'+db_type+'_'+sour_db+'_'+sour_tab)
             $('#task_desc').val('归档任务['+db_type+'_'+sour_db+'_'+sour_tab+']')
         }
@@ -478,31 +449,7 @@
                                 {"title": "是否主键"},
                                 {"title": "是否非空"},
                             ],
-                            "language": {
-                                "search": "在表格中搜索:",
-                                "sProcessing": "处理中...",
-                                "sLengthMenu": "显示 _MENU_ 项结果",
-                                "sZeroRecords": "没有匹配结果",
-                                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                "sInfoPostFix": "",
-                                "sSearch": "搜索:",
-                                "sUrl": "",
-                                "sEmptyTable": "表中数据为空",
-                                "sLoadingRecords": "载入中...",
-                                "sInfoThousands": ",",
-                                "oPaginate": {
-                                    "sFirst": "首页",
-                                    "sPrevious": "上页",
-                                    "sNext": "下页",
-                                    "sLast": "末页"
-                                },
-                                "oAria": {
-                                    "sSortAscending": ": 以升序排列此列",
-                                    "sSortDescending": ": 以降序排列此列"
-                                }
-                            }
+                            "language":get_languages()
                         });
                     }
                 });
@@ -581,7 +528,6 @@
         });
 
         $('#dest_db_server').change(function() {
-            console.log('dest_db_server=',$('#dest_db_server').val());
             if ($('#dest_db_server').val()!=''){
                 $.ajax({
                       url: "/get_database",
@@ -707,16 +653,6 @@
                        swal("新增成功", "", "success")
                     } else {
                        swal(dataSet.message, "", "error")
-                    }
-                },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
                     }
                 }
              });
