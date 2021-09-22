@@ -21,14 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="web page optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_graph.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/order/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_release.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -496,14 +489,7 @@
       <workItem from="1631841487221" duration="14061000" />
       <workItem from="1632103100416" duration="103000" />
       <workItem from="1632272469874" duration="101000" />
-      <workItem from="1632281046773" duration="14715000" />
-    </task>
-    <task id="LOCAL-00039" summary="multi dml support">
-      <created>1627285179691</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1627285179691</updated>
+      <workItem from="1632281046773" duration="15556000" />
     </task>
     <task id="LOCAL-00040" summary="login optimize">
       <created>1627291186531</created>
@@ -841,7 +827,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632296435517</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="web page optimize">
+      <created>1632301236823</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1632301236823</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TodoView">
@@ -962,10 +955,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="378" y="275" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1630404029126" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632296443199">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632301241855">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632296443199" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632301241855" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1629795507466">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
