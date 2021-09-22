@@ -2,16 +2,6 @@
 <head>
     <meta charset="utf-8">
     <title>数据库发布</title>
-    <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
-    <link href="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.css') }}"  rel="stylesheet" />
-    <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
-<!--    <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />-->
-<!--    <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />-->
-
     <style>
      .cur_db {
             font-size: 15px;
@@ -67,20 +57,12 @@
                     <label class="col-md-3 control-label"><span id="s_db_source">*</span>数据源:</label>
                 </div>
                 <div class="col-md-8">
-<!--                    <select class="form-control select" id="db_source">-->
-<!--                        <option value='' selected = "selected">...</option>-->
-<!--                        {% for var in dss %}-->
-<!--                          <option value={{var[0]}}>{{var[1]}}</option>-->
-<!--                        {% end %}-->
-<!--                    </select>-->
-
                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
                             <option value='' selected = "selected">...</option>
                             {% for var in dss %}
                               <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                             {% end %}
                        </select>
-
                </div>
              </div>
        </div>
@@ -270,19 +252,6 @@
    </div><!-- /.modal -->
 
    <input type='hidden' id='h_tab_height'>
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
-   <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
-   <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
-   <script src="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.js')}}"></script>
-   <script src="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.js') }}"></script>
-   <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
-   <script src="{{static_url('assets/js/utils.js')}}"></script>
-
-    <script type="text/javascript" src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
-
 
    <script type="text/javascript">
 
@@ -596,28 +565,7 @@
                     $clone.remove();
                     $(this).find('.modal-content').css("margin-top", top - 50);
                   });
-              }
-
-              function showtips(flag,content){
-                toastr.options = {
-                      "closeButton": false,
-                      "debug": false,
-                      "newestOnTop": false,
-                      "progressBar": false,
-                      "positionClass": "toast-bottom-right",
-                      "preventDuplicates": false,
-                      "onclick": null,
-                      "showDuration": "300",
-                      "hideDuration": "1000",
-                      "timeOut": "5000",
-                      "extendedTimeOut": "1000",
-                      "showEasing": "swing",
-                      "hideEasing": "linear",
-                      "showMethod": "fadeIn",
-                      "hideMethod": "fadeOut"
-                    }
-                    toastr[flag]('', content)
-              }
+              };
 
               function get_menu_result(key,db_type,curNode) {
                   if (key=='tab_definition') {

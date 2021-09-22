@@ -30,7 +30,7 @@
         <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
         <link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
         <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-
+        <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
 
         <style>
             .modal-lg {
@@ -534,6 +534,9 @@
         <script src="{{static_url('plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
         <script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
         <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
+        <script src="{{static_url('plugins/bootstrap-treeview/bootstrap-treeview.min.js')}}"></script>
+        <script src="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.js') }}"></script>
+
         <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/js/utils.js')}}"></script>
@@ -756,6 +759,7 @@
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
                          url = '/'+id.replace(/_/g,'/')
+                         console.log('url=',url )
                          $('#main-container-div').load(url);
                       })
 
@@ -767,6 +771,7 @@
                               $('#main-container-div').load('/main');
                          } else {
                               lastHref= '/'+lastId.replace(/_/g,'/')
+                              console.log('lastHref=',lastHref)
                               $('#main-container-div').load(lastHref);
                          }
                       })
@@ -874,7 +879,7 @@
 
             //设置ajax超时时间为3s
             $.ajaxSetup({
-               timeout:3000
+               timeout:30000
             });
 
             //可以实现统计增加遮照功能

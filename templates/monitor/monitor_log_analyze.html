@@ -90,41 +90,6 @@
     <script>
          $(document).ready(function() {
               $('#host-container').hide()
-              function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
-                Morris.Bar({
-                    element: element,
-                    data: data,
-                    xkey: xkey,
-                    ykeys: ykeys,
-                    labels: labels,
-                    hideHover: 'auto',
-                    resize: true, //defaulted to true
-                    gridLineColor: '#65d9b2',
-                    barSizeRatio: 0.6,
-                    barColors: lineColors,
-                    postUnits: 'Mb'
-                });
-              }
-              function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors,p_postUnits) {
-                Morris.Line({
-                      element: element,
-                      data: data,
-                      xkey: xkey,
-                      ykeys: ykeys,
-                      labels: labels,
-                      fillOpacity: opacity,
-                      pointFillColors: Pfillcolor,
-                      pointStrokeColors: Pstockcolor,
-                      behaveLikeLine: true,
-                      gridLineColor: '#8b9285',
-                      hideHover: 'auto',
-                      resize: true, //defaulted to true
-                      pointSize: 0,
-                      lineColors: lineColors,
-                      postUnits: p_postUnits,
-                      lineWidth:2
-                });
-              }
               function count(sour,subs){
                     var a=sour;
                     var b=subs;
@@ -269,27 +234,15 @@
                                          }
                                     }
                                  }
-                                 createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [text],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110']);
+                                 if (value=='disk_read' || value == 'disk_write' || value=='net_in' || value == 'net_out') {
+                                     createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [text],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110'],'kb');
+                                 } else {
+                                     createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [text],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110'],'%');
+                                 }
                             }
                             $('#host-container').show()
 
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                  });
                     $.ajax({
                       url: "/monitor/graph/_query",
@@ -379,29 +332,17 @@
                                          }
                                     }
                                  }
-                                 createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [text],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110']);
+                                 if (value=='disk_read' || value == 'disk_write' || value=='net_in' || value == 'net_out') {
+                                      createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [text],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110'],'kb');
+                                 } else {
+                                      createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [text],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110'],'%');
+                                 }
                             }
                             $('#host-container').show()
 
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                  });
-                    $('#isfirst').val('second')
+                 $('#isfirst').val('second')
                 } else {
                     $.ajax({
                       url: "/monitor/graph/_query",
@@ -492,38 +433,23 @@
                                          }
                                     }
                                  }
-                                 createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [value],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110']);
+
+                                 if (value=='disk_read' || value == 'disk_write' || value=='net_in' || value == 'net_out') {
+                                    createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [value],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110'],'kb');
+                                 } else {
+                                    createLineChart('div_cpu_usage_'+i, $barData_cpu_usage, 'y', ['a'], [value],['0.9'],['#ffffff'],['#992c51'], ['#ffbeba','#88A110'],'%');
+                                 }
                             }
                             $('#host-container').show()
 
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                  });
                 }
 
                 $('#div_card_container').show()
               });
-          })
+          });
 
-         // $("#server_id").bind("input propertychange",function(){
-         //    $("#query_btn").click();
-         // });
-         //
          $("#index_code").bind("input propertychange",function(){
             $("#query_btn").click();
          });
@@ -560,29 +486,11 @@
                          $("#db_id").empty();
                          $("#db_id").append("<option value=''>请选择数据源...</option>");
                          for(i=0;i<dataSet['data'].length;i++){
-                             console.log('i=',i)
                               var val  = dataSet['data'][i][0];
                               var text = dataSet['data'][i][1];
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
                               $("#db_id").append("<option value='"+val+"'>"+text+"</option>");
                          }
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                      }
                  });
 
                  $.ajax({
@@ -597,36 +505,17 @@
                          $("#index_code").empty();
                          $("#index_code").append("<option value=''>请选择数指标...</option>");
                          for(i=0;i<dataSet['data'].length;i++){
-                             console.log('i=',i)
                               var val  = dataSet['data'][i][0];
                               var text = dataSet['data'][i][1];
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
                               $("#index_code").append("<option value='"+val+"'>"+text+"</option>");
                          }
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                      }
                  });
             }
 
          });
 
          $('#db_id').change(function() {
-            console.log('db_id=',$('#db_id').val());
             var index_type=''
             if ($('#db_id').val()=='') {
                  index_type='1'
@@ -645,29 +534,11 @@
                      $("#index_code").empty();
                      $("#index_code").append("<option value=''>请选择数指标...</option>");
                      for(i=0;i<dataSet['data'].length;i++){
-                         console.log('i=',i)
                           var val  = dataSet['data'][i][0];
                           var text = dataSet['data'][i][1];
-                          console.log('option:',"<option value='"+val+"'>"+text+"</option>")
                           $("#index_code").append("<option value='"+val+"'>"+text+"</option>");
                      }
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                  }
              });
          });
 

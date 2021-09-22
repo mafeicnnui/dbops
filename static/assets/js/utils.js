@@ -1,6 +1,7 @@
 //引入外部js
 document.write("<script src='./static/plugins/morris/morris.min.js'></script>");
 document.write("<script src='./static/plugins/toastr/toastr.min.js'></script>");
+document.write("<script src='./static/plugins/echarts/echarts.min.js'></script>");
 
 //获取当前日期
 function GetDate(format) {
@@ -196,12 +197,12 @@ function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnit
             gridLineColor: '#65d9b2',
             barSizeRatio: 0.6,
             barColors: lineColors,
-            postUnits: 'Mb'
+            postUnits: postUnits
         });
 }
 
 //画曲线图
-function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors) {
+function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors,postUnits) {
     Morris.Line({
           element: element,
           data: data,
@@ -217,9 +218,95 @@ function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor
           resize: true, //defaulted to true
           pointSize: 0,
           lineColors: lineColors,
-          postUnits: 's',
+          postUnits: postUnits,
           lineWidth:2
     });
+}
+
+ // 显示图表
+function get_charts_large(p_title,p_x_data,p_y_data,p_color) {
+      var myChart = echarts.init($('#monitor_review')[0])
+      var option = {
+          title:{
+                 text:p_title,
+                 left:'center',
+                 textStyle:{
+                    color:'#9ea7c4',
+                    fontWeight:'bold',
+                    fontFamily:'宋体',
+            　　　　 fontSize:12
+                }
+           },
+           grid: {
+               top: '25px',
+               bottom: '60px',
+               right: '15px',
+               left:'30px'
+           },
+           xAxis: {
+                type: 'category',
+                splitLine:{
+                   show:false
+                },
+                axisLine: { show: true,lineStyle:{ color:'#329ba3' }},
+                axisLabel:{
+                    textStyle:
+                        {  color:'#9ea7c4',
+                           fontSize:8,
+                           fontStyle: 'italic',
+                           fontWeight: 'bold'
+                        }
+                },
+                axisTick : {show: false},
+                data: p_x_data
+            },
+            yAxis: {
+                type: 'value',
+                splitLine:{
+                   show:false
+                },
+                margin: 5,
+                rotate: 60,
+                axisTick : {show:false},
+                splitLine: {show:false},
+                axisLabel: {textStyle:{color:'#9ea7c4',fontSize:8} },
+                axisLine : {show: true,lineStyle:{ color:'#6173A3'}},
+            },
+           tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#83d5a5'
+                }
+              }
+            },
+          toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                　　　　show:true,
+                　　　　excludeComponents :['toolbox'],
+                　　　　pixelRatio: 1
+                    }
+                }
+            },
+            series: [{
+                data: p_y_data,
+                type: 'line',
+                itemStyle : {
+                    normal : {
+                      lineStyle:{
+                        color:p_color
+                      }
+                    }
+                },
+                showAllSymbol: false,
+                symbolSize:1,
+                smooth: true
+            }]
+      };
+      myChart.setOption(option);
 }
 
 //返回备份任务数组

@@ -146,8 +146,8 @@
                          for (i=0;i<dataSet['data2'].length;i++){
                              $barData_db_backup_time[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1],'b':dataSet['data2'][i][2]}
                          }
-                         createBarChart('db-backup-size',  $barData_db_backup_size, 'y', ['a'], ['备份大小'], ['#59aed5'],'s');
-                         createLineChart('db-backup-time', $barData_db_backup_time, 'y', ['a','b'], ['备份时长','压缩时长'],['0.9'],['#ffffff'],['#999999'], ['#FFBD33','#88A110']);
+                         createBarChart('db-backup-size',  $barData_db_backup_size, 'y', ['a'], ['备份大小'], ['#59aed5'],'Mb');
+                         createLineChart('db-backup-time', $barData_db_backup_time, 'y', ['a','b'], ['备份时长','压缩时长'],['0.9'],['#ffffff'],['#999999'], ['#FFBD33','#88A110'],'s');
                       },
                  });
 

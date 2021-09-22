@@ -1,12 +1,6 @@
 <html>
 <head>
     <title>监控任务</title>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
         .modal-lg-order {
             width:40%;
@@ -575,76 +569,7 @@
 
 </body>
 
-<!-- Sweet-Alert  -->
-<script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-
 <script>
-
-      function set_selected(){
-            //add gather task
-            document.all['s_add_gather_task_tag'].style.color="#ff0000";
-            document.all['s_add_gather_task_desc'].style.color="#ff0000";
-            document.all['s_add_gather_server'].style.color="#ff0000";
-            document.all['s_add_gather_task_templete_name'].style.color="#ff0000";
-            document.all['s_add_gather_task_run_time'].style.color="#ff0000";
-            document.all['s_add_gather_task_python3_home'].style.color="#ff0000";
-            document.all['s_add_gather_task_script_base'].style.color="#ff0000";
-            document.all['s_add_gather_task_script_name'].style.color="#ff0000";
-            document.all['s_add_gather_task_api_server'].style.color="#ff0000";
-            document.all['s_add_gather_task_status'].style.color="#ff0000";
-
-            //add monitor task
-            document.all['s_add_monitor_task_tag'].style.color="#ff0000";
-            document.all['s_add_monitor_task_desc'].style.color="#ff0000";
-            document.all['s_add_monitor_server'].style.color="#ff0000";
-            document.all['s_add_monitor_task_run_time'].style.color="#ff0000";
-            document.all['s_add_monitor_task_python3_home'].style.color="#ff0000";
-            document.all['s_add_monitor_task_script_base'].style.color="#ff0000";
-            document.all['s_add_monitor_task_script_name'].style.color="#ff0000";
-            document.all['s_add_monitor_task_api_server'].style.color="#ff0000";
-            document.all['s_add_monitor_task_status'].style.color="#ff0000";
-
-
-            //upd gather task
-            document.all['s_upd_gather_task_tag'].style.color="#ff0000";
-            document.all['s_upd_gather_task_desc'].style.color="#ff0000";
-            document.all['s_upd_gather_server'].style.color="#ff0000";
-            document.all['s_upd_gather_task_templete_name'].style.color="#ff0000";
-            document.all['s_upd_gather_task_run_time'].style.color="#ff0000";
-            document.all['s_upd_gather_task_python3_home'].style.color="#ff0000";
-            document.all['s_upd_gather_task_script_base'].style.color="#ff0000";
-            document.all['s_upd_gather_task_script_name'].style.color="#ff0000";
-            document.all['s_upd_gather_task_api_server'].style.color="#ff0000";
-            document.all['s_upd_gather_task_status'].style.color="#ff0000";
-
-            //upd monitor task
-            document.all['s_upd_monitor_task_tag'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_desc'].style.color="#ff0000";
-            document.all['s_upd_monitor_server'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_run_time'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_python3_home'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_script_base'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_script_name'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_api_server'].style.color="#ff0000";
-            document.all['s_upd_monitor_task_status'].style.color="#ff0000";
-      }
-
-      function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-      }
 
       function isSelect(row) {
           $('#upd_task_tag_hidden').val(row)
@@ -695,31 +620,7 @@
                                   }
                               },
                            ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                          });
                       $('#task_upd_win').attr("disabled",true);
                       $('#task_del_btn').attr("disabled",true);
@@ -918,16 +819,6 @@
                                 swal(dataSet.message, "", "error")
                             }
                         },
-                       error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                       }
                     })
             }
 
@@ -956,16 +847,6 @@
                             swal(dataSet.message, "", "error")
                         }
                     },
-                   error: function (jqXHR) {
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                   }
                 })
             }
         });
@@ -1000,16 +881,6 @@
                                 swal(dataSet.message, "", "error")
                             }
                         },
-                       error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                       }
                     })
             }
 
@@ -1038,16 +909,6 @@
                             swal(dataSet.message, "", "error")
                         }
                     },
-                   error: function (jqXHR) {
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                   }
                 })
             }
         })
@@ -1139,22 +1000,6 @@
                               $('#task_run_btn').attr("disabled",true);
                               $('#task_stop_btn').attr("disabled",true);
                           },
-                         error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                   });
               });
 
@@ -1172,9 +1017,6 @@
           query_task()
        });
     });
-
-
-
 
 
 </script>
