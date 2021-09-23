@@ -126,7 +126,6 @@
                 <!-- Button mobile view to collapse sidebar menu -->
                 <div class="navbar navbar-default" role="navigation">
                     <div class="container">
-                        <!-- Navbar-left -->
                         <ul class="nav navbar-nav navbar-left" >
                             <li>
                                 <button class="button-menu-mobile open-left waves-effect">
@@ -135,30 +134,7 @@
                             </li>
                             <li class="col-md-4">
                                 <form class="app-search1">
-                                     <span class="form-control1">{{china_rq}}&nbsp;&nbsp;<span  id='span_time'>{{china_time}}</span>&nbsp;&nbsp;{{china_week}} </span>
-                                </form>
-                            </li>
-                            <li class="col-md-2">
-                                 <form class="app-search2">
-                                     <span class="form-control2">{{welcome}}</span>
-                                </form>
-                            </li>
-                            <li class="col-md-4">
-                                 <form id='form-search' role="search" class="app-search3">
-                                     <span class="form-control3">主面板&nbsp;&nbsp;
-                                         <div class="radio radio-info radio-inline">
-                                             <input type="radio" id="radio_hopson" value="hopson" name="radio_main" checked>
-                                             <label class="label-body" for="radio_hopson">合生通</label>
-                                         </div>
-                                         <div class="radio radio-info radio-inline">
-                                             <input type="radio" id="radio_easylife" value="easylife" name="radio_main">
-                                             <label class="label-body" for="radio_easylife">好房</label>
-                                         </div>
-                                         <div class="radio radio-info radio-inline">
-                                             <input type="radio" id="radio_platform" value="platform" name="radio_main" >
-                                             <label class="label-body" for="radio_platform">平台</label>
-                                         </div>
-                                     </span>
+                                     <span class="form-control1"><i class="ion-clock m-r-5" style="size:4px;"></i>{{china_rq}}&nbsp;&nbsp;<span  id='span_time'>{{china_time}}</span>&nbsp;&nbsp;{{china_week}} </span>
                                 </form>
                             </li>
                         </ul>
@@ -166,11 +142,23 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown user-box">
                                 <a href="" class="dropdown-toggle waves-effect user-link" data-toggle="dropdown" aria-expanded="true">
+                                   <i class="ion-social-windows"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right user-list notify-list">
+                                    <li><h5>主面板</h5></li>
+                                    <li><a href="javascript:void(0)" onclick="panalHopson()"><i class="ti-user m-r-5" style="size:4px;"></i>合生通</a></li>
+                                    <li><a href="javascript:void(0)" onclick="panalEasylife()"><i class="ion-ios7-home-outline m-r-5" style="size:4px;"></i>好房</a></li>
+                                    <li><a href="javascript:void(0)" onclick="panalEasebase()"><i class="ion-coffee m-r-5" style="size:4px;"></i>平台</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown user-box">
+                                <a href="" class="dropdown-toggle waves-effect user-link" data-toggle="dropdown" aria-expanded="true">
                                     <img id='user-img-id' src="" alt="user-img" class="img-circle user-img">
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right arrow-dropdown-menu arrow-menu-right user-list notify-list">
                                     <li>
-                                        <h5>你好, {{username}}</h5>
+                                       <h5><span class="form-control2">{{welcome}}</span></h5>
                                     </li>
                                     <li><a href="javascript:void(0)" onclick="userinfo()"><i class="ti-user m-r-5"></i>用户详情</a></li>
                                     <li><a href="javascript:void(0)" onclick="lock_screen()"><i class="ti-lock m-r-5"></i>锁定系统</a></li>
@@ -528,9 +516,11 @@
         <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
-        <script src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-        <script src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
+
+        <script src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>
+        <script src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
         <script src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
+
         <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js')}}"></script>
@@ -834,23 +824,15 @@
 
            });
 
-            $('input[type=radio][name=radio_main]').change(function() {
-                  console.log('radio_main=',$("input[name='radio_main']:checked").val())
-                  var val = $("input[name='radio_main']:checked").val()
-                  if (val =='hopson') {
-                      //start_Loader('wrapper')
-                      $('#main-container-div').load("/main");
-                      //end_Loader('wrapper')
-                  } else if  (val =='easylife') {
-                      //start_Loader('wrapper')
-                      $('#main-container-div').load("/easylife");
-                      //end_Loader('wrapper')
-                  } else if  (val =='platform') {
-                      //start_Loader('wrapper')
-                      $('#main-container-div').load("/platform");
-                      //end_Loader('wrapper')
-                  }
-            });
+            function panalHopson() {
+               $('#main-container-div').load("/main");
+            }
+             function panalEasylife() {
+               $('#main-container-div').load("/easylife");
+            }
+             function panalEasebase() {
+               $('#main-container-div').load("/platform");
+            }
 
             $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
                 e = window.event || e;  //解决浏览器兼容的问题
@@ -872,7 +854,7 @@
                    swal("登陆信息已过期，请重新登陆!", "", "error")
                    window.location.href='/login'
                } else if (request.status==502) {
-                   swal("用户无权访问权限此功能!", "", "error")
+                   swal("用户无权访问权限此功能!("+options.url+")", "", "error")
                } else if (request.status==503){
                    swal("系统不可用,请联系管理员!", "", "error")
                } else {

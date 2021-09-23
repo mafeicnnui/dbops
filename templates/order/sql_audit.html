@@ -1,10 +1,6 @@
 <html>
 <head>
     <title>SQL审核</title>
-    <!-- ace code -->
-    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-
     <style>
         .modal-lg-detail {
             width :60%;
@@ -131,16 +127,6 @@
 
 <script type="text/javascript">
 
-      function centerModals() {
-          $('.modal').each(function(i) {
-            var $clone = $(this).clone().css('display', 'block').appendTo('body');
-            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-            top = top > 50 ? top : 0;
-            $clone.remove();
-            $(this).find('.modal-content').css("margin-top", top - 50);
-          });
-      }
-
       $(document).ready(function() {
           //可搜索选择框初始化
           $('.selectpicker').selectpicker({
@@ -216,44 +202,10 @@
                             }
                          }
                         ],
-                      "language": {
-                             "search"       : "在表格中搜索:",
-                             "sProcessing"  : "处理中...",
-                             "sLengthMenu"  : "显示 _MENU_ 项结果",
-                             "sZeroRecords" : "没有匹配结果",
-                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                             "sInfoPostFix" : "",
-                             "sSearch"      : "搜索:",
-                             "sUrl"         : "",
-                             "sEmptyTable"  : "表中数据为空",
-                             "sLoadingRecords": "载入中...",
-                             "sInfoThousands": ",",
-                             "oPaginate": {
-                                 "sFirst"   : "首页",
-                                 "sPrevious": "上页",
-                                 "sNext"    : "下页",
-                                 "sLast"    : "末页"
-                             },
-                             "oAria": {
-                                 "sSortAscending" : ": 以升序排列此列",
-                                 "sSortDescending": ": 以降序排列此列"
-                             }
-                         }
+                      "language": get_languages()
                     });
                   },
-                  error: function (jqXHR) {
-                        if (jqXHR.status==403){
-                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                            setTimeout(" window.location.href='/login'",3000);
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                  }
-                })
+              })
           });
 
           $('#audit').on('click', function() {
@@ -262,7 +214,6 @@
              $("#example tbody tr td input:checked").each( function() {
                   row=$(($(this).parent().parent().html()));
                   sqlid=row[0].innerHTML;
-                  console.log("sqlid=",sqlid);
               });
 
              $.ajax({
@@ -271,19 +222,8 @@
                 datatype: "json",
                 data:{sqlid: sqlid},
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     swal(dataSet.message, "", "info")
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
             });
 
             $("#query_btn").click();
@@ -292,22 +232,6 @@
           $("#query_btn").click();
 
       });
-
-      function format_sql(sql) {
-           var res='';
-           $.ajax({
-                type: 'post',
-                url: '/sql/_format',
-                async:false,
-                data: {
-                    "sql":sql
-                },
-                success: function (dataSet) {
-                  res=dataSet.message
-                },
-            })
-            return res
-      }
 
       function show_audit(msg){
          id =msg.split(',')[0]
@@ -322,7 +246,6 @@
                 success: function (dataSet) {
                     $('#sql_id').val(id);
                     $('#sql_status').val(status);
-                    console.log('status=',status);
                     if (status=='已发布') {
                         $('#auditSql').removeAttr("disabled");
                     } else {
@@ -336,10 +259,8 @@
                     editor.setReadOnly(true);
                     $('#run_time_detail').text(dataSet.message.run_time)
                     if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
-                         console.log('aaa')
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
-                        console.log('bbb')
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
                     }
                     $('.modal').on('show.bs.modal', centerModals);
@@ -349,16 +270,6 @@
                        backdrop:false
                     })
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-               }
         });
     }
 
@@ -377,16 +288,6 @@
                     swal(dataSet.message);
                     $("#query_btn").click();
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
         });
     });
 

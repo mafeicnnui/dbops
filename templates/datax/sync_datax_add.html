@@ -40,7 +40,7 @@
                             <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="sync_tag"  type="text" class="form-control" placeholder="请输入同步标识号">
+                            <input id="sync_tag"  type="text" readonly class="form-control" placeholder="请输入同步标识号">
                         </div>
                    </div>
                </div>
@@ -352,7 +352,7 @@
                         <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述">
+                        <input id="task_desc"  type="text" class="form-control"  readonly  placeholder="请输入任务描述">
                     </div>
                </div>
               </div>
@@ -464,35 +464,6 @@
    </div><!-- /.modal -->
 
     <script>
-        function set_selected(){
-           document.all['s_sync_tag'].style.color="#ff0000";
-           document.all['s_sync_server'].style.color="#ff0000";
-           document.all['s_sour_db_server'].style.color="#ff0000";
-           document.all['s_sour_db_name'].style.color="#ff0000";
-           document.all['s_sour_tab_name'].style.color="#ff0000";
-           document.all['s_sele_sour_tab_cols'].style.color="#ff0000";
-           document.all['s_zk_hosts'].style.color="#ff0000";
-           document.all['s_hbase_thrift'].style.color="#ff0000";
-           document.all['s_sync_ywlx'].style.color="#ff0000";
-           document.all['s_sync_data_type'].style.color="#ff0000";
-           document.all['s_script_base'].style.color="#ff0000";
-           document.all['s_run_time'].style.color="#ff0000";
-           document.all['s_task_desc'].style.color="#ff0000";
-           document.all['s_datax_home'].style.color="#ff0000";
-           document.all['s_sync_time_type'].style.color="#ff0000";
-           document.all['s_sync_gap'].style.color="#ff0000";
-           document.all['s_api_server'].style.color="#ff0000";
-           document.all['s_status'].style.color="#ff0000";
-           document.all['s_hbase_table'].style.color="#ff0000";
-           document.all['s_hbase_rowkey'].style.color="#ff0000";
-           document.all['s_python3_home'].style.color="#ff0000";
-           document.all['s_es_service'].style.color="#ff0000";
-           document.all['s_es_index_name'].style.color="#ff0000";
-           document.all['s_es_type_name'].style.color="#ff0000";
-           $('#sync_tag').attr("readonly","readonly");
-           $('#task_desc').attr("readonly","readonly");
-        }
-
         function get_selec_cols(){
              var tmp='';
              var val='';
@@ -504,7 +475,6 @@
         }
 
         function showTabDetail(){
-
             if ($('#sour_db_name').val() =='') {
                 return false
             }
@@ -528,7 +498,6 @@
                         tab_name: $('#sour_tab_name').val()
                     },
                     success: function (dataSet) {
-                        console.log('get_tab_stru=', dataSet)
                         $('#example').DataTable({
                             "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
                             "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -550,31 +519,7 @@
                                 {"title": "是否主键"},
                                 {"title": "是否非空"},
                             ],
-                            "language": {
-                                "search": "在表格中搜索:",
-                                "sProcessing": "处理中...",
-                                "sLengthMenu": "显示 _MENU_ 项结果",
-                                "sZeroRecords": "没有匹配结果",
-                                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                "sInfoPostFix": "",
-                                "sSearch": "搜索:",
-                                "sUrl": "",
-                                "sEmptyTable": "表中数据为空",
-                                "sLoadingRecords": "载入中...",
-                                "sInfoThousands": ",",
-                                "oPaginate": {
-                                    "sFirst": "首页",
-                                    "sPrevious": "上页",
-                                    "sNext": "下页",
-                                    "sLast": "末页"
-                                },
-                                "oAria": {
-                                    "sSortAscending": ": 以升序排列此列",
-                                    "sSortDescending": ": 以降序排列此列"
-                                }
-                            }
+                            "language": get_languages()
                         });
                     }
                 });
@@ -615,34 +560,16 @@
                     status               : $('#status').val()
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code==0) {
                        swal("新增成功", "", "success")
                     } else {
                        swal(dataSet.message, "", "error")
                     }
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
           });
 
         $('#sour_db_server').change(function() {
-            console.log('sour_db_server=',$('#sour_db_server').val());
             if ($('#sour_db_server').val()!=''){
                 $.ajax({
                       url: "/get_database",
@@ -670,9 +597,6 @@
         });
 
         $('#sour_db_name').change(function() {
-            console.log('sour_db_server=',$('#sour_db_server').val());
-            console.log('sour_db_name=',$('#sour_db_name').val());
-
             $("#sour_tab_name").empty();
             $("#sour_tab_cols").empty();
             $("#sele_sour_tab_cols").empty();
@@ -689,7 +613,6 @@
                           db_name : $('#sour_db_name').val(),
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#sour_tab_name").append("<option value=''>...</option>");
                          for(i=0;i<dataSet['message'].length;i++){
                               var val  = dataSet['message'][i];
@@ -705,9 +628,7 @@
         });
 
         $('#sour_tab_name').change(function() {
-            console.log('sour_tab_name=',$('#sour_tab_name').val());
             $('#hbase_table').val('');
-
             if ($('#sour_tab_name').val()!=''){
                 //更新源数据库列名
                 $.ajax({
@@ -721,7 +642,6 @@
                           tab_name : $('#sour_tab_name').val()
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#sour_tab_cols").empty();
                          $("#sele_sour_tab_cols").empty();
                          $("#sour_incr_col").empty();
@@ -754,7 +674,6 @@
                           tab_name : $('#sour_tab_name').val()
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#sour_incr_col").empty();
                          $("#sour_incr_col").append("<option value=''>......</option>");
                          for(i=0;i<dataSet['message'].length;i++){
@@ -777,7 +696,6 @@
                           tab_name : $('#sour_tab_name').val()
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#hbase_rowkey").val(dataSet['message'])
                          $('#hbase_rowkey').attr("readonly","readonly");
                       }
@@ -852,8 +770,6 @@
         });
 
         function selectAll() {
-            console.log('a=',$('#sour_tab_cols option'))
-            console.log('b=',$('#sour_tab_cols option').length)
             try {
                options=$('#sour_tab_cols option');
                if(options.length>0){
@@ -867,7 +783,6 @@
                }
             } catch(err){
                 console.log(err)
-                console.log(err.message);
             }
         }
 
@@ -886,8 +801,6 @@
         $(document).ready(function() {
            set_selected();
         });
-
-
    </script>
 </body>
 

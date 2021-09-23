@@ -99,7 +99,7 @@
        <div class="col-md-3">
            <div class="form-group">
                 <div>
-                    <label class="col-md-4 control-label"><span id="s_run_time">*</span>定时:<i class="ion-android-alarm"></i></label>
+                    <label class="col-md-4 control-label">定时:<i class="ion-android-alarm"></i></label>
                 </div>
                 <div class="col-md-6">
                    <span class="input-group-btn">
@@ -516,12 +516,6 @@
              $('#con-close-modal2').modal('hide');
         }
 
-        function set_selected(){
-            document.all['s_sql_desc'].style.color="#ff0000";
-            document.all['s_db_source'].style.color="#ff0000";
-            document.all['s_order_type'].style.color="#ff0000";
-        }
-
         function fileImport() {
 　　　　　　　　//获取读取我文件的File对象
 　　　　　　　　var selectedFile = document.getElementById('files').files[0];
@@ -547,22 +541,11 @@
         });
 
         $(document).ready(function() {
-
               //可搜索选择框初始化
               $('.selectpicker').selectpicker({ size: 10 });
               $(":file").filestyle({input: false});
 
               var lock = false;
-
-              function centerModals() {
-                  $('.modal').each(function(i) {
-                    var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                    var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                    top = top > 50 ? top : 0;
-                    $clone.remove();
-                    $(this).find('.modal-content').css("margin-top", top - 50);
-                  });
-              };
 
               function get_menu_result(key,db_type,curNode) {
                   if (key=='tab_definition') {
@@ -660,31 +643,7 @@
                                         {"title": "是否主键"},
                                         {"title": "是否非空"},
                                     ],
-                                    "language": {
-                                        "search": "在表格中搜索:",
-                                        "sProcessing": "处理中...",
-                                        "sLengthMenu": "显示 _MENU_ 项结果",
-                                        "sZeroRecords": "没有匹配结果",
-                                        "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                        "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                                        "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                        "sInfoPostFix": "",
-                                        "sSearch": "搜索:",
-                                        "sUrl": "",
-                                        "sEmptyTable": "表中数据为空",
-                                        "sLoadingRecords": "载入中...",
-                                        "sInfoThousands": ",",
-                                        "oPaginate": {
-                                            "sFirst": "首页",
-                                            "sPrevious": "上页",
-                                            "sNext": "下页",
-                                            "sLast": "末页"
-                                        },
-                                        "oAria": {
-                                            "sSortAscending": ": 以升序排列此列",
-                                            "sSortDescending": ": 以降序排列此列"
-                                        }
-                                    }
+                                    "language": get_languages()
                                 });
                             }
                         });
@@ -729,31 +688,7 @@
                                 scrollCollapse: true,
                                 paging        : false,
                                 iDisplayLength: 6,
-                                "language"    : {
-                                     "search"         : "在表格中搜索:",
-                                     "sProcessing"    : "处理中...",
-                                     "sLengthMenu"    : "显示 _MENU_ 项结果",
-                                     "sZeroRecords"   : "没有匹配结果",
-                                     "sInfo"          : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"     : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered"  : "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix"   : "",
-                                     "sSearch"        : "搜索:",
-                                     "sUrl"           : "",
-                                     "sEmptyTable"    : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands" : ",",
-                                     "oPaginate"    : {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                               }
+                                "language"    : get_languages()
                         });
                     }
                  });
@@ -956,7 +891,6 @@
                     for (i=0;i<dataSet['message'].length;i++){
                        var val  = dataSet['message'][i].id;
                        var text = dataSet['message'][i].id;
-                       //$("#curr_db").append("<option value='"+val+"'>"+text+"</option>");
                        $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                    }
                    $("#curr_db").selectpicker('refresh')
@@ -993,16 +927,6 @@
                              db_source = ds
                              db_type=ds['db_type']
                            },
-                           error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                         }
                        });
 
                        $.ajax({
@@ -1013,15 +937,7 @@
                                  dbid  :  $('#db_source').val(),
                                  msg   :  $('#filter_db').val()
                             },
-                            beforeSend: function () {
-                                  $('.modal').on('show.bs.modal', centerModals);
-                                  $(window).on('resize', centerModals);
-                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});                            },
-                            complete: function () {
-                                  $('#con-close-modal').modal('hide');
-                            },
                             success: function (dataSet) {
-                                console.log('dataSet.message=',dataSet.message)
                                 if (dataSet.url.length>30) {
                                     $('#db_title').html(dataSet.url.slice(1,30)+'.../');
                                 } else {
@@ -1051,14 +967,8 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         console.log('curNode2=',curNode.text)
-                                         console.log('parNode2=',parNode.text)
-                                         //$('#curr_db').val(curNode.text);
                                          upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                        console.log('curNode3=', curNode.text)
-                                        console.log('parNode3=', parNode.text)
-                                        //$('#curr_db').val(parNode.text);
                                         upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
@@ -1074,14 +984,8 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         console.log('curNode22=',curNode.text)
-                                         console.log('parNode22=',parNode.text)
-                                         //$('#curr_db').val(curNode.text);
                                          upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                        console.log('curNode33=', curNode.text)
-                                        console.log('parNode33=', parNode.text)
-                                        //$('#curr_db').val(parNode.text);
                                         upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
@@ -1092,9 +996,6 @@
                                         var m = "clicked: " + key + " on " + $(this).text();
                                         var curNode = $('#db_tree').treeview('getSelected')[0];
                                         var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-                                        console.log('curNode=',curNode);
-                                        console.log('parNode=',parNode);
-                                        console.log('options=',m);
                                         get_menu_result(key,db_type,$(this).text())
                                     },
                                     items: {
@@ -1150,10 +1051,6 @@
                    $("#files").click();
               });
 
-              // $("#db_source").bind("input propertychange",function(){
-              //    refresh_tree();
-              // });
-
               $("#db_source").on("changed.bs.select",function(){
                     refresh_tree();
               });
@@ -1194,22 +1091,12 @@
                               desc  : $('#sql_desc').val(),
                               type  : v_type,
                           },
-                          beforeSend: function () {
-                              $('.modal').on('show.bs.modal', centerModals);
-                              $(window).on('resize', centerModals);
-                              $('#con-close-modal').modal({keyboard: false, backdrop: false});
-                          },
-                          complete: function () {
-                              $('#con-close-modal').modal('hide');
-                          },
                           success: function (dataSet) {
-                              console.log(dataSet);
                               if (dataSet.status == "1") {
                                   showtips('error', dataSet.msg);
                                   $('#check_status').val('failure')
                               } else {
                                   if (table != undefined) {
-                                      console.log("table is defined=", table);
                                       table.destroy();
                                       $('#example').empty();
                                   }
@@ -1223,16 +1110,6 @@
                                   query_release_result(editor.session.getTextRange(editor.getSelectionRange()))
                               }
                           },
-                          error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                         }
                       });
                   }
               });
@@ -1261,12 +1138,10 @@
                             time  :  $('#run_time').val()
                         },
                         success: function (dataSet) {
-                            console.log(dataSet);
                             if (dataSet.status=="1") {
                                 showtips('error',dataSet.msg);
                             } else {
                                 if (table != undefined) {
-                                    console.log("table is defined=", table);
                                     table.destroy();
                                     $('#example').empty();
                                 }
@@ -1279,16 +1154,6 @@
                                 query_release_result(editor.session.getTextRange(editor.getSelectionRange()))
                             }
                          },
-                         error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                     });
                   }
               });
@@ -1331,7 +1196,6 @@
               $(window).on('resize', centerModals);
               $('#con-close-modal2').modal({ keyboard: false,backdrop:false});
               setTimeout("set_styles()",1000);
-
           });
     </script>
 

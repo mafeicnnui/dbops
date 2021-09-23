@@ -330,3 +330,20 @@ function get_backup_tasks(){
               },
          });
 }
+
+//格式化SQL
+function format_sql(sql) {
+   var res='';
+   $.ajax({
+        type: 'post',
+        url: '/sql/_format',
+        async:false,
+        data: {
+            "sql":sql
+        },
+        success: function (dataSet) {
+          res=dataSet.message
+        },
+    })
+    return res
+}

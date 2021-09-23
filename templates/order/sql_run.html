@@ -1,11 +1,6 @@
 <html>
 <head>
     <title>SQL执行</title>
-    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <style>
         .modal-lg-detail {
             width:60%;
@@ -135,9 +130,6 @@
 
 </body>
 
-<script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
-<script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
-
 <script type="text/javascript">
 
      function set_editor(p_editor) {
@@ -228,43 +220,9 @@
                                 }
                              }
                             ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                         });
                   },
-                  error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                  }
               })
           });
 
@@ -272,42 +230,21 @@
 
       });
 
-     function showtips(flag,content){
-            toastr.options = {
-                  "closeButton": false,
-                  "debug": false,
-                  "newestOnTop": false,
-                  "progressBar": false,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": false,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "3000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
-            }
-            toastr[flag]('', content)
-      }
-
-     function format_sql(sql) {
-           var res='';
-           $.ajax({
-                type: 'post',
-                url: '/sql/_format',
-                async:false,
-                data: {
-                    "sql":sql
-                },
-                success: function (dataSet) {
-                  res=dataSet.message
-                },
-            })
-            return res
-      }
+     // function format_sql(sql) {
+     //       var res='';
+     //       $.ajax({
+     //            type: 'post',
+     //            url: '/sql/_format',
+     //            async:false,
+     //            data: {
+     //                "sql":sql
+     //            },
+     //            success: function (dataSet) {
+     //              res=dataSet.message
+     //            },
+     //        })
+     //        return res
+     //  }
 
      function showSql(row){
         console.log('slowlog.....')
@@ -325,10 +262,8 @@
                     sql = format_sql(dataSet.message.sqltext)
 
                     if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
-                         console.log('aaa')
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
-                        console.log('bbb')
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
                     }
 
@@ -354,16 +289,6 @@
                     });
 
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
         });
     }
 
@@ -374,11 +299,6 @@
             datatype: "json",
             data: {
                 id  : id,
-            },
-            beforeSend: function () {
-                $('.modal').on('show.bs.modal', centerModals);
-                $(window).on('resize', centerModals);
-                $('#con-close-modal-2').modal({ keyboard: false,backdrop:false});
             },
             success: function (dataSet) {
                 $.ajax({
@@ -391,14 +311,12 @@
                         sql_id :  dataSet.id,
                     },
                     success: function (dataSet) {
-                        //showtips('info','运行中...');
                         $("#query_btn").click();
                          $('#con-close-modal-2').modal('hide');
                      }
                  });
              }
          });
-
     }
 
      $('#db_source').change(function() {
@@ -447,8 +365,6 @@
         }
     })
 
-
  </script>
-
 
 </html>

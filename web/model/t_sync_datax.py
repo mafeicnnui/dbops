@@ -775,14 +775,16 @@ def push_datax_sync_task(p_tag,p_api):
     url = 'http://{}/push_datax_remote_sync'.format(p_api)
     res = requests.post(url, data=data)
     jres = res.json()
+    print('res=',res)
+    print('jres=',jres)
     v = ''
-    for c in jres['msg']['crontab'].split('\n'):
+    for c in jres['msg']:
         if c.count(p_tag) > 0:
             v = v + "<span class='warning'>" + c + "</span>"
         else:
             v = v + c
         v = v + '<br>'
-    jres['msg']['crontab'] = v
+    jres['msg'] = v
     return jres
 
 def pushall_datax_sync_task(p_tags):
@@ -816,13 +818,13 @@ def run_datax_sync_task(p_tag,p_api):
     res = requests.post(url, data=data)
     jres = res.json()
     v = ''
-    for c in jres['msg']['crontab'].split('\n'):
+    for c in jres['msg'].split('\n'):
         if c.count(p_tag) > 0:
             v = v + "<span class='warning'>" + c + "</span>"
         else:
             v = v + c
         v = v + '<br>'
-    jres['msg']['crontab'] = v
+    jres['msg'] = v
     return jres
 
 def stop_datax_sync_task(p_tag,p_api):

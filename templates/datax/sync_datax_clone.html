@@ -2,15 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <!-- App title -->
     <title>dataX克隆同步</title>
-    <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
         #sour_tab_cols,#sele_sour_tab_cols {
             height: 290px;
@@ -49,7 +41,7 @@
                             <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="sync_tag"  type="text" class="form-control" value="{{sync_tag}}">
+                            <input id="sync_tag"  type="text" class="form-control" readonly  value="{{sync_tag}}">
                         </div>
                    </div>
                </div>
@@ -291,7 +283,7 @@
                         <label class="col-md-2 control-label"><span id="s_hbase_rowkey_separator"></span>hbase行键分隔符</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="hbase_rowkey_separator"  type="text" class="form-control" value="{{sync_hbase_rowkey_s}}">
+                        <input id="hbase_rowkey_separator"  type="text"  readonly class="form-control" value="{{sync_hbase_rowkey_s}}">
                     </div>
                </div>
               </div>
@@ -377,7 +369,7 @@
                         <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="task_desc"  type="text" class="form-control"  value="{{comments}}">
+                        <input id="task_desc"  type="text"  readonly class="form-control"  value="{{comments}}">
                     </div>
                </div>
               </div>
@@ -500,48 +492,7 @@
     </div>
    </div><!-- /.modal -->
 
-    <!-- Counter js  -->
-    <script src="{{static_url('plugins/counterup/jquery.counterup.min.js')}}"></script>
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-
     <script>
-
-        function set_selected(){
-            document.all['s_sync_tag'].style.color="#ff0000";
-            document.all['s_sync_server'].style.color="#ff0000";
-            document.all['s_sour_db_server'].style.color="#ff0000";
-            document.all['s_sour_db_name'].style.color="#ff0000";
-            document.all['s_sour_tab_name'].style.color="#ff0000";
-            document.all['s_sele_sour_tab_cols'].style.color="#ff0000";
-            document.all['s_zk_hosts'].style.color="#ff0000";
-            document.all['s_hbase_thrift'].style.color="#ff0000";
-            document.all['s_hbase_table'].style.color="#ff0000";
-            document.all['s_hbase_rowkey'].style.color="#ff0000";
-            document.all['s_sync_ywlx'].style.color="#ff0000";
-            document.all['s_sync_data_type'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_run_time'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_datax_home'].style.color="#ff0000";
-            document.all['s_sync_time_type'].style.color="#ff0000";
-            document.all['s_sync_gap'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-            document.all['s_es_service'].style.color="#ff0000";
-            document.all['s_es_index_name'].style.color="#ff0000";
-            document.all['s_es_type_name'].style.color="#ff0000";
-            $('#hbase_rowkey').attr("readonly","readonly");
-            $('#sync_tag').attr("readonly","readonly");
-            $('#task_desc').attr("readonly","readonly");
-        }
-
         function showTabDetail(){
 
             if ($('#sour_db_name').val() =='') {
@@ -567,7 +518,6 @@
                         tab_name: $('#sour_tab_name').val()
                     },
                     success: function (dataSet) {
-                        console.log('get_tab_stru=', dataSet)
                         $('#example').DataTable({
                             "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
                             "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -589,31 +539,7 @@
                                 {"title": "是否主键"},
                                 {"title": "是否非空"},
                             ],
-                            "language": {
-                                "search": "在表格中搜索:",
-                                "sProcessing": "处理中...",
-                                "sLengthMenu": "显示 _MENU_ 项结果",
-                                "sZeroRecords": "没有匹配结果",
-                                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
-                                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                "sInfoPostFix": "",
-                                "sSearch": "搜索:",
-                                "sUrl": "",
-                                "sEmptyTable": "表中数据为空",
-                                "sLoadingRecords": "载入中...",
-                                "sInfoThousands": ",",
-                                "oPaginate": {
-                                    "sFirst": "首页",
-                                    "sPrevious": "上页",
-                                    "sNext": "下页",
-                                    "sLast": "末页"
-                                },
-                                "oAria": {
-                                    "sSortAscending": ": 以升序排列此列",
-                                    "sSortDescending": ": 以降序排列此列"
-                                }
-                            }
+                            "language": get_languages()
                         });
                     }
                 });
@@ -659,7 +585,6 @@
         }
 
         $("#save").click(function () {
-          console.log(" status:",$('#status').val())
           $.ajax({
             url: "/datax/add/save",
             type: "post",
@@ -694,29 +619,12 @@
                     python3_home         : $('#python3_home').val(),
             },
             success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code==0) {
                    swal("克隆成功", "", "success")
                 } else {
                    swal(dataSet.message, "", "error")
                 }
             },
-           error: function (jqXHR, textStatus, errorThrown) {
-                console.log('jqXHR.responseText=',jqXHR.responseText);
-                console.log('jqXHR.status=',jqXHR.status);
-                console.log('jqXHR.readyState=',jqXHR.readyState);
-                console.log('jqXHR.statusText=',jqXHR.statusText);
-                console.log('textStatus=',textStatus);
-                console.log('errorThrown=',errorThrown);
-                if (jqXHR.status==403){
-                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                    setTimeout(" window.location.href='/login'",3000);
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-           }
          });
       });
 
@@ -748,9 +656,6 @@
         });
 
         $('#sour_db_name').change(function() {
-            console.log('sour_db_server=',$('#sour_db_server').val());
-            console.log('sour_db_name=',$('#sour_db_name').val());
-
             if ($('#sour_db_name').val()!=''){
                 $.ajax({
                       url: "/get_tables",
@@ -761,7 +666,6 @@
                           db_name : $('#sour_db_name').val(),
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#sour_tab_name").empty();
                          $("#sour_tab_cols").empty();
                          $("#sele_sour_tab_cols").empty();
@@ -782,7 +686,6 @@
         });
 
         $('#sour_tab_name').change(function() {
-            console.log('sour_tab_name=',$('#sour_tab_name').val());
             if ($('#sour_tab_name').val()!=''){
                 //更新源数据库列名
                 $.ajax({
@@ -795,7 +698,6 @@
                           tab_name : $('#sour_tab_name').val()
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#sour_tab_cols").empty();
                          $("#sele_sour_tab_cols").empty();
                          $("#sour_incr_col").empty();
@@ -826,7 +728,6 @@
                           tab_name : $('#sour_tab_name').val()
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#sour_incr_col").empty();
                          $("#sour_incr_col").append("<option value='' selected = \"selected\">"+'......'+"</option>");
                          for(i=0;i<dataSet['message'].length;i++){
@@ -848,7 +749,6 @@
                           tab_name : $('#sour_tab_name').val()
                       },
                       success: function (dataSet) {
-                         console.log(dataSet)
                          $("#hbase_rowkey").val(dataSet['message'])
                          $('#hbase_rowkey').attr("readonly","readonly");
                       }
@@ -981,7 +881,6 @@
                       db_name : $('#sour_db_name').val(),
                   },
                   success: function (dataSet) {
-                     console.log(dataSet)
                      var tab=$("#sour_tab_name").val()
                      $("#sour_tab_name").empty();
                      $("#sour_tab_cols").empty();
@@ -1005,7 +904,6 @@
             $("#sele_sour_tab_cols").empty();
             for (i=0;i<sele_sour_tab_cols_arr.length;i++){
                   value=sele_sour_tab_cols_arr[i];
-                  console.log('value=',value);
                   $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+value+"</option>");
             }
 
@@ -1021,7 +919,6 @@
                       tab_name : $('#sour_tab_name').val()
                   },
                   success: function (dataSet) {
-                         console.log(dataSet)
                          var colname=$("#sour_incr_col").val()
                          $("#sour_incr_col").empty();
                          $("#sour_incr_col").append("<option value='' selected = \"selected\">"+'......'+"</option>");
@@ -1044,9 +941,7 @@
                          }
                   }
             });
-
         });
-
 
    </script>
 </body>
