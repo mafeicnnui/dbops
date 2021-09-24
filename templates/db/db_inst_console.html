@@ -2,27 +2,6 @@
 <head>
     <meta charset="utf-8">
     <title>实例管理</title>
-
-    <!-- jquery treeview -->
-    <link   rel="stylesheet"  href="{{static_url('assets/css/jquery.treeview.css') }}" />
-	<link   rel="stylesheet"  href="{{static_url('assets/css/tree.css')}}" />
-	<script type="text/javascript" src="{{static_url('assets/js/jquery.treeview.js')}}"></script>
-    <script type='text/javascript' src="{{static_url('assets/js/jquery.contextmenu.r2-min.js')}}"></script>
-
-    <!-- ace code -->
-    <link href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/mode-mysql.js')}}"></script>
-
-     <!-- DataTables -->
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
-    <!-- Notification css (Toastr) -->
-    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}"     rel="stylesheet" type="text/css" />
-    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
-
     <style>
        #example{
             width: 100% !important;
@@ -39,9 +18,23 @@
         }
        #div-tree-panal,#ace-editor-panal,#div-table-panal {
           display:none;
-      }
-    </style>
+       }
 
+       .cur_db {
+            font-size: 15px;
+        }
+       #example{
+            font-size:14px;
+       }
+       #db_tree{
+            font-size:13px;
+       }
+       #db_title{
+           font-size: 15px;
+           color: #329ba3;
+           margin-bottom: 10px;
+       }
+    </style>
 </head>
 
 <body>
@@ -55,41 +48,54 @@
                         <label class="col-md-3 control-label">数据源：</label>
                     </div>
                     <div class="col-md-8">
-                        <select readonly class="form-control select" id="db_source">
+                         <select readonly class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
                             {% for var in dss %}
-                              <option value={{var[0]}}>{{var[1]}}</option>
+                                <option selected = "selected" value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                             {% end %}
-                        </select>
+                         </select>
                    </div>
                 </div>
            </div>
 
-           <div class="col-md-3">
-              <div class="form-group">
-                 <label class="control-label text-left"><i class="mdi mdi-database"></i>&nbsp;<span class='h5 text-danger' id="curr_db"></span></label>
-               </div>
+           <div  class="col-md-3">
+                <div class="col-md-1">
+                    <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ti-layout-menu-v"></i></i></button>
+                </div>
+                <div class="col-md-11">
+                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="curr_db">
+                          <option value='' selected = "selected">...</option>
+                      </select>
+                </div>
+            </div>
+
+            <div  class="col-md-3">
+                <div class="col-md-1">
+                    <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ion-android-timer"></i></i></button>
+                </div>
+                <div class="col-md-11">
+                    <input id="filter_db" type="text" class="form-control" placeholder="请输入过虑条件">
+                </div>
            </div>
 
-           <div  class="col-md-6">
+           <div  class="col-md-3">
                 <div class="form-group">
-                      <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="查询"><i class="fa fa-gear"></i></button>
-                      <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
+                      <button type="button" id='query_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
+                      <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="美化" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
                  </div>
            </div>
+
          </form>
     </div>
    <p></p>
    <div class="row">
-        <div class="col-lg-3">
+       <div class="col-lg-3">
             <div id='div-tree-panal' class="panel panel-border panel-info" >
                 <div class="panel-heading">
                 </div>
                 <div class="panel-body">
+                    <span id='db_title'></span>
                     <div id='div-tree'>
-                       <span id='db_menu_title' class="menu_title"></span>
-                       <div id="main">
-                            <ul id="browser" class="filetree"></ul>
-                       </div>
+                        <div id="db_tree" ></div>
                     </div>
 
                 </div>
@@ -116,315 +122,331 @@
         </div>
     </div>
 
-   <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-sm">
+   <!--查看DDL详情  -->
+   <div id="con-close-modal-ddl" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">正在查询中，请稍候...</h4>
+                <h4 class="modal-title"><span id='ddl-header'></span></h4>
             </div>
-
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor-tab-defi' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
         </div>
-     </div>
+    </div>
    </div><!-- /.modal -->
 
-   <div id="con-close-modal2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">正在加载中，请稍候...</h4>
-            </div>
 
-        </div>
-     </div>
-   </div><!-- /.modal -->
-
-   <div class="contextMenu" id="myMenu1">
-      <ul>
-        <li id="tab_definition"><img  src="{{static_url('assets/images/add.png')}}" /> 表定义</li>
-        <li id="idx_definition"><img  src="{{static_url('assets/images/edit.gif')}}"/> 索引定义</li>
-        <li id="drop_table"><img  src="{{static_url('assets/images/delete.png')}}" /> 删除表</li>
-        <li id="query_tab_100"> <i class="fa fa-search"></i>&nbsp; 查询数据</li>
-        <li id="refresh"> <i class="fa fa-refresh"></i>  &nbsp;刷新</li>
-      </ul>
-   </div>
    <input type='hidden' id='h_tab_height'>
-
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-
-   <!-- Toastr js -->
-   <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
-   <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
-   <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
 
    <script type="text/javascript">
 
         function set_screen_size(n_height){
+         console.log('height:'+n_height)
+         //1366*768(100%)
+         if (n_height <= 657)
+         {
+               console.log('1366*768(100%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.625);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-             console.log('height:'+n_height)
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.20);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-             //1366*768(100%)
-             if (n_height <= 657)
-             {
-                   console.log('1366*768(100%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.625);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.4);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.55)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
+          //1366*768(80%)
+         if (n_height ==821)
+         {
+               console.log('1366*768(80%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.725);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.20);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.4);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.55)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
-              //1366*768(80%)
-             if (n_height ==821)
-             {
-                   console.log('1366*768(80%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.725);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.45);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+         //1440*1050(100%)、1680*1050（100%）
+         if (n_height==939)
+         {
+               console.log('1440*1050(100%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.725);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.45);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-             //1440*1050(100%)、1680*1050（100%）
-             if (n_height==939)
-             {
-                   console.log('1440*1050(100%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.725);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.45);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+         //1440*1050(80%)、1680*1050（100%）
+         if (n_height==1174) {
+               console.log('1440*1050(80%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.8);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.45);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-             //1440*1050(80%)、1680*1050（100%）
-             if (n_height==1174) {
-                   console.log('1440*1050(80%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.8);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.53);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+        //1440*900(100%)、1600*900（100%）
+         if (n_height == 789 )
+         {
+               console.log('1440*900(80%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.71);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.53);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-            //1440*900(100%)、1600*900（100%）
-             if (n_height == 789 )
-             {
-                   console.log('1440*900(80%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.71);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.43);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+         //1440*900(80%)、1600*900（80%）
+         if (n_height == 986 )
+         {
+               console.log('1440*900(80%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.75);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.43);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-             //1440*900(80%)、1600*900（80%）
-             if (n_height == 986 )
-             {
-                   console.log('1440*900(80%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.75);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.48);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+         //1920*1080(100%)
+         if (n_height == 969 )
+         {
+               console.log('1920*1080(100%) :'+n_height+'px')
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.76);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.48);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-             //1920*1080(100%)
-             if (n_height == 969 )
-             {
-                   console.log('1920*1080(100%) :'+n_height+'px')
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.76);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.49);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+         //1920*1080(80%)
+         if (n_height == 1211 )
+         {
+               console.log('1920*1080(100%):'+n_height)
+               //set div_tree style
+               $("#div-tree-panal").css("height",n_height*0.81);
+               $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+               $("#div-tree").css("border",1);
+               $("#div-tree").css("overflow-x","auto");
+               $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.49);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+               //set ace_editor style
+               $("#ace-editor-panal").css("height",n_height*0.25);
+               $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+               $("#ace-editor").css("width","100%");
+               $("#ace-editor").css("border",1);
+               $("#ace-editor").css("overflow-x","auto");
 
-             //1920*1080(80%)
-             if (n_height == 1211 )
-             {
-                   console.log('1920*1080(100%):'+n_height)
-                   //set div_tree style
-                   $("#div-tree-panal").css("height",n_height*0.81);
-                   $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-                   $("#div-tree").css("border",1);
-                   $("#div-tree").css("overflow-x","auto");
-                   $("#div-tree").css("overflow-y","auto");
+               //set div_table style
+               $("#div-table-panal").css("height",n_height*0.542);
+               $("#div-table").css("height",$("#div-table-panal").height()*1);
+               $("#div-table").css("width","100%");
+               $("#div-table").css("border",1);
+               $("#div-table").css("overflow-x","auto");
+               $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.77)+'px')
+               console.log('h_tab_height=',$("#h_tab_height").val())
+               return
+         }
 
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+        //set div_tree style
+        $("#div-tree-panal").css("height",n_height*0.725);
+        $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
+        $("#div-tree").css("border",1);
+        $("#div-tree").css("overflow-x","auto");
+        $("#div-tree").css("overflow-y","auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.542);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.77)+'px')
-                   console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
+        //set ace_editor style
+        $("#ace-editor-panal").css("height",n_height*0.25);
+        $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
+        $("#ace-editor").css("width","100%");
+        $("#ace-editor").css("border",1);
+        $("#ace-editor").css("overflow-x","auto");
 
-            //set div_tree style
-            $("#div-tree-panal").css("height",n_height*0.725);
-            $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
-            $("#div-tree").css("border",1);
-            $("#div-tree").css("overflow-x","auto");
-            $("#div-tree").css("overflow-y","auto");
+        //set div_table style
+        $("#div-table-panal").css("height",n_height*0.45);
+        $("#div-table").css("height",$("#div-table-panal").height()*1);
+        $("#div-table").css("width","100%");
+        $("#div-table").css("border",1);
+        $("#div-table").css("overflow-x","auto");
+        $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
+        console.log('h_tab_height=',$("#h_tab_height").val())
 
-            //set ace_editor style
-            $("#ace-editor-panal").css("height",n_height*0.25);
-            $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-            $("#ace-editor").css("width","100%");
-            $("#ace-editor").css("border",1);
-            $("#ace-editor").css("overflow-x","auto");
-
-            //set div_table style
-            $("#div-table-panal").css("height",n_height*0.45);
-            $("#div-table").css("height",$("#div-table-panal").height()*1);
-            $("#div-table").css("width","100%");
-            $("#div-table").css("border",1);
-            $("#div-table").css("overflow-x","auto");
-            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-            console.log('h_tab_height=',$("#h_tab_height").val())
-
-        }
+    }
 
         function set_styles() {
-             set_screen_size($(window).height())
-             $('#div-tree-panal').show()
-             $('#ace-editor-panal').show()
-             $('#div-table-panal').show()
-             $('#con-close-modal2').modal('hide');
-        }
+         set_screen_size($(window).height())
+         $('#div-tree-panal').show()
+         $('#ace-editor-panal').show()
+         $('#div-table-panal').show()
+    }
+
+        function get_db_type() {
+              var db_type=''
+              $.ajax({
+                   url     : "/db/inst/query/id",
+                   type    : "post",
+                   datatype: "json",
+                   async   : false,
+                   data    :{
+                      inst_id : $('#db_source').val(),
+                   },
+                   success: function (ds) {
+                     //db_source = ds
+                     db_type=ds['inst_type']
+                   }
+               });
+              return db_type;
+          }
+
+        function set_editor(p_editor) {
+          var editor = ace.edit(p_editor);
+          editor.setTheme("ace/theme/xcode");
+          editor.getSession().setMode("ace/mode/mysql");
+          editor.getSession().setUseSoftTabs(true);
+          editor.getSession().setUseWrapMode(true);
+          editor.setShowPrintMargin(false);
+          editor.setFontSize(14);
+          editor.setOption("wrap", "free");
+          ace.require("ace/ext/language_tools");
+          editor.setOptions({
+             enableBasicAutocompletion: true,
+             enableSnippets: true,
+             enableLiveAutocompletion: true
+          });
+          editor.setHighlightActiveLine(true);
+      }
 
         //当浏览器大小变化时
         $(window).resize(function () {
@@ -432,223 +454,242 @@
         })
 
         $(document).ready(function() {
+              var lock = false;
               var table;
-              var editor = ace.edit("ace-editor");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/mysql");
-              editor.getSession().setUseSoftTabs(true);
-              editor.getSession().setUseWrapMode(true);
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(14);
-              editor.setOption("wrap", "free");
+              set_editor("ace-editor");
+              set_editor("ace-editor-tab-defi")
 
-              ace.require("ace/ext/language_tools");
-              editor.setOptions({
-                 enableBasicAutocompletion: true,
-                 enableSnippets: true,
-                 enableLiveAutocompletion: true
-              });
-              editor.setHighlightActiveLine(true);
+              function upd_curr_db(dataSet){
+           $("#curr_db").empty();
+           $("#curr_db").append("<option value=''>...</option>");
+            for (i=0;i<dataSet['message'].length;i++){
+               var val  = dataSet['message'][i].id;
+               var text = dataSet['message'][i].id;
+               $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+           }
+           $("#curr_db").selectpicker('refresh')
+      }
 
-              function centerModals() {
-                  $('.modal').each(function(i) {
-                    var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                    var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                    top = top > 50 ? top : 0;
-                    $clone.remove();
-                    $(this).find('.modal-content').css("margin-top", top - 50);
-                  });
-              }
+              function upd_curr_db_select(dataSet,curdb){
+            $("#curr_db").empty();
+            $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
+            for (i=0;i<dataSet['message'].length;i++){
+               var val  = dataSet['message'][i].id;
+               var text = dataSet['message'][i].id;
+               if (val!=curdb) {
+                      $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+               }
+           }
+           $("#curr_db").append("<option value=''>...</option>");
+           $("#curr_db").selectpicker('refresh')
+      }
 
-              function showtips(flag,content){
-                    toastr.options = {
-                      "closeButton": false,
-                      "debug": false,
-                      "newestOnTop": false,
-                      "progressBar": false,
-                      "positionClass": "toast-bottom-right",
-                      "preventDuplicates": false,
-                      "onclick": null,
-                      "showDuration": "300",
-                      "hideDuration": "1000",
-                      "timeOut": "5000",
-                      "extendedTimeOut": "1000",
-                      "showEasing": "swing",
-                      "hideEasing": "linear",
-                      "showMethod": "fadeIn",
-                      "hideMethod": "fadeOut"
-                    }
-                    toastr[flag]('', content)
-              }
+              function refresh_tree(){
+           if ($('#db_source').val()!='') {
+               $.ajax({
+                    url     :"/get/inst/tree",
+                    type    :"post",
+                    datatype:"json",
+                    data: {
+                         inst_id : $('#db_source').val(),
+                          msg  : $('#filter_db').val()
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.url.length>30) {
+                            $('#db_title').html(dataSet.url.slice(1,30)+'.../');
+                        } else {
+                            $('#db_title').html(dataSet.url);
+                        }
 
-              function get_tree(){
-                   if ($('#db_source').val()!='') {
-                       $.ajax({
-                            url     :"/get/inst/tree",
-                            type    :"post",
-                            datatype:"json",
-                            data: {
-                                 inst_id  :  $('#db_source').val()
-                            },
-                            beforeSend: function () {
-                                 $('.modal').on('show.bs.modal', centerModals);
-                                 $(window).on('resize', centerModals);
-                                 $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                            },
-                            complete: function () {
-                                 $('#con-close-modal').modal('hide');
-                            },
-                            success: function (dataSet) {
-                                console.log('input propertychange=',dataSet)
-                                //$('#curr_db_desc').text(dataSet.desc)
-                                $('#db_menu_title').html(dataSet.url)
-                                $('#browser').empty()
-                                $('#browser').append(dataSet.message);
-                                $('#curr_db').text('')
-                                $("#browser").treeview({
-                                    animated: "normal",
-                                    collapsed: true,
-                                    toggle: function() {
-                                        console.log("%s was toggled.", $(this).find(">span").text());
-                                        $('#curr_db').text($(this).find(">span").text())
-                                    }
-                                });
+                        $('#db_tree').treeview({
+                             data              : dataSet.message,
+                             collapseIcon      : "ion-minus-round",
+                             expandIcon        : "mdi mdi-border-all",//"ion-plus-round",
+                             highlightSelected : true,
+                             levels            : 2,
+                             showBorder        : false,
+                             showIcon          : true,
+                        });
 
-                                $(".file").dblclick(function() {
-                                      node_name=this.innerText;
-                                      node_url=$(this).find(">div").html();
-                                      var editor = ace.edit("ace-editor");
-                                      editor.insert(node_name);
-                                });
+                        $('#db_tree').treeview('collapseAll', { silent: true });
 
-                                $('#browser span').contextMenu('myMenu1', {
-                                    bindings: {
-                                        'tab_definition': function(t) {
-                                            var txt = $(t).children('div').text();
-                                            $.ajax({
-                                                url     : "/get/inst/tab/ddl",
-                                                type    : "post",
-                                                datatype: "json",
-                                                data: {
-                                                    dbid  :  $('#db_source').val(),
-                                                    cur_db:  $('#curr_db').text(),
-                                                    tab   :  txt
-                                                },
-                                                success: function (dataSet) {
-                                                    console.log(dataSet);
-                                                    if (dataSet.status=="1") {
-                                                        showtips('info',dataSet.message);
-                                                    } else {
-                                                        var editor = ace.edit("ace-editor");
-                                                        editor.insert(dataSet.message);
-                                                   }
-                                                 }
-                                             });
+                        $('#db_tree').on('nodeSelected', function(event, data) {
+                            var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                            var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
 
-                                         },
-                                        'idx_definition': function(t) {
-                                            var txt = $(t).children('div').text();
-                                            $.ajax({
-                                                url     : "/get/inst/idx/ddl",
-                                                type    : "post",
-                                                datatype: "json",
-                                                data: {
-                                                    dbid  :  $('#db_source').val(),
-                                                    cur_db:  $('#curr_db').text(),
-                                                    tab   :  txt
-                                                },
-                                                success: function (dataSet) {
-                                                    console.log(dataSet);
-                                                    if (dataSet.status=="1") {
-                                                        showtips('info',dataSet.message);
-                                                    } else {
-                                                        var editor = ace.edit("ace-editor");
-                                                        editor.insert(dataSet.message);
-                                                   }
-                                                 }
-                                             });
-                                         },
-                                        'drop_table'    : function(t) {
-                                            var txt = $(t).children('div').text();
-                                            swal({
-                                                    title: "确认要删除吗?",
-                                                    text: "表["+txt+"]将被删除！",
-                                                    type: "warning",
-                                                    showCancelButton: true,
-                                                    confirmButtonColor: "#DD6B55",
-                                                    confirmButtonText: "是, 删除!",
-                                                    cancelButtonText:  "否, 取消!",
-                                                    closeOnConfirm: true,
-                                                    closeOnCancel: true
-                                                 }, function (isConfirm) {
-                                                    if (isConfirm) {
-                                                          $.ajax({
-                                                                url     : "/drop/inst/tab",
-                                                                type    : "post",
-                                                                datatype: "json",
-                                                                data: {
-                                                                    dbid  :  $('#db_source').val(),
-                                                                    cur_db:  $('#curr_db').text(),
-                                                                    tab   :  txt
-                                                                },
-                                                                success: function (dataSet) {
-                                                                    showtips('info',dataSet.message);
-                                                                    get_tree();
-                                                                },
-                                                                error: function (jqXHR, textStatus, errorThrown) {
-                                                                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                                                                    console.log('jqXHR.status=',jqXHR.status);
-                                                                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                                                                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                                                                    console.log('textStatus=',textStatus);
-                                                                    console.log('errorThrown=',errorThrown);
-                                                                    if (jqXHR.status==403){
-                                                                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                                                        setTimeout(" window.location.href='/login'",3000);
-                                                                    } else if (jqXHR.status==502){
-                                                                        swal("用户无权访问权限此功能!", "", "error")
-                                                                    } else {
-                                                                        swal("系统不可用,请稍后重试!", "", "error")
-                                                                    }
-                                                                }
-                                                             });
+                            if (curNode.state.expanded) {
+                                $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                            } else {
+                                $('#db_tree').treeview('expandNode', curNode.nodeId);
+                            }
 
-                                                    } else {
-                                                        swal("已取消", "表["+txt+"]未删除！", "error");
-                                                    }
-                                            });
-
-                                         },
-                                        'refresh'       : function(t) {
-                                            get_tree()
-                                         },
-                                        'query_tab_100' : function(t) {
-                                            var sql =''
-                                            if ($('#inst_type').val()=='2'){
-                                                 sql = 'select top 100 * from '+$(t).children('div').text();
-                                            } else if ($('#inst_type').val()=='0') {
-                                                 sql = 'select * from '+$(t).children('div').text()+ ' limit 100';
-                                            } else {
-                                                 sql = 'select * from '+$(t).children('div').text()+ ' limit 100';
-                                            }
-                                            var editor = ace.edit("ace-editor");
-                                            if (table!=undefined ){
-                                                   table.destroy();
-                                                   $('#example').empty();
-                                            }
-                                            //js_editor.insert(sql);
-                                            editor.setValue(sql);
-                                            query_table(sql)
-                                         }
-                                    }
-                                });
+                            if (data.parentId === undefined) {
+                                 upd_curr_db_select(dataSet,curNode.text)
+                            } else {
+                                upd_curr_db_select(dataSet,parNode.text)
                             }
                         });
-                   }
-              }
+
+                        $('#db_tree').on('nodeUnselected', function(event, data) {
+                            var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                            var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                            if (curNode.state.expanded) {
+                                $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                            } else {
+                                $('#db_tree').treeview('expandNode', curNode.nodeId);
+                            }
+
+                            if (data.parentId === undefined) {
+                                 upd_curr_db_select(dataSet,curNode.text)
+                            } else {
+                                upd_curr_db_select(dataSet,parNode.text)
+
+                            }
+                        });
+
+                        $('#db_tree').contextMenu({
+                            selector: 'li',
+                            callback: function(key, options) {
+                                var m = "clicked: " + key + " on " + $(this).text();
+                                var curNode = $('#db_tree').treeview('getSelected')[0];
+                                var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+                                console.log('curNode=',curNode);
+                                console.log('parNode=',parNode);
+                                console.log('options=',m);
+                                var db_type=get_db_type()
+                                console.log('db_type=',db_type)
+                                get_menu_result(key,db_type,$(this).text())
+                            },
+                            items: {
+                                "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
+                                "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
+                                "drop_table"       : {name: "删除表",   icon: "fa-diamond"},
+                                "query_tab_100"    : {name: "查询数据", icon: "fa fa-search"},
+                                "refresh"          : {name: "刷新库",   icon: "fa fa-refresh"},
+                            }
+                        });
+                         //加载数据库列表
+                        upd_curr_db(dataSet)
+                    }
+                });
+           }
+      }
+
+              function get_menu_result(key,db_type,curNode) {
+          if (key=='tab_definition') {
+                $.ajax({
+                    url     : "/get/inst/tab/ddl",
+                    type    : "post",
+                    datatype: "json",
+                    data: {
+                        dbid  :  $('#db_source').val(),
+                        cur_db:  $('#curr_db').val(),
+                        tab   :  curNode
+                    },
+                    success: function (dataSet) {
+                        console.log(dataSet);
+                        if (dataSet.status=="1") {
+                            showtips('info',dataSet.message);
+                        } else {
+                           var editor = ace.edit("ace-editor-tab-defi");
+                            editor.setValue('')
+                            editor.insert(dataSet.message);
+                            $('#ddl-header').text('表结构信息')
+                            $('.modal').on('show.bs.modal', centerModals);
+                            $(window).on('resize', centerModals);
+                            $('#con-close-modal-ddl').modal({
+                               keyboard: false,
+                               backdrop:false
+                            })
+                       }
+                     }
+                 });
+          } else if (key =='idx_definition') {
+                $.ajax({
+                    url     : "/get/inst/idx/ddl",
+                    type    : "post",
+                    datatype: "json",
+                    data: {
+                        dbid  :  $('#db_source').val(),
+                        cur_db:  $('#curr_db').val(),
+                        tab   :  curNode
+                    },
+                    success: function (dataSet) {
+                        console.log(dataSet);
+                        if (dataSet.status=="1") {
+                            showtips('info',dataSet.message);
+                        } else {
+                            var editor = ace.edit("ace-editor-tab-defi");
+                            editor.setValue('')
+                            editor.insert(dataSet.message);
+                            $('#ddl-header').text('索引定义')
+                            $('.modal').on('show.bs.modal', centerModals);
+                            $(window).on('resize', centerModals);
+                            $('#con-close-modal-ddl').modal({
+                               keyboard: false,
+                               backdrop:false
+                            })
+                       }
+                     }
+                 });
+          } else if (key =='drop_table') {
+               swal({
+                    title: "确认要删除吗?",
+                    text: "表["+txt+"]将被删除！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是, 删除!",
+                    cancelButtonText:  "否, 取消!",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                 }, function (isConfirm) {
+                    if (isConfirm) {
+                          $.ajax({
+                                url     : "/drop/inst/tab",
+                                type    : "post",
+                                datatype: "json",
+                                data: {
+                                    dbid  :  $('#db_source').val(),
+                                    cur_db:  $('#curr_db').val(),
+                                    tab   :  curNode
+                                },
+                                success: function (dataSet) {
+                                    showtips('info',dataSet.message);
+                                    refresh_tree();
+                                },
+                             });
+
+                    } else {
+                        swal("已取消", "表["+curNode+"]未删除!", "error");
+                    }
+            });
+
+          } else if (key =='refresh') {
+              refresh_tree()
+          } else if (key=='query_tab_100'){
+              if (db_type == '2'){
+                     sql = 'select top 100 * from '+curNode;
+                } else if (db_type == '0') {
+                     sql = 'select * from '+curNode+ ' limit 100';
+                } else {
+                     sql = 'select * from '+curNode+ ' limit 100';
+                }
+                var editor = ace.edit("ace-editor");
+                if (table!=undefined ){
+                    table.destroy();
+                    $('#example').empty();
+                } else {
+                    $('#example').empty();
+                }
+                editor.setValue(sql);
+                query_table(sql)
+             }
+      }
 
               $("#db_source").bind("input propertychange",function(){
-                   get_tree()
+                   refresh_tree()
               });
 
               function query_table(sql){
@@ -659,15 +700,7 @@
                     data: {
                         inst_id  :  $('#db_source').val(),
                         sql      :  sql,
-                        cur_db   :  $('#curr_db').text()
-                    },
-                    beforeSend: function () {
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                    },
-                    complete: function () {
-                        $('#con-close-modal').modal('hide');
+                        cur_db   :  $('#curr_db').val()
                     },
                     success: function (dataSet) {
                         console.log(dataSet);
@@ -684,53 +717,24 @@
                                 scrollY:$("#h_tab_height").val(),
                                 scrollCollapse: true,
                                 paging        : false,
-                                "language"    : {
-                                     "search"         : "在表格中搜索:",
-                                     "sProcessing"    : "处理中...",
-                                     "sLengthMenu"    : "显示 _MENU_ 项结果",
-                                     "sZeroRecords"   : "没有匹配结果",
-                                     "sInfo"          : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"     : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered"  : "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix"   : "",
-                                     "sSearch"        : "搜索:",
-                                     "sUrl"           : "",
-                                     "sEmptyTable"    : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands" : ",",
-                                     "oPaginate"    : {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                               }
+                                "language"    : get_languages()
                             });
                        }
                      },
-                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                            setTimeout(" window.location.href='/login'",3000);
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                    }
-
                  });
               }
+
+              $("#filter_db").on('compositionstart',function() {
+                  lock = true;
+              });
+
+              $("#filter_db").on('compositionend',function() {
+                  lock = false;
+              });
+
+              $("#filter_db").bind("input propertychange",function(){
+                if (!lock) refresh_tree();
+              });
 
               $('#beauty_btn').click(function(){
                 var editor = ace.edit("ace-editor");
@@ -757,8 +761,6 @@
                   if(v_sql=='') {
                       v_sql=editor.session.getValue()
                   }
-                  //v_sql=editor.session.getTextRange(editor.getSelectionRange())
-                  //v_sql=editor.session.getValue()
 
                   if($('#db_source').val()=='') {
                       showtips('info','请选择数据源!');
@@ -776,31 +778,19 @@
                     datatype: "json",
                     data: {
                         inst_id  :  $('#db_source').val(),
-                        sql      :  v_sql, //editor.session.getTextRange(editor.getSelectionRange()),
+                        sql      :  v_sql,
                         cur_db   :  $('#curr_db').text()
                     },
-                    beforeSend: function () {
-                         $('.modal').on('show.bs.modal', centerModals);
-                         $(window).on('resize', centerModals);
-                         $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                    },
-                    complete: function () {
-                         $('#con-close-modal').modal('hide');
-                    },
                     success: function (dataSet) {
-                        console.log(dataSet);
                         if (dataSet.status=="1") {
                             showtips('error', dataSet.msg);
                         } else if (dataSet.status=="2") {
                             showtips('info', dataSet.msg);
                         } else {
-
                             if (table!=undefined ){
-                                   console.log("table is defined=",table);
-                                   table.destroy();
-                                   $('#example').empty();
+                                table.destroy();
+                                $('#example').empty();
                             }
-                            console.log('example=',$('#example'))
                             table=$('#example').DataTable( {
                                     "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                     destroy       : true,
@@ -812,60 +802,17 @@
                                     scrollCollapse: true,
                                     paging        : false,
                                     ordering      : false,
-                                    "language"    : {
-                                         "search"         : "在表格中搜索:",
-                                         "sProcessing"    : "处理中...",
-                                         "sLengthMenu"    : "显示 _MENU_ 项结果",
-                                         "sZeroRecords"   : "没有匹配结果",
-                                         "sInfo"          : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                         "sInfoEmpty"     : "显示第 0 至 0 项结果，共 0 项",
-                                         "sInfoFiltered"  : "(由 _MAX_ 项结果过滤)",
-                                         "sInfoPostFix"   : "",
-                                         "sSearch"        : "搜索:",
-                                         "sUrl"           : "",
-                                         "sEmptyTable"    : "表中数据为空",
-                                         "sLoadingRecords": "载入中...",
-                                         "sInfoThousands" : ",",
-                                         "oPaginate"    : {
-                                             "sFirst"   : "首页",
-                                             "sPrevious": "上页",
-                                             "sNext"    : "下页",
-                                             "sLast"    : "末页"
-                                         },
-                                         "oAria": {
-                                             "sSortAscending" : ": 以升序排列此列",
-                                             "sSortDescending": ": 以降序排列此列"
-                                         }
-                                       }
+                                    "language"    : get_languages()
                             });
                        }
                      },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                            setTimeout(" window.location.href='/login'",3000);
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                    }
                  });
               });
 
-              $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);
-              $('#con-close-modal2').modal({ keyboard: false,backdrop:false});
               setTimeout("set_styles()",1000);
-              get_tree()
-
-
+              $("#db_source").selectpicker('refresh')
+              refresh_tree()
         });
 
 

@@ -317,23 +317,74 @@ async def check_inst_rep(d_inst):
   数据库管理-实例管理
 '''
 
-async def get_tree_by_instid(instid):
+async def get_tree_by_instid(instid,msg):
+    # try:
+    #     v_html = ""
+    #     p_ds   = await get_ds_by_instid(instid)
+    #     rs1 = await async_processer.query_list_by_ds(p_ds,"SELECT schema_name FROM information_schema.SCHEMATA order by 1")
+    #     for i in range(len(rs1)):
+    #         rs2 = await async_processer.query_list_by_ds(p_ds,"SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1".format(rs1[i][0]))
+    #         v_node = """<li><span class="folder">{0}</span><ul>""".format(rs1[i][0])
+    #         v_html=v_html+v_node
+    #         for j in range(len(rs2)):
+    #             v_node = """<li><span class="file">{0}<div style="display:none">{1}</div></span></li>""".format(rs2[j][0],rs2[j][0])
+    #             v_html = v_html + "\n" + v_node;
+    #         v_html=v_html+"\n"+"</ul></li>"+"\n"
+    #     return {'code': '0', 'message': v_html,'desc':p_ds['db_desc'],'db_url':p_ds['db_desc']}
+    # except Exception as e:
+    #     traceback.print_exc()
+    #     return {'code': '-1', 'message': '加载失败!','dbsc':'','db_url':''}
+
     try:
-        v_html = ""
+        result = {}
         p_ds   = await get_ds_by_instid(instid)
-        rs1 = await async_processer.query_list_by_ds(p_ds,"SELECT schema_name FROM information_schema.SCHEMATA order by 1")
-        for i in range(len(rs1)):
-            rs2 = await async_processer.query_list_by_ds(p_ds,"SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1".format(rs1[i][0]))
-            v_node = """<li><span class="folder">{0}</span><ul>""".format(rs1[i][0])
-            v_html=v_html+v_node
-            for j in range(len(rs2)):
-                v_node = """<li><span class="file">{0}<div style="display:none">{1}</div></span></li>""".format(rs2[j][0],rs2[j][0])
-                v_html = v_html + "\n" + v_node;
-            v_html=v_html+"\n"+"</ul></li>"+"\n"
-        return {'code': '0', 'message': v_html,'desc':p_ds['db_desc'],'db_url':p_ds['db_desc']}
+        sql1 = "SELECT schema_name FROM information_schema.SCHEMATA where instr(schema_name,'{}')>0 order by 1".format(
+            msg.lower())
+        sql2 = "SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1"
+        n_tree = []
+        rs1 = await async_processer.query_dict_list_by_ds(p_ds, sql1)
+        print('rs1=', rs1)
+        for db in rs1:
+            n_parent = {
+                'id': db['schema_name'],
+                'text': db['schema_name'],
+                'icon': 'mdi mdi-database',
+            }
+            rs2 = await async_processer.query_dict_list_by_ds(p_ds, sql2.format(db['schema_name']))
+
+            n_nodes = []
+            for tab in rs2:
+                n_child = {
+                    'id': tab['table_name'],
+                    'text': tab['table_name'],
+                    'icon': 'mdi mdi-table-large',
+                }
+                n_nodes.append(n_child)
+            n_parent['nodes'] = n_nodes
+            n_tree.append(n_parent)
+
+        if p_ds['db_type'] == '0':
+            db_url = 'MySQL://{}:{}/{}'.format(p_ds['ip'], p_ds['port'], p_ds['service'])
+        elif p_ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] == '2':
+            db_url = 'SQLServer://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        else:
+            db_url = ''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc'] = p_ds['db_desc']
+        result['db_url'] = db_url
+
     except Exception as e:
         traceback.print_exc()
-        return {'code': '-1', 'message': '加载失败!','dbsc':'','db_url':''}
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
 
 async def get_tree_by_instid_mssql(instid):
     try:
@@ -392,7 +443,7 @@ async def get_idx_ddl_by_instid(instid,tab,cur_db):
         sql    = '''SHOW INDEXES FROM {0}'''.format(tab)
         v_idx_sql = ''
         v_idx_pks = ''
-        for i in await async_processer.query_list_by_ds(sql):
+        for i in await async_processer.query_list_by_ds(p_ds,sql):
             v_idx_name = i[2]
             v_idx_type = i[10]
             v_idx_cols = i[4]

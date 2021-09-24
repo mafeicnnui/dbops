@@ -21,325 +21,17 @@
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="web page optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/chartist/css/chartist.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/chartist/js/chartist-plugin-tooltip.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/chartist/js/chartist.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ace.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-beautify.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-chromevox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-elastic_tabstops_lite.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-emmet.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-error_marker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-keybinding_menu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-language_tools.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-linking.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-modelist.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-old_ie.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-searchbox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-settings_menu.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-spellcheck.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-split.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-static_highlight.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-statusbar.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-textarea.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-themelist.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/ext-whitespace.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/keybinding-emacs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/keybinding-vim.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-abap.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-actionscript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-ada.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-apache_conf.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-applescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-asciidoc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-assembly_x86.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-autohotkey.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-batchfile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-c9search.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-c_cpp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-cirru.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-clojure.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-cobol.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-coffee.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-coldfusion.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-csharp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-css.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-curly.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-d.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-dart.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-diff.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-django.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-dockerfile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-dot.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-eiffel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-ejs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-elixir.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-elm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-erlang.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-forth.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-ftl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-gcode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-gherkin.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-gitignore.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-glsl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-golang.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-groovy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-haml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-handlebars.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-haskell.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-haxe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-html.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-html_ruby.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-ini.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-io.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-jack.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-jade.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-java.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-javascript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-json.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-jsoniq.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-jsp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-jsx.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-julia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-latex.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-less.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-liquid.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-lisp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-livescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-logiql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-lsl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-lua.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-luapage.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-lucene.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-makefile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-markdown.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-matlab.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-mel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-mushcode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-mysql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-nix.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-objectivec.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-ocaml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-pascal.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-perl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-pgsql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-php.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-plain_text.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-powershell.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-praat.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-prolog.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-properties.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-protobuf.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-python.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-r.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-rdoc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-rhtml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-ruby.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-rust.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-sass.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-scad.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-scala.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-scheme.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-scss.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-sh.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-sjs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-smarty.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-snippets.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-soy_template.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-space.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-sql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-stylus.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-svg.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-tcl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-tex.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-text.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-textile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-toml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-twig.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-typescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-vala.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-vbscript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-velocity.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-verilog.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-vhdl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-xml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-xquery.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/mode-yaml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/abap.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/actionscript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/ada.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/apache_conf.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/applescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/asciidoc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/assembly_x86.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/autohotkey.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/batchfile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/c9search.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/c_cpp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/cirru.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/clojure.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/cobol.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/coffee.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/coldfusion.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/csharp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/css.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/curly.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/d.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/dart.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/diff.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/django.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/dockerfile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/dot.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/eiffel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/ejs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/elixir.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/elm.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/erlang.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/forth.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/ftl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/gcode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/gherkin.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/gitignore.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/glsl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/golang.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/groovy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/haml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/handlebars.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/haskell.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/haxe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/html.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/html_ruby.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/ini.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/io.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/jack.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/jade.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/java.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/javascript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/json.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/jsoniq.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/jsp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/jsx.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/julia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/latex.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/less.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/liquid.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/lisp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/livescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/logiql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/lsl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/lua.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/luapage.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/lucene.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/makefile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/markdown.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/matlab.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/mel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/mushcode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/mysql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/nix.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/objectivec.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/ocaml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/pascal.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/perl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/pgsql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/php.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/plain_text.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/powershell.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/praat.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/prolog.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/properties.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/protobuf.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/python.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/r.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/rdoc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/rhtml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/ruby.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/rust.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/sass.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/scad.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/scala.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/scheme.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/scss.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/sh.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/sjs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/smarty.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/snippets.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/soy_template.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/space.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/sql.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/stylus.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/svg.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/tcl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/tex.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/text.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/textile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/toml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/twig.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/typescript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/vala.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/vbscript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/velocity.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/verilog.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/vhdl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/xml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/xquery.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/snippets/yaml.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-ambiance.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-chaos.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-chrome.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-clouds.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-clouds_midnight.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-cobalt.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-crimson_editor.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-dawn.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-dreamweaver.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-eclipse.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-github.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-idle_fingers.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-katzenmilch.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-kr_theme.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-kuroir.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-merbivore.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-merbivore_soft.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-mono_industrial.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-monokai.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-pastel_on_dark.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-solarized_dark.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-solarized_light.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-terminal.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-textmate.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-tomorrow.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-tomorrow_night.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-tomorrow_night_blue.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-tomorrow_night_bright.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-tomorrow_night_eighties.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-twilight.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-vibrant_ink.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/theme-xcode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-coffee.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-css.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-html.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-javascript.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-json.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-lua.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-php.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/editors/ace/worker-xquery.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_cfg_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_cfg_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_console.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_console.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_create.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_opt_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_opt_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_para.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_para.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_user_query.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/easylife.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/easylife.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/main-20210914.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/platform.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/platform.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_audit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_audit.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/order/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_release.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_run.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_run.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync_datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync_datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_inst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/db_inst.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -390,26 +82,26 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bootstrap/default/index.html" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/db" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\templates\db" />
+      <recent name="D:\work\dbops\static\assets\images" />
+      <recent name="D:\work\dbops\static\plugins\bootstrap-closable-tab" />
+      <recent name="D:\work\dbops\templates\login" />
+      <recent name="D:\work\dbops\templates\main" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\templates\login" />
       <recent name="D:\work\dbops\templates\main" />
       <recent name="D:\work\dbops\templates\sys" />
       <recent name="D:\work\dbops\templates\order" />
       <recent name="D:\work\dbops\templates\port" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\static\assets\images" />
-      <recent name="D:\work\dbops\static\plugins\bootstrap-closable-tab" />
-      <recent name="D:\work\dbops\templates\login" />
-      <recent name="D:\work\dbops\templates\main" />
-      <recent name="D:\work\dbops\templates\menu" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -808,14 +500,8 @@
       <workItem from="1632272469874" duration="101000" />
       <workItem from="1632281046773" duration="15825000" />
       <workItem from="1632302382753" duration="10000" />
-      <workItem from="1632357966717" duration="15521000" />
-    </task>
-    <task id="LOCAL-00041" summary="sql order bug fix">
-      <created>1627353524832</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1627353524832</updated>
+      <workItem from="1632357966717" duration="16949000" />
+      <workItem from="1632446097907" duration="8139000" />
     </task>
     <task id="LOCAL-00042" summary="sql order bug fix">
       <created>1627616679519</created>
@@ -1153,7 +839,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632302242137</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="web page optimize">
+      <created>1632388297238</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1632388297239</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1230,29 +923,29 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632361711205" />
-    <state width="1877" height="229" key="GridCell.Tab.0.bottom" timestamp="1632382002490">
+    <state width="1877" height="410" key="GridCell.Tab.0.bottom" timestamp="1632452872119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632382002490" />
+    <state width="1877" height="410" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632452872119" />
     <state width="1877" height="882" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555671" />
-    <state width="1877" height="229" key="GridCell.Tab.0.center" timestamp="1632382002490">
+    <state width="1877" height="410" key="GridCell.Tab.0.center" timestamp="1632452872119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="229" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632382002490" />
+    <state width="1877" height="410" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632452872119" />
     <state width="1877" height="882" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555668" />
-    <state width="1877" height="229" key="GridCell.Tab.0.left" timestamp="1632382002490">
+    <state width="1877" height="410" key="GridCell.Tab.0.left" timestamp="1632452872119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="229" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632382002490" />
+    <state width="1877" height="410" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632452872119" />
     <state width="1877" height="882" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555666" />
-    <state width="1877" height="229" key="GridCell.Tab.0.right" timestamp="1632382002490">
+    <state width="1877" height="410" key="GridCell.Tab.0.right" timestamp="1632452872119">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="229" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632382002490" />
+    <state width="1877" height="410" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632452872119" />
     <state width="1877" height="882" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1629487555670" />
     <state width="1877" height="306" key="GridCell.Tab.1.bottom" timestamp="1628243183385">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -1274,10 +967,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="378" y="275" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1630404029126" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632302260778">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632388307522">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632302260778" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632388307522" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1629795507466">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -1286,10 +979,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="668" y="496" width="722" height="268" key="com.jetbrains.plugins.remotesdk.ui.RemoteMappingsConfiguration/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1629860058481" />
-    <state x="589" y="178" width="1178" height="556" key="find.popup" timestamp="1632293911290">
+    <state x="589" y="178" width="1178" height="556" key="find.popup" timestamp="1632447210364">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="589" y="178" width="1178" height="556" key="find.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632293911290" />
+    <state x="589" y="178" width="1178" height="556" key="find.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632447210364" />
     <state x="758" y="419" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1631903496098">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -1312,7 +1005,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1632378881237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1632452872111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

@@ -3,15 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>实例管理</title>
-<!--    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>-->
-<!--    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
-<!--    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
-<!--    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
-
-     <!-- ace code -->
-    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-
     <style>
         #example{
             width: 100% !important;
@@ -620,47 +611,9 @@
 
    <input id="g_inst_id" type="hidden">
 
-<!--   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>-->
-<!--   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>-->
-<!--   <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>-->
-<!--   <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>-->
-<!--   <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>-->
-<!--   <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>-->
    <script>
 
        timer='';
-
-       function set_selected(){
-            document.all['s_add_inst_server'].style.color="#ff0000";
-            document.all['s_add_inst_ver'].style.color="#ff0000";
-            document.all['s_add_inst_cfg'].style.color="#ff0000";
-            document.all['s_add_inst_name'].style.color="#ff0000";
-            document.all['s_add_inst_port'].style.color="#ff0000";
-            document.all['s_add_inst_type'].style.color="#ff0000";
-            document.all['s_add_inst_env'].style.color="#ff0000";
-            document.all['s_add_mgr_user'].style.color="#ff0000";
-            document.all['s_add_mgr_pass'].style.color="#ff0000";
-            document.all['s_add_rds'].style.color="#ff0000";
-            document.all['s_add_inst_api_server'].style.color="#ff0000";
-            document.all['s_add_inst_python3_home'].style.color="#ff0000";
-            document.all['s_add_inst_script_path'].style.color="#ff0000";
-            document.all['s_add_inst_script_file'].style.color="#ff0000";
-
-            document.all['s_upd_inst_server'].style.color="#ff0000";
-            document.all['s_upd_inst_ver'].style.color="#ff0000";
-            document.all['s_upd_inst_cfg'].style.color="#ff0000";
-            document.all['s_upd_inst_name'].style.color="#ff0000";
-            document.all['s_upd_inst_port'].style.color="#ff0000";
-            document.all['s_upd_inst_type'].style.color="#ff0000";
-            document.all['s_upd_inst_env'].style.color="#ff0000";
-            document.all['s_upd_mgr_user'].style.color="#ff0000";
-            document.all['s_upd_mgr_pass'].style.color="#ff0000";
-            document.all['s_upd_inst_api_server'].style.color="#ff0000";
-            document.all['s_upd_inst_python3_home'].style.color="#ff0000";
-            document.all['s_upd_inst_script_path'].style.color="#ff0000";
-            document.all['s_upd_inst_script_file'].style.color="#ff0000";
-
-        }
 
        $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
@@ -746,23 +699,6 @@
                               backdrop:false
                          });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
-
              })
        }
 
@@ -811,22 +747,6 @@
                                backdrop:false
                          });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
        }
 
@@ -868,7 +788,6 @@
                         editor.setValue('')
                         editor.insert(dataSet.message);
                         editor.setReadOnly(true);
-                        // editor.moveCursorTo(0,0);
                         editor.moveCursorToPosition(position);
 
                     }
@@ -903,7 +822,6 @@
                                    });
                              },
                             success: function (dataSet) {
-                                console.log(dataSet.code, dataSet.message);
                                 if (dataSet.code == 0) {
                                     swal(dataSet.message, "", "success")
                                     $("#query_btn").click()
@@ -985,22 +903,6 @@
                                     swal("删除失败!", "实例["+v_inst_name+"]"+dataSet.message+"!", "error");
                                 }
                             },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                    setTimeout(" window.location.href='/login'",3000);
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                            }
                        });
 
                 } else {
@@ -1253,49 +1155,9 @@
                          }
                       ],
 
-                      "language": {
-                             "search"       : "在表格中搜索:",
-                             "sProcessing"  : "处理中...",
-                             "sLengthMenu"  : "显示 _MENU_ 项结果",
-                             "sZeroRecords" : "没有匹配结果",
-                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                             "sInfoPostFix" : "",
-                             "sSearch"      : "搜索:",
-                             "sUrl"         : "",
-                             "sEmptyTable"  : "表中数据为空",
-                             "sLoadingRecords": "载入中...",
-                             "sInfoThousands": ",",
-                             "oPaginate": {
-                                 "sFirst"   : "首页",
-                                 "sPrevious": "上页",
-                                 "sNext"    : "下页",
-                                 "sLast"    : "末页"
-                             },
-                             "oAria": {
-                                 "sSortAscending" : ": 以升序排列此列",
-                                 "sSortDescending": ": 以降序排列此列"
-                             }
-                         }
+                      "language": get_languages()
                      });
                  },
-                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
               });
             });
 

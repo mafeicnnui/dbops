@@ -146,10 +146,11 @@ class get_tree_by_inst(basehandler):
     @tornado.web.authenticated
     async def post(self):
         inst_id   = self.get_argument("inst_id")
+        msg        = self.get_argument("msg")
         p_ds      = await get_ds_by_instid(inst_id)
         result    = {}
         if p_ds['db_type'] == '0':
-           result    = await get_tree_by_instid(inst_id)
+           result    = await get_tree_by_instid(inst_id,msg)
         elif p_ds['db_type'] == '2':
            result    = await get_tree_by_instid_mssql(inst_id)
         self.write({"code": result['code'], "message": result['message'], "url": result['db_url'],"desc":result['desc']})
