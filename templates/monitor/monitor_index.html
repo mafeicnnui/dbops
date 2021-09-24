@@ -1,15 +1,6 @@
 <html>
 <head>
     <title>指标管理</title>
-    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}"    rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}"   rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/bootstrap-touchspin/css/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet" />
-
     <style>
         .modal-lg-order {
             width:40%;
@@ -357,53 +348,11 @@
 
 </body>
 
-<!-- Sweet-Alert  -->
-<script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-<script src="{{static_url('plugins/bootstrap-touchspin/js/jquery.bootstrap-touchspin.min.js')}}" type="text/javascript"></script>
-
-<!--hidden -->
 <input type="hidden" id="upd_index_id_hidden">
 
-
 <script>
-
-    function set_selected(){
-            document.all['s_add_index_name'].style.color="#ff0000";
-            document.all['s_add_index_code'].style.color="#ff0000";
-            document.all['s_add_index_type'].style.color="#ff0000";
-            document.all['s_add_index_val_type'].style.color="#ff0000";
-            document.all['s_add_index_threshold'].style.color="#ff0000";
-            document.all['s_add_index_threshold_calc'].style.color="#ff0000";
-            document.all['s_add_index_status'].style.color="#ff0000";
-            document.all['s_upd_index_name'].style.color="#ff0000";
-            document.all['s_upd_index_code'].style.color="#ff0000";
-            document.all['s_upd_index_val_type'].style.color="#ff0000";
-            document.all['s_upd_index_threshold'].style.color="#ff0000";
-            document.all['s_upd_index_threshold_calc'].style.color="#ff0000";
-            document.all['s_upd_index_threshold'].style.color="#ff0000";
-            document.all['s_upd_index_status'].style.color="#ff0000";
-        }
-
-    function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-         }
-
     function isSelect(row) {
        var obj=row.split(',')
-       console.log('isSelect=>row=',obj,obj[6],obj[6].split('^'))
        $('#upd_index_id_hidden').val(obj[0])
        $('#upd_index_threshold_calc_day_hidden').val(obj[6].split('^')[0])
        $('#upd_index_threshold_calc_times_hidden').val(obj[6].split('^')[1])
@@ -424,19 +373,16 @@
     }
 
     $(document).ready(function() {
-
         $('#div_add_index_threshold_percent').show()
 　      $('#div_add_index_threshold_calc').hide()
         $('#div_upd_index_threshold_percent').show()
 　      $('#div_upd_index_threshold_calc').hide()
-
         $("#add_index_threshold_calc_day").TouchSpin();
         $("#add_index_threshold_calc_times").TouchSpin();
         $("#add_index_trigger_time").TouchSpin();
         $("#add_index_trigger_times").TouchSpin();
         $("#upd_index_trigger_time").TouchSpin();
         $("#upd_index_trigger_times").TouchSpin();
-
         $("#upd_index_threshold_calc_day").TouchSpin();
         $("#upd_index_threshold_calc_times").TouchSpin();
 
@@ -533,31 +479,7 @@
                                 }
                              }
                          ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                          });
                       $('#index_upd_win').attr("disabled",true);
                       $('#index_del_btn').attr("disabled",true);
@@ -573,7 +495,6 @@
             $('#add_index_threshold_calc_day').val('')
             $('#add_index_threshold_calc_times').val('')
             $('#add_index_status').val('')
-
             $('.modal').on('show.bs.modal', centerModals);
             $(window).on('resize', centerModals);
             $('#con-close-modal-add').modal({
@@ -592,7 +513,6 @@
 
              $("#monitor_index_table tbody tr td input:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
-                  console.log("row=",row[0].innerHTML,row[1].innerHTML,row[2].innerHTML,row[5].innerHTML)
                   $('#upd_index_code').val(row[1].innerHTML)
                   $('#upd_index_name').val(row[2].innerHTML)
 
@@ -609,7 +529,6 @@
                   }
 
                   var options=$('#upd_index_db_type option');
-                  console.log('options=',options)
                   $("#upd_index_db_type").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
@@ -622,7 +541,6 @@
                   }
 
                   var options=$('#upd_index_val_type option');
-                  console.log('options=',options)
                   $("#upd_index_val_type").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
@@ -652,7 +570,6 @@
                   $('#upd_index_trigger_times').val($('#upd_index_trigger_times_hidden').val())
 
                   var options=$('#upd_index_status option');
-                  console.log('options=',options)
                   $("#upd_index_status").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
@@ -667,8 +584,7 @@
 
         })
 
-        $('#index_save_btn').click(function(){
-
+        $('#index_save_btn').click(function() {
             if ($('#add_index_val_type').val()=='2'){
                 $('#div_add_index_threshold_percent').val('')
             } else {
@@ -693,7 +609,6 @@
                     index_trigger_times    : $('#add_index_trigger_times').val(),
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code == 0) {
                         swal("保存成功", "", "success")
                         query_index()
@@ -724,7 +639,6 @@
                         index_trigger_times   : $('#upd_index_trigger_times').val(),
                     },
                     success: function (dataSet) {
-                        console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("更新成功", "", "success")
                             query_index()
@@ -785,7 +699,8 @@
 
         set_selected()
 
-        $("#query_btn").click()
+        $("#query_btn").click();
+
     });
 
 

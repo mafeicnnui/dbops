@@ -746,9 +746,6 @@
                           $('#upd_gather_task_script_name').val(dataSet['script_file'])
                           $('#upd_gather_task_api_server').val(dataSet['api_server'])
                           $('#upd_gather_task_status').val(dataSet['status'])
-                          //$('#upd_gather_task_templete_name').attr('disabled','disabled')
-                          //$('#upd_gather_server').attr('disabled','disabled')
-                          // $('#upd_gather_task_db_server').attr('disabled','disabled')
                           $('#activeTabInputHidden').val('采集任务')
 
                       } else {
@@ -992,7 +989,6 @@
                               } else {
                                   swal("推送失败!", "任务["+v_desc+"]推送失败("+dataSet['msg']+")!", "error");
                               }
-
                               $('#task_upd_win').attr("disabled",true);
                               $('#task_clone_win').attr("disabled",true);
                               $('#task_del_btn').attr("disabled",true);

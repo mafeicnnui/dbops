@@ -230,22 +230,6 @@
 
       });
 
-     // function format_sql(sql) {
-     //       var res='';
-     //       $.ajax({
-     //            type: 'post',
-     //            url: '/sql/_format',
-     //            async:false,
-     //            data: {
-     //                "sql":sql
-     //            },
-     //            success: function (dataSet) {
-     //              res=dataSet.message
-     //            },
-     //        })
-     //        return res
-     //  }
-
      function showSql(row){
         console.log('slowlog.....')
         id = row.split(',')[0]
@@ -320,7 +304,6 @@
     }
 
      $('#db_source').change(function() {
-        console.log('db_source=',$('#db_source').val());
         if ($('#db_source').val()!=''){
             $.ajax({
                   url: "/get_database",

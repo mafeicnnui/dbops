@@ -559,7 +559,6 @@
                                 tab   :  curNode
                             },
                             success: function (dataSet) {
-                                console.log(dataSet);
                                 if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
                                 } else {
@@ -587,7 +586,6 @@
                                 tab   :  curNode
                             },
                             success: function (dataSet) {
-                                console.log(dataSet);
                                 if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
                                 } else {
@@ -615,7 +613,6 @@
                                 tab_name: curNode
                             },
                             success: function (dataSet) {
-                                console.log('col_definition=', dataSet)
                                 $('.modal').on('show.bs.modal', centerModals);
                                 $(window).on('resize', centerModals);
                                 $('#con-close-modal-col').modal({
@@ -623,27 +620,27 @@
                                    backdrop:false
                                 })
                                 $('#tab-cols').DataTable({
-                                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
-                                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                    destroy: true,
-                                    async: true,
-                                    scrollY: "300px",
-                                    ordering: false,
-                                    bAutoWidth: true,
-                                    scrollX: true,
-                                    paging: false,
-                                    iDisplayLength: 10,
-                                    data: dataSet,
-                                    responsive: false,
-                                    columns: [
-                                        {"title": "列名"},
-                                        {"title": "列描述"},
-                                        {"title": "列类型"},
-                                        {"title": "是否自增"},
-                                        {"title": "是否主键"},
-                                        {"title": "是否非空"},
-                                    ],
-                                    "language": get_languages()
+                                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                        destroy: true,
+                                        async: true,
+                                        scrollY: "300px",
+                                        ordering: false,
+                                        bAutoWidth: true,
+                                        scrollX: true,
+                                        paging: false,
+                                        iDisplayLength: 10,
+                                        data: dataSet,
+                                        responsive: false,
+                                        columns: [
+                                            {"title": "列名"},
+                                            {"title": "列描述"},
+                                            {"title": "列类型"},
+                                            {"title": "是否自增"},
+                                            {"title": "是否主键"},
+                                            {"title": "是否非空"},
+                                        ],
+                                        "language": get_languages()
                                 });
                             }
                         });
@@ -660,15 +657,7 @@
                         sql   :  sql,
                         cur_db:  $('#curr_db').val()
                     },
-                    beforeSend: function () {
-                          $('.modal').on('show.bs.modal', centerModals);
-                          $(window).on('resize', centerModals);
-                          $('#con-close-modal').modal({ keyboard: false,backdrop:false});                            },
-                    complete: function () {
-                          $('#con-close-modal').modal('hide');
-                    },
                     success: function (dataSet) {
-                        console.log('query_release_result=',dataSet);
                         $('#example').DataTable( {
                                "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                 destroy       : true,

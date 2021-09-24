@@ -1,12 +1,12 @@
 <html>
 <head>
     <title>工单查询</title>
-    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
-    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
+<!--    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >-->
+<!--    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">-->
+<!--    <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />-->
+<!--    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />-->
+<!--    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />-->
+<!--    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />-->
     <style>
        .modal-lg-templete {
             width:60%;
@@ -377,8 +377,8 @@
                             <div>
                                 <label class="col-md-3 control-label" >工单附件：</label>
                             </div>
-                            <div class="col-md-8">
-                                <input type="file" disabled name="order_files[]" id="file_order_detail"  multiple="multiple">
+                            <div class="col-md-8" id="order_attachment_detail">
+                                <input type="file" disabled name="order_files_detail[]" id="file_order_detail"  multiple="multiple">
                             </div>
                              <div class="col-md-1">
                                <div class="form-group">
@@ -511,7 +511,7 @@
                                 <label class="col-md-3 control-label" >工单附件：</label>
                             </div>
                             <div class="col-md-8" id="order_attachment_upd">
-                                <input type="file" name="order_files[]" id="file_order_upd"  multiple="multiple">
+                                <input type="file" name="order_files_upd[]" id="file_order_upd"  multiple="multiple">
                             </div>
                             <div class="col-md-1">
                                <div class="form-group">
@@ -548,17 +548,6 @@
      </div>
 
 </body>
-
-<!-- Sweet-Alert  -->
-<script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
-<!-- File Upload js -->
-<script src="{{static_url('plugins/jquery.filer/js/jquery.filer.js')}}"></script>
-
-<script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
-
- <!-- Toastr js -->
-<script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
 
 <script>
 
@@ -612,31 +601,7 @@
                             }
                          }
                        ],
-                      "language": {
-                             "search"       : "在表格中搜索:",
-                             "sProcessing"  : "处理中...",
-                             "sLengthMenu"  : "显示 _MENU_ 项结果",
-                             "sZeroRecords" : "没有匹配结果",
-                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                             "sInfoPostFix" : "",
-                             "sSearch"      : "搜索:",
-                             "sUrl"         : "",
-                             "sEmptyTable"  : "表中数据为空",
-                             "sLoadingRecords": "载入中...",
-                             "sInfoThousands": ",",
-                             "oPaginate": {
-                                 "sFirst"   : "首页",
-                                 "sPrevious": "上页",
-                                 "sNext"    : "下页",
-                                 "sLast"    : "末页"
-                             },
-                             "oAria": {
-                                 "sSortAscending" : ": 以升序排列此列",
-                                 "sSortDescending": ": 以降序排列此列"
-                             }
-                         }
+                      "language": get_languages()
                      });
                }
            })
@@ -707,31 +672,7 @@
                             }
                          }
                        ],
-                      "language": {
-                             "search"       : "在表格中搜索:",
-                             "sProcessing"  : "处理中...",
-                             "sLengthMenu"  : "显示 _MENU_ 项结果",
-                             "sZeroRecords" : "没有匹配结果",
-                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                             "sInfoPostFix" : "",
-                             "sSearch"      : "搜索:",
-                             "sUrl"         : "",
-                             "sEmptyTable"  : "表中数据为空",
-                             "sLoadingRecords": "载入中...",
-                             "sInfoThousands": ",",
-                             "oPaginate": {
-                                 "sFirst"   : "首页",
-                                 "sPrevious": "上页",
-                                 "sNext"    : "下页",
-                                 "sLast"    : "末页"
-                             },
-                             "oAria": {
-                                 "sSortAscending" : ": 以升序排列此列",
-                                 "sSortDescending": ": 以降序排列此列"
-                             }
-                         }
+                      "language": get_languages()
                      });
                }
            })
@@ -750,37 +691,6 @@
                 }
          })
       }
-
-    function centerModals() {
-          $('.modal').each(function(i) {
-            var $clone = $(this).clone().css('display', 'block').appendTo('body');
-            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-            top = top > 50 ? top : 0;
-            $clone.remove();
-            $(this).find('.modal-content').css("margin-top", top - 50);
-          });
-     }
-
-    function showtips(flag,title,content){
-                toastr.options = {
-                      "closeButton": false,
-                      "debug": false,
-                      "newestOnTop": false,
-                      "progressBar": true,
-                      "positionClass": "toast-top-right",
-                      "preventDuplicates": false,
-                      "onclick": null,
-                      "showDuration": "3000",
-                      "hideDuration": "1000",
-                      "timeOut": "5000",
-                      "extendedTimeOut": "1000",
-                      "showEasing": "swing",
-                      "hideEasing": "linear",
-                      "showMethod": "fadeIn",
-                      "hideMethod": "fadeOut"
-                    }
-                    toastr[flag](content,title)
-     }
 
     function init_order(){
          $('#order_number').val('')
@@ -818,6 +728,25 @@
                 showThumbs: true,
                 addMore: true
          })
+    }
+
+        function init_order_detail(){
+             $('#order_number_detail').val('')
+             $('#order_env_detail').val('')
+             $('#order_type_detail').val('')
+             $('#order_status_detail').val('')
+             $('#order_handle_detail').val('')
+             $('#order_desc_detail').val('')
+             $('#order_attachment_detail').val('')
+             $('#order_attachment_detail').html('<input type="file" name="order_files_detail[]" id="file_order_detail"  multiple="multiple">')
+             $('#file_order_detail').filer({
+                    limit: 3,
+                    maxSize: 3,
+                    extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+                    changeInput: true,
+                    showThumbs: true,
+                    addMore: true
+             })
     }
 
     function get_order_type(p_order_type){
@@ -888,10 +817,8 @@
                     setEditor('ace-editor-rollback',dataSet.message.rollback_statement)
                     setEditor('ace-editor-error',dataSet.message.error)
                       if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
-                         console.log('aaa')
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
-                        console.log('bbb')
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
                     }
                     $('#run_time_detail').text(dataSet.message.run_time)
@@ -947,7 +874,6 @@
                             release_id: row
                         },
                         success: function (dataSet) {
-                            console.log('DeleteSql=',dataSet)
                             if (dataSet.code=='0') {
                                swal("已删除!", "工单["+row+"]已删除!", "success");
                                query_order();
@@ -964,6 +890,7 @@
      }
 
     function showWtd(p_wtd_no){
+        init_order_detail();
         $.ajax({
                 url: "/wtd/detail",
                 type: "post",
@@ -972,7 +899,7 @@
                 success: function (dataSet) {
                     var wtd = dataSet
                     console.log('wtd=',wtd,wtd['order_no'])
-                     $('#order_number_detail') .val(wtd['order_no'])
+                     $('#order_number_detail').val(wtd['order_no'])
 
                      $("#order_env_detail").empty();
                      $("#order_env_detail").append("<option value='"+wtd['order_env']+"'>"+wtd['order_env_name']+"</option>");
@@ -1097,7 +1024,6 @@
                              for(i=0;i<data.length;i++){
                                   var val  = data[i][0];
                                   var text = data[i][1];
-                                  console.log('order_handle_upd=',val,text,wtd['order_handler'])
                                   if (wtd['order_handler'] == val) {
                                       $("#order_handle_upd").append("<option value='"+val+"' selected = \"selected\" >"+text+"</option>");
                                   } else {
@@ -1181,7 +1107,6 @@
                       wtd_no : $('#order_number_upd').val()
                   },
                   success: function (dataSet) {
-                     console.log('attachment_number=',dataSet)
                      if (dataSet==0 ){
                          showtips('info','','该问题单无附件!');
                      } else {
@@ -1201,7 +1126,6 @@
                       wtd_no : $('#order_number_detail').val()
                   },
                   success: function (dataSet) {
-                     console.log('attachment_number2=',dataSet)
                      if (dataSet==0 ){
                          showtips('info','','该问题单无附件!');
                      } else {
@@ -1343,7 +1267,6 @@
                     },
                     success: function (dataSet) {
                         $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
-                        console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("保存成功", "", "success")
                             query_wtd()
@@ -1376,7 +1299,6 @@
                 dataType: 'JSON',
                 success: function (dataSet) {
                     if (dataSet.code == 0) {
-                        console.log('/wtd/save/uploadImage=', dataSet);
                         $.ajax({
                             url: "/wtd/update",
                             type: "post",
@@ -1420,7 +1342,6 @@
                     },
                     success: function (dataSet) {
                         $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
-                        console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("保存成功", "", "success")
                         } else {
@@ -1501,7 +1422,6 @@
                     run_time:$('#run_time_change').val()
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code == 0) {
                         swal("更新成功", "", "success")
                     } else {

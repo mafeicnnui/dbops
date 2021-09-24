@@ -236,7 +236,7 @@ async def query_wtd_detail(p_wtd_no,p_userid):
                  attachment_name,
                  '{0}' as curr_user
                 FROM t_wtd a where order_no='{1}'""".format(p_userid,p_wtd_no)
-    rs = await async_processer.query_one(sql)
+    rs = await async_processer.query_dict_one(sql)
     return rs
 
 async def query_order_no():

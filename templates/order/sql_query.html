@@ -473,7 +473,6 @@
                     for (i=0;i<dataSet['message'].length;i++){
                        var val  = dataSet['message'][i].id;
                        var text = dataSet['message'][i].id;
-                       //$("#curr_db").append("<option value='"+val+"'>"+text+"</option>");
                        $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                    }
                    $("#curr_db").selectpicker('refresh')
@@ -552,10 +551,8 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         //$('#curr_db').text(curNode.text);
                                          upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                        //$('#curr_db').text(parNode.text);
                                         upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
@@ -571,10 +568,8 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         //$('#curr_db').text(curNode.text);
                                          upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                        //$('#curr_db').text(parNode.text);
                                         upd_curr_db_select(dataSet,parNode.text)
 
                                     }
@@ -583,24 +578,12 @@
                                 $('#db_tree').contextMenu({
                                     selector: 'li',
                                     callback: function(key, options) {
-                                        var m = "clicked: " + key + " on " + $(this).text();
-                                        var curNode = $('#db_tree').treeview('getSelected')[0];
-                                        var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-                                        console.log('curNode=',curNode);
-                                        console.log('parNode=',parNode);
-                                        console.log('options=',m);
-                                        //get_menu_result(key,db_type,curNode)
-
-                                        var db_type=get_db_type()
-                                        console.log('db_type=',db_type)
-
-                                        get_menu_result(key,db_type,$(this).text())
+                                        get_menu_result(key,get_db_type(),$(this).text())
                                     },
                                     items: {
                                         "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
                                         "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
                                         "query_tab_100"    : {name: "查询数据", icon: "fa-pied-piper"},
-                                        // "refresh_db"       : {name: "刷新库", icon: "fa-pied-piper"},
                                     }
                                 });
 
@@ -627,7 +610,6 @@
                                 tab   :  curNode
                             },
                             success: function (dataSet) {
-                                console.log(dataSet);
                                 if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
                                 } else {
@@ -655,7 +637,6 @@
                                 tab   :  curNode
                             },
                             success: function (dataSet) {
-                                console.log(dataSet);
                                 if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
                                 } else {
@@ -703,7 +684,6 @@
                         cur_db:  $('#curr_db').val()
                     },
                     success: function (dataSet) {
-                        console.log(dataSet);
                         if (dataSet.status=="1") {
                             showtips('error',dataSet.msg);
                         } else {
@@ -754,10 +734,6 @@
                 if (!lock) refresh_tree();
               });
 
-              // $("#db_source").bind("input propertychange",function(){
-              //       refresh_tree();
-              // });
-
               $("#db_source").on("changed.bs.select",function(){
                     refresh_tree();
               });
@@ -770,7 +746,6 @@
                         url: '/sql/_format',
                         data: {"sql":v_sql},
                         success: function (dataSet) {
-                            console.log(dataSet);
                              if (dataSet.code == '0') {
                                 var editor = ace.edit("ace-editor");
                                 editor.insert(dataSet.message);
@@ -793,9 +768,7 @@
               })
 
               $("#query_btn").click(function() {
-                  //sql=editor.session.getTextRange(editor.getSelectionRange())
                   v_sql=editor.session.getValue()
-
 
                   console.log('dbsource=',$('#db_source').val())
 
@@ -815,7 +788,7 @@
                     datatype: "json",
                     data: {
                         dbid  :  $('#db_source').val(),
-                        sql   :  v_sql,//editor.session.getTextRange(editor.getSelectionRange()),
+                        sql   :  v_sql,
                         cur_db:  $('#curr_db').text()
                     },
                     success: function (dataSet) {
@@ -831,7 +804,6 @@
                             } else {
                                  $('#example').empty();
                             }
-                            console.log('example=',$('#example'))
                             table=$('#example').DataTable( {
                                     "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                     destroy       : true,
@@ -853,7 +825,6 @@
               $(window).on('resize', centerModals);
               $('#con-close-modal2').modal({ keyboard: false,backdrop:false});
               setTimeout("set_styles()",1000);
-
         });
  </script>
 

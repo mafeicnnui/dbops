@@ -431,21 +431,21 @@
           }
 
         function set_editor(p_editor) {
-          var editor = ace.edit(p_editor);
-          editor.setTheme("ace/theme/xcode");
-          editor.getSession().setMode("ace/mode/mysql");
-          editor.getSession().setUseSoftTabs(true);
-          editor.getSession().setUseWrapMode(true);
-          editor.setShowPrintMargin(false);
-          editor.setFontSize(14);
-          editor.setOption("wrap", "free");
-          ace.require("ace/ext/language_tools");
-          editor.setOptions({
-             enableBasicAutocompletion: true,
-             enableSnippets: true,
-             enableLiveAutocompletion: true
-          });
-          editor.setHighlightActiveLine(true);
+              var editor = ace.edit(p_editor);
+              editor.setTheme("ace/theme/xcode");
+              editor.getSession().setMode("ace/mode/mysql");
+              editor.getSession().setUseSoftTabs(true);
+              editor.getSession().setUseWrapMode(true);
+              editor.setShowPrintMargin(false);
+              editor.setFontSize(14);
+              editor.setOption("wrap", "free");
+              ace.require("ace/ext/language_tools");
+              editor.setOptions({
+                 enableBasicAutocompletion: true,
+                 enableSnippets: true,
+                 enableLiveAutocompletion: true
+              });
+              editor.setHighlightActiveLine(true);
       }
 
         //当浏览器大小变化时
@@ -460,233 +460,224 @@
               set_editor("ace-editor-tab-defi")
 
               function upd_curr_db(dataSet){
-           $("#curr_db").empty();
-           $("#curr_db").append("<option value=''>...</option>");
-            for (i=0;i<dataSet['message'].length;i++){
-               var val  = dataSet['message'][i].id;
-               var text = dataSet['message'][i].id;
-               $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-           }
-           $("#curr_db").selectpicker('refresh')
-      }
+                   $("#curr_db").empty();
+                   $("#curr_db").append("<option value=''>...</option>");
+                    for (i=0;i<dataSet['message'].length;i++){
+                       var val  = dataSet['message'][i].id;
+                       var text = dataSet['message'][i].id;
+                       $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                   }
+                   $("#curr_db").selectpicker('refresh')
+              }
 
               function upd_curr_db_select(dataSet,curdb){
-            $("#curr_db").empty();
-            $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
-            for (i=0;i<dataSet['message'].length;i++){
-               var val  = dataSet['message'][i].id;
-               var text = dataSet['message'][i].id;
-               if (val!=curdb) {
-                      $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-               }
-           }
-           $("#curr_db").append("<option value=''>...</option>");
-           $("#curr_db").selectpicker('refresh')
-      }
+                    $("#curr_db").empty();
+                    $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
+                    for (i=0;i<dataSet['message'].length;i++){
+                       var val  = dataSet['message'][i].id;
+                       var text = dataSet['message'][i].id;
+                       if (val!=curdb) {
+                              $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                       }
+                   }
+                   $("#curr_db").append("<option value=''>...</option>");
+                   $("#curr_db").selectpicker('refresh')
+              }
 
               function refresh_tree(){
-           if ($('#db_source').val()!='') {
-               $.ajax({
-                    url     :"/get/inst/tree",
-                    type    :"post",
-                    datatype:"json",
-                    data: {
-                         inst_id : $('#db_source').val(),
-                          msg  : $('#filter_db').val()
-                    },
-                    success: function (dataSet) {
-                        if (dataSet.url.length>30) {
-                            $('#db_title').html(dataSet.url.slice(1,30)+'.../');
-                        } else {
-                            $('#db_title').html(dataSet.url);
-                        }
-
-                        $('#db_tree').treeview({
-                             data              : dataSet.message,
-                             collapseIcon      : "ion-minus-round",
-                             expandIcon        : "mdi mdi-border-all",//"ion-plus-round",
-                             highlightSelected : true,
-                             levels            : 2,
-                             showBorder        : false,
-                             showIcon          : true,
-                        });
-
-                        $('#db_tree').treeview('collapseAll', { silent: true });
-
-                        $('#db_tree').on('nodeSelected', function(event, data) {
-                            var curNode = $('#db_tree').treeview('getNode', data.nodeId);
-                            var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-
-                            if (curNode.state.expanded) {
-                                $('#db_tree').treeview('collapseNode', curNode.nodeId);
-                            } else {
-                                $('#db_tree').treeview('expandNode', curNode.nodeId);
-                            }
-
-                            if (data.parentId === undefined) {
-                                 upd_curr_db_select(dataSet,curNode.text)
-                            } else {
-                                upd_curr_db_select(dataSet,parNode.text)
-                            }
-                        });
-
-                        $('#db_tree').on('nodeUnselected', function(event, data) {
-                            var curNode = $('#db_tree').treeview('getNode', data.nodeId);
-                            var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-
-                            if (curNode.state.expanded) {
-                                $('#db_tree').treeview('collapseNode', curNode.nodeId);
-                            } else {
-                                $('#db_tree').treeview('expandNode', curNode.nodeId);
-                            }
-
-                            if (data.parentId === undefined) {
-                                 upd_curr_db_select(dataSet,curNode.text)
-                            } else {
-                                upd_curr_db_select(dataSet,parNode.text)
-
-                            }
-                        });
-
-                        $('#db_tree').contextMenu({
-                            selector: 'li',
-                            callback: function(key, options) {
-                                var m = "clicked: " + key + " on " + $(this).text();
-                                var curNode = $('#db_tree').treeview('getSelected')[0];
-                                var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
-                                console.log('curNode=',curNode);
-                                console.log('parNode=',parNode);
-                                console.log('options=',m);
-                                var db_type=get_db_type()
-                                console.log('db_type=',db_type)
-                                get_menu_result(key,db_type,$(this).text())
+                   if ($('#db_source').val()!='') {
+                       $.ajax({
+                            url     :"/get/inst/tree",
+                            type    :"post",
+                            datatype:"json",
+                            data: {
+                                 inst_id : $('#db_source').val(),
+                                  msg  : $('#filter_db').val()
                             },
-                            items: {
-                                "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
-                                "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
-                                "drop_table"       : {name: "删除表",   icon: "fa-diamond"},
-                                "query_tab_100"    : {name: "查询数据", icon: "fa fa-search"},
-                                "refresh"          : {name: "刷新库",   icon: "fa fa-refresh"},
+                            success: function (dataSet) {
+                                if (dataSet.url.length>30) {
+                                    $('#db_title').html(dataSet.url.slice(1,30)+'.../');
+                                } else {
+                                    $('#db_title').html(dataSet.url);
+                                }
+
+                                $('#db_tree').treeview({
+                                     data              : dataSet.message,
+                                     collapseIcon      : "ion-minus-round",
+                                     expandIcon        : "mdi mdi-border-all",
+                                     highlightSelected : true,
+                                     levels            : 2,
+                                     showBorder        : false,
+                                     showIcon          : true,
+                                });
+
+                                $('#db_tree').treeview('collapseAll', { silent: true });
+
+                                $('#db_tree').on('nodeSelected', function(event, data) {
+                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                                    if (curNode.state.expanded) {
+                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                                    } else {
+                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
+                                    }
+
+                                    if (data.parentId === undefined) {
+                                         upd_curr_db_select(dataSet,curNode.text)
+                                    } else {
+                                        upd_curr_db_select(dataSet,parNode.text)
+                                    }
+                                });
+
+                                $('#db_tree').on('nodeUnselected', function(event, data) {
+                                    var curNode = $('#db_tree').treeview('getNode', data.nodeId);
+                                    var parNode = $('#db_tree').treeview('getNode', curNode.parentId);
+
+                                    if (curNode.state.expanded) {
+                                        $('#db_tree').treeview('collapseNode', curNode.nodeId);
+                                    } else {
+                                        $('#db_tree').treeview('expandNode', curNode.nodeId);
+                                    }
+
+                                    if (data.parentId === undefined) {
+                                         upd_curr_db_select(dataSet,curNode.text)
+                                    } else {
+                                        upd_curr_db_select(dataSet,parNode.text)
+
+                                    }
+                                });
+
+                                $('#db_tree').contextMenu({
+                                    selector: 'li',
+                                    callback: function(key, options) {
+                                        get_menu_result(key,get_db_type(),$(this).text())
+                                    },
+                                    items: {
+                                        "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
+                                        "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
+                                        "drop_table"       : {name: "删除表",   icon: "fa-diamond"},
+                                        "query_tab_100"    : {name: "查询数据", icon: "fa fa-search"},
+                                        "refresh"          : {name: "刷新库",   icon: "fa fa-refresh"},
+                                    }
+                                });
+                                 //加载数据库列表
+                                upd_curr_db(dataSet)
                             }
                         });
-                         //加载数据库列表
-                        upd_curr_db(dataSet)
-                    }
-                });
-           }
-      }
+                   }
+              }
 
               function get_menu_result(key,db_type,curNode) {
-          if (key=='tab_definition') {
-                $.ajax({
-                    url     : "/get/inst/tab/ddl",
-                    type    : "post",
-                    datatype: "json",
-                    data: {
-                        dbid  :  $('#db_source').val(),
-                        cur_db:  $('#curr_db').val(),
-                        tab   :  curNode
-                    },
-                    success: function (dataSet) {
-                        console.log(dataSet);
-                        if (dataSet.status=="1") {
-                            showtips('info',dataSet.message);
-                        } else {
-                           var editor = ace.edit("ace-editor-tab-defi");
-                            editor.setValue('')
-                            editor.insert(dataSet.message);
-                            $('#ddl-header').text('表结构信息')
-                            $('.modal').on('show.bs.modal', centerModals);
-                            $(window).on('resize', centerModals);
-                            $('#con-close-modal-ddl').modal({
-                               keyboard: false,
-                               backdrop:false
-                            })
-                       }
-                     }
-                 });
-          } else if (key =='idx_definition') {
-                $.ajax({
-                    url     : "/get/inst/idx/ddl",
-                    type    : "post",
-                    datatype: "json",
-                    data: {
-                        dbid  :  $('#db_source').val(),
-                        cur_db:  $('#curr_db').val(),
-                        tab   :  curNode
-                    },
-                    success: function (dataSet) {
-                        console.log(dataSet);
-                        if (dataSet.status=="1") {
-                            showtips('info',dataSet.message);
-                        } else {
-                            var editor = ace.edit("ace-editor-tab-defi");
-                            editor.setValue('')
-                            editor.insert(dataSet.message);
-                            $('#ddl-header').text('索引定义')
-                            $('.modal').on('show.bs.modal', centerModals);
-                            $(window).on('resize', centerModals);
-                            $('#con-close-modal-ddl').modal({
-                               keyboard: false,
-                               backdrop:false
-                            })
-                       }
-                     }
-                 });
-          } else if (key =='drop_table') {
-               swal({
-                    title: "确认要删除吗?",
-                    text: "表["+txt+"]将被删除！",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "是, 删除!",
-                    cancelButtonText:  "否, 取消!",
-                    closeOnConfirm: true,
-                    closeOnCancel: true
-                 }, function (isConfirm) {
-                    if (isConfirm) {
-                          $.ajax({
-                                url     : "/drop/inst/tab",
-                                type    : "post",
-                                datatype: "json",
-                                data: {
-                                    dbid  :  $('#db_source').val(),
-                                    cur_db:  $('#curr_db').val(),
-                                    tab   :  curNode
-                                },
-                                success: function (dataSet) {
+                  if (key=='tab_definition') {
+                        $.ajax({
+                            url     : "/get/inst/tab/ddl",
+                            type    : "post",
+                            datatype: "json",
+                            data: {
+                                dbid  :  $('#db_source').val(),
+                                cur_db:  $('#curr_db').val(),
+                                tab   :  curNode
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet);
+                                if (dataSet.status=="1") {
                                     showtips('info',dataSet.message);
-                                    refresh_tree();
-                                },
-                             });
+                                } else {
+                                   var editor = ace.edit("ace-editor-tab-defi");
+                                    editor.setValue('')
+                                    editor.insert(dataSet.message);
+                                    $('#ddl-header').text('表结构信息')
+                                    $('.modal').on('show.bs.modal', centerModals);
+                                    $(window).on('resize', centerModals);
+                                    $('#con-close-modal-ddl').modal({
+                                       keyboard: false,
+                                       backdrop:false
+                                    })
+                               }
+                             }
+                         });
+                  } else if (key =='idx_definition') {
+                        $.ajax({
+                            url     : "/get/inst/idx/ddl",
+                            type    : "post",
+                            datatype: "json",
+                            data: {
+                                dbid  :  $('#db_source').val(),
+                                cur_db:  $('#curr_db').val(),
+                                tab   :  curNode
+                            },
+                            success: function (dataSet) {
+                                if (dataSet.status=="1") {
+                                    showtips('info',dataSet.message);
+                                } else {
+                                    var editor = ace.edit("ace-editor-tab-defi");
+                                    editor.setValue('')
+                                    editor.insert(dataSet.message);
+                                    $('#ddl-header').text('索引定义')
+                                    $('.modal').on('show.bs.modal', centerModals);
+                                    $(window).on('resize', centerModals);
+                                    $('#con-close-modal-ddl').modal({
+                                       keyboard: false,
+                                       backdrop:false
+                                    })
+                               }
+                             }
+                         });
+                  } else if (key =='drop_table') {
+                       swal({
+                            title: "确认要删除吗?",
+                            text: "表["+txt+"]将被删除！",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "是, 删除!",
+                            cancelButtonText:  "否, 取消!",
+                            closeOnConfirm: true,
+                            closeOnCancel: true
+                         }, function (isConfirm) {
+                            if (isConfirm) {
+                                  $.ajax({
+                                        url     : "/drop/inst/tab",
+                                        type    : "post",
+                                        datatype: "json",
+                                        data: {
+                                            dbid  :  $('#db_source').val(),
+                                            cur_db:  $('#curr_db').val(),
+                                            tab   :  curNode
+                                        },
+                                        success: function (dataSet) {
+                                            showtips('info',dataSet.message);
+                                            refresh_tree();
+                                        },
+                                     });
 
-                    } else {
-                        swal("已取消", "表["+curNode+"]未删除!", "error");
-                    }
-            });
+                            } else {
+                                swal("已取消", "表["+curNode+"]未删除!", "error");
+                            }
+                    });
 
-          } else if (key =='refresh') {
-              refresh_tree()
-          } else if (key=='query_tab_100'){
-              if (db_type == '2'){
-                     sql = 'select top 100 * from '+curNode;
-                } else if (db_type == '0') {
-                     sql = 'select * from '+curNode+ ' limit 100';
-                } else {
-                     sql = 'select * from '+curNode+ ' limit 100';
-                }
-                var editor = ace.edit("ace-editor");
-                if (table!=undefined ){
-                    table.destroy();
-                    $('#example').empty();
-                } else {
-                    $('#example').empty();
-                }
-                editor.setValue(sql);
-                query_table(sql)
-             }
-      }
+                  } else if (key =='refresh') {
+                      refresh_tree()
+                  } else if (key=='query_tab_100'){
+                      if (db_type == '2'){
+                             sql = 'select top 100 * from '+curNode;
+                        } else if (db_type == '0') {
+                             sql = 'select * from '+curNode+ ' limit 100';
+                        } else {
+                             sql = 'select * from '+curNode+ ' limit 100';
+                        }
+                        var editor = ace.edit("ace-editor");
+                        if (table!=undefined ){
+                            table.destroy();
+                            $('#example').empty();
+                        } else {
+                            $('#example').empty();
+                        }
+                        editor.setValue(sql);
+                        query_table(sql)
+                     }
+              }
 
               $("#db_source").bind("input propertychange",function(){
                    refresh_tree()

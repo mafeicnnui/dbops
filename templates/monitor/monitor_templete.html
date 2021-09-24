@@ -1,15 +1,6 @@
 <html>
 <head>
     <title>模板管理</title>
-    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-
     <style>
         .modal-lg-order {
             width:40%;
@@ -255,41 +246,7 @@
      </div>
 </body>
 
-<!-- Sweet-Alert  -->
-<script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-
 <script>
-
-    function set_selected(){
-        document.all['s_add_templete_name'].style.color="#ff0000";
-        document.all['s_add_templete_code'].style.color="#ff0000";
-        document.all['s_add_templete_type'].style.color="#ff0000";
-        document.all['s_add_templete_index'].style.color="#ff0000";
-        document.all['s_add_templete_status'].style.color="#ff0000";
-        document.all['s_upd_templete_name'].style.color="#ff0000";
-        document.all['s_upd_templete_code'].style.color="#ff0000";
-        document.all['s_upd_templete_type'].style.color="#ff0000";
-        document.all['s_upd_templete_status'].style.color="#ff0000";
-        document.all['s_upd_templete_index'].style.color="#ff0000";
-    }
-
-    function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-         }
-
     function isSelect() {
            var rec=0;
            $("#monitor_templete_table tbody tr td input:checked").each( function() {
@@ -462,31 +419,7 @@
                                          return '<input type="radio" name="templeteid" onclick="isSelect();" >'; }
                               },
                            ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                          });
                       $('#templete_upd_win').attr("disabled",true);
                       $('#templete_del_btn').attr("disabled",true);
@@ -535,20 +468,7 @@
                       }
                   }
 
-                  // var options=$('#upd_templete_index option');
-                  // $("#upd_templete_index").empty();
-                  // for(i=0;i<options.length;i++){
-                  //     value=$(options[i]).val();
-                  //     text =$(options[i]).text();
-                  //     if (text == row[2].innerHTML){
-                  //         $("#upd_templete_index").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
-                  //     } else {
-                  //         $("#upd_templete_index").append("<option value='"+value+"'>"+text+"</option>");
-                  //     }
-                  // }
-
                   var options=$('#upd_templete_status option');
-                  console.log('options=',options)
                   $("#upd_templete_status").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
@@ -617,7 +537,6 @@
                     templete_status    : $('#add_templete_status').val(),
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code == 0) {
                         swal("保存成功", "", "success")
                         query_templete()
@@ -641,7 +560,6 @@
                        templete_status    : $('#upd_templete_status').val(),
                     },
                     success: function (dataSet) {
-                        console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("更新成功", "", "success")
                             query_templete()
@@ -660,7 +578,6 @@
                   var row=$(($(this).parent().parent().html()));
                   templete_code=row[0].innerHTML;
                   templete_name=row[1].innerHTML;
-                  console.log("templete_code=",templete_code,"templete_name=",templete_name)
              });
 
              swal({
