@@ -2,10 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="shortcut icon" href="{{ static_url('assets/images/favicon.ico')}}">
     <title>任务变更</title>
-    <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body>
    <p></p>
@@ -270,35 +267,10 @@
       </div>
    </form>
 
-
-    <!-- Counter js  -->
-    <script src="{{static_url('plugins/counterup/jquery.counterup.min.js')}}"></script>
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
     <script>
         $("#db_server").bind("input propertychange",function(){
             $("#task_desc").val($("#db_server").find("option:selected").text()+'备份')
         });
-
-        function set_selected(){
-            document.all['s_sync_tag'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_sync_type'].style.color="#ff0000";
-            document.all['s_sync_server'].style.color="#ff0000";
-            document.all['s_minio_server'].style.color="#ff0000";
-            document.all['s_minio_user'].style.color="#ff0000";
-            document.all['s_minio_pass'].style.color="#ff0000";
-            document.all['s_python3_home'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_script_name'].style.color="#ff0000";
-            document.all['s_run_time'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-            document.all['s_minio_bucket'].style.color="#ff0000";
-            document.all['s_minio_dpath'].style.color="#ff0000";
-            document.all['s_minio_incr'].style.color="#ff0000";
-        }
 
         $('#sync_server').change(function() {
             if ($('#sync_server').val()!=''){
@@ -312,7 +284,6 @@
         });
 
         $('#sync_type').change(function() {
-            console.log('sync_type=',$('#sync_type').val())
             if ($('#sync_type').val() == '1') {
                 $("#sync_dir").val('');
                 $('#sync_dir').attr("disabled", false);
@@ -362,29 +333,12 @@
                     minio_incr_type  : $('#minio_incr_type').val(),
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code==0) {
                        swal("更新成功", "", "success")
                     } else {
                        swal(dataSet.message, "", "error")
                     }
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
           });
 

@@ -2,16 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <!-- App title -->
     <title>数据源变更</title>
-    <!-- DataTables -->
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/buttons.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-
     <style>
         #example{
             width: 100% !important;
@@ -80,16 +71,6 @@
           </div>
      </div>
     </div>
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.buttons.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-    <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
     <script>
         $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
@@ -98,32 +79,30 @@
          });
 
         $("#dsname").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#dsclone').attr("disabled",true);
+           set_button_status(true);
            $("#query_btn").click();
         });
 
         $("#market_id").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#dsclone').attr("disabled",true);
+           set_button_status(true);
            $("#query_btn").click();
         });
 
         $("#db_env").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#dsclone').attr("disabled",true);
+           set_button_status(true);
            $("#query_btn").click();
         });
 
         $("#ds_type").bind("input propertychange",function(){
-           $('#dsupd').attr("disabled",true);
-           $('#dsdel').attr("disabled",true);
-           $('#dsclone').attr("disabled",true);
+            set_button_status(true);
            $("#query_btn").click();
         });
+
+        function set_button_status(flag) {
+           $('#dsupd').attr("disabled",flag);
+           $('#dsdel').attr("disabled",flag);
+           $('#dsclone').attr("disabled",flag);
+        }
 
         function isSelect() {
            var rec=0;
@@ -131,14 +110,10 @@
               rec=rec+1;
            });
            if ( rec==1 ){
-              $('#dsupd').attr("disabled",false);
-              $('#dsdel').attr("disabled",false);
-              $('#dsclone').attr("disabled",false);
+               set_button_status(false);
 
            } else {
-              $('#dsupd').attr("disabled",true);
-              $('#dsdel').attr("disabled",true);
-              $('#dsclone').attr("disabled",true);
+               set_button_status(true);
            }
         }
 
@@ -184,52 +159,10 @@
                                      return '<input type="radio" name="userid" onclick="isSelect();" >'; }
                              },
                           ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                          });
-                      $('#dsupd').attr("disabled",true);
-                      $('#dsdel').attr("disabled",true);
-                      $('#dsclone').attr("disabled",true);
+                       set_button_status(true);
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                 }
              });
             });
 
@@ -238,7 +171,6 @@
              $("#example tbody tr td input:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
                   dsid=row[0].innerHTML;
-                  console.log("dsid=",dsid)
              });
 
              $.ajax({
@@ -251,22 +183,6 @@
                 success: function () {
                    $('#main-container-div').load("/ds/clone?dsid="+dsid);
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
         });
 
@@ -288,22 +204,6 @@
                 success: function () {
                    $('#main-container-div').load("/ds/edit?dsid="+dsid);
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
         });
 
@@ -314,7 +214,6 @@
                   var row=$(($(this).parent().parent().html()));
                   dsid=row[0].innerHTML;
                   dsdesc=row[2].innerHTML;
-                  console.log("dsid=",dsid,"dsdesc=",dsdesc)
              });
             swal({
                 title: "确认要删除吗?",
@@ -333,7 +232,6 @@
                             type: "post",
                             datatype: "json",
                             success: function (dataSet) {
-                                //console.log(dataSet.code, dataSet.message);
                                 if (dataSet.code=='0') {
                                     swal("已删除!", "数据源["+dsdesc+"]已删除!", "success");
                                     $("#query_btn").click();
@@ -341,22 +239,6 @@
                                     swal("删除失败!", "用户["+dsdesc+"]"+dataSet.message+"!", "error");
                                 }
                             },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                                    window.location.href='/login'
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                            }
                        });
 
                 } else {
@@ -376,7 +258,6 @@
         $("#market_id").bind("input propertychange",function(){
            $("#query_btn").click();
         });
-
 
    </script>
 </body>

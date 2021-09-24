@@ -1,9 +1,5 @@
   <head>
         <meta charset="utf-8">
-		<link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
-        <link href="{{static_url('assets/css/core.css')}}"       rel="stylesheet" type="text/css" />
-        <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" >
-        <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
  </head>
  <body>
     <br>
@@ -74,28 +70,9 @@
 
     </div>
 
-    <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-	<script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
-
     <script>
          $(document).ready(function() {
               $('#minio-container').hide();
-              function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
-                Morris.Bar({
-                    element: element,
-                    data: data,
-                    xkey: xkey,
-                    ykeys: ykeys,
-                    labels: labels,
-                    hideHover: 'auto',
-                    resize: true, //defaulted to true
-                    gridLineColor: '#65d9b2',
-                    barSizeRatio: 0.6,
-                    barColors: lineColors,
-                    postUnits: postUnits
-                });
-              }
 
               $('#begin_date').attr("readonly", "readonly");
               $('#end_date').attr("readonly", "readonly");
@@ -127,8 +104,6 @@
                           end_date   : $('#end_date').val(),
                       },
                       success: function (dataSet) {
-
-                         console.log(dataSet)
                          $('#minio-download').html('')
                          $('#minio-upload').html('')
                          $('#minio-file').html('')
@@ -154,22 +129,6 @@
                          createBarChart('minio-file',  $bar_minio_file, 'y', ['a'], ['文件数量'], ['#59aed5'],'');
 
                       },
-                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log('jqXHR.responseText=',jqXHR.responseText);
-                        console.log('jqXHR.status=',jqXHR.status);
-                        console.log('jqXHR.readyState=',jqXHR.readyState);
-                        console.log('jqXHR.statusText=',jqXHR.statusText);
-                        console.log('textStatus=',textStatus);
-                        console.log('errorThrown=',errorThrown);
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                    }
                  });
 
               });

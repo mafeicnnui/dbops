@@ -3,11 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>日志查询</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
         #example{
             width: 100% !important;
@@ -65,11 +60,6 @@
      </div>
    </div>
 
-   <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-   <script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-   <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-
    <script>
         $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
@@ -105,12 +95,6 @@
                                   begin_date: $('#begin_date').val(),
                                   end_date  : $('#end_date').val()
                               },
-                              beforeSend: function () {
-                                   swal({title: "正在查询中...",showConfirmButton: false});
-                              },
-                              complete: function () {
-                                   swal({title: "正在查询中...",timer: 1000,showConfirmButton: false});
-                              },
                               success: function (dataSet) {
                                   $('#example').DataTable( {
                                   "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
@@ -134,51 +118,11 @@
                                     { "title": "文件数量" },
                                     { "title": "创建时间" },
                                   ],
-                                  "language": {
-                                         "search"       : "在表格中搜索:",
-                                         "sProcessing"  : "处理中...",
-                                         "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                         "sZeroRecords" : "没有匹配结果",
-                                         "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                         "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                         "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                         "sInfoPostFix" : "",
-                                         "sSearch"      : "搜索:",
-                                         "sUrl"         : "",
-                                         "sEmptyTable"  : "表中数据为空",
-                                         "sLoadingRecords": "载入中...",
-                                         "sInfoThousands": ",",
-                                         "oPaginate": {
-                                             "sFirst"   : "首页",
-                                             "sPrevious": "上页",
-                                             "sNext"    : "下页",
-                                             "sLast"    : "末页"
-                                         },
-                                         "oAria": {
-                                             "sSortAscending" : ": 以升序排列此列",
-                                             "sSortDescending": ": 以降序排列此列"
-                                         }
-                                     }
+                                  "language": get_languages()
                                  });
                               }
                        });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
 
             });
@@ -225,55 +169,13 @@
                                 { "title": "压缩耗时"  },
                                 { "title": "状态"     }
                           ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                      });
                  },
-                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
             });
 
         function isSelect(v) {
-            console.log('isSelect=',v)
-            console.log('isSelect=',v,v.split(','),v.split(',')[0])
             $('#tagname_detail').val(v.split(',')[0])
             $('#backup_date_detail').val(v.split(',')[1])
             $("#query_btn2").click()

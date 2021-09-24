@@ -3,9 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>数据源克隆</title>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
 </head>
 <body>
    <p></p>
@@ -94,7 +91,6 @@
                </div>
             </div>
        </div>
-
 
        <div class="row">
            <div class="col-md-6">
@@ -269,50 +265,8 @@
        </div>
      </form>
 
-     <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
-    <!-- Toastr js -->
-    <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
-
     <script>
-
-        function showtips(flag,title,content){
-                toastr.options = {
-                      "closeButton": false,
-                      "debug": false,
-                      "newestOnTop": false,
-                      "progressBar": true,
-                      "positionClass": "toast-top-right",
-                      "preventDuplicates": false,
-                      "onclick": null,
-                      "showDuration": "3000",
-                      "hideDuration": "1000",
-                      "timeOut": "5000",
-                      "extendedTimeOut": "1000",
-                      "showEasing": "swing",
-                      "hideEasing": "linear",
-                      "showMethod": "fadeIn",
-                      "hideMethod": "fadeOut"
-                    }
-                    toastr[flag](content,title)
-        }
-
-        function set_selected(){
-            document.all['s_ds_market_id'].style.color="#ff0000";
-            document.all['s_ds_inst_type'].style.color="#ff0000";
-            document.all['s_ds_db_type'].style.color="#ff0000";
-            document.all['s_ds_db_env'].style.color="#ff0000";
-            document.all['s_ds_db_desc'].style.color="#ff0000";
-            document.all['s_ds_ip'].style.color="#ff0000";
-            document.all['s_ds_port'].style.color="#ff0000";
-            document.all['s_ds_user'].style.color="#ff0000";
-            document.all['s_ds_pass'].style.color="#ff0000";
-            document.all['s_ds_status'].style.color="#ff0000";
-        }
-
-        set_selected()
-
+        set_selected();
         $('#return').on('click', function() {
            $('#main-container-div').load('/ds/change');
         });
@@ -343,29 +297,12 @@
                     proxy_server  :$('#proxy_server').val(),
             },
             success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code==0) {
                    swal("克隆成功", "", "success")
                 } else {
                    swal(dataSet.message, "", "error")
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('jqXHR.responseText=',jqXHR.responseText);
-                console.log('jqXHR.status=',jqXHR.status);
-                console.log('jqXHR.readyState=',jqXHR.readyState);
-                console.log('jqXHR.statusText=',jqXHR.statusText);
-                console.log('textStatus=',textStatus);
-                console.log('errorThrown=',errorThrown);
-                if (jqXHR.status==403){
-                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                    window.location.href='/login'
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-            }
          });
       });
 
