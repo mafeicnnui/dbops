@@ -21,18 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="web page optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/port/port_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/port/port_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/port/port_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/port/port_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/server/server_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/server/server_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/server/server_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/server/server_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/slow/slow_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/slow/slow_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/slow/slow_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_hst_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_hst_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,19 +81,19 @@
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\templates\db" />
-      <recent name="D:\work\dbops\static\assets\images" />
-      <recent name="D:\work\dbops\static\plugins\bootstrap-closable-tab" />
-      <recent name="D:\work\dbops\templates\login" />
-      <recent name="D:\work\dbops\templates\main" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\templates\login" />
       <recent name="D:\work\dbops\templates\main" />
       <recent name="D:\work\dbops\templates\sys" />
       <recent name="D:\work\dbops\templates\order" />
       <recent name="D:\work\dbops\templates\port" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\templates\db" />
+      <recent name="D:\work\dbops\static\assets\images" />
+      <recent name="D:\work\dbops\static\plugins\bootstrap-closable-tab" />
+      <recent name="D:\work\dbops\templates\login" />
+      <recent name="D:\work\dbops\templates\main" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -502,14 +493,7 @@
       <workItem from="1632281046773" duration="15825000" />
       <workItem from="1632302382753" duration="10000" />
       <workItem from="1632357966717" duration="16949000" />
-      <workItem from="1632446097907" duration="17434000" />
-    </task>
-    <task id="LOCAL-00045" summary="timed order support">
-      <created>1628239869141</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1628239869141</updated>
+      <workItem from="1632446097907" duration="18240000" />
     </task>
     <task id="LOCAL-00046" summary="forget password fix">
       <created>1628242026080</created>
@@ -847,7 +831,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632467683332</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="web page optimize">
+      <created>1632468789812</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1632468789812</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TodoView">
@@ -968,10 +959,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="378" y="275" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1630404029126" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632467689757">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632468792727">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632467689757" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632468792727" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1629795507466">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
