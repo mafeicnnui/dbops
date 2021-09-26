@@ -1,20 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ static_url('assets/images/favicon.ico')}}">
-    <!-- App title -->
     <title>同步变更</title>
-    <link rel="stylesheet" href="{{static_url('plugins/morris/morris.css')}}">
-    <link href="{{static_url('plugins/timepicker/bootstrap-timepicker.min.css')}}" rel="stylesheet">
-    <link href="{{static_url('plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css')}}" rel="stylesheet">
-    <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet">
-    <link href="{{static_url('plugins/clockpicker/css/bootstrap-clockpicker.min.css')}}" rel="stylesheet">
-    <link href="{{static_url('plugins/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
-    <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
-    <!-- Sweet Alert -->
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <p></p>
@@ -282,35 +269,7 @@
        </form>
     </div>
 
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
     <script>
-
-        function set_selected(){
-            document.all['s_sync_server'].style.color="#ff0000";
-            document.all['s_sour_db_server'].style.color="#ff0000";
-            document.all['s_desc_db_server'].style.color="#ff0000";
-            document.all['s_sync_tag'].style.color="#ff0000";
-            document.all['s_sync_ywlx'].style.color="#ff0000";
-            document.all['s_sync_data_type'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_script_name'].style.color="#ff0000";
-            document.all['s_sync_schema'].style.color="#ff0000";
-            document.all['s_sync_tables'].style.color="#ff0000";
-            document.all['s_run_time'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_python3_home'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-            document.all['s_sync_batch_size'].style.color="#ff0000";
-            document.all['s_sync_batch_size_incr'].style.color="#ff0000";
-            document.all['s_sync_gap'].style.color="#ff0000";
-            document.all['s_sync_col_name'].style.color="#ff0000";
-            document.all['s_sync_col_val'].style.color="#ff0000";
-            document.all['s_sync_time_type'].style.color="#ff0000";
-            document.all['s_sync_repair_day'].style.color="#ff0000";
-        }
 
         $(document).ready(function() {
             set_selected();
@@ -363,22 +322,6 @@
                    swal(dataSet.message, "", "error")
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('jqXHR.responseText=',jqXHR.responseText);
-                console.log('jqXHR.status=',jqXHR.status);
-                console.log('jqXHR.readyState=',jqXHR.readyState);
-                console.log('jqXHR.statusText=',jqXHR.statusText);
-                console.log('textStatus=',textStatus);
-                console.log('errorThrown=',errorThrown);
-                if (jqXHR.status==403){
-                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                    window.location.href='/login'
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-            }
          });
       });
 

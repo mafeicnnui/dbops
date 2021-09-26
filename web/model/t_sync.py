@@ -591,7 +591,7 @@ def get_health_api_server(api_servers):
     for api in api_servers.split(','):
         req = 'http://{}/health'.format(api)
         try:
-          res = requests.head(req)
+          res = requests.head(req,timeout=1)
           api_status[api] = res.status_code
         except:
           api_status[api] = 500

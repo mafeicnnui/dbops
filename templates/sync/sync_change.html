@@ -142,16 +142,6 @@
            $('#clone').attr("disabled",status);
         }
 
-        function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-         }
-
         function isSelect(v) {
            $('#sync_tag_tmp').val(v)
            var rec=0;
@@ -235,44 +225,10 @@
                                         }
                                     },
                               ],
-                              "language": {
-                                     "search"       : "在表格中搜索:",
-                                     "sProcessing"  : "处理中...",
-                                     "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                     "sZeroRecords" : "没有匹配结果",
-                                     "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix" : "",
-                                     "sSearch"      : "搜索:",
-                                     "sUrl"         : "",
-                                     "sEmptyTable"  : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands": ",",
-                                     "oPaginate": {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                                 }
+                              "language": get_languages()
                         });
                        set_button_status(true);
-                 },
-                 error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
+                   },
              });
             });
 
@@ -301,8 +257,6 @@
                                });
                           },
                           success: function (dataSet) {
-                              console.log('dataSet=',dataSet)
-                              console.log('dataSet=',dataSet['code'])
                               if (dataSet['code']== '200') {
                                   swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
                                   $('#ace-editor').html(dataSet['msg'])
@@ -315,16 +269,6 @@
                               }
                               set_button_status(true);
                           },
-                         error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                   });
               });
 
@@ -363,16 +307,6 @@
                               }
                               set_button_status(true);
                           },
-                         error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                   });
               });
 
@@ -411,16 +345,6 @@
                               }
                               set_button_status(true);
                           },
-                         error: function (jqXHR) {
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                   });
               });
 
@@ -443,18 +367,7 @@
                 success: function () {
                    $('#main-container-div').load("/sync/edit?sync_id="+syncid);
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
-
         });
 
         $('#clone').on('click', function() {
@@ -473,16 +386,6 @@
                 success: function () {
                    $('#main-container-div').load("/sync/clone?sync_id="+syncid);
                 },
-                error: function (jqXHR) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
 
         });
@@ -519,16 +422,6 @@
                                     swal("删除失败!", "用户["+syncdesc+"]"+dataSet.message+"!", "error");
                                 }
                             },
-                            error: function (jqXHR) {
-                                if (jqXHR.status==403){
-                                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                                    window.location.href='/login'
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                            }
                        });
 
                 } else {

@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
     <title>同步变更</title>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
     <style>
        #example{
             width: 100% !important;
@@ -522,11 +519,6 @@
     </div>
    </div><!-- /.modal -->
 
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-
-    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-
     <script>
         var sour_ds='';
         var vUrl='';
@@ -541,33 +533,6 @@
                 }
             });
         };
-
-        function set_selected(){
-            document.all['s_sync_server'].style.color="#ff0000";
-            document.all['s_sour_db_server'].style.color="#ff0000";
-            document.all['s_desc_db_server'].style.color="#ff0000";
-            document.all['s_sync_tag'].style.color="#ff0000";
-            document.all['s_sync_ywlx'].style.color="#ff0000";
-            document.all['s_sync_data_type'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_script_name'].style.color="#ff0000";
-            document.all['s_sync_schema'].style.color="#ff0000";
-            document.all['s_sync_tables'].style.color="#ff0000";
-            document.all['s_run_time'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_python3_home'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-            document.all['s_sync_batch_size'].style.color="#ff0000";
-            document.all['s_sync_batch_size_incr'].style.color="#ff0000";
-            document.all['s_sync_gap'].style.color="#ff0000";
-            document.all['s_sync_col_name'].style.color="#ff0000";
-            document.all['s_sync_col_val'].style.color="#ff0000";
-            document.all['s_sync_time_type'].style.color="#ff0000";
-            document.all['s_sync_repair_day'].style.color="#ff0000";
-            document.all['s_sync_tab_name'].style.color="#ff0000";
-            document.all['s_sync_tab_col'].style.color="#ff0000";
-        }
 
         $('#return').on('click', function() {
            $('#main-container-div').load('/sync/change');
@@ -617,16 +582,6 @@
                    swal(dataSet.message, "", "error")
                 }
             },
-           error: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status==403){
-                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                    window.location.href='/login'
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-            }
          });
       });
 
@@ -646,7 +601,6 @@
              $("#sync_sele_col").empty();
              $("#sync_tab_incr_col").empty();
              $("#sync_tab_time").val('');
-
              //设置显示项为只读
              $('#sync_tab_name').attr("disabled","disabled");
              $('#sync_tab_incr_col').attr("disabled","disabled");
@@ -659,7 +613,6 @@
         }
 
         function get_ds() {
-           console.log('get_ds====>',$('#sour_db_server').val())
            $.ajax({
                   url: "/ds/query/id",
                   type: "post",
@@ -672,17 +625,6 @@
                       sour_ds = dataSet;
                       console.log('sour_ds=',sour_ds);
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-
-                }
              });
 
             if (sour_ds['proxy_status'] == '0') {
@@ -733,16 +675,6 @@
                          }
                      }
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                         swal("数据库代理服务异常!", "", "error")
-                    }
-                }
              })
         }
 
@@ -780,18 +712,7 @@
                               var text = dataSet['msg'][i][0];
                               $("#sync_tab_col").append("<option value='"+val+"'>"+text+"</option>");
                          }
-
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("数据库代理服务异常!", "", "error")
-                    }
-                }
              });
         }
 
@@ -828,16 +749,6 @@
                               $("#sync_tab_incr_col").append("<option value='"+val+"'>"+text+"</option>");
                          }
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("数据库代理服务异常!", "", "error")
-                    }
-                }
              });
         }
 
@@ -944,22 +855,6 @@
                                    swal(dataSet.message, "", "error")
                                 }
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                     })
 
                 } else {
@@ -1010,50 +905,9 @@
                                         }
                                    },
                               ],
-                              "language": {
-                                     "search"       : "在表格中搜索:",
-                                     "sProcessing"  : "处理中...",
-                                     "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                     "sZeroRecords" : "没有匹配结果",
-                                     "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix" : "",
-                                     "sSearch"      : "搜索:",
-                                     "sUrl"         : "",
-                                     "sEmptyTable"  : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands": ",",
-                                     "oPaginate": {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                                 }
-                         });
-
+                              "language": get_languages()
+                      });
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
         }
 
@@ -1108,16 +962,13 @@
           }
 
         function set_tab_cols(p_cols){
-               console.log('set_tab_cols=',p_cols)
                v_col_list = p_cols.split('#');
-
                if (sour_ds['db_type'] == '2') {
                    vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
                } else if (sour_ds['db_type'] == '0') {
                    vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
                    sour_ds['service'] = $('#sync_schema').val()
                }
-               console.log('vUrl=',vUrl)
 
                $.ajax({
                   url : vUrl,
@@ -1148,18 +999,7 @@
                       for (var i=0;i<v_col_list.length;i++){
                            $('#sync_sele_col').append("<option value='"+v_col_list[i]+"'>"+v_col_list[i]+"</option>");
                       }
-
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("数据库代理服务异常!", "", "error")
-                    }
-                }
              });
          }
 
@@ -1209,14 +1049,6 @@
                     }
                 }
 
-                console.log('a=',$('#sync_tag').val());
-                console.log('b=',$('#sync_tab_name').val().split('.')[0]);
-                console.log('c=',$('#sync_tab_name').val().split('.')[1]);
-                console.log('d=',$('#sync_tab_name').val().split('.')[2]);
-                console.log('e=',get_tab_cols());
-                console.log('f=',$('#sync_tab_incr_col').val());
-                console.log('g=',$('#sync_tab_time').val());
-
                 $.ajax({
                       url: "/sync/add/save/tab",
                       type: "post",
@@ -1239,24 +1071,7 @@
                     } else {
                        swal(dataSet.message, "", "error")
                     }
-
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              })
 
         });
@@ -1325,16 +1140,6 @@
                           $('#sync_tables').val(dataSet)
                       }
                   },
-                  error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status==403){
-                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
 
         });

@@ -2,16 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
-        <meta name="author" content="Coderthemes">
-
-        <!-- App favicon -->
-        <link rel="shortcut icon" href="{{static_url('assets/images/favicon.ico')}}">
-        <!-- App title -->
         <title>用户登陆</title>
-
-        <!-- App css -->
         <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('assets/css/core.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
@@ -67,7 +58,7 @@
     <body class="bg-transparent">
         <!-- HOME -->
          <section>
-            <div class="bg-transparent container-alt">
+            <div class="bg-transparent container-alt" >
                 <div class="row" >
                     <div class="col-sm-12">
                         <div class="wrapper-page" style="background-color: white">
@@ -141,13 +132,12 @@
         <script src="{{static_url('assets/js/jquery.slimscroll.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.scrollTo.min.js')}}"></script>
 
-        <!-- Sweet-Alert  -->
         <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
+        <script src="{{static_url('assets/js/utils.js')}}"></script>
 
         <!-- App js -->
         <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
-<!--        <script src="{{static_url('assets/pages/particle-container.js')}}"></script>-->
 
         <script>
 
@@ -156,7 +146,31 @@
                     $("#btlogin").click();
                 }
             });
+
+            $(document).ajaxError(function( event, request,options ) {
+               if (request.status==403){
+                   swal("登陆信息已过期，请重新登陆!", "", "error")
+                   window.location.href='/login'
+               } else if (request.status==502) {
+                   swal("用户无权访问权限此功能!("+options.url+")", "", "error")
+               } else if (request.status==503){
+                   swal("系统不可用,请联系管理员!", "", "error")
+               } else {
+                   swal("系统不可用,请稍后重试!", "", "error")
+               }
+            });
+
             $(document).ready(function() {
+                   //设置ajax超时时间为3s
+                   $.ajaxSetup({
+                       timeout:3000
+                   });
+                    //可以实现统计增加遮照功能
+                    $(document).ajaxStart(function(){
+                        start_Loader('account-pages')
+                    }).ajaxStop(function(){
+                        end_Loader('account-pages')
+                    })
 
                    $("#verify-img").click(function(){
                       $.ajax({
@@ -165,7 +179,6 @@
                         datatype: "json",
                         success: function (dataSet) {
                             var parsedJson = $.parseJSON(dataSet);
-                            console.log(parsedJson.image,parsedJson.verify)
                             $("#div-verify-img").hide()
                             $("#verify-img").attr('src','/static/assets/images/logon/'+parsedJson.image)
                             $("#div-verify-img").show()
@@ -184,14 +197,14 @@
                                 verify_code :$('#verify_code').val()
                             },
                             success: function (dataSet) {
-                                console.log(dataSet,dataSet.code, dataSet.message,dataSet.url);
                                 if (dataSet.code=='-1') {
                                     $('#prompt').text(dataSet.message)
                                     $('#prompt').css('color','red')
                                 } else {
                                     window.location.href='/'
                                 }
-                            }
+                            },
+
                        });
                     });
 

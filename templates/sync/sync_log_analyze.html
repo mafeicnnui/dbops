@@ -1,10 +1,5 @@
   <head>
         <meta charset="utf-8">
-        <!--Morris Chart CSS -->
-		<link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
-        <link href="{{static_url('assets/css/core.css')}}"       rel="stylesheet" type="text/css" />
-        <link href="{{static_url('plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css')}}" rel="stylesheet" >
-        <script src="{{static_url('assets/js/modernizr.min.js')}}"></script>
  </head>
  <body>
     <br>
@@ -26,9 +21,6 @@
                 <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
                 <select class="form-control select" id="tagname" >
                         <option value='' selected = "selected">请选择任务..</option>
-                        <!--{% for var in db_sync_tags %}-->
-                             <!--<option value={{var[0]}} >{{var[1]}}</option>-->
-                        <!--{% end %}-->
                 </select>
              </div>
          </div>
@@ -86,42 +78,7 @@
 
     <script>
          $(document).ready(function() {
-              $('#backup-container').hide()
-              function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
-                Morris.Bar({
-                    element: element,
-                    data: data,
-                    xkey: xkey,
-                    ykeys: ykeys,
-                    labels: labels,
-                    hideHover: 'auto',
-                    resize: true, //defaulted to true
-                    gridLineColor: '#65d9b2',
-                    barSizeRatio: 0.6,
-                    barColors: lineColors,
-                    postUnits: 'Mb'
-                });
-              }
-              function createLineChart(element, data, xkey, ykeys, labels, opacity, Pfillcolor, Pstockcolor, lineColors,p_postUnits) {
-                Morris.Line({
-                      element: element,
-                      data: data,
-                      xkey: xkey,
-                      ykeys: ykeys,
-                      labels: labels,
-                      fillOpacity: opacity,
-                      pointFillColors: Pfillcolor,
-                      pointStrokeColors: Pstockcolor,
-                      behaveLikeLine: true,
-                      gridLineColor: '#8b9285',
-                      hideHover: 'auto',
-                      resize: true, //defaulted to true
-                      pointSize: 0,
-                      lineColors: lineColors,
-                      postUnits: p_postUnits,
-                      lineWidth:2
-                });
-              }
+              $('#backup-container').hide();
 
               $('#begin_date').attr("readonly", "readonly");
               $('#end_date').attr("readonly", "readonly");
@@ -174,26 +131,9 @@
                          for (i=0;i<dataSet['data2'].length;i++){
                              $barData_db_sync_amount[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1]}
                          }
-
                          createLineChart('db-sync-time', $barData_db_sync_time, 'y', ['a'], ['同步时长'],['0.9'],['#ffbeba'],['#999999'], ['#ffbeba'],'s');
                          createLineChart('db-sync-amount', $barData_db_sync_amount, 'y', ['a'], ['同步记录'],['0.9'],['#ffc353'],['#999999'], ['#FFBD33'],'');
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                        }
                  });
 
               });
@@ -226,29 +166,11 @@
                          $("#tagname").empty();
                          $("#tagname").append("<option value=''>请选择任务...</option>");
                          for(i=0;i<dataSet['data'].length;i++){
-                             console.log('i=',i)
                               var val  = dataSet['data'][i][0];
                               var text = dataSet['data'][i][1];
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
                               $("#tagname").append("<option value='"+val+"'>"+text+"</option>");
                          }
                       },
-                      error: function (jqXHR, textStatus, errorThrown) {
-                            console.log('jqXHR.responseText=',jqXHR.responseText);
-                            console.log('jqXHR.status=',jqXHR.status);
-                            console.log('jqXHR.readyState=',jqXHR.readyState);
-                            console.log('jqXHR.statusText=',jqXHR.statusText);
-                            console.log('textStatus=',textStatus);
-                            console.log('errorThrown=',errorThrown);
-                            if (jqXHR.status==403){
-                                swal("登陆信息已过期，请重新登陆!", "", "error")
-                                window.location.href='/login'
-                            } else if (jqXHR.status==502){
-                                swal("用户无权访问权限此功能!", "", "error")
-                            } else {
-                                swal("系统不可用,请稍后重试!", "", "error")
-                            }
-                      }
                  });
          });
     </script>

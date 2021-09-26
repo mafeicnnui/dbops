@@ -838,19 +838,23 @@
             $(document).ajaxError(function( event, request,options ) {
                if (request.status==403){
                    swal("登陆信息已过期，请重新登陆!", "", "error")
-                   window.location.href='/login'
+                   //window.location.href='/login'
+                   parent.location.href='/login'
+
                } else if (request.status==502) {
                    swal("用户无权访问权限此功能!("+options.url+")", "", "error")
                } else if (request.status==503){
                    swal("系统不可用,请联系管理员!", "", "error")
+                    parent.location.href='/login'
                } else {
                    swal("系统不可用,请稍后重试!", "", "error")
+                    parent.location.href='/login'
                }
             });
 
             //设置ajax超时时间为3s
             $.ajaxSetup({
-               timeout:30000
+               timeout:3000
             });
 
             //可以实现统计增加遮照功能
