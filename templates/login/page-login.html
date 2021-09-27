@@ -163,7 +163,10 @@
             $(document).ready(function() {
                    //设置ajax超时时间为3s
                    $.ajaxSetup({
-                       timeout:3000
+                       timeout:3000,
+                       headers: {
+                        'Authorization': window.localStorage.getItem("Authorization")
+                       }
                    });
                     //可以实现统计增加遮照功能
                     $(document).ajaxStart(function(){
@@ -197,15 +200,29 @@
                                 verify_code :$('#verify_code').val()
                             },
                             success: function (dataSet) {
+                                console.log(dataSet)
                                 if (dataSet.code=='-1') {
                                     $('#prompt').text(dataSet.message)
                                     $('#prompt').css('color','red')
                                 } else {
-                                    window.location.href='/'
+                                    //将token这写入localStorage
+                                    window.localStorage['token'] = dataSet.token
+
+                                    // $.ajax({
+                                    //      url: "/",
+                                    //      type: "get",
+                                    //       headers: {
+                                    //         'token': window.localStorage.getItem("token")
+                                    //       },
+                                    //       success: function (dataSet) {
+                                    //             console.log('xxxx=',dataSet)
+                                    //       },
+                                    // });
+
+                                    window.location.href='http://10.2.39.17:8300/?token='+window.localStorage.getItem("token")
                                 }
                             },
-
-                       });
+                        });
                     });
 
                    $("#verify-img").click();

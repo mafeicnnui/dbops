@@ -1,10 +1,6 @@
 <html>
 <head>
     <title>代码管理</title>
-    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
     <style>
         .table th{
             text-align: center;
@@ -297,53 +293,10 @@
      </div>
      <input id='cur_tab' type="hidden">
 </body>
-<script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.bootstrap.js')}}"></script>
-<script src="{{static_url('plugins/datatables/buttons.bootstrap.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/dataTables.responsive.min.js')}}"></script>
-<script src="{{static_url('plugins/datatables/responsive.bootstrap.min.js')}}"></script>
-
 <script type="text/javascript">
-
-     function centerModals() {
-          $('.modal').each(function(i) {
-              var $clone = $(this).clone().css('display', 'block').appendTo('body');
-              var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-              top = top > 50 ? top : 0;
-              $clone.remove();
-             $(this).find('.modal-content').css("margin-top", top - 50);
-          });
-     }
-
-     function set_selected(){
-
-            //代码大类-新增
-            document.all['s_add_type_name'].style.color="#ff0000";
-            document.all['s_add_type_code'].style.color="#ff0000";
-            document.all['s_add_type_status'].style.color="#ff0000";
-
-            //代码大类-更新
-            document.all['s_upd_type_name'].style.color="#ff0000";
-            document.all['s_upd_type_code'].style.color="#ff0000";
-            document.all['s_upd_type_status'].style.color="#ff0000";
-
-            //代码明细-新增
-            document.all['s_add_type_code_detail'].style.color="#ff0000";
-            document.all['s_add_detail_name'].style.color="#ff0000";
-            document.all['s_add_detail_code'].style.color="#ff0000";
-            document.all['s_add_detail_status'].style.color="#ff0000";
-
-            //代码明细-变更
-            document.all['s_upd_type_code_detail'].style.color="#ff0000";
-            document.all['s_upd_detail_name'].style.color="#ff0000";
-            document.all['s_upd_detail_code'].style.color="#ff0000";
-            document.all['s_upd_detail_status'].style.color="#ff0000";
-
-      }
 
      //查询代码类型
      function query_sys_code_type(){
-            console.log('query_sys_code_type...')
             $.ajax({
               url: "/sys/code/type/_query",
               type: "post",
@@ -352,7 +305,6 @@
                 code:$("#type-name").val()
             },
               success: function (dataSet) {
-                console.log(dataSet);
                 $('#tab-sys-code-type').DataTable( {
                       "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                       destroy    :true,
@@ -383,31 +335,7 @@
                         }
                       }
                      ],
-                      "language": {
-                             "search"       : "在表格中搜索:",
-                             "sProcessing"  : "处理中...",
-                             "sLengthMenu"  : "显示 _MENU_ 项结果",
-                             "sZeroRecords" : "没有匹配结果",
-                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                             "sInfoPostFix" : "",
-                             "sSearch"      : "搜索:",
-                             "sUrl"         : "",
-                             "sEmptyTable"  : "表中数据为空",
-                             "sLoadingRecords": "载入中...",
-                             "sInfoThousands": ",",
-                             "oPaginate": {
-                                 "sFirst"   : "首页",
-                                 "sPrevious": "上页",
-                                 "sNext"    : "下页",
-                                 "sLast"    : "末页"
-                             },
-                             "oAria": {
-                                 "sSortAscending" : ": 以升序排列此列",
-                                 "sSortDescending": ": 以降序排列此列"
-                             }
-                         }
+                      "language": get_languages()
                     });
                 }
             })
@@ -423,7 +351,6 @@
                 code:$("#type-name").val()
             },
               success: function (dataSet) {
-                console.log(dataSet);
                 $('#tab-sys-code-detail').DataTable( {
                       "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                       destroy    :true,
@@ -456,31 +383,7 @@
                         }
                       }
                      ],
-                      "language": {
-                             "search"       : "在表格中搜索:",
-                             "sProcessing"  : "处理中...",
-                             "sLengthMenu"  : "显示 _MENU_ 项结果",
-                             "sZeroRecords" : "没有匹配结果",
-                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                             "sInfoPostFix" : "",
-                             "sSearch"      : "搜索:",
-                             "sUrl"         : "",
-                             "sEmptyTable"  : "表中数据为空",
-                             "sLoadingRecords": "载入中...",
-                             "sInfoThousands": ",",
-                             "oPaginate": {
-                                 "sFirst"   : "首页",
-                                 "sPrevious": "上页",
-                                 "sNext"    : "下页",
-                                 "sLast"    : "末页"
-                             },
-                             "oAria": {
-                                 "sSortAscending" : ": 以升序排列此列",
-                                 "sSortDescending": ": 以降序排列此列"
-                             }
-                         }
+                      "language": get_languages()
                     });
                 }
             })
@@ -497,7 +400,6 @@
 
      function updCode(row){
             obj = unescape(row)
-            console.log('updCode=',obj)
             $('#upd_type_name').val(obj.split(',')[1])
             $('#upd_type_code').val(obj.split(',')[0])
             if (obj.split(',')[2]=='启用') {
@@ -515,12 +417,10 @@
 
      function updCodeDetail(row){
             obj = unescape(row)
-            console.log('updCodeDetail=',obj)
             $('#upd_type_code_detail').val(obj.split(',')[0])
             $('#upd_detail_code').val(obj.split(',')[2])
             $('#upd_detail_name').val(obj.split(',')[3])
             $("#upd_detail_code_old").val(obj.split(',')[2])
-
 
             if (obj.split(',')[4]=='启用') {
                   $('#upd_detail_status').val('1')
@@ -536,7 +436,6 @@
      }
 
      function delCode(code){
-          console.log('delCode=',code)
           swal({
                 title: "确认要删除吗?",
                 text: "所有使用代码["+code+"]的程序无法使用该代码!",
@@ -565,22 +464,6 @@
                                 swal(dataSet.message, "", "error")
                             }
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                    setTimeout(" window.location.href='/login'",3000);
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                           }
                        })
 
                 } else {
@@ -588,13 +471,10 @@
                 }
             });
 
-
-
      }
 
      function delCodeDetail(row){
           obj = unescape(row)
-          console.log('updCodeDetail=',obj)
           swal({
                 title: "确认要删除吗?",
                 text:  "所有使用代码["+obj.split(',')[3]+"]的程序无法使用该代码!",
@@ -616,7 +496,6 @@
                               detail_code : obj.split(',')[2],
                           },
                           success: function (dataSet) {
-                            console.log(dataSet.code, dataSet.message);
                             if (dataSet.code == 0) {
                                 swal(dataSet.message, "", "success")
                                 query_sys_code_type()
@@ -624,22 +503,6 @@
                                 swal(dataSet.message, "", "error")
                             }
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                    setTimeout(" window.location.href='/login'",3000);
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                           }
                        })
 
                 } else {
@@ -684,30 +547,13 @@
                   type_status : $("#add_type_status").val(),
               },
               success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code == 0) {
                     swal("保存成功", "", "success")
                 } else {
                     swal(dataSet.message, "", "error")
                 }
               },
-              error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-               }
-            })
+          })
      });
 
      $('#code_upd_btn').click(function(){
@@ -721,7 +567,6 @@
                   type_status : $("#upd_type_status").val(),
               },
               success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code == 0) {
                     swal(dataSet.message, "", "success")
                     query_sys_code_type()
@@ -729,23 +574,7 @@
                     swal(dataSet.message, "", "error")
                 }
               },
-              error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-               }
-            })
+          })
      })
 
      $('#code-detail-add-btn').click(function(){
@@ -769,7 +598,6 @@
                   detail_status : $("#add_detail_status").val(),
               },
               success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code == 0) {
                     swal("保存成功", "", "success")
                     query_sys_code_detail()
@@ -777,23 +605,7 @@
                     swal(dataSet.message, "", "error")
                 }
               },
-              error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-               }
-            })
+          })
      });
 
      $('#code_upd_detail_btn').click(function(){
@@ -809,7 +621,6 @@
                   detail_status : $("#upd_detail_status").val(),
               },
               success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code == 0) {
                     swal(dataSet.message, "", "success")
                     query_sys_code_detail()
@@ -817,29 +628,12 @@
                     swal(dataSet.message, "", "error")
                 }
               },
-              error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-               }
-            })
+          })
      })
 
      $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
          var activeTab = $(e.target).text();
          var previousTab = $(e.relatedTarget).text();
-         console.log(activeTab, previousTab)
          $('#cur_tab').val(activeTab)
 
          if (activeTab == '代码类型') {
@@ -857,11 +651,9 @@
               datatype: "json",
               async:false,
               success: function (dataSet) {
-                 console.log(dataSet['message'])
                  $("#add_type_code_detail").empty();
                  $("#add_type_code_detail").append("<option value=''>......</option>");
                  for(i=0;i<dataSet['message'].length;i++){
-                      console.log('i=',dataSet['message'][i])
                       var val  = dataSet['message'][i][0];
                       var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
                       $("#add_type_code_detail").append("<option value='"+val+"'>"+text+"</option>");
@@ -875,7 +667,6 @@
          query_sys_code_type();
          $('#cur_tab').val('代码类型')
      });
-
 
  </script>
 

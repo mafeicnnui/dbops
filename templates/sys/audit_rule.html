@@ -3,15 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>审核规则设置</title>
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{static_url('plugins/switchery/switchery.min.css')}}"  rel="stylesheet">
-    <link href="{{static_url('plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css')}}" rel="stylesheet" />
-    <link href="{{static_url('plugins/bootstrap-touchspin/css/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet" />
-    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />
-    <!-- Notification css (Toastr) -->
-    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
-
 </head>
 <body>
     <p></p>
@@ -399,7 +390,6 @@
            </div>
       </div>
     </div>
-
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-border panel-brown">
@@ -527,7 +517,6 @@
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default panel-border">
@@ -702,44 +691,11 @@
       <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
     </div>
     <br>
-    <!-- end row -->
-
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-    <script src="{{static_url('plugins/switchery/switchery.min.js')}}"></script>
-    <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
-    <script src="{{static_url('plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.min.js')}}"></script>
-    <script src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}" type="text/javascript"></script>
-    <script src="{{static_url('plugins/bootstrap-touchspin/js/jquery.bootstrap-touchspin.min.js')}}" type="text/javascript"></script>
-
-    <!-- Toastr js -->
-    <script src="{{static_url('plugins/toastr/toastr.min.js')}}"></script>
 
     <script>
 
-       function showtips(flag,title,content){
-                toastr.options = {
-                      "closeButton": false,
-                      "debug": false,
-                      "newestOnTop": false,
-                      "progressBar": true,
-                      "positionClass": "toast-top-right",
-                      "preventDuplicates": false,
-                      "onclick": null,
-                      "showDuration": "3000",
-                      "hideDuration": "1000",
-                      "timeOut": "5000",
-                      "extendedTimeOut": "1000",
-                      "showEasing": "swing",
-                      "hideEasing": "linear",
-                      "showMethod": "fadeIn",
-                      "hideMethod": "fadeOut"
-                    }
-                    toastr[flag](content,title)
-        }
-
        function set_attr(data){
             var  obj = JSON.parse(data);
-            console.log('obj=',obj)
 
             //DDL审核规则:rows:1
             if (obj['switch_check_ddl'] == "true") {
@@ -1199,7 +1155,6 @@
 
             },
             success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code==0) {
                    swal("变更成功", "", "success")
                 } else {

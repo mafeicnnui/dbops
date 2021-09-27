@@ -12,17 +12,16 @@ from   web.model.t_backup    import push_backup_task,run_backup_task,stop_backup
 from   web.model.t_dmmx      import get_dmm_from_dm,get_backup_server,get_db_backup_server,get_db_backup_tags,get_db_backup_tags_by_env_type
 from   web.utils.common      import get_day_nday_ago,now,current_rq2,current_rq3
 from   web.utils.basehandler import basehandler
+from   web.utils import base_handler
 
-class backupquery(basehandler):
-    @tornado.web.authenticated
+class backupquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./backup/backup_query.html",
                     dm_env_type = await get_dmm_from_dm('03'),
                     dm_db_type  = await get_dmm_from_dm('02')
                     )
 
-class backup_query(basehandler):
-    @tornado.web.authenticated
+class backup_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tagname     = self.get_argument("tagname")
@@ -32,7 +31,7 @@ class backup_query(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class backup_case(basehandler):
+class backup_case(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         db_env = self.get_argument("db_env")
@@ -40,8 +39,7 @@ class backup_case(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class backupadd(basehandler):
-    @tornado.web.authenticated
+class backupadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./backup/backup_add.html",
                     backup_server = await get_backup_server(),
@@ -49,8 +47,7 @@ class backupadd(basehandler):
                     dm_db_type    = await get_dmm_from_dm('02'),
                     )
 
-class backupadd_save(basehandler):
-    @tornado.web.authenticated
+class backupadd_save(base_handler.TokenHandler):
     async def post(self):
         d_backup = {}
         d_backup['backup_server']   = self.get_argument("backup_server")
@@ -72,15 +69,13 @@ class backupadd_save(basehandler):
         result = await save_backup(d_backup)
         self.write({"code": result['code'], "message": result['message']})
 
-class backupchange(basehandler):
-    @tornado.web.authenticated
+class backupchange(base_handler.TokenHandler):
     async def get(self):
         self.render("./backup/backup_change.html",
                     dm_env_type=await get_dmm_from_dm('03'),
                     dm_db_type=await get_dmm_from_dm('02'))
 
-class backupedit(basehandler):
-    @tornado.web.authenticated
+class backupedit(base_handler.TokenHandler):
     async def get(self):
         backup_id = self.get_argument("backupid")
         d_backup  = await get_backup_by_backupid(backup_id)
@@ -106,8 +101,7 @@ class backupedit(basehandler):
                     dm_db_type       = await get_dmm_from_dm('02')
                     )
 
-class backupedit_save(basehandler):
-    @tornado.web.authenticated
+class backupedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_backup = {}
@@ -131,24 +125,21 @@ class backupedit_save(basehandler):
         result = await upd_backup(d_backup)
         self.write({"code": result['code'], "message": result['message']})
 
-class backupedit_del(basehandler):
-    @tornado.web.authenticated
+class backupedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         backupid  = self.get_argument("backupid")
         result = await del_backup(backupid)
         self.write({"code": result['code'], "message": result['message']})
 
-class backuplogquery(basehandler):
-    @tornado.web.authenticated
+class backuplogquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./backup/backup_log_query.html",
                     dm_env_type = await get_dmm_from_dm('03'),
                     begin_date = current_rq3(-1),
                     end_date = current_rq2())
 
-class backup_log_query(basehandler):
-    @tornado.web.authenticated
+class backup_log_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tagname    = self.get_argument("tagname")
@@ -159,8 +150,7 @@ class backup_log_query(basehandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
-class backup_log_query_detail(basehandler):
-    @tornado.web.authenticated
+class backup_log_query_detail(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tagname     = self.get_argument("tagname")
@@ -169,8 +159,7 @@ class backup_log_query_detail(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class backuploganalyze(basehandler):
-    @tornado.web.authenticated
+class backuploganalyze(base_handler.TokenHandler):
     async def get(self):
         self.render("./backup/backup_log_analyze.html",
                       dm_env_type    = await get_dmm_from_dm('03'),
@@ -181,8 +170,7 @@ class backuploganalyze(basehandler):
                     )
 
 
-class backup_log_analyze(basehandler):
-    @tornado.web.authenticated
+class backup_log_analyze(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_list          = {}
@@ -197,8 +185,7 @@ class backup_log_analyze(basehandler):
         v_json = json.dumps(d_list)
         self.write(v_json)
 
-class get_backup_tasks(basehandler):
-    @tornado.web.authenticated
+class get_backup_tasks(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         db_env  = self.get_argument("db_env")
@@ -208,8 +195,7 @@ class get_backup_tasks(basehandler):
         v_json  = json.dumps(d_list)
         self.write(v_json)
 
-class backupedit_push(basehandler):
-    @tornado.web.authenticated
+class backupedit_push(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
@@ -218,8 +204,7 @@ class backupedit_push(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class backupedit_run(basehandler):
-    @tornado.web.authenticated
+class backupedit_run(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
@@ -228,8 +213,7 @@ class backupedit_run(basehandler):
         v_json = json.dumps(v_list)
         self.write(json.loads(v_json))
 
-class backupedit_stop(basehandler):
-    @tornado.web.authenticated
+class backupedit_stop(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")

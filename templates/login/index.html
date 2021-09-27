@@ -31,8 +31,8 @@
         <link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
         <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.css') }}"  rel="stylesheet" />
-         <link href="{{static_url('plugins/bootstrap-touchspin/css/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet" />
-
+        <link href="{{static_url('plugins/bootstrap-touchspin/css/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet" />
+        <link href="{{static_url('plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css')}}" rel="stylesheet" />
 
         <style>
             .modal-lg {
@@ -117,7 +117,6 @@
     </head>
 
     <body  class="fixed-left">
-        <!-- Begin page -->
         <div id="wrapper">
             <!-- Top Bar Start -->
             <div class="topbar">
@@ -214,7 +213,6 @@
             </div>
 
         </div>
-        <!-- END wrapper -->
 
         <div id="con-userinfo-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-lg">
@@ -485,9 +483,12 @@
                       datatype: "json",
                       async:false,
                       data:{},
+                      headers: {
+                        'token': window.localStorage.getItem("token")
+                      },
                       success: function (dataSet) {
-                        $("#ul-menu").append(dataSet.message);
-                        $('#main-container-div').load("/main");
+                         $("#ul-menu").append(dataSet.message);
+                         $('#main-container-div').load("/main");
                      }
                });
         </script>
@@ -518,11 +519,9 @@
         <script src="{{static_url('plugins/datatables/dataTables.scroller.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
-
         <script src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>
         <script src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
         <script src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
-
         <script src="{{static_url('plugins/echarts/echarts.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js')}}"></script>
@@ -533,6 +532,7 @@
         <script src="{{static_url('plugins/jquery.contextMenu/jquery.contextMenu.min.js') }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
         <script src="{{static_url('plugins/bootstrap-touchspin/js/jquery.bootstrap-touchspin.min.js')}}" ></script>
+        <script src="{{static_url('plugins/bootstrap-tagsinput/js/bootstrap-tagsinput.min.js')}}"></script>
         <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/js/utils.js')}}"></script>
@@ -609,7 +609,6 @@
              }
 
             function set_user_image(){
-                 //load user image
                  $('#account-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
                  $('#user-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
             }
@@ -712,7 +711,6 @@
                                 file_name  : $('#user_detail_image_file').val(),
                             },
                             success: function (dataSet) {
-                                console.log(dataSet.code, dataSet.message);
                                 if (dataSet.code==0) {
                                    swal("变更成功", "", "success")
                                 } else {
@@ -727,13 +725,6 @@
             $(".file").click(function() {
                       tabId =$(this).attr("id").split('^')[0]
                       url=$(this).attr("id").split('^')[1]
-
-                      // Object.keys(tabStatus).forEach(function(key){
-                      //      console.log(key,tabStatus[key]);
-                      // })
-
-                      //测试用户点击菜单是否可用
-                      // $.ajax({url: url,type: "get",datatype: "html"})
 
                       clearInterval(timer);
 
@@ -751,15 +742,17 @@
                       }
 
                       $('#main-container-div').load(url);
+                       refresh_token();
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
                          url = '/'+id.replace(/_/g,'/')
-                         console.log('url=',url )
                          $('#main-container-div').load(url);
+                          refresh_token();
                       })
 
                       $('#'+'close_'+tabId).click(function(){
+                         delete tabStatus[tabId]
                          $(this).parent().parent().remove()
                          $('#ul_tabs').find('li:last').addClass("active")
                          lastId=$('#ul_tabs').find('li:last').children().attr('id')
@@ -767,7 +760,6 @@
                               $('#main-container-div').load('/main');
                          } else {
                               lastHref= '/'+lastId.replace(/_/g,'/')
-                              console.log('lastHref=',lastHref)
                               $('#main-container-div').load(lastHref);
                          }
                       })
@@ -813,11 +805,30 @@
             function panalHopson() {
                $('#main-container-div').load("/main");
             }
-             function panalEasylife() {
+
+            function panalEasylife() {
                $('#main-container-div').load("/easylife");
             }
-             function panalEasebase() {
+
+            function panalEasebase() {
                $('#main-container-div').load("/platform");
+            }
+
+            function refresh_token() {
+                  $.ajax({
+                      url: "/refresh_token",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                         'token': window.localStorage.getItem("token")
+                      },
+                      success: function (dataSet) {
+                        console.log(dataSet)
+                        console.log('token updated!')
+                        window.localStorage['token'] = dataSet.token
+                     }
+               });
             }
 
             $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
@@ -830,31 +841,16 @@
 
             $(document).ready(function() {
                  setInterval("updateTime();",1000);
-                 //setInterval("check_lock_screen();",30000);
                  set_user_image();
-                 //check_lock_screen();
             });
 
-            $(document).ajaxError(function( event, request,options ) {
-               if (request.status==403){
-                   swal("登陆信息已过期，请重新登陆!", "", "error")
-                   //window.location.href='/login'
-                   parent.location.href='/login'
 
-               } else if (request.status==502) {
-                   swal("用户无权访问权限此功能!("+options.url+")", "", "error")
-               } else if (request.status==503){
-                   swal("系统不可用,请联系管理员!", "", "error")
-                    parent.location.href='/login'
-               } else {
-                   swal("系统不可用,请稍后重试!", "", "error")
-                    parent.location.href='/login'
-               }
-            });
-
-            //设置ajax超时时间为3s
+            //设置ajax超时时间为3s,请求头传递token
             $.ajaxSetup({
-               timeout:3000
+               timeout:3000,
+               headers: {
+                'token': window.localStorage.getItem("token")
+               }
             });
 
             //可以实现统计增加遮照功能
@@ -862,7 +858,33 @@
                 start_Loader('main-container-div')
             }).ajaxStop(function(){
                 end_Loader('main-container-div')
-            })
+            }).ajaxError(function( event, request,options ) {
+                if (request.status==401){
+                    swal("token已失效!", "", "error")
+                } else if (request.status==402) {
+                    swal("token认证失败!", "", "error")
+                } else if (request.status==403) {
+                    swal("非法的token!", "", "error")
+                } else if (request.status==502) {
+                    swal("用户无权访问此功能!("+options.url+")", "", "error")
+                } else {
+                    swal("系统不可用,请联系管理员!", "", "error")
+                }
+               // if (request.status==403){
+               //     swal("登陆信息已过期，请重新登陆!", "", "error")
+               //     //window.location.href='/login'
+               //     parent.location.href='/login'
+               //
+               // } else if (request.status==502) {
+               //     swal("用户无权访问权限此功能!("+options.url+")", "", "error")
+               // } else if (request.status==503){
+               //     swal("系统不可用,请联系管理员!", "", "error")
+               //      parent.location.href='/login'
+               // } else {
+               //     swal("系统不可用,请稍后重试!", "", "error")
+               //      parent.location.href='/login'
+               // }
+            });
 
         </script>
 

@@ -14,17 +14,23 @@ from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_
 from web.model.t_dmmx  import get_dmm_from_dm
 from web.model.t_ds    import query_project
 from web.utils.basehandler import basehandler
+from web.utils             import base_handler
 
-class userquery(basehandler):
-    @tornado.web.authenticated
-    async def get(self):
-        await self.check_valid()
+
+class userquery(base_handler.TokenHandler):
+     def get(self):
         self.render("./user/user_query.html")
 
-class useradd(basehandler):
-    @tornado.web.authenticated
+class user_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname = self.get_argument("qname")
+        v_list = await query_user(qname)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class useradd(base_handler.TokenHandler):
     async def get(self):
-        await self.check_valid()
         roles  = await get_roles()
         gender = await get_dmm_from_dm('04')
         dept   = await get_dmm_from_dm('01')
@@ -35,10 +41,8 @@ class useradd(basehandler):
                     dept=dept,
                     proj_group=proj_group)
 
-class useradd_save(basehandler):
-    @tornado.web.authenticated
+class useradd_save(base_handler.TokenHandler):
     async def post(self):
-        await self.check_valid()
         d_user={}
         d_user['login']        = self.get_argument("login")
         d_user['wkno']         = self.get_argument("wkno")
@@ -57,8 +61,7 @@ class useradd_save(basehandler):
         result = await save_user(d_user)
         self.write({"code": result['code'], "message": result['message']})
 
-class useradd_save_uploadImage(basehandler):
-    @tornado.web.authenticated
+class useradd_save_uploadImage(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         static_path = self.get_template_path().replace("templates", "static")
@@ -75,16 +78,12 @@ class useradd_save_uploadImage(basehandler):
             print(e)
             self.write({"code": -1, "message": '保存图片失败'+str(e)})
 
-class userchange(basehandler):
-    @tornado.web.authenticated
-    async def get(self):
-        await self.check_valid()
+class userchange(base_handler.TokenHandler):
+     def get(self):
         self.render("./user/user_change.html")
 
-class useredit(basehandler):
-    @tornado.web.authenticated
+class useredit(base_handler.TokenHandler):
     async def get(self):
-        await self.check_valid()
         userid  = self.get_argument("userid")
         d_user  = await get_user_by_userid(userid)
         genders = await get_dmm_from_dm('04')
@@ -113,10 +112,8 @@ class useredit(basehandler):
                      proj_groups = proj_groups
                     )
 
-class useredit_save(basehandler):
-    @tornado.web.authenticated
+class useredit_save(base_handler.TokenHandler):
     async def post(self):
-        await self.check_valid()
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_user={}
         d_user['userid']      = self.get_argument("userid")
@@ -138,36 +135,20 @@ class useredit_save(basehandler):
         result = await upd_user(d_user)
         self.write({"code": result['code'], "message": result['message']})
 
-class useredit_del(basehandler):
-    @tornado.web.authenticated
+class useredit_del(base_handler.TokenHandler):
     async def post(self):
-        await self.check_valid()
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_user={}
         d_user['userid']   = self.get_argument("userid")
         result=await del_user(d_user)
         self.write({"code": result['code'], "message": result['message']})
 
-class user_query(basehandler):
-    @tornado.web.authenticated
-    async def post(self):
-        await self.check_valid()
-        self.set_header("Content-Type", "application/json; charset=UTF-8")
-        qname = self.get_argument("qname")
-        v_list = await query_user(qname)
-        v_json = json.dumps(v_list)
-        self.write(v_json)
-
-class projectquery(basehandler):
-    @tornado.web.authenticated
-    async def get(self):
-        await self.check_valid()
+class projectquery(base_handler.TokenHandler):
+    def get(self):
         self.render("./user/projectquery.html")
 
-class project_query(basehandler):
-    @tornado.web.authenticated
+class project_query(base_handler.TokenHandler):
     async def post(self):
-        await self.check_valid()
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname     = self.get_argument("qname")
         userid    = self.get_argument("userid")
@@ -176,10 +157,8 @@ class project_query(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class projectprivs_save(basehandler):
-    @tornado.web.authenticated
+class projectprivs_save(base_handler.TokenHandler):
     async def post(self):
-        await self.check_valid()
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_proj={}
         d_proj['dsid']          = self.get_argument("dsid")

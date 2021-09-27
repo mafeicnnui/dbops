@@ -43,7 +43,6 @@ def dif_time(p_tm):
 
 async def logon_user_check(login_name,password,verify_code,verify_img):
     result={}
-    result['url']=''
     user = await get_user_by_loginame(login_name)
     print('logon_user_check=',user)
 
