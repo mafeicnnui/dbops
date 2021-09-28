@@ -6,29 +6,24 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
 from   web.model.t_kpi  import query_kpi_item,query_kpi_item_market,query_kpi,update_kpi,update_item_kpi,\
-    generate_item_kpi,update_item_data_kpi,query_kpi_hst,exp_kpi,exp_hst_kpi,query_kpi_task
+       generate_item_kpi,update_item_data_kpi,query_kpi_hst,exp_kpi,exp_hst_kpi,query_kpi_task
 from   web.model.t_dmmx import get_sync_server
+from   web.utils import base_handler
 
-from   web.utils.basehandler import basehandler
-
-class kpi_item_query(basehandler):
-    @tornado.web.authenticated
+class kpi_item_query(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbtj/kpi_item.html",
                     dm_item_market= await query_kpi_item_market()
                     )
 
-class kpi_create(basehandler):
-    @tornado.web.authenticated
+class kpi_create(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbtj/kpi_generate.html",
                     sync_server    = await get_sync_server(),
               )
 
-class _kpi_create(basehandler):
-    @tornado.web.authenticated
+class _kpi_create(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         task        = self.get_argument("task")
@@ -37,8 +32,7 @@ class _kpi_create(basehandler):
         self.write(v_json)
 
 
-class _kpi_item_query(basehandler):
-    @tornado.web.authenticated
+class _kpi_item_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month       = self.get_argument("month")
@@ -47,8 +41,7 @@ class _kpi_item_query(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class _kpi_item_market(basehandler):
-    @tornado.web.authenticated
+class _kpi_item_market(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_list = await query_kpi_item_market()
@@ -56,15 +49,13 @@ class _kpi_item_market(basehandler):
         self.write(v_json)
 
 
-class kpi_query(basehandler):
-    @tornado.web.authenticated
+class kpi_query(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbtj/kpi_query.html",
                     dm_item_market=await query_kpi_item_market()
                     )
 
-class _kpi_query(basehandler):
-    @tornado.web.authenticated
+class _kpi_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month       = self.get_argument("month")
@@ -73,15 +64,13 @@ class _kpi_query(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class kpi_hst_query(basehandler):
-    @tornado.web.authenticated
+class kpi_hst_query(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbtj/kpi_hst_query.html",
                     dm_item_market=await query_kpi_item_market()
                     )
 
-class _kpi_hst_query(basehandler):
-    @tornado.web.authenticated
+class _kpi_hst_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         bbrq = self.get_argument("bbrq")
@@ -90,8 +79,7 @@ class _kpi_hst_query(basehandler):
         self.write(v_json)
 
 
-class _kpi_hst_export(basehandler):
-    @tornado.web.authenticated
+class _kpi_hst_export(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         bbrq = self.get_argument("bbrq")
@@ -99,8 +87,7 @@ class _kpi_hst_export(basehandler):
         zipfile = await exp_hst_kpi(static_path,bbrq)
         self.write({"code": 0, "message": zipfile})
 
-class _kpi_export(basehandler):
-    @tornado.web.authenticated
+class _kpi_export(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month = self.get_argument("month")
@@ -110,8 +97,7 @@ class _kpi_export(basehandler):
         self.write({"code": 0, "message": zipfile})
 
 
-class _kpi_update(basehandler):
-    @tornado.web.authenticated
+class _kpi_update(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month   = self.get_argument("month")
@@ -120,8 +106,7 @@ class _kpi_update(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class _kpi_item_update(basehandler):
-    @tornado.web.authenticated
+class _kpi_item_update(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month      = self.get_argument("month")
@@ -132,8 +117,7 @@ class _kpi_item_update(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class _kpi_item_data_update(basehandler):
-    @tornado.web.authenticated
+class _kpi_item_data_update(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month      = self.get_argument("month")
@@ -145,8 +129,7 @@ class _kpi_item_data_update(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class _kpi_item_generate(basehandler):
-    @tornado.web.authenticated
+class _kpi_item_generate(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month  = self.get_argument("month")

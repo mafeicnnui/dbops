@@ -6,14 +6,12 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
-from  web.utils.basehandler   import basehandler
 from  web.model.t_db_inst     import query_inst_list
 from  web.model.t_db_user     import query_db_user,save_db_user,get_user_sql,get_db_name,query_user_by_id,update_db_user,delete_db_user
 from  web.model.t_dmmx        import get_dmm_from_dm,get_slow_inst_names
+from web.utils                import base_handler
 
-class dbuserquery(basehandler):
-    @tornado.web.authenticated
+class dbuserquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./db/db_user_query.html",
                     dm_inst_list    = await query_inst_list(),
@@ -23,8 +21,7 @@ class dbuserquery(basehandler):
                     dm_inst_names   = await get_slow_inst_names('') )
 
 
-class db_user_query_by_id(basehandler):
-    @tornado.web.authenticated
+class db_user_query_by_id(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         user_id  = self.get_argument("user_id")
@@ -33,8 +30,7 @@ class db_user_query_by_id(basehandler):
         self.write(v_json)
 
 
-class db_user_query(basehandler):
-    @tornado.web.authenticated
+class db_user_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         user_name  = self.get_argument("user_name")
@@ -44,8 +40,7 @@ class db_user_query(basehandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
-class db_user_save(basehandler):
-    @tornado.web.authenticated
+class db_user_save(base_handler.TokenHandler):
     async def post(self):
         d_db_user = {}
         d_db_user['inst_id']     = self.get_argument("add_inst_id")
@@ -59,8 +54,7 @@ class db_user_save(basehandler):
         result = await save_db_user(d_db_user)
         self.write({"code": result['code'], "message": result['message']})
 
-class db_user_update(basehandler):
-    @tornado.web.authenticated
+class db_user_update(base_handler.TokenHandler):
     async def post(self):
         d_db_user = {}
         d_db_user['user_id']     = self.get_argument("upd_user_id")
@@ -76,15 +70,13 @@ class db_user_update(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class db_user_delete(basehandler):
-    @tornado.web.authenticated
+class db_user_delete(base_handler.TokenHandler):
     async def post(self):
         user_id  = self.get_argument("user_id")
         result = await delete_db_user(user_id)
         self.write({"code": result['code'], "message": result['message']})
 
-class db_user_sql(basehandler):
-    @tornado.web.authenticated
+class db_user_sql(base_handler.TokenHandler):
     async def post(self):
         d_db_user = {}
         d_db_user['mysql_db_user'] = self.get_argument("mysql_db_user")
@@ -93,13 +85,13 @@ class db_user_sql(basehandler):
         result = await get_user_sql(d_db_user)
         self.write(result)
 
-class db_user_dbs(basehandler):
+class db_user_dbs(base_handler.TokenHandler):
     async def post(self):
         inst_id  = self.get_argument("inst_id")
         result   = await get_db_name(inst_id)
         self.write({"code": result['code'], "message": result['message']})
 
-class db_user_info(basehandler):
+class db_user_info(base_handler.TokenHandler):
     async def post(self):
         inst_id = self.get_argument("inst_id")
         result  = await get_db_name(inst_id)

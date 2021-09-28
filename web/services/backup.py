@@ -6,13 +6,11 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
 from   web.model.t_backup    import query_backup,query_backup_case,save_backup,get_backup_by_backupid,upd_backup,del_backup,query_backup_log,query_backup_log_detail
 from   web.model.t_backup    import push_backup_task,run_backup_task,stop_backup_task,query_backup_log_analyze
 from   web.model.t_dmmx      import get_dmm_from_dm,get_backup_server,get_db_backup_server,get_db_backup_tags,get_db_backup_tags_by_env_type
 from   web.utils.common      import get_day_nday_ago,now,current_rq2,current_rq3
-from   web.utils.basehandler import basehandler
-from   web.utils import base_handler
+from   web.utils             import base_handler
 
 class backupquery(base_handler.TokenHandler):
     async def get(self):

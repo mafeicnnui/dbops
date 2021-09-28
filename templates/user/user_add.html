@@ -213,22 +213,8 @@
            </div>
        </form>
 
+    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
     <script>
-
-       function set_selected(){
-            document.all['s_login'].style.color="#ff0000";
-            document.all['s_user'].style.color="#ff0000";
-            document.all['s_wkno'].style.color="#ff0000";
-            document.all['s_pass'].style.color="#ff0000";
-            document.all['s_gender'].style.color="#ff0000";
-            document.all['s_dept'].style.color="#ff0000";
-            document.all['s_email'].style.color="#ff0000";
-            document.all['s_phone'].style.color="#ff0000";
-            document.all['s_expire_date'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-            document.all['s_ua_sele_role_priv'].style.color="#ff0000";
-            document.all['s_proj_group'].style.color="#ff0000";
-        }
 
         $(document).ready(function() {
 
@@ -286,8 +272,6 @@
                     dataType: 'JSON',
                     success: function (dataSet) {
                         if (dataSet.code == 0) {
-                            console.log('/user/add/uploadImage1=', dataSet);
-                            console.log('/user/add/uploadImage2=', dataSet.file_path + '/' + dataSet.file_name)
                             $('#image_path').val(dataSet.file_path)
                             $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
 
@@ -296,45 +280,28 @@
                                 type: "post",
                                 datatype: "json",
                                 data: {
-                                    login  : $('#login').val(),
-                                    wkno   : $('#wkno').val(),
-                                    user   : $('#user').val(),
-                                    pass   : $('#pass').val(),
-                                    gender : $('#gender').val(),
-                                    email  : $('#email').val(),
-                                    phone  : $('#phone').val(),
-                                    proj_group: $('#proj_group').val(),
-                                    dept: $('#dept').val(),
+                                    login      : $('#login').val(),
+                                    wkno       : $('#wkno').val(),
+                                    user       : $('#user').val(),
+                                    pass       : $('#pass').val(),
+                                    gender     : $('#gender').val(),
+                                    email      : $('#email').val(),
+                                    phone      : $('#phone').val(),
+                                    proj_group : $('#proj_group').val(),
+                                    dept       : $('#dept').val(),
                                     expire_date: $('#expire_date').val(),
-                                    status: $('#status').val(),
-                                    privs: get_privs(),
-                                    file_path: dataSet.file_path,
-                                    file_name: dataSet.file_name,
+                                    status     : $('#status').val(),
+                                    privs      : get_privs(),
+                                    file_path  : dataSet.file_path,
+                                    file_name  : dataSet.file_name,
                                 },
                                 success: function (dataSet) {
-                                    console.log(dataSet.code, dataSet.message);
                                     if (dataSet.code == 0) {
                                         swal("保存成功", "", "success")
                                     } else {
                                         swal(dataSet.message, "", "error")
                                     }
                                 },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                                    console.log('jqXHR.status=',jqXHR.status);
-                                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                                    console.log('textStatus=',textStatus);
-                                    console.log('errorThrown=',errorThrown);
-                                    if (jqXHR.status==403){
-                                        swal("登陆信息已过期，请重新登陆!", "", "error")
-                                        window.location.href='/login'
-                                    } else if (jqXHR.status==502){
-                                        swal("用户无权访问权限此功能!", "", "error")
-                                    } else {
-                                        swal("系统不可用,请稍后重试!", "", "error")
-                                    }
-                                }
                             });
 
                         } else {
@@ -365,7 +332,6 @@
                             file_name: '',
                         },
                         success: function (dataSet) {
-                            console.log(dataSet.code, dataSet.message);
                             if (dataSet.code == 0) {
                                 swal("保存成功", "", "success")
                             } else {

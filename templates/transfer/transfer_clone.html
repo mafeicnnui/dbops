@@ -3,8 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>传输克隆</title>
-    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
-    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <p></p>
@@ -280,33 +278,12 @@
        </div>
     </form>
 
-    <!-- Sweet-Alert  -->
-    <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
-     <!-- Tooltipster js -->
     <script src="{{static_url('plugins/tooltipster/tooltipster.bundle.min.js')}}"></script>
     <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
     <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
-    <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
+<!--    <script src="{{static_url('assets/js/jquery.app.js')}}"></script>-->
 
     <script>
-
-        function set_selected(){
-            document.all['s_transfer_tag'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_transfer_server'].style.color="#ff0000";
-            document.all['s_transfer_type'].style.color="#ff0000";
-            document.all['s_sour_db_server'].style.color="#ff0000";
-            document.all['s_sour_db_name'].style.color="#ff0000";
-            document.all['s_sour_tab_name'].style.color="#ff0000";
-            document.all['s_dest_db_server'].style.color="#ff0000";
-            document.all['s_dest_db_name'].style.color="#ff0000";
-            document.all['s_python3_home'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_script_name'].style.color="#ff0000";
-            document.all['s_batch_size'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-        }
 
         $(document).ready(function() {
             set_selected();
@@ -317,7 +294,6 @@
         });
 
         $("#save").click(function () {
-          console.log(" status:",$('#status').val())
           $.ajax({
             url: "/transfer/add/save",
             type: "post",
@@ -342,29 +318,12 @@
                     status               : $('#status').val()
             },
             success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
                 if (dataSet.code==0) {
                    swal("克隆成功", "", "success")
                 } else {
                    swal(dataSet.message, "", "error")
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('jqXHR.responseText=',jqXHR.responseText);
-                console.log('jqXHR.status=',jqXHR.status);
-                console.log('jqXHR.readyState=',jqXHR.readyState);
-                console.log('jqXHR.statusText=',jqXHR.statusText);
-                console.log('textStatus=',textStatus);
-                console.log('errorThrown=',errorThrown);
-                if (jqXHR.status==403){
-                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                    setTimeout(" window.location.href='/login'",3000);
-                } else if (jqXHR.status==502){
-                    swal("用户无权访问权限此功能!", "", "error")
-                } else {
-                    swal("系统不可用,请稍后重试!", "", "error")
-                }
-            }
          });
       });
 

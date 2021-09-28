@@ -5,16 +5,12 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.logon  import index,main,platform,easylife,logon,logout,logon_check,get_tree,get_time,get_verify,error,lock,heartbeat
-from web.services.logon  import unlock,lock_status,forget_password,forget_password_check_user,forget_password_check_auth,forget_password_check_pass,update_token
+from web.services.logon  import index,main,platform,easylife,logon,logout,logon_check,get_tree,get_time,get_verify,error
+from web.services.logon  import forget_password,forget_password_check_user,forget_password_check_auth,forget_password_check_pass,update_token
 
 # 功能：主页面
 logon = [
         (r"/login",                          logon),
-        (r"/unlock",                         unlock),
-        (r"/lock",                           lock),
-        (r"/lock_status",                    lock_status),
-        (r"/heartbeat",                      heartbeat),
         (r"/logout",                         logout),
         (r"/error",                          error),
         (r"/",                               index),

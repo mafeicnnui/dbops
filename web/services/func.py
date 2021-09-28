@@ -5,19 +5,16 @@
 # @File : menu.py
 # @Software: PyCharm
 
-
 import json
-import tornado.web
 from web.model.t_xtqx  import query_func,get_privs,save_func,get_func_by_funcid,upd_func,del_func
-from web.utils.basehandler import basehandler
+from web.utils         import base_handler
 
-class funcquery(basehandler):
-    @tornado.web.authenticated
+
+class funcquery(base_handler.TokenHandler):
     def get(self):
         self.render("./func/func_query.html")
 
-class func_query(basehandler):
-    @tornado.web.authenticated
+class func_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname  = self.get_argument("qname")
@@ -25,14 +22,12 @@ class func_query(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class funcadd(basehandler):
-    @tornado.web.authenticated
+class funcadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./func/func_add.html",
                     menus = await get_privs())
 
-class funcadd_save(basehandler):
-    @tornado.web.authenticated
+class funcadd_save(base_handler.TokenHandler):
     async def post(self):
         d_func={}
         d_func['priv_id']      = self.get_argument("priv_id")
@@ -43,13 +38,11 @@ class funcadd_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class funcchange(basehandler):
-    @tornado.web.authenticated
+class funcchange(base_handler.TokenHandler):
     def get(self):
         self.render("./func/func_change.html")
 
-class funcedit(basehandler):
-    @tornado.web.authenticated
+class funcedit(base_handler.TokenHandler):
     async def get(self):
         funcid = self.get_argument("funcid")
         d_func = await get_func_by_funcid(funcid)
@@ -62,8 +55,7 @@ class funcedit(basehandler):
                     menus     = await get_privs(),
                     )
 
-class funcedit_save(basehandler):
-    @tornado.web.authenticated
+class funcedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_func={}
@@ -75,8 +67,7 @@ class funcedit_save(basehandler):
         result = await upd_func(d_func)
         self.write({"code": result['code'], "message": result['message']})
 
-class funcedit_del(basehandler):
-    @tornado.web.authenticated
+class funcedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         funcid = self.get_argument("funcid")

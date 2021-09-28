@@ -6,20 +6,18 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
 from   web.model.t_minio  import query_minio,query_minio_case,save_minio,get_minio_by_minioid,upd_minio,del_minio,query_minio_log
 from   web.model.t_minio  import push_minio_task,query_minio_log_analyze
 from   web.model.t_dmmx   import get_dmm_from_dm,get_minio_tags,get_sync_server
 from   web.utils.common   import get_day_nday_ago,now,current_rq2,current_rq3
 from   web.utils.basehandler import basehandler
+from   web.utils import base_handler
 
-class minioquery(basehandler):
-    @tornado.web.authenticated
+class minioquery(base_handler.TokenHandler):
     def get(self):
         self.render("./minio/minio_query.html")
 
-class minio_query(basehandler):
-    @tornado.web.authenticated
+class minio_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tagname     = self.get_argument("tagname")
@@ -27,7 +25,7 @@ class minio_query(basehandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class minio_case(basehandler):
+class minio_case(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         db_env  = self.get_argument("db_env")
@@ -35,16 +33,14 @@ class minio_case(basehandler):
         v_json  = json.dumps(v_list)
         self.write(v_json)
 
-class minioadd(basehandler):
-    @tornado.web.authenticated
+class minioadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./minio/minio_add.html",
                     dm_sync_server= await get_sync_server(),
-                    dm_sync_type  = await get_dmm_from_dm('34'),
+                    dm_sync_type   = await get_dmm_from_dm('34'),
                     dm_sync_time_type = await get_dmm_from_dm('10'))
 
-class minioadd_save(basehandler):
-    @tornado.web.authenticated
+class minioadd_save(base_handler.TokenHandler):
     async def post(self):
         d_sync = {}
         d_sync['sync_tag']        = self.get_argument("sync_tag")
@@ -69,13 +65,11 @@ class minioadd_save(basehandler):
         result = await save_minio(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
-class miniochange(basehandler):
-    @tornado.web.authenticated
+class miniochange(base_handler.TokenHandler):
     def get(self):
         self.render("./minio/minio_change.html")
 
-class minioedit(basehandler):
-    @tornado.web.authenticated
+class minioedit(base_handler.TokenHandler):
     async def get(self):
         sync_tag   = self.get_argument("sync_tag")
         d_sync     = await get_minio_by_minioid(sync_tag)
@@ -103,8 +97,7 @@ class minioedit(basehandler):
                     dm_sync_type   = await get_dmm_from_dm('34'),
                     dm_sync_time_type = await get_dmm_from_dm('10'))
 
-class minioclone(basehandler):
-    @tornado.web.authenticated
+class minioclone(base_handler.TokenHandler):
     async def get(self):
         sync_tag = self.get_argument("sync_tag")
         d_sync   = await get_minio_by_minioid(sync_tag)
@@ -133,8 +126,7 @@ class minioclone(basehandler):
                     dm_sync_time_type= await get_dmm_from_dm('10'))
 
 
-class minioedit_save(basehandler):
-    @tornado.web.authenticated
+class minioedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_sync = {}
@@ -160,8 +152,7 @@ class minioedit_save(basehandler):
         result = await upd_minio(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
-class minioedit_del(basehandler):
-    @tornado.web.authenticated
+class minioedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag  = self.get_argument("sync_tag")
@@ -169,14 +160,12 @@ class minioedit_del(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 class miniologquery(basehandler):
-    @tornado.web.authenticated
     def get(self):
         self.render("./minio/minio_log_query.html",
                     begin_date=current_rq3(-1),
                     end_date=current_rq2())
 
-class minio_log_query(basehandler):
-    @tornado.web.authenticated
+class minio_log_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tagname    = self.get_argument("tagname")
@@ -187,15 +176,13 @@ class minio_log_query(basehandler):
         self.write(v_json)
 
 class miniologanalyze(basehandler):
-    @tornado.web.authenticated
     async def get(self):
         self.render("./minio/minio_log_analyze.html",
                       minio_tags     = await get_minio_tags(),
                       begin_date     = get_day_nday_ago(now(),15),
                       end_date       = get_day_nday_ago(now(),0))
 
-class minio_log_analyze(basehandler):
-    @tornado.web.authenticated
+class minio_log_analyze(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tagname    = self.get_argument("tagname")
@@ -205,8 +192,7 @@ class minio_log_analyze(basehandler):
         v_json = json.dumps({'data1':v_list1,'data2':v_list2,'data3':v_list3})
         self.write(v_json)
 
-class minioedit_push(basehandler):
-    @tornado.web.authenticated
+class minioedit_push(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")

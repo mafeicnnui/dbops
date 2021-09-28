@@ -12,14 +12,14 @@ from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
 from   web.model.t_monitor   import push_monitor_task,run_monitor_task,stop_monitor_task,query_monitor_svr,query_monitor_proj,query_monitor_proj_log
-from   web.utils.basehandler import basehandler
 from   web.model.t_dmmx      import get_dmm_from_dm,get_gather_server,get_templete_names,get_sync_db_server,get_gather_tasks
 from   web.utils.common      import get_day_nday_ago,now
 from   web.model.t_ds        import get_dss
+from   web.utils             import base_handler
+
 
 '''指标管理'''
-class monitorindexquery(basehandler):
-    @tornado.web.authenticated
+class monitorindexquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_index.html",
                     index_types= await get_dmm_from_dm('23'),
@@ -27,8 +27,7 @@ class monitorindexquery(basehandler):
                     index_db_types  = await get_dmm_from_dm('02'),
                     )
 
-class monitorindex_query(basehandler):
-    @tornado.web.authenticated
+class monitorindex_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         index_code   = self.get_argument("index_code")
@@ -37,8 +36,7 @@ class monitorindex_query(basehandler):
         self.write(v_json)
 
 
-class monitorindexadd_save(basehandler):
-    @tornado.web.authenticated
+class monitorindexadd_save(base_handler.TokenHandler):
     async def post(self):
         d_index = {}
         d_index['index_name']            = self.get_argument("index_name")
@@ -56,8 +54,7 @@ class monitorindexadd_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class monitorindexedit_save(basehandler):
-    @tornado.web.authenticated
+class monitorindexedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_index = {}
@@ -76,8 +73,7 @@ class monitorindexedit_save(basehandler):
         result = await upd_index(d_index)
         self.write({"code": result['code'], "message": result['message']})
 
-class monitorindexedit_del(basehandler):
-    @tornado.web.authenticated
+class monitorindexedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         index_code  = self.get_argument("index_code")
@@ -85,16 +81,14 @@ class monitorindexedit_del(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 '''模板管理'''
-class monitortempletequery(basehandler):
-    @tornado.web.authenticated
+class monitortempletequery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_templete.html",
                     monitor_indexes = await get_monitor_indexes(),
                     templete_types  = await get_dmm_from_dm('23'),
                     )
 
-class monitortemplete_query(basehandler):
-    @tornado.web.authenticated
+class monitortemplete_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         templete_code  = self.get_argument("templete_code")
@@ -103,8 +97,7 @@ class monitortemplete_query(basehandler):
         self.write(v_json)
 
 
-class monitortempleteadd_save(basehandler):
-    @tornado.web.authenticated
+class monitortempleteadd_save(base_handler.TokenHandler):
     async def post(self):
         d_templete = {}
         d_templete['templete_name']    = self.get_argument("templete_name")
@@ -115,8 +108,7 @@ class monitortempleteadd_save(basehandler):
         result = await save_templete(d_templete)
         self.write({"code": result['code'], "message": result['message']})
 
-class monitortempleteedit_save(basehandler):
-    @tornado.web.authenticated
+class monitortempleteedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_templete = {}
@@ -128,8 +120,7 @@ class monitortempleteedit_save(basehandler):
         result = await upd_templete(d_templete)
         self.write({"code": result['code'], "message": result['message']})
 
-class monitortempleteedit_del(basehandler):
-    @tornado.web.authenticated
+class monitortempleteedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         templete_code  = self.get_argument("templete_code")
@@ -137,14 +128,14 @@ class monitortempleteedit_del(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class monitor_sys_indexes(basehandler):
+class monitor_sys_indexes(base_handler.TokenHandler):
     async def post(self):
         templete_code = self.get_argument("templete_code")
         result = await get_monitor_sys_indexes(templete_code)
         v_json = json.dumps(result)
         self.write(v_json)
 
-class monitor_templete_indexes(basehandler):
+class monitor_templete_indexes(base_handler.TokenHandler):
     async def post(self):
         templete_code = self.get_argument("templete_code")
         result = await get_monitor_templete_indexes(templete_code)
@@ -153,8 +144,7 @@ class monitor_templete_indexes(basehandler):
 
 
 '''任务管理'''
-class monitortaskquery(basehandler):
-    @tornado.web.authenticated
+class monitortaskquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_task.html",
                     gather_servers    = await get_gather_server(),
@@ -164,8 +154,7 @@ class monitortaskquery(basehandler):
                     monitor_servers   = await get_gather_server()
                     )
 
-class monitortask_query(basehandler):
-    @tornado.web.authenticated
+class monitortask_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         task_tag     = self.get_argument("task_tag")
@@ -174,8 +163,7 @@ class monitortask_query(basehandler):
         self.write(v_json)
 
 
-class monitortaskadd_save_gather(basehandler):
-    @tornado.web.authenticated
+class monitortaskadd_save_gather(base_handler.TokenHandler):
     async def post(self):
         d_task = {}
         d_task['add_gather_task_tag']           = self.get_argument("add_gather_task_tag")
@@ -192,8 +180,7 @@ class monitortaskadd_save_gather(basehandler):
         result = await save_gather_task(d_task)
         self.write({"code": result['code'], "message": result['message']})
 
-class monitortaskadd_save_monitor(basehandler):
-    @tornado.web.authenticated
+class monitortaskadd_save_monitor(base_handler.TokenHandler):
     async def post(self):
         d_task = {}
         d_task['add_monitor_task_tag']           = self.get_argument("add_monitor_task_tag")
@@ -209,8 +196,7 @@ class monitortaskadd_save_monitor(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class monitortaskupd_save_gather(basehandler):
-    @tornado.web.authenticated
+class monitortaskupd_save_gather(base_handler.TokenHandler):
     async def post(self):
         d_task = {}
         d_task['upd_gather_task_tag']           = self.get_argument("upd_gather_task_tag")
@@ -227,8 +213,7 @@ class monitortaskupd_save_gather(basehandler):
         result = await upd_gather_task(d_task)
         self.write({"code": result['code'], "message": result['message']})
 
-class monitortaskupd_save_monitor(basehandler):
-    @tornado.web.authenticated
+class monitortaskupd_save_monitor(base_handler.TokenHandler):
     async def post(self):
         d_task = {}
         d_task['upd_monitor_task_tag']           = self.get_argument("upd_monitor_task_tag")
@@ -244,24 +229,21 @@ class monitortaskupd_save_monitor(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class get_monitor_templete_type(basehandler):
-    @tornado.web.authenticated
+class get_monitor_templete_type(base_handler.TokenHandler):
     async def post(self):
         templete_id = self.get_argument("templete_id")
         result      = await query_monitor_templete_type(templete_id)
         self.write({"message": result})
 
 
-class monitortaskedit_del(basehandler):
-    @tornado.web.authenticated
+class monitortaskedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         task_tag  = self.get_argument("task_tag")
         result    = await del_task(task_tag)
         self.write({"code": result['code'], "message": result['message']})
 
-class monitortask_push(basehandler):
-    @tornado.web.authenticated
+class monitortask_push(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
@@ -270,8 +252,7 @@ class monitortask_push(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class monitortask_run(basehandler):
-    @tornado.web.authenticated
+class monitortask_run(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
@@ -280,8 +261,7 @@ class monitortask_run(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class monitortask_stop(basehandler):
-    @tornado.web.authenticated
+class monitortask_stop(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         tag    = self.get_argument("tag")
@@ -291,8 +271,7 @@ class monitortask_stop(basehandler):
         self.write(v_json)
 
 #图表展示
-class monitorgraphquery(basehandler):
-    @tornado.web.authenticated
+class monitorgraphquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_log_analyze.html",
                     gather_server   = await get_gather_server(),
@@ -302,8 +281,7 @@ class monitorgraphquery(basehandler):
                     end_date        = get_day_nday_ago(now(), 0)
                     )
 
-class monitorgraph_query(basehandler):
-    @tornado.web.authenticated
+class monitorgraph_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_list = {}
@@ -317,8 +295,7 @@ class monitorgraph_query(basehandler):
         v_json = json.dumps(d_list)
         self.write(v_json)
 
-class get_monitor_db(basehandler):
-    @tornado.web.authenticated
+class get_monitor_db(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         server_id = self.get_argument("server_id")
@@ -328,7 +305,7 @@ class get_monitor_db(basehandler):
         v_json  = json.dumps(d_list)
         self.write(v_json)
 
-class get_monitor_index(basehandler):
+class get_monitor_index(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         type   = self.get_argument("index_type")
@@ -339,11 +316,11 @@ class get_monitor_index(basehandler):
         v_json = json.dumps(d_list)
         self.write(v_json)
 
-class get_monitor_view(basehandler):
+class get_monitor_view(base_handler.TokenHandler):
     def get(self):
         self.render("./monitor/monitor_view.html")
 
-class get_monitor_view_sys(basehandler):
+class get_monitor_view_sys(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         env          = self.get_argument("env")
@@ -352,7 +329,7 @@ class get_monitor_view_sys(basehandler):
         v_json       = json.dumps(v_list)
         self.write(v_json)
 
-class get_monitor_view_svr(basehandler):
+class get_monitor_view_svr(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         env  = self.get_argument("env")
@@ -361,7 +338,7 @@ class get_monitor_view_svr(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class get_monitor_view_proj(basehandler):
+class get_monitor_view_proj(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_list = await query_monitor_proj()
@@ -369,7 +346,7 @@ class get_monitor_view_proj(basehandler):
         self.write(v_json)
 
 
-class get_monitor_view_proj_log(basehandler):
+class get_monitor_view_proj_log(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         market_id  = self.get_argument("market_id")
@@ -381,7 +358,7 @@ class get_monitor_view_proj_log(basehandler):
         self.write(v_json)
 
 
-class get_monitor_task(basehandler):
+class get_monitor_task(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_tag  = self.get_argument("task_tag")

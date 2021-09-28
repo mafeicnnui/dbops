@@ -7,6 +7,8 @@
 
 import tornado.web
 import json
+
+from web.utils import base_handler
 from  web.utils.basehandler   import basehandler
 from  web.model.t_db_inst     import query_inst,save_db_inst,upd_db_inst,query_inst_by_id,get_dss_for_inst,get_ds_by_instid,get_tree_by_instid_mssql
 from  web.model.t_db_inst     import get_tree_by_instid,exe_query,del_db_inst,get_tab_ddl_by_instid,get_idx_ddl_by_instid,drop_tab_by_instid
@@ -16,15 +18,13 @@ from  web.model.t_dmmx        import get_dmm_from_dm,get_gather_server,get_sys_d
 
 
 '''新增实例'''
-class dbinstquery(basehandler):
-    @tornado.web.authenticated
+class dbinstquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./db/db_inst_mgr.html",
                     dm_inst_type = await get_dmm_from_dm('02'),
                     dm_inst_env = await get_dmm_from_dm('03'))
 
-class db_inst_query(basehandler):
-    @tornado.web.authenticated
+class db_inst_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_name  = self.get_argument("inst_name")
@@ -32,8 +32,7 @@ class db_inst_query(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class db_inst_query_by_id(basehandler):
-    @tornado.web.authenticated
+class db_inst_query_by_id(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_id  = self.get_argument("inst_id")
@@ -41,8 +40,7 @@ class db_inst_query_by_id(basehandler):
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
-class db_inst_save(basehandler):
-    @tornado.web.authenticated
+class db_inst_save(base_handler.TokenHandler):
     async def post(self):
         d_inst = {}
         d_inst['inst_name']         = self.get_argument("inst_name")
@@ -65,8 +63,7 @@ class db_inst_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class db_inst_update(basehandler):
-    @tornado.web.authenticated
+class db_inst_update(base_handler.TokenHandler):
     async def post(self):
         d_inst = {}
         d_inst['inst_id']           = self.get_argument("inst_id")
@@ -89,32 +86,28 @@ class db_inst_update(basehandler):
         result = await upd_db_inst(d_inst)
         self.write({"code": result['code'], "message": result['message']})
 
-class db_inst_delete(basehandler):
-    @tornado.web.authenticated
+class db_inst_delete(base_handler.TokenHandler):
     async def post(self):
         inst_id  = self.get_argument("inst_id")
         result   = await del_db_inst(inst_id)
         self.write({"code": result['code'], "message": result['message']})
 
 
-class db_inst_create(basehandler):
-    @tornado.web.authenticated
+class db_inst_create(base_handler.TokenHandler):
     async def post(self):
         inst_id = self.get_argument("inst_id")
         api_server = self.get_argument("api_server")
         result = await create_db_inst(api_server,inst_id)
         self.write({"code": result['code'], "message": result['message']})
 
-class db_inst_destroy(basehandler):
-    @tornado.web.authenticated
+class db_inst_destroy(base_handler.TokenHandler):
     async def post(self):
         inst_id = self.get_argument("inst_id")
         api_server = self.get_argument("api_server")
         result = await destroy_db_inst(api_server,inst_id)
         self.write({"code": result['code'], "message": result['message']})
 
-class db_inst_manager(basehandler):
-    @tornado.web.authenticated
+class db_inst_manager(base_handler.TokenHandler):
     async def post(self):
         inst_id    = self.get_argument("inst_id")
         api_server = self.get_argument("api_server")
@@ -123,8 +116,7 @@ class db_inst_manager(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class db_inst_log(basehandler):
-    @tornado.web.authenticated
+class db_inst_log(base_handler.TokenHandler):
     async def post(self):
         inst_id = self.get_argument("inst_id")
         result = await log_db_inst(inst_id)
@@ -132,8 +124,7 @@ class db_inst_log(basehandler):
 
 
 '''实例管理'''
-class dbinstmgr(basehandler):
-    @tornado.web.authenticated
+class dbinstmgr(base_handler.TokenHandler):
     async def get(self):
         inst_id   = self.get_argument("inst_id")
         inst_type = self.get_argument("inst_type")
@@ -142,8 +133,7 @@ class dbinstmgr(basehandler):
         self.render("./db/db_inst_console.html", dss = dss,inst_type=inst_type)
 
 
-class get_tree_by_inst(basehandler):
-    @tornado.web.authenticated
+class get_tree_by_inst(base_handler.TokenHandler):
     async def post(self):
         inst_id   = self.get_argument("inst_id")
         msg        = self.get_argument("msg")
@@ -156,7 +146,7 @@ class get_tree_by_inst(basehandler):
         self.write({"code": result['code'], "message": result['message'], "url": result['db_url'],"desc":result['desc']})
 
 
-class get_inst_tab_ddl(basehandler):
+class get_inst_tab_ddl(base_handler.TokenHandler):
    async def post(self):
         dbid    = self.get_argument("dbid")
         cur_db  = self.get_argument("cur_db")
@@ -164,7 +154,7 @@ class get_inst_tab_ddl(basehandler):
         result  = await get_tab_ddl_by_instid(dbid,tab,cur_db)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_inst_idx_ddl(basehandler):
+class get_inst_idx_ddl(base_handler.TokenHandler):
     async def post(self):
         dbid   = self.get_argument("dbid")
         cur_db = self.get_argument("cur_db")
@@ -173,8 +163,7 @@ class get_inst_idx_ddl(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class drop_inst_tab(basehandler):
-    @tornado.web.authenticated
+class drop_inst_tab(base_handler.TokenHandler):
     async def post(self):
         dbid    = self.get_argument("dbid")
         cur_db  = self.get_argument("cur_db")
@@ -183,21 +172,18 @@ class drop_inst_tab(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class db_inst_sql_query(basehandler):
-   @tornado.web.authenticated
+class db_inst_sql_query(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
        inst_id= self.get_argument("inst_id")
        sql    = self.get_argument("sql")
        curdb  = self.get_argument("cur_db")
-       result = await exe_query(userid,inst_id,sql,curdb)
+       result = await exe_query(self.userid,inst_id,sql,curdb)
        v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
        v_json = json.dumps(v_dict)
        self.write(v_json)
 
-class dbinstcrtquery(basehandler):
-    @tornado.web.authenticated
+class dbinstcrtquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./db/db_inst_create.html",
                     dm_inst_type = await get_dmm_from_dm('02'),
@@ -207,8 +193,7 @@ class dbinstcrtquery(basehandler):
                     dm_inst_cfg  = await get_sys_dmlx_from_dm('30'),
                     )
 
-class db_inst_crt_query(basehandler):
-    @tornado.web.authenticated
+class db_inst_crt_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_name  = self.get_argument("inst_name")
@@ -217,16 +202,14 @@ class db_inst_crt_query(basehandler):
         self.write(v_json)
 
 '''参数管理'''
-class dbinstparaquery(basehandler):
-    @tornado.web.authenticated
+class dbinstparaquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./db/db_inst_para.html",
                     index_types = await get_dmm_from_dm('23'),
                     index_val_types = await get_dmm_from_dm('24'),
                     index_db_types   = await get_dmm_from_dm('02'))
 
-class dbinstpara_query(basehandler):
-    @tornado.web.authenticated
+class dbinstpara_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         para_name   = self.get_argument("para_name")
@@ -235,8 +218,7 @@ class dbinstpara_query(basehandler):
         self.write(v_json)
 
 
-class dbinstparaadd_save(basehandler):
-    @tornado.web.authenticated
+class dbinstparaadd_save(base_handler.TokenHandler):
     async def post(self):
         d_para = {}
         d_para['para_name']           = self.get_argument("para_name")
@@ -247,8 +229,7 @@ class dbinstparaadd_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class dbinstparaedit_save(basehandler):
-    @tornado.web.authenticated
+class dbinstparaedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_para = {}
@@ -260,8 +241,7 @@ class dbinstparaedit_save(basehandler):
         result = await upd_db_inst_para(d_para)
         self.write({"code": result['code'], "message": result['message']})
 
-class dbinstparaedit_del(basehandler):
-    @tornado.web.authenticated
+class dbinstparaedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         para_name  = self.get_argument("para_name")
@@ -270,13 +250,11 @@ class dbinstparaedit_del(basehandler):
 
 
 '''操作日志'''
-class dbinstoptlogquery(basehandler):
-    @tornado.web.authenticated
+class dbinstoptlogquery(base_handler.TokenHandler):
     def get(self):
         self.render("./db/db_inst_opt_log_query.html" )
 
 class dbinstoptlog_query(basehandler):
-    @tornado.web.authenticated
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         log_name     = self.get_argument("log_name")
@@ -285,16 +263,14 @@ class dbinstoptlog_query(basehandler):
         self.write(v_json)
 
 
-class dbinstcfgquery(basehandler):
-    @tornado.web.authenticated
+class dbinstcfgquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./db/db_inst_cfg_query.html",
                     dm_env_type     = await get_dmm_from_dm('03'),
                     dm_inst_names   = await get_slow_inst_names(''),
                  )
 
-class db_inst_cfg_query(basehandler):
-    @tornado.web.authenticated
+class db_inst_cfg_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_env   = self.get_argument("inst_env")
@@ -304,8 +280,7 @@ class db_inst_cfg_query(basehandler):
         self.write(v_json)
 
 
-class db_inst_cfg_update(basehandler):
-    @tornado.web.authenticated
+class db_inst_cfg_update(base_handler.TokenHandler):
     async def post(self):
         d_db_para = {}
         d_db_para['para_id']    = self.get_argument("para_id")

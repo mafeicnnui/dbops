@@ -7,15 +7,12 @@
 
 import json
 import uuid
-import tornado.web
 from web.model.t_role  import get_roles
 from web.model.t_user  import save_user,get_user_by_userid,upd_user,del_user
 from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_proj_privs
 from web.model.t_dmmx  import get_dmm_from_dm
 from web.model.t_ds    import query_project
-from web.utils.basehandler import basehandler
-from web.utils             import base_handler
-
+from web.utils         import base_handler
 
 class userquery(base_handler.TokenHandler):
      def get(self):

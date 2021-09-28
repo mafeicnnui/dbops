@@ -77,7 +77,6 @@
                      status:       $('#func_status').val()
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code==0) {
                        swal("保存成功", "", "success")
                     } else {

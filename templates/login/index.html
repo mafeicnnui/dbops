@@ -18,14 +18,12 @@
         <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />
         <link href="{{static_url('assets/css/icons/icomoon/styles.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('plugins/form_wizard/css/components.min.css')}}" rel="stylesheet" type="text/css" />
-
         <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/datatables/responsive.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
         <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
-
         <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}"  rel="stylesheet" type="text/css" />
         <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet" />
         <link href="{{static_url('plugins/morris/morris.css')}}" rel="stylesheet" >
@@ -118,13 +116,10 @@
 
     <body  class="fixed-left">
         <div id="wrapper">
-            <!-- Top Bar Start -->
             <div class="topbar">
-                <!-- LOGO -->
                 <div class="topbar-left">
                     <a id="windows_main" href="#" class="logo" style="size:4px;"><span class="logo_span ion-coffee"></span><span>&nbsp;Ease<span>Base</span></span></a>
                 </div>
-                <!-- Button mobile view to collapse sidebar menu -->
                 <div class="navbar navbar-default" role="navigation">
                     <div class="container">
                         <ul class="nav navbar-nav navbar-left" >
@@ -162,39 +157,30 @@
                                        <h5><span class="form-control2">{{welcome}}</span></h5>
                                     </li>
                                     <li><a href="javascript:void(0)" onclick="userinfo()"><i class="ti-user m-r-5"></i>用户详情</a></li>
-                                    <li><a href="javascript:void(0)" onclick="lock_screen()"><i class="ti-lock m-r-5"></i>锁定系统</a></li>
                                     <li><a href="/logout"><i class="ti-power-off m-r-5"></i>系统注销</a></li>
                                 </ul>
                             </li>
                         </ul>
 
-                    </div><!-- end container -->
-                </div><!-- end navbar -->
+                    </div>
+                </div>
             </div>
-            <!-- Top Bar End -->
 
-            <!-- ========== Left Sidebar Start ========== -->
             <div class="left side-menu">
                 <span class="menu-title">数据库自动化运维平台</span>
                 <div class="sidebar-inner slimscrollleft">
-                    <!--- Sidemenu -->
                     <div id="sidebar-menu">
                         <ul id="ul-menu">
                         </ul>
                     </div>
                 </div>
-                <!-- Sidebar -left -->
             </div>
-            <!-- Left Sidebar End -->
 
-            <!-- Start right Content here -->
             <div class="content-page">
-                <!-- Start content -->
                 <div class="content">
 
                      <div class="panel-body">
                         <ul id="ul_tabs" class="nav nav-tabs tabs-bordered">
-<!--                        <li class="active"><a href="#main" data-toggle="tab" aria-expanded="true">主面板<button type="button" class="close" >×</button></a></li>-->
                         </ul>
                         <div class="tab-content br-n pn">
                              <div id="main" class="tab-pane active">
@@ -203,7 +189,7 @@
                         </div>
                     </div>
 
-                </div> <!-- content -->
+                </div>
                 <footer class="footer text-right">
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>作者:</b>一切随风</span></div>
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>版本:</b>V1.0</span></div>
@@ -434,7 +420,7 @@
                     </div>
                 </div>
             </div>
-        </div><!-- /.modal -->
+        </div>
 
         <div id="custom-modal" class="modal-demo">
             <div class="custom-modal-text">
@@ -540,66 +526,8 @@
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
 
         <script>
-            var screen_lock_status = 'unlock';
             var timer ;
             var tabStatus = new Array;
-
-            function lock_screen() {
-                 $.ajax({
-                      url: "/lock",
-                      type: "post",
-                      datatype: "json",
-                      success: function (dataSet) {
-                         console.log('/lock ok!')
-                         $('#unlock_password').val('');
-                         Custombox.open({
-                            target:'#custom-modal',
-                            effect:'door',
-                            overlayClose:'',
-                            escKey:false,
-                            overlaySpeed:"100",
-                            overlayColor:"#36404a",
-                            plugin:"custommodal"
-                         });
-                     }
-                 });
-            }
-
-            function check_lock_screen () {
-                  var cookie_screen_lock_status;
-                  var cookie_heartbeat;
-
-                  $.ajax({
-                      url: "/lock_status",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                        cookie_screen_lock_status = dataSet.code;
-                     },
-                  });
-
-                  $.ajax({
-                      url: "/heartbeat",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                        cookie_heartbeat = dataSet.code;
-                     }
-                  });
-
-
-                  if (cookie_screen_lock_status == 'locked') {
-                     if (screen_lock_status == 'unlock') {
-                         lock_screen();
-                     }
-                  } else if (cookie_heartbeat == 'undefined') {
-                     if (screen_lock_status == 'unlock') {
-                         lock_screen();
-                     }
-                  }
-            }
 
             function userinfo() {
                $('#con-userinfo-modal').modal({
@@ -634,6 +562,50 @@
 
             function updateTime() {
                 $("#span_time").text(get_curr_time());
+            }
+
+            function panalHopson() {
+               $('#main-container-div').load("/main");
+            }
+
+            function panalEasylife() {
+               $('#main-container-div').load("/easylife");
+            }
+
+            function panalEasebase() {
+               $('#main-container-div').load("/platform");
+            }
+
+            function refresh_token() {
+                  $.ajax({
+                          url: "/refresh_token",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                             'token': window.localStorage.getItem("token")
+                          },
+                          success: function (dataSet) {
+                            console.log('token updated!')
+                            window.localStorage['token'] = dataSet.token
+                         }
+                  });
+            }
+
+            function is_white_list(url) {
+                whilte_list = ['/get/db/order/num',
+                               '/get/db/active/num',
+                               '/sync_case',
+                               '/get/sys/stats/idx',
+                               '/backup_case',
+                               '/get/sync',
+                               '/refresh_token'
+                ]
+                if (whilte_list.indexOf(url)>=0) {
+                     return true
+                } else {
+                     return false
+                }
             }
 
             $('#btn-user-change').click(function(){
@@ -726,6 +698,8 @@
                       tabId =$(this).attr("id").split('^')[0]
                       url=$(this).attr("id").split('^')[1]
 
+                      console.log('tabId=',tabId,url)
+
                       clearInterval(timer);
 
                       $('#ul_tabs').find('li').each(function() {
@@ -742,7 +716,6 @@
                       }
 
                       $('#main-container-div').load(url);
-                       refresh_token();
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
@@ -779,58 +752,6 @@
                     addMore: true
              });
 
-            $('#unlock-btn').click(function () {
-                $.ajax({
-                    url: "/unlock",
-                    type: "post",
-                    datatype: "json",
-                    data: {
-                        unlock_password: $('#unlock_password').val(),
-                    },
-                    success: function (dataSet) {
-                        if (dataSet.code==0) {
-                            screen_lock_status ='unlock';
-                            Custombox.close('#custom-modal',function(){return true;})
-                            return false
-                        } else {
-                            $('#unlock_password').val('')
-                            $('#unlock_password').attr('placeholder','口令有误!')
-                            return false
-                        }
-                    },
-                 });
-
-           });
-
-            function panalHopson() {
-               $('#main-container-div').load("/main");
-            }
-
-            function panalEasylife() {
-               $('#main-container-div').load("/easylife");
-            }
-
-            function panalEasebase() {
-               $('#main-container-div').load("/platform");
-            }
-
-            function refresh_token() {
-                  $.ajax({
-                      url: "/refresh_token",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                         'token': window.localStorage.getItem("token")
-                      },
-                      success: function (dataSet) {
-                        console.log(dataSet)
-                        console.log('token updated!')
-                        window.localStorage['token'] = dataSet.token
-                     }
-               });
-            }
-
             $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
                 e = window.event || e;  //解决浏览器兼容的问题
                 if(e.keyCode == 116) {  //F5按下
@@ -844,46 +765,37 @@
                  set_user_image();
             });
 
-
-            //设置ajax超时时间为3s,请求头传递token
             $.ajaxSetup({
-               timeout:3000,
-               headers: {
-                'token': window.localStorage.getItem("token")
-               }
+                 timeout:10000,
+                 headers: {
+                  'token': window.localStorage.getItem("token")
+                 }
             });
 
-            //可以实现统计增加遮照功能
-            $(document).ajaxStart(function(){
+            $(document).ajaxStart(function() {
                 start_Loader('main-container-div')
-            }).ajaxStop(function(){
+            }).ajaxComplete(function( event, request, settings ) {
+                if (! is_white_list(settings['url'])) {
+                     refresh_token()
+                }
+            }).ajaxStop(function() {
                 end_Loader('main-container-div')
             }).ajaxError(function( event, request,options ) {
                 if (request.status==401){
-                    swal("token已失效!", "", "error")
+                    swal("用户认证已过期!", "", "error")
                 } else if (request.status==402) {
-                    swal("token认证失败!", "", "error")
+                    swal("用户认证失败!", "", "error")
                 } else if (request.status==403) {
-                    swal("非法的token!", "", "error")
+                    swal("非法的认证信息!", "", "error")
+                } else if (request.status==404) {
+                    swal("用户认证方式错误!", "", "error")
+                } else if (request.status==405) {
+                    swal("用户认证算法错误!", "", "error")
                 } else if (request.status==502) {
                     swal("用户无权访问此功能!("+options.url+")", "", "error")
                 } else {
                     swal("系统不可用,请联系管理员!", "", "error")
                 }
-               // if (request.status==403){
-               //     swal("登陆信息已过期，请重新登陆!", "", "error")
-               //     //window.location.href='/login'
-               //     parent.location.href='/login'
-               //
-               // } else if (request.status==502) {
-               //     swal("用户无权访问权限此功能!("+options.url+")", "", "error")
-               // } else if (request.status==503){
-               //     swal("系统不可用,请联系管理员!", "", "error")
-               //      parent.location.href='/login'
-               // } else {
-               //     swal("系统不可用,请稍后重试!", "", "error")
-               //      parent.location.href='/login'
-               // }
             });
 
         </script>

@@ -13,7 +13,7 @@ from tornado.web import HTTPError
 
 JWT_SALT = 'Hopson2021@abcd'
 
-def create_token(payload, timeout=1):
+def create_token(payload, timeout=10):
     headers = {
         'typ': 'jwt',
         'alg': 'HS256'
@@ -22,7 +22,7 @@ def create_token(payload, timeout=1):
     result =jwt.encode(payload=payload, key=JWT_SALT, algorithm="HS256",headers=headers)
     return result
 
-def refresh_token(token,timeout=1):
+def refresh_token(token,timeout=10):
     headers = {
         'typ': 'jwt',
         'alg': 'HS256'
@@ -41,18 +41,20 @@ def refresh_token(token,timeout=1):
 def parse_payload(token):
     result = {'status': False,'code':200,'data': None, 'error': None}
     try:
-        # header= jwt.get_unverified_header(token)
-        # if header['typ']!= 'jwt':
-        #      result['error'] = 'token认证方式错误!'
-        # elif header['alg']!='HS256':
-        #     result['error'] = 'token认证算法错误!'
-        # else:
-        print('token=',token)
-        print('salt=',JWT_SALT)
-        verified_payload = jwt.decode(token, JWT_SALT, algorithms=["HS256"])
-        result['status'] = True
-        result['code'] = 200
-        result['data'] = verified_payload
+        header= jwt.get_unverified_header(token)
+        if header['typ']!= 'jwt':
+             result['code'] = 404
+             result['error'] = 'token认证方式错误!'
+        elif header['alg']!='HS256':
+            result['code'] = 405
+            result['error'] = 'token认证算法错误!'
+        else:
+            # print('token=',token)
+            # print('salt=',JWT_SALT)
+            verified_payload = jwt.decode(token, JWT_SALT, algorithms=["HS256"])
+            result['status'] = True
+            result['code'] = 200
+            result['data'] = verified_payload
     except exceptions.ExpiredSignatureError:
         result['code']  =  401
         result['error'] = 'token已失效!'

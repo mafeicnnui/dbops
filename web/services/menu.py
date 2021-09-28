@@ -6,17 +6,14 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
 from web.model.t_xtqx  import init_menu,query_menu,get_parent_menus,save_menu,get_menu_by_menuid,upd_menu,del_menu,check_menu
-from web.utils.basehandler import basehandler
+from   web.utils import base_handler
 
-class menuquery(basehandler):
-    @tornado.web.authenticated
+class menuquery(base_handler.TokenHandler):
     def get(self):
         self.render("./menu/menu_query.html")
 
-class menu_query(basehandler):
-    @tornado.web.authenticated
+class menu_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname  = self.get_argument("qname")
@@ -24,23 +21,20 @@ class menu_query(basehandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class menu_init(basehandler):
-    @tornado.web.authenticated
+class menu_init(base_handler.TokenHandler):
     async def get(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        v_list = await init_menu();
+        v_list = await init_menu()
         v_dict = {"data": v_list}
         v_json = json.dumps(v_dict)
         self.write(v_json)
 
-class menuadd(basehandler):
-    @tornado.web.authenticated
+class menuadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./menu/menu_add.html",
                     menus = await get_parent_menus())
 
-class menuadd_save(basehandler):
-    @tornado.web.authenticated
+class menuadd_save(base_handler.TokenHandler):
     async def post(self):
         d_menu={}
         d_menu['name']       = self.get_argument("name")
@@ -54,13 +48,11 @@ class menuadd_save(basehandler):
         else:
            self.write({"code": result['code'], "message": result['message']})
 
-class menuchange(basehandler):
-    @tornado.web.authenticated
+class menuchange(base_handler.TokenHandler):
     def get(self):
         self.render("./menu/menu_change.html")
 
-class menuedit(basehandler):
-    @tornado.web.authenticated
+class menuedit(base_handler.TokenHandler):
     async def get(self):
         menuid = self.get_argument("menuid")
         d_menu = await get_menu_by_menuid(menuid)
@@ -73,8 +65,7 @@ class menuedit(basehandler):
                      menus     = await get_parent_menus()
                     )
 
-class menuedit_save(basehandler):
-    @tornado.web.authenticated
+class menuedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_menu={}
@@ -86,8 +77,7 @@ class menuedit_save(basehandler):
         result = await upd_menu(d_menu)
         self.write({"code": result['code'], "message": result['message']})
 
-class menuedit_del(basehandler):
-    @tornado.web.authenticated
+class menuedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         menuid  = self.get_argument("menuid")

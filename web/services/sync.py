@@ -6,14 +6,12 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
 from   web.model.t_sync import query_sync,query_sync_tab,query_sync_tab_cfg,save_sync,save_sync_tab,del_sync_tab,get_sync_by_syncid,upd_sync,del_sync,query_sync_log,query_sync_log_detail
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
 from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx,query_db_order_num
 from   web.utils.common import current_rq2,get_day_nday_ago,now,DateEncoder
-from   web.utils.basehandler import basehandler
 from   web.utils import base_handler
 
 class syncquery(base_handler.TokenHandler):
@@ -112,7 +110,7 @@ class syncadd_save_tab(base_handler.TokenHandler):
 class syncadd_del_tab(base_handler.TokenHandler):
     async def post(self):
         d_sync = {}
-        d_sync['sync_id']           = self.get_argument("sync_id")
+        d_sync['sync_id'] = self.get_argument("sync_id")
         result = await del_sync_tab(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -352,7 +350,7 @@ class get_sync_tasks(base_handler.TokenHandler):
         d_list  = {}
         v_list  = await get_db_sync_tags_by_market_id(market_id)
         d_list['data'] = v_list
-        v_json  = json.dumps(d_list)
+        v_json = json.dumps(d_list)
         self.write(v_json)
 
 class get_sync(base_handler.TokenHandler):
@@ -455,7 +453,7 @@ class sync_case_log(base_handler.TokenHandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class db_active_num(base_handler.TokenHandler):
+class db_active_num(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         db_id       = self.get_argument("db_id")
@@ -465,14 +463,14 @@ class db_active_num(base_handler.TokenHandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class db_order_num(base_handler.TokenHandler):
+class db_order_num(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_list      = await query_db_order_num()
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class db_slow_num(base_handler.TokenHandler):
+class db_slow_num(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         inst_id     = self.get_argument("inst_id")
@@ -483,7 +481,7 @@ class db_slow_num(base_handler.TokenHandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-class sys_stats_num(base_handler.TokenHandler):
+class sys_stats_num(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         server_id  = self.get_argument("server_id")
@@ -493,7 +491,7 @@ class sys_stats_num(base_handler.TokenHandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
-class sys_stats_idx(base_handler.TokenHandler):
+class sys_stats_idx(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_list     = await query_sys_stats_idx()

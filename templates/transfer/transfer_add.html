@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>新建传输</title>
-    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <style>
         .modal-lg {
             width:65%;
@@ -279,25 +278,7 @@
     <script src="{{static_url('assets/pages/jquery.tooltipster.js')}}"></script>
     <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
 
-
     <script>
-        function set_selected(){
-            document.all['s_transfer_tag'].style.color="#ff0000";
-            document.all['s_task_desc'].style.color="#ff0000";
-            document.all['s_transfer_server'].style.color="#ff0000";
-            document.all['s_transfer_type'].style.color="#ff0000";
-            document.all['s_sour_db_server'].style.color="#ff0000";
-            document.all['s_sour_db_name'].style.color="#ff0000";
-            document.all['s_sour_tab_name'].style.color="#ff0000";
-            document.all['s_dest_db_server'].style.color="#ff0000";
-            document.all['s_dest_db_name'].style.color="#ff0000";
-            document.all['s_python3_home'].style.color="#ff0000";
-            document.all['s_script_base'].style.color="#ff0000";
-            document.all['s_script_name'].style.color="#ff0000";
-            document.all['s_batch_size'].style.color="#ff0000";
-            document.all['s_api_server'].style.color="#ff0000";
-            document.all['s_status'].style.color="#ff0000";
-        }
 
         $("#sour_tab_name").bind("input propertychange",function(){
            var s=$("#sour_tab_name").val()

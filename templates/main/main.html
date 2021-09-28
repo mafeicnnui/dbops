@@ -555,38 +555,6 @@
 
     <script>
 
-        function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-          }
-
-        function start_Loader(p_id) {
-            var light = $('#'+p_id).parent();
-            $(light).block({
-                message: '<i class="icon-spinner spinner"></i>',
-                overlayCSS: {
-                    backgroundColor: '#fff',
-                    opacity: 0.8,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    padding: 0,
-                    backgroundColor: 'none'
-                }
-            });
-       }
-
-        function end_Loader(p_id) {
-            var light = $('#'+p_id).parent();
-            $(light).unblock();
-       }
-
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
               var myChart = echarts.init($('#'+p_item)[0]);
               var option = {
@@ -1115,31 +1083,7 @@
                                       }
                                   }
                               ],
-                         "language": {
-                                     "search"       : "在表格中搜索:",
-                                     "sProcessing"  : "处理中...",
-                                     "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                     "sZeroRecords" : "没有匹配结果",
-                                     "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix" : "",
-                                     "sSearch"      : "搜索:",
-                                     "sUrl"         : "",
-                                     "sEmptyTable"  : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands": ",",
-                                     "oPaginate": {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                                 }
+                         "language": get_languages()
                      });
                      if (dataSet['failure']>0) {
                          $('#backup-num').html('成功：'+dataSet['success']+'个,失败:<font color="#FF0000">'+dataSet['failure']+'</font> 个')
@@ -1320,31 +1264,7 @@
                             },
                             { "title": "生成时间","width":"9%"},
                           ],
-                         "language": {
-                                     "search"       : "在表格中搜索:",
-                                     "sProcessing"  : "处理中...",
-                                     "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                     "sZeroRecords" : "没有匹配结果",
-                                     "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                     "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                     "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                     "sInfoPostFix" : "",
-                                     "sSearch"      : "搜索:",
-                                     "sUrl"         : "",
-                                     "sEmptyTable"  : "表中数据为空",
-                                     "sLoadingRecords": "载入中...",
-                                     "sInfoThousands": ",",
-                                     "oPaginate": {
-                                         "sFirst"   : "首页",
-                                         "sPrevious": "上页",
-                                         "sNext"    : "下页",
-                                         "sLast"    : "末页"
-                                     },
-                                     "oAria": {
-                                         "sSortAscending" : ": 以升序排列此列",
-                                         "sSortDescending": ": 以降序排列此列"
-                                     }
-                                 }
+                         "language": get_languages()
                      });
                      if (dataSet['failure']>0) {
                          $('#sync-num').html('成功：'+dataSet['success']+'个,失败:<font color="#FF0000">'+dataSet['failure']+'</font> 个')
@@ -1388,17 +1308,6 @@
                               backdrop:false
                        });
                  },
-                error: function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.status==403){
-                            swal("登陆信息已过期，请重新登陆!", "", "error")
-                            window.location.href='/login'
-                        } else if (jqXHR.status==502){
-                            swal("用户无权访问权限此功能!", "", "error")
-                        } else {
-                            swal("系统不可用,请稍后重试!", "", "error")
-                        }
-                 }
-
              })
          })
 

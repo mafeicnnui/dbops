@@ -8,15 +8,15 @@
 import json
 import tornado.web
 from   web.model.t_archive import query_archive_detail
-from   web.utils.basehandler import basehandler
+from web.utils import base_handler
 
-class dict_gen(basehandler):
+class dict_gen(base_handler.TokenHandler):
     @tornado.web.authenticated
     def get(self):
         self.render("./archive_query.html")
 
 
-class redis_migrate(basehandler):
+class redis_migrate(base_handler.TokenHandler):
     @tornado.web.authenticated
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")

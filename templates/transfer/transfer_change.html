@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>传输维护</title>
-    <link href="{{static_url('plugins/tooltipster/tooltipster.bundle.min.css')}}" rel="stylesheet" >
     <style>
         #example{
             width: 100% !important;
@@ -146,7 +145,7 @@
                           scrollX    :true,
                           scrollCollapse: true,
                           paging:     true,
-                          iDisplayLength: 15,
+                          iDisplayLength: 14,
                           data: dataSet,
                           columns: [
                             { "title": "标识符"},
@@ -164,31 +163,7 @@
                                 }
                             },
                           ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
+                          "language": get_languages()
                          });
                       $('#dsupd').attr("disabled",true);
                       $('#dsdel').attr("disabled",true);
@@ -197,22 +172,6 @@
                       $('#stop').attr("disabled",true);
                       $('#clone').attr("disabled",true);
                  },
-                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                    console.log('jqXHR.status=',jqXHR.status);
-                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                    console.log('textStatus=',textStatus);
-                    console.log('errorThrown=',errorThrown);
-                    if (jqXHR.status==403){
-                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                        setTimeout(" window.location.href='/login'",3000);
-                    } else if (jqXHR.status==502){
-                        swal("用户无权访问权限此功能!", "", "error")
-                    } else {
-                        swal("系统不可用,请稍后重试!", "", "error")
-                    }
-                }
              });
             });
 
@@ -225,7 +184,6 @@
                   v_tag=$('#transfer_tag_tmp').val()
                   v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
                   v_api=row[4].innerHTML;
-                  console.log("v_tag=",v_tag,"v_desc=",v_desc,"v_api=",v_api)
                   $.ajax({
                           url: "/transfer/edit/push",
                           type: "post",
@@ -255,22 +213,6 @@
                               $('#push').attr("disabled",true);
                               $('#run').attr("disabled",true);
                           },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                    setTimeout(" window.location.href='/login'",3000);
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                            }
                   });
               });
 
@@ -302,7 +244,6 @@
                                });
                           },
                           success: function (dataSet) {
-                              console.log(dataSet.code, dataSet.message);
                               if (dataSet.code=='0') {
                                      swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
                                      $("#query_btn").click();
@@ -314,22 +255,6 @@
                               $('#push').attr("disabled",true);
                               $('#run').attr("disabled",true);
                           },
-                          error: function (jqXHR, textStatus, errorThrown) {
-                                console.log('jqXHR.responseText=',jqXHR.responseText);
-                                console.log('jqXHR.status=',jqXHR.status);
-                                console.log('jqXHR.readyState=',jqXHR.readyState);
-                                console.log('jqXHR.statusText=',jqXHR.statusText);
-                                console.log('textStatus=',textStatus);
-                                console.log('errorThrown=',errorThrown);
-                                if (jqXHR.status==403){
-                                    swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                    setTimeout(" window.location.href='/login'",3000);
-                                } else if (jqXHR.status==502){
-                                    swal("用户无权访问权限此功能!", "", "error")
-                                } else {
-                                    swal("系统不可用,请稍后重试!", "", "error")
-                                }
-                          }
                   });
               });
 

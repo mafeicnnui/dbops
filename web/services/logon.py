@@ -5,21 +5,16 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-
-import time
-import json
 import os
-import traceback
+import json
 import tornado.web
 from web.model.t_user      import logon_user_check,check_forget_password,check_modify_password,save_forget_authention_string,check_auth_str_exist
 from web.model.t_user      import upd_password,get_user_by_userid,get_user_by_loginame,get_user_roles,check_authcode,get_userid_by_auth
 from web.model.t_xtqx      import get_tree_by_userid
 from web.model.t_dmmx      import get_dmm_from_dm
 from web.utils.common      import send_mail_param,get_sys_settings,get_rand_str,current_time,china_rq,china_week,welcome,china_time,create_captcha
-from web.utils.basehandler import basehandler
-from web.utils             import base_handler
 from web.utils.jwt_auth    import create_token,refresh_token
-from tornado.escape        import json_encode
+from web.utils             import base_handler
 
 class logon(tornado.web.RequestHandler):
      def get(self):
@@ -41,18 +36,16 @@ class logon_check(base_handler.BaseHandler):
             self.write({"code": result['code'], "message": result['message']})
 
 
-class update_token(base_handler.BaseHandler):
+class update_token(base_handler.TokenHandler):
     async def post(self):
+        print('update_token=>url=',self.request.uri)
         token=refresh_token(self.get_argument("token"))
         self.write({"token": token})
 
-class index(base_handler.TokenHandler2):
+class index(base_handler.TokenHandlerLogin):
     async def get(self):
         if self.token_passed:
-            print(self.token_msg_dict)
-            username    =  self.token_msg_dict['data']['username']
-            userid      = self.token_msg_dict['data']['userid']
-            d_user      = await get_user_by_loginame(username)
+            d_user      = await get_user_by_loginame(self.username)
             genders     = await get_dmm_from_dm('04')
             depts       = await get_dmm_from_dm('01')
             proj_groups = await get_dmm_from_dm('18')
@@ -76,7 +69,7 @@ class index(base_handler.TokenHandler2):
                         file_path=d_user['file_path'],
                         file_name=d_user['file_name'],
                         user_image=d_user['file_path'] + '/' + d_user['file_name'],
-                        user_roles=await get_user_roles(userid),
+                        user_roles=await get_user_roles(self.userid),
                         genders=genders,
                         depts=depts,
                         d_user=d_user,
@@ -88,7 +81,7 @@ class index(base_handler.TokenHandler2):
 
 class get_tree(base_handler.TokenHandler):
     async def post(self):
-        result= await get_tree_by_userid(self.token_msg_dict['data']['username'])
+        result= await get_tree_by_userid(self.username)
         self.write({"code": result['code'], "message": result['message']})
 
 class main(base_handler.BaseHandler):
@@ -103,61 +96,61 @@ class easylife(base_handler.BaseHandler):
      def get(self):
         self.render("./main/easylife.html")
 
-class unlock(basehandler):
-    async def post(self):
-        await self.check_valid()
-        unlock_password = self.get_argument("unlock_password")
-        username = str(self.get_secure_cookie("username"), encoding="utf-8")
-        d_user   = await get_user_by_loginame(username)
-        if d_user['password']==unlock_password:
-            self.set_secure_cookie("screen_lock_status", 'unlock')
-            self.set_secure_cookie("heartbeat", 'health', expires=time.time() + 300)
-            self.write({"code":0})
-        else:
-            self.write({"code":-1})
+# class unlock(base_handler.TokenHandler):
+#     async def post(self):
+#         await self.check_valid()
+#         unlock_password = self.get_argument("unlock_password")
+#         username = str(self.get_secure_cookie("username"), encoding="utf-8")
+#         d_user   = await get_user_by_loginame(username)
+#         if d_user['password']==unlock_password:
+#             self.set_secure_cookie("screen_lock_status", 'unlock')
+#             self.set_secure_cookie("heartbeat", 'health', expires=time.time() + 300)
+#             self.write({"code":0})
+#         else:
+#             self.write({"code":-1})
+#
+# class lock(base_handler.TokenHandler):
+#     async def post(self):
+#         await self.check_valid()
+#         self.set_secure_cookie("screen_lock_status", 'locked')
+#         self.write({"code":0})
+#
+# class heartbeat(base_handler.TokenHandler):
+#     def post(self):
+#         status = self.get_secure_cookie("heartbeat")
+#         if status is None:
+#             self.write({"code": 'undefined'})
+#         else:
+#             self.write({"code": str(status, encoding="utf-8")})
+#
+# class lock_status(base_handler.TokenHandler):
+#   def post(self):
+#       status = self.get_secure_cookie("screen_lock_status")
+#       if status is None:
+#          self.write({"code": 'undefined'})
+#       else:
+#          self.write({"code": str(status, encoding="utf-8")})
 
-class lock(basehandler):
-    async def post(self):
-        await self.check_valid()
-        self.set_secure_cookie("screen_lock_status", 'locked')
-        self.write({"code":0})
-
-class heartbeat(tornado.web.RequestHandler):
-    def post(self):
-        status = self.get_secure_cookie("heartbeat")
-        if status is None:
-            self.write({"code": 'undefined'})
-        else:
-            self.write({"code": str(status, encoding="utf-8")})
-
-class lock_status(tornado.web.RequestHandler):
-  def post(self):
-      status = self.get_secure_cookie("screen_lock_status")
-      if status is None:
-         self.write({"code": 'undefined'})
-      else:
-         self.write({"code": str(status, encoding="utf-8")})
-
-class get_time(tornado.web.RequestHandler):
+class get_time(base_handler.TokenHandler):
     def post(self):
         self.write(china_time())
 
-class logout(tornado.web.RequestHandler):
+class logout(base_handler.TokenHandler):
     def get(self):
         self.set_secure_cookie("username", '',expires_days=None)
         self.set_secure_cookie("userid", '', expires_days=None)
         self.set_secure_cookie("screen_lock_status", 'unlock')
         self.render("./login/page-logout.html")
 
-class error(tornado.web.RequestHandler):
+class error(base_handler.TokenHandler):
     def get(self):
         self.render("./login/page-500.html")
 
-class forget_password(tornado.web.RequestHandler):
+class forget_password(base_handler.TokenHandler):
     def get(self):
         self.render("./login/forget_password.html")
 
-class forget_password_check_user(tornado.web.RequestHandler):
+class forget_password_check_user(base_handler.TokenHandler):
     async def post(self):
         user    = self.get_argument("user")
         email   = self.get_argument("email")
@@ -175,14 +168,14 @@ class forget_password_check_user(tornado.web.RequestHandler):
         else:
            self.write({"code": result['code'], "message": result['message']})
 
-class forget_password_check_auth(tornado.web.RequestHandler):
+class forget_password_check_auth(base_handler.TokenHandler):
     async def post(self):
         user     = self.get_argument("user")
         auth     = self.get_argument("auth")
         result   = await check_authcode(user,auth)
         self.write({"code": result['code'], "message": result['message']})
 
-class forget_password_check_pass(tornado.web.RequestHandler):
+class forget_password_check_pass(base_handler.TokenHandler):
     async def post(self):
         user    = self.get_argument("user")
         auth    = self.get_argument("auth")
@@ -198,7 +191,7 @@ class forget_password_check_pass(tornado.web.RequestHandler):
             result2 = await upd_password(p_user)
             self.write({"code": result2['code'], "message": result2['message']})
 
-class get_verify(tornado.web.RequestHandler):
+class get_verify(base_handler.BaseHandler):
     def post(self):
         x = create_captcha()
         image = x.gene_code()
@@ -211,14 +204,3 @@ class get_verify(tornado.web.RequestHandler):
         v_dict = {"image": file.split('/')[-1], "verify": chars}
         v_json = json.dumps(v_dict)
         self.write(v_json)
-
-class check(basehandler):
-    @tornado.web.authenticated
-    async def post(self):
-        await self.check_valid()
-        self.set_header("Content-Type", "application/json; charset=UTF-8")
-        qname = self.get_argument("qname")
-        if qname == '':
-            self.write('{"code":"-1","message":"用户名不能为空!"}')
-        else:
-            self.write('{"code":"0","message":"验证成功！"}')

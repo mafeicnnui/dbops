@@ -9,17 +9,15 @@ import json
 import tornado.web
 from   web.model.t_ds    import get_ds_by_dsid,query_ds,save_ds,upd_ds,del_ds,check_ds_valid
 from   web.model.t_dmmx  import get_dmm_from_dm,get_sync_db_server_by_type
-from   web.utils.basehandler import basehandler
+from web.utils           import base_handler
 
-class dsquery(basehandler):
-    @tornado.web.authenticated
+class dsquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./ds/ds_query.html",
                     dm_proj_type=await get_dmm_from_dm('05'),
                     dm_env_type=await get_dmm_from_dm('03'))
 
-class ds_query(basehandler):
-    @tornado.web.authenticated
+class ds_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dsname     = self.get_argument("dsname")
@@ -31,8 +29,7 @@ class ds_query(basehandler):
         self.write(v_json)
 
 
-class ds_query_id(basehandler):
-    @tornado.web.authenticated
+class ds_query_id(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dsid    = self.get_argument("dsid")
@@ -41,8 +38,7 @@ class ds_query_id(basehandler):
         self.write(v_json)
 
 
-class dsadd(basehandler):
-    @tornado.web.authenticated
+class dsadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./ds/ds_add.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
@@ -52,8 +48,7 @@ class dsadd(basehandler):
                     dm_ds_proxy  = await get_dmm_from_dm('26')
                     )
 
-class dsadd_save(basehandler):
-    @tornado.web.authenticated
+class dsadd_save(base_handler.TokenHandler):
     async def post(self):
         d_ds={}
         d_ds['market_id']    = self.get_argument("market_id")
@@ -72,15 +67,13 @@ class dsadd_save(basehandler):
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 
-class dschange(basehandler):
-    @tornado.web.authenticated
+class dschange(base_handler.TokenHandler):
     async def get(self):
         self.render("./ds/ds_change.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_env_type = await get_dmm_from_dm('03'))
 
-class dsedit(basehandler):
-    @tornado.web.authenticated
+class dsedit(base_handler.TokenHandler):
     async def get(self):
         dsid   = self.get_argument("dsid")
         d_ds   = await get_ds_by_dsid(dsid)
@@ -106,8 +99,7 @@ class dsedit(basehandler):
                      proxy_server = d_ds['proxy_server'],
                     )
 
-class dsedit_save(basehandler):
-    @tornado.web.authenticated
+class dsedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_ds={}
@@ -129,11 +121,10 @@ class dsedit_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class dsclone(basehandler):
-    @tornado.web.authenticated
+class dsclone(base_handler.TokenHandler):
     async def get(self):
-        dsid=self.get_argument("dsid")
-        d_ds  = await get_ds_by_dsid(dsid)
+        dsid = self.get_argument("dsid")
+        d_ds = await get_ds_by_dsid(dsid)
         self.render("./ds/ds_clone.html",
                      market_id    = d_ds['market_id'],
                      inst_type    = d_ds['inst_type'],
@@ -155,8 +146,7 @@ class dsclone(basehandler):
                      proxy_server = d_ds['proxy_server'],
                     )
 
-class dsclone_save(basehandler):
-    @tornado.web.authenticated
+class dsclone_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_ds={}
@@ -176,32 +166,28 @@ class dsclone_save(basehandler):
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 
-class dsedit_del(basehandler):
-    @tornado.web.authenticated
+class dsedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dsid   = self.get_argument("dsid")
         result = await del_ds(dsid)
         self.write({"code": result['code'], "message": result['message']})
 
-class dstest(basehandler):
-    @tornado.web.authenticated
+class dstest(base_handler.TokenHandler):
     async def get(self):
         self.render("./ds/ds_test.html",
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_env_type  = await get_dmm_from_dm('03')
                     )
 
-class ds_check_valid(basehandler):
-   @tornado.web.authenticated
+class ds_check_valid(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        id = self.get_argument("id")
        result = await check_ds_valid(id)
        self.write({"code": result['code'], "message": result['message']})
 
-class get_db_by_type(basehandler):
-    @tornado.web.authenticated
+class get_db_by_type(base_handler.TokenHandler):
     async def post(self):
         db_type = self.get_argument("db_type")
         result  = await get_sync_db_server_by_type(db_type)

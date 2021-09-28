@@ -25,6 +25,14 @@ from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync import sync_processer
 from PIL  import Image,ImageDraw,ImageFont,ImageFilter
 
+def get_server(p_host):
+    if p_host == "124.127.103.190":
+        res = "124.127.103.190:65482"
+    elif p_host.find(':') >= 0:
+        res = p_host
+    else:
+        res = p_host + ':81'
+    return  res
 
 def read_json(file):
     with open(file, 'r') as f:

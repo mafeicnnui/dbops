@@ -6,36 +6,30 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
-from   web.model.t_server    import get_server_by_serverid,query_server,save_server,upd_server,del_server,check_server_valid
-from   web.model.t_dmmx      import get_dmm_from_dm
-from   web.utils.basehandler import basehandler
+from web.model.t_server  import get_server_by_serverid,query_server,save_server,upd_server,del_server,check_server_valid
+from web.model.t_dmmx    import get_dmm_from_dm
+from web.utils           import base_handler
 
 
-class serverquery(basehandler):
-    @tornado.web.authenticated
+class serverquery(base_handler.TokenHandler):
     def get(self):
         self.render("./server/server_query.html")
 
-class server_query(basehandler):
-    @tornado.web.authenticated
+class server_query(base_handler.TokenHandler):
     async def post(self):
-        #await self.check_valid()
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname  = self.get_argument("qname")
         v_list = await query_server(qname)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class serveradd(basehandler):
-    @tornado.web.authenticated
+class serveradd(base_handler.TokenHandler):
     async def get(self):
         self.render("./server/server_add.html",
-                    dm_proj_type = await get_dmm_from_dm('05'),
+                    dm_proj_type   = await get_dmm_from_dm('05'),
                     dm_server_type = await  get_dmm_from_dm('06'))
 
-class serveradd_save(basehandler):
-    @tornado.web.authenticated
+class serveradd_save(base_handler.TokenHandler):
     async def post(self):
         d_server = {}
         d_server['market_id']   = self.get_argument("market_id")
@@ -52,13 +46,11 @@ class serveradd_save(basehandler):
         result = await save_server(d_server)
         self.write({"code": result['code'], "message": result['message']})
 
-class serverchange(basehandler):
-    @tornado.web.authenticated
+class serverchange(base_handler.TokenHandler):
     def get(self):
         self.render("./server/server_change.html")
 
-class serveredit(basehandler):
-    @tornado.web.authenticated
+class serveredit(base_handler.TokenHandler):
     async def get(self):
         server_id = self.get_argument("serverid")
         d_server  = await get_server_by_serverid(server_id)
@@ -80,8 +72,7 @@ class serveredit(basehandler):
                     status         = d_server['status']
                     )
 
-class serveredit_save(basehandler):
-    @tornado.web.authenticated
+class serveredit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_server={}
@@ -100,8 +91,7 @@ class serveredit_save(basehandler):
         result = await upd_server(d_server)
         self.write({"code": result['code'], "message": result['message']})
 
-class serveredit_del(basehandler):
-    @tornado.web.authenticated
+class serveredit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         serverid  = self.get_argument("serverid")
@@ -109,8 +99,7 @@ class serveredit_del(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class server_check_valid(basehandler):
-    @tornado.web.authenticated
+class server_check_valid(base_handler.TokenHandler):
     async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        id = self.get_argument("id")
@@ -118,8 +107,7 @@ class server_check_valid(basehandler):
        self.write({"code": result['code'], "message": result['message']})
 
 
-class server_by_serverid(basehandler):
-    @tornado.web.authenticated
+class server_by_serverid(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         id       = self.get_argument("server_id")

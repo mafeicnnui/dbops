@@ -6,19 +6,16 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
 from web.model.t_sys  import save_audit_rule,query_dm,query_rule,query_dm_detail,save_sys_code_type,upd_sys_code_type,del_sys_code
 from web.model.t_sys  import save_sys_code_detail,upd_sys_code_detail,del_sys_code_detail
 from web.model.t_dmmx import get_sys_dmlx
-from web.utils.basehandler import basehandler
+from web.utils import base_handler
 
-class audit_rule(basehandler):
-   @tornado.web.authenticated
+class audit_rule(base_handler.TokenHandler):
    def get(self):
        self.render("./sys/audit_rule.html")
 
-class audit_rule_save(basehandler):
-   @tornado.web.authenticated
+class audit_rule_save(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        rule={}
@@ -95,25 +92,21 @@ class audit_rule_save(basehandler):
        self.write({"code": result['code'], "message": result['message']})
 
 
-class sys_setting(basehandler):
-   @tornado.web.authenticated
+class sys_setting(base_handler.TokenHandler):
    def get(self):
        self.render("./sys/sys_setting.html")
 
-class sys_code(basehandler):
-   @tornado.web.authenticated
+class sys_code(base_handler.TokenHandler):
    async def get(self):
        self.render("./sys/sys_code.html",
                    sys_code_type= await get_sys_dmlx())
 
-class sys_code_type(basehandler):
-   @tornado.web.authenticated
+class sys_code_type(base_handler.TokenHandler):
    async def post(self):
        self.write({ "message": await get_sys_dmlx()})
 
 
-class sys_code_type_query(basehandler):
-    @tornado.web.authenticated
+class sys_code_type_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code     = self.get_argument("code")
@@ -121,8 +114,7 @@ class sys_code_type_query(basehandler):
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
-class sys_code_detail_query(basehandler):
-    @tornado.web.authenticated
+class sys_code_detail_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code     = self.get_argument("code")
@@ -130,8 +122,7 @@ class sys_code_detail_query(basehandler):
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
-class sys_code_type_add_save(basehandler):
-    @tornado.web.authenticated
+class sys_code_type_add_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code = {}
@@ -141,8 +132,7 @@ class sys_code_type_add_save(basehandler):
         result = await save_sys_code_type(code)
         self.write({"code": result['code'], "message": result['message']})
 
-class sys_code_type_upd_save(basehandler):
-    @tornado.web.authenticated
+class sys_code_type_upd_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code = {}
@@ -153,8 +143,7 @@ class sys_code_type_upd_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class sys_code_type_del(basehandler):
-    @tornado.web.authenticated
+class sys_code_type_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code   = self.get_argument("type_code")
@@ -162,8 +151,7 @@ class sys_code_type_del(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class sys_code_detail_add_save(basehandler):
-    @tornado.web.authenticated
+class sys_code_detail_add_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code = {}
@@ -174,8 +162,7 @@ class sys_code_detail_add_save(basehandler):
         result = await save_sys_code_detail(code)
         self.write({"code": result['code'], "message": result['message']})
 
-class sys_code_detail_upd_save(basehandler):
-    @tornado.web.authenticated
+class sys_code_detail_upd_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code = {}
@@ -188,8 +175,7 @@ class sys_code_detail_upd_save(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class sys_code_detail_del(basehandler):
-    @tornado.web.authenticated
+class sys_code_detail_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         code    = self.get_argument("type_code")
@@ -198,8 +184,7 @@ class sys_code_detail_del(basehandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class sys_query_rule(basehandler):
-    @tornado.web.authenticated
+class sys_query_rule(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_json    = await query_rule()

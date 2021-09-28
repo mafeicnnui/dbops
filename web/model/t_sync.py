@@ -1051,9 +1051,7 @@ async def query_sys_stats_idx():
     res   = {}
     sql   = "SELECT idx_name,idx_sql FROM t_sys_stats_idx ORDER BY id"
     rs2   = await async_processer.query_dict_list(sql)
-    print('rs2=',rs2)
     for r in await async_processer.query_dict_list(sql):
         rs = await async_processer.query_dict_one(r['idx_sql'])
-        print('rs=',rs)
         res[r['idx_name']] = rs['val']
     return res

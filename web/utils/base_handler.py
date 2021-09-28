@@ -41,23 +41,30 @@ class TokenHandler(BaseHandler):
            raise HTTPError(502, "用户`{}`无权访问(`{}`)!".format(username, self.request.uri))
 
         self.token_passed = True
-        self.token_msg_dict = result
-        self.token_msg_json = json.dumps(result, ensure_ascii=False)
+        self.username = result['data']['username']
+        self.userid = result['data']['userid']
 
 
-class TokenHandler2(BaseHandler):
+class TokenHandlerLogin(BaseHandler):
 
     async def prepare(self):
-        head = self.request.headers
-        token = head.get("token","")
-        if token == '':
-           token = self.get_argument("token")
+        try:
+            head = self.request.headers
+            token = head.get("token","")
+            if token == '':
+               token = self.get_argument("token")
 
-        result = jwt_auth.parse_payload(token)
-        print('TokenHandler2=',result)
-        if not result["status"]:
-           self.token_passed = False
-        else:
-           self.token_passed = True
-        self.token_msg_dict = result
-        self.token_msg_json = json.dumps(result, ensure_ascii=False)
+            result = jwt_auth.parse_payload(token)
+            if not result["status"]:
+               self.token_passed = False
+               self.username = ''
+               self.userid = ''
+            else:
+               self.token_passed = True
+               self.username = result['data']['username']
+               self.userid = result['data']['userid']
+
+        except:
+            self.token_passed = False
+            self.username = ''
+            self.userid = ''
