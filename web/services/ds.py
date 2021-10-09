@@ -6,9 +6,8 @@
 # @Software: PyCharm
 
 import json
-import tornado.web
-from   web.model.t_ds    import get_ds_by_dsid,query_ds,save_ds,upd_ds,del_ds,check_ds_valid
-from   web.model.t_dmmx  import get_dmm_from_dm,get_sync_db_server_by_type
+from   web.model.t_ds    import get_ds_by_dsid,query_ds,save_ds,upd_ds,del_ds,check_ds_valid,get_dss_sql_query,exe_query
+from   web.model.t_dmmx  import get_dmm_from_dm,get_sync_db_server_by_type,get_sync_db_server
 from web.utils           import base_handler
 
 class dsquery(base_handler.TokenHandler):
@@ -28,6 +27,17 @@ class ds_query(base_handler.TokenHandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
+class ds_sql_query(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dsid   = self.get_argument("dsid")
+       sql    = self.get_argument("sql")
+       curdb  = self.get_argument("cur_db")
+       result = await exe_query(self.userid,dsid,sql,curdb)
+       v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
+       v_json = json.dumps(v_dict)
+       self.write(v_json)
+
 
 class ds_query_id(base_handler.TokenHandler):
     async def post(self):
@@ -37,7 +47,6 @@ class ds_query_id(base_handler.TokenHandler):
         v_json  = json.dumps(v_list)
         self.write(v_json)
 
-
 class dsadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./ds/ds_add.html",
@@ -45,7 +54,8 @@ class dsadd(base_handler.TokenHandler):
                     dm_db_type   = await get_dmm_from_dm('02'),
                     dm_inst_type = await get_dmm_from_dm('07'),
                     dm_env_type  = await get_dmm_from_dm('03'),
-                    dm_ds_proxy  = await get_dmm_from_dm('26')
+                    dm_ds_proxy  = await get_dmm_from_dm('26'),
+                    db_server    = await get_sync_db_server(),
                     )
 
 class dsadd_save(base_handler.TokenHandler):
@@ -64,6 +74,7 @@ class dsadd_save(base_handler.TokenHandler):
         d_ds['status']       = self.get_argument("status")
         d_ds['proxy_status'] = self.get_argument("proxy_status")
         d_ds['proxy_server'] = self.get_argument("proxy_server")
+        d_ds['read_db']      = self.get_argument("read_db")
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -73,10 +84,17 @@ class dschange(base_handler.TokenHandler):
                     dm_proj_type = await get_dmm_from_dm('05'),
                     dm_env_type = await get_dmm_from_dm('03'))
 
+class dsconsole(base_handler.TokenHandler):
+    async def get(self):
+        dsid = self.get_argument("dsid")
+        dss = await get_ds_by_dsid(dsid)
+        self.render("./ds/ds_console.html", dss = dss)
+
 class dsedit(base_handler.TokenHandler):
     async def get(self):
         dsid   = self.get_argument("dsid")
         d_ds   = await get_ds_by_dsid(dsid)
+        print('ds=',d_ds)
         self.render("./ds/ds_edit.html",
                      dsid         = d_ds['dsid'],
                      market_id    = d_ds['market_id'],
@@ -88,6 +106,7 @@ class dsedit(base_handler.TokenHandler):
                      dm_inst_type = await get_dmm_from_dm('07'),
                      dm_proj_type = await get_dmm_from_dm('05'),
                      dm_ds_proxy  = await get_dmm_from_dm('26'),
+                     db_server    = await get_sync_db_server(),
                      db_desc      = d_ds['db_desc'],
                      ip           = d_ds['ip'],
                      port         = d_ds['port'],
@@ -97,6 +116,7 @@ class dsedit(base_handler.TokenHandler):
                      status       = d_ds['status'],
                      proxy_status = d_ds['proxy_status'],
                      proxy_server = d_ds['proxy_server'],
+                     read_db      = d_ds['id_ro'],
                     )
 
 class dsedit_save(base_handler.TokenHandler):
@@ -117,9 +137,10 @@ class dsedit_save(base_handler.TokenHandler):
         d_ds['status']       = self.get_argument("status")
         d_ds['proxy_status'] = self.get_argument("proxy_status")
         d_ds['proxy_server'] = self.get_argument("proxy_server")
+        d_ds['read_db']      = self.get_argument("read_db")
+        print('d_ds=',d_ds)
         result = await upd_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
-
 
 class dsclone(base_handler.TokenHandler):
     async def get(self):
@@ -145,6 +166,7 @@ class dsclone(base_handler.TokenHandler):
                      proxy_status = d_ds['proxy_status'],
                      proxy_server = d_ds['proxy_server'],
                     )
+
 
 class dsclone_save(base_handler.TokenHandler):
     async def post(self):

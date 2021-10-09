@@ -638,11 +638,12 @@
         function set_sync_tabs() {
 
            if (sour_ds['db_type'] == '2') {
-               vUrl = "http://{0}/get_mssql_tables".format(sour_ds['proxy_server'])
+               //vUrl = "http://{0}/get_mssql_tables".format(sour_ds['proxy_server'])
+               vUrl = "/get_mssql_tables"
            }
 
            if (sour_ds['db_type'] == '0') {
-              vUrl = "http://{0}/get_mysql_tables".format(sour_ds['proxy_server'])
+              vUrl = "/get_mysql_tables"
               sour_ds['service'] = $('#sync_schema').val()
            }
 
@@ -650,13 +651,16 @@
                   url : vUrl,
                   type: "post",
                   datatype: "json",
+                  headers: {
+
+                  },
                   data:{
-                      db_ip     : sour_ds['ip'],
-                      db_port   : sour_ds['port'],
-                      db_service: sour_ds['service'],
-                      db_user   : sour_ds['user'],
-                      db_pass   : sour_ds['password'],
-                      timeout   : 1000
+                      db_ip       : sour_ds['ip'],
+                      db_port     : sour_ds['port'],
+                      db_service  : sour_ds['service'],
+                      db_user     : sour_ds['user'],
+                      db_pass     : sour_ds['password'],
+                      proxy_server: sour_ds['proxy_server']
                   },
                   success: function (dataSet) {
                      $("#sync_tab_name").empty();
@@ -681,9 +685,11 @@
         function set_sync_tab_cols() {
 
              if (sour_ds['db_type'] == '2') {
-                  vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
+                  //vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
+                  vUrl = "/get_mssql_columns"
              } else if (sour_ds['db_type'] == '0') {
-                  vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
+                  //vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
+                  vUrl = "/get_mysql_columns"
                   sour_ds['service'] = $('#sync_schema').val()
              }
              console.log('vUrl=',vUrl)
@@ -701,7 +707,8 @@
                       db_user   : sour_ds['user'],
                       db_pass   : sour_ds['password'],
                       db_tab    : $('#sync_tab_name').val(),
-                      timeout   : 1000
+                      timeout   : 1000,
+                      proxy_server: sour_ds['proxy_server']
                   },
                   success: function (dataSet) {
                          $("#sync_tab_col").empty();
@@ -719,10 +726,12 @@
         function set_sync_tab_incr_col() {
 
              if (sour_ds['db_type'] == '2') {
-                  vUrl = "http://{0}/get_mssql_incr_columns".format(sour_ds['proxy_server'])
+                  //vUrl = "http://{0}/get_mssql_incr_columns".format(sour_ds['proxy_server'])
+                  vUrl = "/get_mssql_incr_columns"
              } else if (sour_ds['db_type'] == '0') {
-                  vUrl = "http://{0}/get_mysql_incr_columns".format(sour_ds['proxy_server'])
+                  //vUrl = "http://{0}/get_mysql_incr_columns".format(sour_ds['proxy_server'])
                   sour_ds['service'] = $('#sync_schema').val()
+                  vUrl = "/get_mysql_incr_columns"
              }
              console.log('vUrl=',vUrl)
 
@@ -738,7 +747,8 @@
                       db_user   : sour_ds['user'],
                       db_pass   : sour_ds['password'],
                       db_tab    :$('#sync_tab_name').val(),
-                      timeout   : 1000
+                      timeout   : 1000,
+                      proxy_server: sour_ds['proxy_server']
                   },
                   success: function (dataSet) {
                          $("#sync_tab_incr_col").empty();

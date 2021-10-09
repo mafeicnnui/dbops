@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>实例管理</title>
+    <title>数据源控制台</title>
     <style>
        #example{
             width: 100% !important;
@@ -34,7 +34,7 @@
            color: #329ba3;
            margin-bottom: 10px;
        }
-      .modal-lg-detail {
+         .modal-lg-detail {
             width :60%;
             height:30%;
       }
@@ -43,7 +43,7 @@
 
 <body>
    <p></p>
-   <input  id="inst_type" type="hidden"  value={{inst_type}} >
+   <input  id="inst_type" type="hidden"  value={{dss['inst_type']}} >
    <div class="row">
         <form class="form-horizontal" role="form">
            <div class="col-md-3">
@@ -52,10 +52,8 @@
                         <label class="col-md-3 control-label">数据源：</label>
                     </div>
                     <div class="col-md-8">
-                         <select readonly class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
-                            {% for var in dss %}
-                                <option selected = "selected" value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                            {% end %}
+                         <select readonly class="selectpicker"  id="db_source">
+                             <option selected = "selected" value={{dss['dsid']}} >{{dss['db_desc']}}</option>
                          </select>
                    </div>
                 </div>
@@ -409,28 +407,27 @@
     }
 
         function set_styles() {
-             set_screen_size($(window).height())
-             $('#div-tree-panal').show()
-             $('#ace-editor-panal').show()
-             $('#div-table-panal').show()
-        }
+         set_screen_size($(window).height())
+         $('#div-tree-panal').show()
+         $('#ace-editor-panal').show()
+         $('#div-table-panal').show()
+    }
 
         function get_db_type() {
               var db_type=''
-              $.ajax({
-                   url     : "/db/inst/query/id",
-                   type    : "post",
-                   datatype: "json",
-                   async   : false,
-                   data    :{
-                      inst_id : $('#db_source').val(),
-                   },
-                   success: function (ds) {
-                     //db_source = ds
-                     db_type=ds['inst_type']
-                   }
-               });
-              return db_type;
+                  $.ajax({
+                       url     : "/ds/query/id",
+                       type    : "post",
+                       datatype: "json",
+                       async   : false,
+                       data    :{
+                          dsid : $('#db_source').val(),
+                       },
+                       success: function (ds) {
+                         db_type=ds['db_type']
+                       }
+                   });
+                  return db_type;
           }
 
         function set_editor(p_editor) {
@@ -490,12 +487,12 @@
               function refresh_tree(){
                    if ($('#db_source').val()!='') {
                        $.ajax({
-                            url     :"/get/inst/tree",
+                            url     :"/get_tree",
                             type    :"post",
                             datatype:"json",
                             data: {
-                                  inst_id : $('#db_source').val(),
-                                  msg  : $('#filter_db').val()
+                                  dbid  : $('#db_source').val(),
+                                  msg   : $('#filter_db').val()
                             },
                             success: function (dataSet) {
                                 if (dataSet.url.length>30) {
@@ -529,7 +526,7 @@
                                     if (data.parentId === undefined) {
                                          upd_curr_db_select(dataSet,curNode.text)
                                     } else {
-                                         upd_curr_db_select(dataSet,parNode.text)
+                                        upd_curr_db_select(dataSet,parNode.text)
                                     }
                                 });
 
@@ -547,6 +544,7 @@
                                          upd_curr_db_select(dataSet,curNode.text)
                                     } else {
                                         upd_curr_db_select(dataSet,parNode.text)
+
                                     }
                                 });
 
@@ -558,7 +556,6 @@
                                     items: {
                                         "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
                                         "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
-                                        "drop_table"       : {name: "删除表",   icon: "fa-diamond"},
                                         "query_tab_100"    : {name: "查询数据", icon: "fa fa-search"},
                                         "refresh"          : {name: "刷新库",   icon: "fa fa-refresh"},
                                     }
@@ -573,7 +570,7 @@
               function get_menu_result(key,db_type,curNode) {
                   if (key=='tab_definition') {
                         $.ajax({
-                            url     : "/get/inst/tab/ddl",
+                            url     : "/get_tab_ddl",
                             type    : "post",
                             datatype: "json",
                             data: {
@@ -601,7 +598,7 @@
                          });
                   } else if (key =='idx_definition') {
                         $.ajax({
-                            url     : "/get/inst/idx/ddl",
+                            url     : "/get_tab_idx",
                             type    : "post",
                             datatype: "json",
                             data: {
@@ -626,40 +623,7 @@
                                }
                              }
                          });
-                  } else if (key =='drop_table') {
-                       swal({
-                            title: "确认要删除吗?",
-                            text: "表["+txt+"]将被删除！",
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "是, 删除!",
-                            cancelButtonText:  "否, 取消!",
-                            closeOnConfirm: true,
-                            closeOnCancel: true
-                         }, function (isConfirm) {
-                            if (isConfirm) {
-                                  $.ajax({
-                                        url     : "/drop/inst/tab",
-                                        type    : "post",
-                                        datatype: "json",
-                                        data: {
-                                            dbid  :  $('#db_source').val(),
-                                            cur_db:  $('#curr_db').val(),
-                                            tab   :  curNode
-                                        },
-                                        success: function (dataSet) {
-                                            showtips('info',dataSet.message);
-                                            refresh_tree();
-                                        },
-                                     });
-
-                            } else {
-                                swal("已取消", "表["+curNode+"]未删除!", "error");
-                            }
-                    });
-
-                  } else if (key =='refresh') {
+                  }  else if (key =='refresh') {
                       refresh_tree()
                   } else if (key=='query_tab_100'){
                       if (db_type == '2'){
@@ -687,11 +651,11 @@
 
               function query_table(sql){
                 $.ajax({
-                    url     : "/db/inst/sql/_query",
+                    url     : "/sql/_query",
                     type    : "post",
                     datatype: "json",
                     data: {
-                        inst_id  :  $('#db_source').val(),
+                        dbid     :  $('#db_source').val(),
                         sql      :  sql,
                         cur_db   :  $('#curr_db').val()
                     },
@@ -707,7 +671,7 @@
                                 data          : dataSet.data,
                                 columns       : dataSet.column,
                                 scrollX       : true,
-                                scrollY:$("#h_tab_height").val(),
+                                scrollY       : $("#h_tab_height").val(),
                                 scrollCollapse: true,
                                 paging        : false,
                                 "language"    : get_languages()
@@ -767,11 +731,11 @@
                   }
 
                   $.ajax({
-                    url     : "/db/inst/sql/_query",
+                    url     : "/ds/sql/_query",
                     type    : "post",
                     datatype: "json",
                     data: {
-                        inst_id  :  $('#db_source').val(),
+                        dsid     :  $('#db_source').val(),
                         sql      :  v_sql,
                         cur_db   :  $('#curr_db').val()
                     },
@@ -798,7 +762,7 @@
                                     ordering      : false,
                                     "language"    : get_languages()
                             });
-                       }
+                        }
                      },
                  });
               });

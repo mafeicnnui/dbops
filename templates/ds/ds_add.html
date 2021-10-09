@@ -143,6 +143,19 @@
                     </select>
                </div>
            </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">只读库</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="read_db" >
+                          <option value='' selected = "selected">......</option>
+                          {% for var in db_server %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                          {% end %}
+                    </select>
+               </div>
+           </div>
            <br>
            <div class="form-group m-b-0">
                 <div class="col-sm-offset-6 col-sm-9">
@@ -201,6 +214,7 @@
                         status        :$('#status').val(),
                         proxy_status  :$('#proxy_status').val(),
                         proxy_server  :$('#proxy_server').val(),
+                        read_db       :$('#read_db').val(),
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {

@@ -634,3 +634,12 @@ class create_captcha:
         self.image = self.image.transform((self.pic_size[0], self.pic_size[1]), Image.PERSPECTIVE, params)  # 创建扭曲
         self.image = self.image.filter(ImageFilter.EDGE_ENHANCE_MORE)  # 滤镜，边界加强
         return self.image
+
+
+async def get_audit_rule(p_key):
+    sql = "select * from t_sql_audit_rule where rule_code='{0}'".format(p_key)
+    return await async_processer.query_dict_one(sql)
+
+def get_seconds(b):
+    a=datetime.datetime.now()
+    return int((a-b).total_seconds())

@@ -180,7 +180,7 @@ class get_tree_by_sql(base_handler.TokenHandler):
         self.write({"code": result['code'], "message": result['message'], "url": result['db_url'],"desc":result['desc']})
 
 
-class get_tab_ddl(base_handler.TokenHandler):
+class get_tab_ddl(base_handler.BaseHandler):
     async def post(self):
         dbid    = self.get_argument("dbid")
         cur_db  = self.get_argument("cur_db")
@@ -188,7 +188,7 @@ class get_tab_ddl(base_handler.TokenHandler):
         result  = await get_tab_ddl_by_tname(dbid,tab,cur_db)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_tab_idx(base_handler.TokenHandler):
+class get_tab_idx(base_handler.BaseHandler):
     async def post(self):
         dbid   = self.get_argument("dbid")
         cur_db = self.get_argument("cur_db")
@@ -196,20 +196,20 @@ class get_tab_idx(base_handler.TokenHandler):
         result = await get_tab_idx_by_tname(dbid,tab,cur_db)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_database(base_handler.TokenHandler):
+class get_database(base_handler.BaseHandler):
     async def post(self):
         dbid   = self.get_argument("dbid")
         result = await get_db_name(dbid)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_tables(base_handler.TokenHandler):
+class get_tables(base_handler.BaseHandler):
     async def post(self):
         dbid    = self.get_argument("dbid")
         db_name = self.get_argument("db_name")
         result  = await get_tab_name(dbid,db_name)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_dmm_dm(base_handler.TokenHandler):
+class get_dmm_dm(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dm     = self.get_argument("dm")
@@ -217,7 +217,7 @@ class get_dmm_dm(base_handler.TokenHandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-class get_columns(base_handler.TokenHandler):
+class get_columns(base_handler.BaseHandler):
     async def post(self):
         dbid     = self.get_argument("dbid")
         db_name  = self.get_argument("db_name")
@@ -225,13 +225,13 @@ class get_columns(base_handler.TokenHandler):
         result   = await get_tab_columns(dbid,db_name,tab_name)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_ds(base_handler.TokenHandler):
+class get_ds(base_handler.BaseHandler):
     async def post(self):
         dsid   = self.get_argument("dsid")
         result = await query_ds(dsid)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_keys(base_handler.TokenHandler):
+class get_keys(base_handler.BaseHandler):
     async def post(self):
         dbid     = self.get_argument("dbid")
         db_name  = self.get_argument("db_name")
@@ -239,7 +239,7 @@ class get_keys(base_handler.TokenHandler):
         result   = await get_tab_keys(dbid,db_name,tab_name)
         self.write({"code": result['code'], "message": result['message']})
 
-class get_incr_col(base_handler.TokenHandler):
+class get_incr_col(base_handler.BaseHandler):
     async def post(self):
         dbid     = self.get_argument("dbid")
         db_name  = self.get_argument("db_name")
@@ -248,7 +248,7 @@ class get_incr_col(base_handler.TokenHandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
-class get_tab_stru(base_handler.TokenHandler):
+class get_tab_stru(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dbid     = self.get_argument("dbid")

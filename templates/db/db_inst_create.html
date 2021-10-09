@@ -76,26 +76,10 @@
                         </div>
                         <div class="form-group">
                             <div >
-                                <label class="col-md-3 control-label"><span id="s_add_inst_ip">*</span>数据库地址：</label>
-                            </div>
-                            <div class="col-md-9">
-                               <input type="text" id="add_inst_ip"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
                                 <label class="col-md-3 control-label"><span id="s_add_inst_port">*</span>数据库端口：</label>
                             </div>
                             <div class="col-md-9">
                                <input type="text" id="add_inst_port"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label">数据库映射端口：</label>
-                            </div>
-                            <div class="col-md-9">
-                               <input type="text" id="add_inst_mapping_port"  class="form-control">
                            </div>
                         </div>
                         <div class="form-group">
@@ -149,19 +133,6 @@
                                      {% end %}
                                 </select>
                            </div>
-                        </div>
-                        <div class="row">
-                           <div class="form-group">
-                                <div>
-                                    <label class="col-md-3 control-label"><span id="s_add_rds">*</span>是否RDS：</label>
-                                </div>
-                               <div class="col-md-9">
-                                    <select class="form-control select" id="add_rds" name="add_rds">
-                                        <option value="Y">是</option>
-                                        <option value="N" selected>否</option>
-                                    </select>
-                               </div>
-                            </div>
                         </div>
                         <div class="form-group">
                             <div>
@@ -621,7 +592,7 @@
             }
         });
 
-        $("#inst_name").bind("input propertychange",function(){
+       $("#inst_name").bind("input propertychange",function(){
            $("#query_btn").click();
         });
 
@@ -970,17 +941,17 @@
                                  templete_id       :$('#add_inst_cfg').val(),
                                  inst_type         :$('#add_inst_type').val(),
                                  inst_env          :$('#add_inst_env').val(),
-                                 is_rds            :$('#add_rds').val(),
+                                 // is_rds            :$('#add_rds').val(),
                                  mgr_user          :$('#add_mgr_user').val(),
                                  mgr_pass          :$('#add_mgr_pass').val(),
                                  api_server        :$('#add_inst_api_server').val(),
                                  python3_home      :$('#add_inst_python3_home').val(),
                                  script_path       :$('#add_inst_script_path').val(),
                                  script_file       :$('#add_inst_script_file').val(),
-                                 inst_mapping_port :$('#add_inst_mapping_port').val(),
+                                 // inst_mapping_port :$('#add_inst_mapping_port').val(),
                             },
                             success: function (dataSet) {
-                                console.log(dataSet.code, dataSet.message);
+                                console.log('svrObj2=',dataSet.code, dataSet.message);
                                 if (dataSet.code == 0) {
                                     swal("保存成功", "", "success")
                                     $("#query_btn").click()

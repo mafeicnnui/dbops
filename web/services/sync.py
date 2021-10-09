@@ -9,6 +9,7 @@ import json
 from   web.model.t_sync import query_sync,query_sync_tab,query_sync_tab_cfg,save_sync,save_sync_tab,del_sync_tab,get_sync_by_syncid,upd_sync,del_sync,query_sync_log,query_sync_log_detail
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
+from   web.model.t_sync import get_mssql_tables_list,get_mysql_tables_list,get_mssql_columns_list,get_mysql_columns_list,get_mssql_incr_columns_list,get_mysql_incr_columns_list
 from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
 from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx,query_db_order_num
 from   web.utils.common import current_rq2,get_day_nday_ago,now,DateEncoder
@@ -495,5 +496,89 @@ class sys_stats_idx(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_list     = await query_sys_stats_idx()
+        v_json     = json.dumps(v_list)
+        self.write(v_json)
+
+class get_mssql_tables(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_ip      = self.get_argument("db_ip")
+        db_port    = self.get_argument("db_port")
+        db_service = self.get_argument("db_service")
+        db_user    = self.get_argument("db_user")
+        db_pass    = self.get_argument("db_pass")
+        proxy_server = self.get_argument("proxy_server")
+        v_list = get_mssql_tables_list(db_ip,db_port,db_service,db_user,db_pass,proxy_server)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_mysql_tables(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_ip      = self.get_argument("db_ip")
+        db_port    = self.get_argument("db_port")
+        db_service = self.get_argument("db_service")
+        db_user    = self.get_argument("db_user")
+        db_pass    = self.get_argument("db_pass")
+        proxy_server = self.get_argument("proxy_server")
+        v_list     = get_mysql_tables_list(db_ip, db_port, db_service, db_user, db_pass,proxy_server)
+        v_json     = json.dumps(v_list)
+        self.write(v_list)
+
+
+class get_mssql_columns(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_ip      = self.get_argument("db_ip")
+        db_port    = self.get_argument("db_port")
+        db_service = self.get_argument("db_service")
+        db_user    = self.get_argument("db_user")
+        db_pass    = self.get_argument("db_pass")
+        db_tab     = self.get_argument("db_tab")
+        proxy_server = self.get_argument("proxy_server")
+        v_list = get_mssql_columns_list(db_ip,db_port,db_service,db_user,db_pass,db_tab,proxy_server)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_mysql_columns(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_ip      = self.get_argument("db_ip")
+        db_port    = self.get_argument("db_port")
+        db_service = self.get_argument("db_service")
+        db_user    = self.get_argument("db_user")
+        db_pass    = self.get_argument("db_pass")
+        db_tab     = self.get_argument("db_tab")
+        proxy_server = self.get_argument("proxy_server")
+        v_list     = get_mysql_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server)
+        v_json     = json.dumps(v_list)
+        self.write(v_json)
+
+class get_mssql_incr_columns(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_ip      = self.get_argument("db_ip")
+        db_port    = self.get_argument("db_port")
+        db_service = self.get_argument("db_service")
+        db_user    = self.get_argument("db_user")
+        db_pass    = self.get_argument("db_pass")
+        db_tab     = self.get_argument("db_tab")
+
+        proxy_server = self.get_argument("proxy_server")
+        v_list = get_mssql_incr_columns_list(db_ip,db_port,db_service,db_user,db_pass,db_tab,proxy_server)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_mysql_incr_columns(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_ip      = self.get_argument("db_ip")
+        db_port    = self.get_argument("db_port")
+        db_service = self.get_argument("db_service")
+        db_user    = self.get_argument("db_user")
+        db_pass    = self.get_argument("db_pass")
+        db_tab     = self.get_argument("db_tab")
+        proxy_server = self.get_argument("proxy_server")
+        v_list     = get_mysql_incr_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server)
         v_json     = json.dumps(v_list)
         self.write(v_json)

@@ -324,16 +324,14 @@
                           info       : true,
                           columns: [
                             { "title": "服务器描述","width":"15%"},
-                            { "title": "服务器地址","width":"15%"},
+                            { "title": "服务器地址","width":"10%"},
                             { "title": "CPU使用率","className"  : 'table_td_center'},
-                            { "title": "内存使用率","className"  : 'table_td_center'},
-                            { "title": "磁盘使用率","className"  : 'table_td_center'},
-                            { "title": "磁盘读","className"     : 'table_td_center'},
-                            { "title": "磁盘写","className"     : 'table_td_center'},
-                            { "title": "网络流入","className"   : 'table_td_center'},
-                            { "title": "网络流出","className"   : 'table_td_center'},
+                            { "title": "内存使用率","className" : 'table_td_center'},
+                            { "title": "磁盘使用率","className" : 'table_td_center'},
+                            { "title": "磁盘读写","className"   : 'table_td_center'},
+                            { "title": "网络流量","className"   : 'table_td_center'},
                             { "title": "采集时间","className"   : 'table_td_center'},
-                            { "title": "系统状态","className"   : 'table_td_center'},
+                            { "title": "状态","className"      : 'table_td_center'},
                           ],
                           columnDefs: [
                               {
@@ -403,9 +401,9 @@
                                      }
                               },
                               {
-                                  targets: 10,
+                                  targets: 8,
                                   render: function (data, type, row, meta) {
-                                      if (row[10] == '100') {
+                                      if (row[8] == '100') {
                                           b = '<i class="ion-ios7-lightbulb color-success"></i>'
                                           return b
                                       } else {
@@ -432,7 +430,7 @@
                          if (dataSet.data[i][4].replace('%','')>=dataSet.index['disk_usage']*100) {
                              showtips('error',dataSet.data[i][0],'磁盘使用率'+dataSet.data[i][4]+'异常!');
                          }
-                         if (dataSet.data[i][10]=='0') {
+                         if (dataSet.data[i][8]=='0') {
                              showtips('error',dataSet.data[i][0],'系统不可用!');
                          }
                      }

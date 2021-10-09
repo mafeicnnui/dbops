@@ -1496,11 +1496,11 @@ async def get_dml_rows(p_ds,p_sql):
         elif op in('UPDATE'):
            if p_sql.upper().find('WHERE')>=0:
                st = '''select count(0) from {0} {1}'''.\
-                       format(p_sql[p_sql.upper().find('UPDATE')+6:p_sql.upper().find('SET')],
+                       format(ob,
                               p_sql[p_sql.upper().find('WHERE'):])
            else:
                st = '''select count(0) from {0} '''. \
-                   format(p_sql[p_sql.upper().find('UPDATE') + 6:p_sql.upper().find('SET')])
+                   format(ob)
            rs = await async_processer.query_one_by_ds(p_ds, st)
            if rs[0] == 0:
                return '表:{0}更新0行!'.format(ob)

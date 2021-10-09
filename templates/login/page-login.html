@@ -207,7 +207,6 @@
                                 } else {
                                     //将token这写入localStorage
                                     window.localStorage['token'] = dataSet.token
-
                                     // $.ajax({
                                     //      url: "/",
                                     //      type: "get",
@@ -218,8 +217,7 @@
                                     //             console.log('xxxx=',dataSet)
                                     //       },
                                     // });
-
-                                    window.location.href='http://10.2.39.17:8300/?token='+window.localStorage.getItem("token")
+                                    window.location.href='/?token='+window.localStorage.getItem("token")
                                 }
                             },
                         });

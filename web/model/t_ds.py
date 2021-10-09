@@ -6,12 +6,18 @@
 # @Software: PyCharm
 
 import re
+import traceback
+import pymysql
+
+from web.utils.common      import get_connection_ds_read_limit,get_audit_rule
+from web.utils.common      import exception_info_mysql,exception_info_sqlserver,format_mysql_error,format_sqlserver_error
 from web.utils.common      import exception_info,current_rq,aes_encrypt,aes_decrypt,format_sql,aes_decrypt_sync
 from web.utils.common      import get_connection_ds,get_connection_ds_sqlserver,get_connection_ds_oracle
 from web.utils.common      import get_connection_ds_pg,get_connection_ds_mongo,get_connection_ds_redis,get_connection_ds_es
 from web.model.t_user      import get_user_by_loginame
 from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync  import sync_processer
+
 
 def check_ds(p_ds,p_flag):
     result = {}
@@ -176,7 +182,8 @@ async def get_ds_by_dsid(p_dsid):
                   inst_type,
                   market_id,
                   proxy_status,
-                  proxy_server
+                  proxy_server,
+                  id_ro
            from t_db_source where id={0}""".format(p_dsid)
     ds = await async_processer.query_dict_one(sql)
     ds['password'] = await aes_decrypt(ds['password'],ds['user'])
@@ -201,7 +208,8 @@ def get_ds_by_dsid_sync(p_dsid):
                   inst_type,
                   market_id,
                   proxy_status,
-                  proxy_server
+                  proxy_server,
+                  id_ro
            from t_db_source where id={0}""".format(p_dsid)
     ds = sync_processer.query_dict_one(sql)
     ds['password'] = aes_decrypt_sync(ds['password'],ds['user'])
@@ -241,6 +249,10 @@ async def get_dss(p_server_id):
                         order by a.db_desc
               """.format(p_server_id)
     return await async_processer.query_list(sql)
+
+async def get_dss_by_dsid(p_dsid):
+     sql = "select cast(id as char) as id,db_desc as name from t_db_source  where id ={}".format(p_dsid)
+     return await async_processer.query_list(sql)
 
 async def get_dss_sql_query(logon_name):
     d_user= await get_user_by_loginame(logon_name)
@@ -309,6 +321,7 @@ async def save_ds(p_ds):
         ds_user         = p_ds['user']
         ds_proxy_status = p_ds['proxy_status']
         ds_proxy_server = p_ds['proxy_server']
+        read_db         = p_ds['read_db']
 
         if p_ds['pass'] != '':
             ds_pass    = await aes_encrypt(p_ds['pass'], ds_user)
@@ -317,11 +330,11 @@ async def save_ds(p_ds):
         status         = p_ds['status']
 
         sql="""insert into t_db_source
-                (id,db_type,db_env,db_desc,ip,port,service,user,password,status,creation_date,creator,last_update_date,updator,market_id,inst_type,proxy_status,proxy_server) 
-               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}')
+                (id,db_type,db_env,db_desc,ip,port,service,user,password,status,creation_date,creator,last_update_date,updator,market_id,inst_type,proxy_status,proxy_server,id_ro) 
+               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')
             """.format(ds_id,ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
                        ds_user,ds_pass,status,current_rq(),'DBA',current_rq(),'DBA',ds_market_id,ds_inst_type,
-                       ds_proxy_status,ds_proxy_server)
+                       ds_proxy_status,ds_proxy_server,read_db)
         await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
@@ -352,7 +365,7 @@ async def upd_ds(p_ds):
         ds_user         = p_ds['user']
         ds_proxy_status = p_ds['proxy_status']
         ds_proxy_server = p_ds['proxy_server']
-        print('upd_ds...p_ds=',p_ds)
+        ds_read_db      = p_ds['read_db']
 
         if p_ds['pass']!='':
            ds_pass     = await aes_encrypt(p_ds['pass'],ds_user)
@@ -375,11 +388,12 @@ async def upd_ds(p_ds):
                        market_id    ='{11}',
                        inst_type    ='{12}',
                        proxy_status ='{13}',
-                       proxy_server ='{14}'
-                where id='{15}'""".format(ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
+                       proxy_server ='{14}',
+                       id_ro        ='{15}'
+                where id='{16}'""".format(ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
                                           ds_user,ds_pass,status,current_rq(),'DBA',ds_market_id,ds_inst_type,
-                                          ds_proxy_status,ds_proxy_server,ds_id)
-
+                                          ds_proxy_status,ds_proxy_server,ds_read_db,ds_id)
+        print(sql)
         await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
@@ -428,4 +442,175 @@ async def check_ds_valid(p_id):
         exception_info()
         result['code'] = '-1'
         result['message'] = '验证失败'
+        return result
+
+def check_sql(p_dsid,p_sql,curdb):
+    result = {}
+    result['status'] = '0'
+    result['msg']    = ''
+    result['data']   = ''
+    result['column'] = ''
+    if p_dsid == '':
+        result['status'] = '1'
+        result['msg'] = '请选择数据源!'
+        result['data'] = ''
+        result['column'] = ''
+        return result
+    if p_sql =='':
+        result['status'] = '1'
+        result['msg'] = '请选中查询语句!'
+        result['data'] = ''
+        result['column'] = ''
+        return result
+    if p_sql.find('.')==-1 and curdb=='':
+        result['status'] = '1'
+        result['msg'] = '请选择数据库!'
+        result['data'] = ''
+        result['column'] = ''
+        return result
+    return result
+
+async def exe_query(p_userid,p_dsid,p_sql,curdb):
+    result = {}
+
+    # 查询校验
+    val = check_sql(p_dsid, p_sql,curdb)
+    if val['status'] != '0':
+        return val
+
+    p_ds = await get_ds_by_dsid(p_dsid)
+
+    # mysql
+    if p_ds['db_type']=='0':
+        if len(re.findall(r'^select',p_sql.strip().lower(),re.M))>0 or len(re.findall(r'^show', p_sql.strip().lower(), re.M)) > 0:
+           result = await get_mysql_result(p_ds,p_sql,curdb)
+        else:
+           result = await write_ds_opr_log(p_userid,p_dsid,p_sql,curdb)
+
+    # sqlserver
+    if p_ds['db_type'] == '2':
+        result = get_sqlserver_result(p_ds, p_sql,curdb)
+
+    return result
+
+async def get_mysql_result(p_ds,p_sql,curdb):
+    result   = {}
+    columns  = []
+    data     = []
+    p_env    = ''
+    # get read timeout
+    read_timeout = int((await get_audit_rule('switch_timeout'))['rule_value'])
+
+    p_ds['service'] = curdb
+    db = get_connection_ds_read_limit(p_ds, read_timeout)
+    cr = db.cursor()
+    try:
+        cr.execute(p_sql)
+        rs = cr.fetchall()
+        #get sensitive column
+        c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
+        #process desc
+        i_sensitive = []
+        desc = cr.description
+        for i in range(len(desc)):
+            if desc[i][0] in c_sensitive:
+                i_sensitive.append(i)
+            columns.append({"title": desc[i][0]})
+
+        #check sql rwos
+        rule = await get_audit_rule('switch_query_rows')
+        if len(rs)>int(rule['rule_value']):
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+
+        #process data
+        for i in rs:
+            tmp = []
+            for j in range(len(desc)):
+                if i[j] is None:
+                   tmp.append('')
+                else:
+                   if j in  i_sensitive:
+                       tmp.append(get_audit_rule('switch_sensitive_columns')['error'])
+                   else:
+                       tmp.append(str(i[j]))
+            data.append(tmp)
+
+        result['status'] = '0'
+        result['msg'] = ''
+        result['data'] = data
+        result['column'] = columns
+        cr.close()
+        db.close()
+        return result
+    except pymysql.err.OperationalError as e:
+        err= traceback.format_exc()
+        print('get_mysql_result=', err)
+        if err.find('timed out')>0:
+            rule  = get_audit_rule('switch_timeout')
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+        else:
+            result['status'] = '1'
+            result['msg'] = format_mysql_error(p_env, exception_info_mysql())
+            result['data'] = ''
+            result['column'] = ''
+            return result
+    except:
+        print('get_mysql_result=',traceback.format_exc())
+        result['status'] = '1'
+        result['msg'] = format_mysql_error(p_env,exception_info_mysql())
+        result['data'] = ''
+        result['column'] = ''
+        return result
+
+async def write_ds_opr_log(p_userid,p_dsid,p_sql,curdb):
+    st = '''insert into t_db_opt_log(user_id,ds_id,db,statement,status) values('{}','{}','{}','{}','{}')
+         '''.format(p_userid,p_dsid,curdb,format_sql(p_sql),'1')
+    await async_processer.exec_sql(st)
+    return {'status':'2','msg':'发布成功!','data':'','column':''}
+
+def get_sqlserver_result(p_ds,p_sql,p_curdb):
+    result  = {}
+    columns = []
+    data    = []
+    p_env   = ''
+    if p_ds['db_env']=='1':
+        p_env='PROD'
+    if p_ds['db_env']=='2':
+        p_env='DEV'
+
+    try:
+        db = get_connection_ds_sqlserver(p_ds)
+        cr = db.cursor()
+        cr.execute('use {}'.format(p_curdb))
+        cr.execute(p_sql)
+        rs = cr.fetchall()
+        desc = cr.description
+        for i in range(len(desc)):
+            columns.append({"title": desc[i][0]})
+        for i in rs:
+            tmp = []
+            for j in range(len(desc)):
+                tmp.append(str(i[j]))
+            data.append(tmp)
+
+        result['status'] = '0'
+        result['msg'] = ''
+        result['data'] = data
+        result['column'] = columns
+        cr.close()
+        db.close()
+        return result
+    except:
+        result['status'] = '1'
+        result['msg'] = format_sqlserver_error(p_env,exception_info_sqlserver())
+        result['data']   = ''
+        result['column'] = ''
         return result

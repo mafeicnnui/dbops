@@ -5,12 +5,14 @@
 # @File    : t_sql.py
 # @Software: PyCharm
 
+import re
 import json
+import datetime
 import pymysql
 import requests
 import traceback
 from web.model.t_ds   import get_ds_by_dsid
-from web.utils.common import get_connection_ds_sqlserver,get_connection_ds_read_limit
+from web.utils.common import get_connection_ds_sqlserver,get_connection_ds_read_limit,get_seconds
 from web.utils.common import exception_info_mysql,format_mysql_error
 from web.model.t_sql_check import get_audit_rule
 
@@ -42,12 +44,26 @@ def check_sql(p_dbid,p_sql,curdb):
         result['column'] = ''
         return result
 
+    pattern1 = re.compile(r'(^\s*ALTER\s*)', re.I)
+    pattern2 = re.compile(r'(^\s*DROP\s*)', re.I)
+    pattern3 = re.compile(r'(^\s*CREATE\s*)', re.I)
+    pattern4 = re.compile(r'(^\s*GRANT\s*)', re.I)
+    pattern5 = re.compile(r'(^\s*REVOKE\s*)', re.I)
+    pattern6 = re.compile(r'(^\s*TRUNCATE\s*)', re.I)
+    pattern7 = re.compile(r'(^\s*UPDATE\s*)', re.I)
+    pattern8 = re.compile(r'(^\s*DELETE\s*)', re.I)
+    pattern9 = re.compile(r'(^\s*INSERT\s*)', re.I)
+    if pattern1.findall(p_sql) != []  \
+         or pattern2.findall(p_sql) != [] \
+            or pattern2.findall(p_sql) != [] \
+                or pattern3.findall(p_sql) != [] \
+                   or pattern4.findall(p_sql) != [] \
+                     or pattern5.findall(p_sql) != [] \
+                       or pattern6.findall(p_sql) != [] \
+                         or pattern7.findall(p_sql) != [] \
+                           or pattern8.findall(p_sql) != []  \
+                             or pattern9.findall(p_sql) != []:
 
-    if p_sql.upper().count("ALTER") >= 1 or p_sql.upper().count("DROP") >= 1 \
-            or p_sql.upper().count("CREATE") >= 1  or  p_sql.upper().count("GRANT") >= 1 \
-              or p_sql.upper().count("REVOKE") >= 1 or p_sql.upper().count("TRUNCATE") >= 1 \
-               or p_sql.upper().count("UPDATE") >= 1 or p_sql.upper().count("DELETE") >= 1 \
-                 or p_sql.upper().count("INSERT") >= 1:
         result['status'] = '1'
         result['msg']    = '不允许进行DDL、DCL、DML操作!'
         result['data']   = ''
@@ -94,6 +110,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
     columns  = []
     data     = []
     p_env    = ''
+    start_time = datetime.datetime.now()
     #get read timeout
     read_timeout = int((await get_audit_rule('switch_timeout'))['rule_value'])
     print('read_timeout=',read_timeout)
@@ -141,13 +158,13 @@ async def get_mysql_result(p_ds,p_sql,curdb):
                    tmp.append('')
                 else:
                    if j in  i_sensitive:
-                       tmp.append(await (get_audit_rule('switch_sensitive_columns'))['error'])
+                       tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)
 
         result['status'] = '0'
-        result['msg'] = ''
+        result['msg'] =str(get_seconds(start_time))
         result['data'] = data
         result['column'] = columns
         cr.close()
@@ -156,7 +173,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
     except pymysql.err.OperationalError as e:
         err= traceback.format_exc()
         if err.find('timed out')>0:
-            rule  = get_audit_rule('switch_timeout')
+            rule  = await get_audit_rule('switch_timeout')
             result['status'] = '1'
             result['msg'] = rule['error'].format(rule['rule_value'])
             result['data'] = ''

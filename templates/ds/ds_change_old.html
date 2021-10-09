@@ -64,6 +64,11 @@
           <div id="div-tab">
                <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
           </div>
+          <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+               <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
+               <input  id='dsdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
+              <input  id='dsclone' type='button' class="btn waves-effect waves-light btn-primary" value="克隆"/>
+          </div>
      </div>
     </div>
     <script>
@@ -74,20 +79,43 @@
          });
 
         $("#dsname").bind("input propertychange",function(){
+           set_button_status(true);
            $("#query_btn").click();
         });
 
         $("#market_id").bind("input propertychange",function(){
+           set_button_status(true);
            $("#query_btn").click();
         });
 
         $("#db_env").bind("input propertychange",function(){
+           set_button_status(true);
            $("#query_btn").click();
         });
 
         $("#ds_type").bind("input propertychange",function(){
+            set_button_status(true);
            $("#query_btn").click();
         });
+
+        function set_button_status(flag) {
+           $('#dsupd').attr("disabled",flag);
+           $('#dsdel').attr("disabled",flag);
+           $('#dsclone').attr("disabled",flag);
+        }
+
+        function isSelect() {
+           var rec=0;
+           $("#example tbody tr td input:checked").each( function() {
+              rec=rec+1;
+           });
+           if ( rec==1 ){
+               set_button_status(false);
+
+           } else {
+               set_button_status(true);
+           }
+        }
 
         $("#query_btn").click(function() {
               $.ajax({
@@ -114,38 +142,59 @@
                           iDisplayLength: 15,
                           data: dataSet,
                           columns: [
-                                 { "title": "标识符" },
-                                 { "title": "项目名称" },
-                                 { "title": "数据源描述" },
-                                 { "title": "数据源环境" },
-                                 { "title": "数据源定义" },
-                                 { "title": "用户"},
-                                 { "title": "是否启用"},
-                                 { "title": "更新人"},
-                                 { "title": "更新日期"},
-                                 { "title": "操作"},
-                             ],
-                             columnDefs: [
-                                {
-                                    targets: 9,
-                                    render: function(data, type, row, meta){
-                                        var change_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="change_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var delete_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var clone_btn    = '<input class="btn btn-xs btn-primary"  type="button"  value="克隆" onclick="clone_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var console_btn  = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台" onclick="console_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        return change_btn+clone_btn+delete_btn+console_btn
-                                    }
-                                 }
-                             ],
+                             { "title": "标识符" },
+                             { "title": "项目名称" },
+                             { "title": "数据源描述" },
+                             { "title": "数据源环境" },
+                             { "title": "数据源定义" },
+                             { "title": "用户"},
+                             { "title": "是否启用"},
+                             { "title": "更新人"},
+                             { "title": "更新日期"},
+                             {
+                                "title":"选择",
+                                "width": "25px",
+                                "render": function(data,type,row){
+                                     console.log('row[0]=',row[0],row[1])
+                                     return '<input type="radio" name="userid" onclick="isSelect();" >'; }
+                             },
+                          ],
                           "language": get_languages()
                          });
+                       set_button_status(true);
                   },
              });
             });
 
-        function change_btn(p_ds_row) {
-           var dsid  = p_ds_row.split(',')[0]
-           $.ajax({
+        $('#dsclone').on('click', function() {
+             var dsid='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  dsid=row[0].innerHTML;
+             });
+
+             $.ajax({
+                url: "/ds/clone",
+                type: "get",
+                datatype: "html",
+                data: {
+                    dsid:dsid
+                },
+                success: function () {
+                   $('#main-container-div').load("/ds/clone?dsid="+dsid);
+                },
+             })
+        });
+
+        $('#dsupd').on('click', function() {
+             var dsid='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  dsid=row[0].innerHTML;
+                  console.log("dsid=",dsid)
+             });
+
+            $.ajax({
                 url: "/ds/edit",
                 type: "get",
                 datatype: "html",
@@ -156,14 +205,19 @@
                    $('#main-container-div').load("/ds/edit?dsid="+dsid);
                 },
              })
-        }
+        });
 
-        function delete_btn(p_ds_row) {
-           var dsid  = p_ds_row.split(',')[0]
-           var desc = p_ds_row.split(',')[2]
-              swal({
+        $('#dsdel').on('click', function() {
+             var dsid='';
+             var dsdesc='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  dsid=row[0].innerHTML;
+                  dsdesc=row[2].innerHTML;
+             });
+            swal({
                 title: "确认要删除吗?",
-                text: "数据源["+desc+"]将被删除了！",
+                text: "数据源["+dsdesc+"]将被删除了！",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -179,49 +233,19 @@
                             datatype: "json",
                             success: function (dataSet) {
                                 if (dataSet.code=='0') {
-                                    swal("已删除!", "数据源["+desc+"]已删除!", "success");
+                                    swal("已删除!", "数据源["+dsdesc+"]已删除!", "success");
                                     $("#query_btn").click();
                                 } else {
-                                    swal("删除失败!", "用户["+desc+"]"+dataSet.message+"!", "error");
+                                    swal("删除失败!", "用户["+dsdesc+"]"+dataSet.message+"!", "error");
                                 }
                             },
                        });
 
                 } else {
-                    swal("已取消", "数据源["+desc+"]未删除！", "error");
+                    swal("已取消", "数据源["+dsdesc+"]未删除！", "error");
                 }
             });
-        }
-
-        function clone_btn(p_ds_row) {
-            var dsid  = p_ds_row.split(',')[0]
-            $.ajax({
-                url: "/ds/clone",
-                type: "get",
-                datatype: "html",
-                data: {
-                    dsid:dsid
-                },
-                success: function () {
-                   $('#main-container-div').load("/ds/clone?dsid="+dsid);
-                },
-             })
-        }
-
-        function console_btn(p_ds_row) {
-            var dsid  = p_ds_row.split(',')[0]
-            $.ajax({
-                url: "/ds/console",
-                type: "get",
-                datatype: "html",
-                data: {
-                    dsid:dsid
-                },
-                success: function () {
-                   $('#main-container-div').load("/ds/console?dsid="+dsid);
-                },
-             })
-        }
+        });
 
         $(document).ready(function() {
             $("#query_btn").click();

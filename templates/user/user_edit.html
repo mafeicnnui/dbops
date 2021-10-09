@@ -269,6 +269,7 @@
           });
 
           $("#ue_sele_role_priv").click(function () {
+               var options=$('#ue_sele_role_priv option:selected');
                if(options.length>0){
                 for (var i=0;i<options.length;i++){
                       value=$(options[i]).val();

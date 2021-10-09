@@ -708,7 +708,7 @@
         }
 
         function get_charts_bar(p_item,p_title,p_x_data,p_y_data,p_color) {
-              var myChart = echarts.init($('#'+p_item)[0]);
+              var myChart = echarts.init($('#'+p_item)[0],'light');
               var option = {
                   title:{
                          text:p_title,
@@ -763,13 +763,6 @@
                                 name: '合生通',
                                 data: p_y_data[0],
                                 type: 'bar',
-                                itemStyle : {
-                                    normal : {
-                                      lineStyle:{
-                                        color:p_color
-                                      }
-                                    }
-                                },
                                 showAllSymbol: false,
                                 symbolSize:1,
                                 smooth: true
@@ -778,13 +771,6 @@
                                 name: '会付通',
                                 data: p_y_data[1],
                                 type: 'bar',
-                                itemStyle : {
-                                    normal : {
-                                      lineStyle:{
-                                        color:p_color
-                                      }
-                                    }
-                                },
                                 showAllSymbol: false,
                                 symbolSize:1,
                                 smooth: true
@@ -792,13 +778,6 @@
                                 name: '开发',
                                 data: p_y_data[2],
                                 type: 'bar',
-                                itemStyle : {
-                                    normal : {
-                                      lineStyle:{
-                                        color:p_color
-                                      }
-                                    }
-                                },
                                 showAllSymbol: false,
                                 symbolSize:1,
                                 smooth: true
@@ -807,13 +786,6 @@
                                 name: '测试',
                                 data: p_y_data[3],
                                 type: 'bar',
-                                itemStyle : {
-                                    normal : {
-                                      lineStyle:{
-                                        color:p_color
-                                      }
-                                    }
-                                },
                                 showAllSymbol: false,
                                 symbolSize:1,
                                 smooth: true

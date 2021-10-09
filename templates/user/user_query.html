@@ -46,6 +46,11 @@
                       qname: $('#username').val()
                   },
                   success: function (dataSet) {
+                      $.extend( $.fn.dataTable.defaults, {
+                            searching: false,
+                            ordering:  false
+                      } );
+
                       $('#example').DataTable( {
                           "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
                           "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -55,7 +60,8 @@
                           scrollY    :true,
                           scrollX    :true,
                           scrollCollapse: true,
-                          paging:     true,
+                          paging     : true,
+                          bAutoWidth : true,
                           iDisplayLength: 14,
                           data: dataSet,
                           columns: [
@@ -67,11 +73,11 @@
                             { "title": "性别" },
                             { "title": "邮箱" },
                             { "title": "手机" },
-                            { "title": "项目组" },
+                            { "title": "项目组","visible":false },
                             { "title": "部门" },
                             { "title": "过期日期"},
-                            { "title": "用户状态"},
-                            { "title": "创建日期"},
+                            { "title": "状态"},
+                            { "title": "创建日期","visible":false},
                             { "title": "更新日期"},
                           ],
                           columnDefs: [

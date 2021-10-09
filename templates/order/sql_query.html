@@ -82,6 +82,7 @@
                 <div class="form-group">
                       <button type="button" id='query_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
                       <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="美化" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
+                      &nbsp;&nbsp;<span id="query_time"></span>
                  </div>
            </div>
          </form>
@@ -768,15 +769,14 @@
               })
 
               $("#query_btn").click(function() {
+                  $('#query_time').text('');
+                  var editor = ace.edit("ace-editor");
                   v_sql=editor.session.getValue()
-
-                  console.log('dbsource=',$('#db_source').val())
 
                   if($('#db_source').val()=='') {
                       showtips('info','请选择数据源!');
                       return false;
                   }
-
                   if(v_sql=='') {
                       showtips('info','请选中查询语句!');
                       return false;
@@ -789,7 +789,7 @@
                     data: {
                         dbid  :  $('#db_source').val(),
                         sql   :  v_sql,
-                        cur_db:  $('#curr_db').text()
+                        cur_db:  $('#curr_db').val()
                     },
                     success: function (dataSet) {
                         console.log(dataSet);
@@ -816,6 +816,12 @@
                                     paging        : false,
                                     "language"    : get_languages()
                             });
+                            if (dataSet.msg!='' ){
+                                $('#query_time').css('color','red')
+                                $('#query_time').text('查询用时:'+dataSet.msg+'秒')
+                            } else {
+                                 $('#query_time').text('');
+                            }
                        }
                      }
                  });

@@ -105,7 +105,7 @@ async def get_inst_id():
     return rs[0]
 
 async def save_db_inst(d_inst):
-    val=check_db_inst(d_inst,'add')
+    val= await check_db_inst(d_inst,'add')
     if val['code']=='-1':
         return val
     try:
@@ -115,12 +115,15 @@ async def save_db_inst(d_inst):
         else:
             inst_pass = d_inst['mgr_pass']
 
-        sql="""insert into t_db_inst(id,inst_name,server_id,templete_id,inst_ip,inst_port,inst_type,inst_env,is_rds,inst_ver,mgr_user,mgr_pass,created_date,api_server,python3_home,script_path,script_file,inst_mapping_port)
-                   values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}',now(),'{12}','{13}','{14}','{15}','{16}')
-            """.format(inst_id,d_inst['inst_name'],d_inst['server_id'],d_inst['templete_id'],
-                       d_inst['inst_ip'],d_inst['inst_port'],d_inst['inst_type'],d_inst['inst_env'],
-                       d_inst['is_rds'],d_inst['inst_ver'],d_inst['mgr_user'],inst_pass,d_inst['api_server'],
-                       d_inst['python3_home'], d_inst['script_path'], d_inst['script_file'],d_inst['inst_mapping_port'])
+        sql="""insert into t_db_inst(id,inst_name,server_id,templete_id,inst_ip,inst_port,
+                                     inst_type,inst_env,inst_ver,mgr_user,mgr_pass,created_date,
+                                     api_server,python3_home,script_path,script_file)
+                           values('{0}','{1}','{2}','{3}','{4}','{5}',
+                                  '{6}','{7}','{8}','{9}','{10}',now(),
+                                 '{11}','{12}','{13}','{14}')
+            """.format(inst_id,d_inst['inst_name'],d_inst['server_id'],d_inst['templete_id'],d_inst['inst_ip'],d_inst['inst_port'],
+                       d_inst['inst_type'],d_inst['inst_env'],d_inst['inst_ver'],d_inst['mgr_user'],inst_pass,
+                       d_inst['api_server'],d_inst['python3_home'],d_inst['script_path'], d_inst['script_file'])
         await async_processer.exec_sql(sql)
         sql = """insert into t_db_inst_parameter(inst_id,name,value,type,STATUS,create_date)
                  select a.id,b.dmmc,b.dmm,'mysqld',b.flag,NOW() 
@@ -306,10 +309,12 @@ async def log_db_inst(p_instid):
         return {'code': '-1', 'message':'获取日志失败!'}
 
 async def check_inst_rep(d_inst):
-    if d_inst['is_rds'] == 'N':
-        sql = "select count(0) from t_db_inst  where  server_id='{0}' and inst_port='{1}'".format(d_inst['server_id'],d_inst['inst_port'])
-    else:
-        sql = "select count(0) from t_db_inst  where  inst_ip='{0}' and inst_port='{1}'".format(d_inst['inst_ip'], d_inst['inst_port'])
+    sql = "select count(0) from t_db_inst  where  server_id='{0}' and inst_port='{1}'".format(d_inst['server_id'],
+                                                                                              d_inst['inst_port'])
+    # if d_inst['is_rds'] == 'N':
+    #     sql = "select count(0) from t_db_inst  where  server_id='{0}' and inst_port='{1}'".format(d_inst['server_id'],d_inst['inst_port'])
+    # else:
+    #     sql = "select count(0) from t_db_inst  where  inst_ip='{0}' and inst_port='{1}'".format(d_inst['inst_ip'], d_inst['inst_port'])
     rs = await async_processer.query_one(sql)
     return rs[0]
 
@@ -462,7 +467,7 @@ async def get_dss_for_inst(p_inst_id):
     sql="""select cast(id as char) as id,a.inst_name as name from t_db_inst a where id={}""".format(p_inst_id)
     return await async_processer.query_list(sql)
 
-def check_db_inst(p_inst,p_flag):
+async def check_db_inst(p_inst,p_flag):
     result = {}
 
     if p_inst["inst_name"]=="":
@@ -490,7 +495,7 @@ def check_db_inst(p_inst,p_flag):
         result['message']='实例类型不能为空!'
         return result
     if p_flag=='add':
-        if check_inst_rep(p_inst)>0:
+        if await check_inst_rep(p_inst)>0:
             result['code'] = '-1'
             result['message'] = '端口号重复!'
             return result
@@ -610,7 +615,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
 async def write_mysql_opr_log(p_userid,p_instid,p_sql,curdb):
     st = '''insert into t_db_inst_opt_log(user_id,inst_id,db,statement,status) values('{}','{}','{}','{}','{}')
          '''.format(p_userid,p_instid,curdb,format_sql(p_sql),'1')
-    await async_processer.exec_sql_by_ds(st)
+    await async_processer.exec_sql(st)
     return {'status':'2','msg':'发布成功!','data':'','column':''}
 
 def get_sqlserver_result(p_ds,p_sql,p_curdb):

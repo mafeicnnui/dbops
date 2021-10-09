@@ -35,7 +35,7 @@ function GetDate(format) {
      } else if (format==4) {
         _time = year+"-"+month
      }  else if (format==5) {
-         _time = year + month + date
+         _time = year.toString() + month.toString() + date.toString()
      }
     return _time
  }

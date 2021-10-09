@@ -464,10 +464,8 @@ async def query_monitor_sys(env,search_text):
                     concat(a.cpu_total_usage,'%') as cpu_total_usage,
                     concat(a.mem_usage,'%')  as mem_usage,
                     a.disk_usage,
-                    CONCAT(ROUND(a.disk_read/1000,1),'kb/s')  AS disk_read,
-                    CONCAT(ROUND(a.disk_write/1000,1),'kb/s') AS disk_write,
-                    CONCAT(ROUND(a.net_in/1000,1),'kb/s')     AS net_in,
-                    CONCAT(ROUND(a.net_out/1000,1),'kb/s')    AS net_out,
+                    CONCAT(ROUND(a.disk_read/1000,0),'/',ROUND(a.disk_write/1000,0),' kb/s')  AS disk_rw,
+                    CONCAT(ROUND(a.net_in/1000,0),'/',ROUND(a.net_out/1000,0),' kb/s')  AS net_io,
                     DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i:%s')     AS cjrq,
                     CASE WHEN TIMESTAMPDIFF(MINUTE, a.create_date, NOW())>10 THEN '0' ELSE '100' END  AS STATUS
             FROM t_monitor_task_server_log a  LEFT JOIN t_server b ON a.server_id=b.id 

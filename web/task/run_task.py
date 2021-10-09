@@ -17,32 +17,35 @@ def get_time():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def get_connection():
-    ip       = cfg['ip']
-    port     = cfg['port']
-    service  = cfg['db']
-    user     = cfg['user']
-    password = cfg['password']
-    conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password,db=service, charset='utf8')
+    ip       = cfg['db_ip']
+    port     = cfg['db_port']
+    service  = cfg['db_service']
+    user     = cfg['db_user']
+    password = cfg['db_pass']
+    charset  = cfg['db_charset']
+    conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password,db=service, charset=charset)
     return conn
 
 def get_connection_dict():
-    ip       = cfg['ip']
-    port     = cfg['port']
-    service  = cfg['db']
-    user     = cfg['user']
-    password = cfg['password']
+    ip       = cfg['db_ip']
+    port     = cfg['db_port']
+    service  = cfg['db_service']
+    user     = cfg['db_user']
+    password = cfg['db_pass']
+    charset  = cfg['db_charset']
     conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password,
-                               db=service, charset='utf8',cursorclass = pymysql.cursors.DictCursor)
+                               db=service, charset=charset,cursorclass = pymysql.cursors.DictCursor)
     return conn
 
 def get_connection_ds(p_ds,p_timeout):
-    ip       = p_ds['ip']
-    port     = p_ds['port']
-    service  = p_ds['db']
-    user     = p_ds['user']
-    password = p_ds['password']
+    ip       = p_ds['db_ip']
+    port     = p_ds['db_port']
+    service  = p_ds['db_service']
+    user     = p_ds['db_user']
+    password = p_ds['db_pass']
+    charset  = cfg['db_charset']
     conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password,
-                               db=service, charset='utf8',read_timeout=p_timeout,write_timeout=p_timeout)
+                               db=service, charset=charset,read_timeout=p_timeout,write_timeout=p_timeout)
     return conn
 
 def aes_decrypt(p_password,p_key):
@@ -73,23 +76,22 @@ def get_ds_by_instid(p_inst_id):
     cr  = db.cursor()
     sql = """SELECT a.id        as dsid,
                     a.inst_name as db_desc,
-                    b.server_ip as ip,
-                    
+                    b.server_ip as db_ip,                    
                     CASE when a.inst_mapping_port is null or a.inst_mapping_port ='' then 
                        a.inst_port 
                     ELSE 
                        a.inst_mapping_port
-                    END as port,
+                    END as db_port,
                     a.inst_type as db_type,
                     a.inst_env  as db_env,
-                    a.mgr_user  as user,
-                    a.mgr_pass  as password,
-                    ''        as db,
+                    a.mgr_user  as db_user,
+                    a.mgr_pass  as db_password,
+                    ''          as db_service,
                     date_format(a.created_date,'%Y-%m-%d %H:%i:%s')  as created_date
              FROM t_db_inst a,t_server b  WHERE a.server_id=b.id and a.id='{0}'""".format(p_inst_id)
     cr.execute(sql)
     rs=cr.fetchone()
-    rs['password'] = aes_decrypt(rs['password'],rs['user'])
+    rs['db_pass'] = aes_decrypt(rs['db_password'],rs['db_user'])
     cr.close()
     db.commit()
     return rs
@@ -124,7 +126,8 @@ def format_sql(v_sql):
 def run_task(p_task):
     timeout              = int(get_audit_rule('switch_ddl_timeout')['rule_value'])
     p_ds                 = get_ds_by_instid(p_task['inst_id'])
-    p_ds['service']      = p_task['db']
+    p_ds['db_service']   = p_task['db']
+    print('p_ds=',p_ds)
     db                   = get_connection_ds(p_ds,timeout)
     cr                   = db.cursor()
     try:

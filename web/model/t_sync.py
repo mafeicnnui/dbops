@@ -1055,3 +1055,87 @@ async def query_sys_stats_idx():
         rs = await async_processer.query_dict_one(r['idx_sql'])
         res[r['idx_name']] = rs['val']
     return res
+
+def get_mssql_tables_list(db_ip, db_port, db_service, db_user, db_pass,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+    }
+    url = 'http://{}/get_mssql_tables'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+def get_mysql_tables_list(db_ip, db_port, db_service, db_user, db_pass,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+    }
+    url = 'http://{}/get_mysql_tables'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+
+def get_mssql_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+        'db_tab': db_tab,
+    }
+    url = 'http://{}/get_mssql_columns'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+def get_mysql_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+        'db_tab': db_tab,
+    }
+    url = 'http://{}/get_mysql_columns'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+
+def get_mssql_incr_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+        'db_tab': db_tab,
+    }
+    url = 'http://{}/get_mssql_incr_columns'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+def get_mysql_incr_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+        'db_tab': db_tab,
+    }
+    url = 'http://{}/get_mysql_incr_columns'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res

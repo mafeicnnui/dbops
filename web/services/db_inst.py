@@ -42,6 +42,7 @@ class db_inst_query_by_id(base_handler.TokenHandler):
 
 class db_inst_save(base_handler.TokenHandler):
     async def post(self):
+        print('ssssssssssssssssssssssssssssss')
         d_inst = {}
         d_inst['inst_name']         = self.get_argument("inst_name")
         d_inst['server_id']         = self.get_argument("server_id")
@@ -51,14 +52,12 @@ class db_inst_save(base_handler.TokenHandler):
         d_inst['templete_id']       = self.get_argument("templete_id")
         d_inst['inst_type']         = self.get_argument("inst_type")
         d_inst['inst_env']          = self.get_argument("inst_env")
-        d_inst['is_rds']            = self.get_argument("is_rds")
         d_inst['mgr_user']          = self.get_argument("mgr_user")
         d_inst['mgr_pass']          = self.get_argument("mgr_pass")
         d_inst['api_server']        = self.get_argument("api_server")
         d_inst['python3_home']      = self.get_argument("python3_home")
         d_inst['script_path']       = self.get_argument("script_path")
         d_inst['script_file']       = self.get_argument("script_file")
-        d_inst['inst_mapping_port'] = self.get_argument("inst_mapping_port")
         result = await save_db_inst(d_inst)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -136,7 +135,7 @@ class dbinstmgr(base_handler.TokenHandler):
 class get_tree_by_inst(base_handler.TokenHandler):
     async def post(self):
         inst_id   = self.get_argument("inst_id")
-        msg        = self.get_argument("msg")
+        msg       = self.get_argument("msg")
         p_ds      = await get_ds_by_instid(inst_id)
         result    = {}
         if p_ds['db_type'] == '0':
