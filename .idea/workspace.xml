@@ -19,46 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="add jwt support">
-      <change afterPath="$PROJECT_DIR$/templates/ds/ds_change_old.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/ds/ds_console.html" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="optimize and bug fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_schedule.sh" beforeDir="false" afterPath="$PROJECT_DIR$/start_schedule.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/task.sh" beforeDir="false" afterPath="$PROJECT_DIR$/task.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_console.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_console.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_create.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ds/ds_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ds/ds_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ds/ds_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/page-login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_release.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_inst.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_ds.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_monitor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_check.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/db_inst.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/ds.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/task/run_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/ds.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/base_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/base_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/jwt_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/jwt_auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -540,14 +503,7 @@
       <workItem from="1633656582646" duration="622000" />
       <workItem from="1633658779827" duration="685000" />
       <workItem from="1633660737238" duration="12572000" />
-      <workItem from="1633739201879" duration="11028000" />
-    </task>
-    <task id="LOCAL-00050" summary="order bug fix">
-      <created>1628673886128</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1628673886128</updated>
+      <workItem from="1633739201879" duration="13179000" />
     </task>
     <task id="LOCAL-00051" summary="upd sql script">
       <created>1629701043205</created>
@@ -885,7 +841,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632820504283</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="optimize and bug fix">
+      <created>1633760758303</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1633760758304</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="TodoView">
@@ -913,7 +876,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update run order" />
     <MESSAGE value="order bug fix" />
     <MESSAGE value="upd sql script" />
     <MESSAGE value="sql order fix" />
@@ -938,7 +900,8 @@
     <MESSAGE value="db manager optimize" />
     <MESSAGE value="web page optimize" />
     <MESSAGE value="add jwt support" />
-    <option name="LAST_COMMIT_MESSAGE" value="add jwt support" />
+    <MESSAGE value="optimize and bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimize and bug fix" />
   </component>
   <component name="WindowStateProjectService">
     <state x="552" y="178" key="#Deployment" timestamp="1629859968689">
@@ -962,29 +925,29 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632361711205" />
-    <state width="1877" height="316" key="GridCell.Tab.0.bottom" timestamp="1633760640392">
+    <state width="1877" height="353" key="GridCell.Tab.0.bottom" timestamp="1633769424422">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="316" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633760640392" />
+    <state width="1877" height="353" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633769424422" />
     <state width="1877" height="202" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1632970440189" />
-    <state width="1877" height="316" key="GridCell.Tab.0.center" timestamp="1633760640391">
+    <state width="1877" height="353" key="GridCell.Tab.0.center" timestamp="1633769424422">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="316" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633760640391" />
+    <state width="1877" height="353" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633769424422" />
     <state width="1877" height="202" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1632970440189" />
-    <state width="1877" height="316" key="GridCell.Tab.0.left" timestamp="1633760640391">
+    <state width="1877" height="353" key="GridCell.Tab.0.left" timestamp="1633769424422">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="316" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633760640391" />
+    <state width="1877" height="353" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633769424422" />
     <state width="1877" height="202" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1632970440188" />
-    <state width="1877" height="316" key="GridCell.Tab.0.right" timestamp="1633760640391">
+    <state width="1877" height="353" key="GridCell.Tab.0.right" timestamp="1633769424422">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="496" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1630317063411" />
-    <state width="1877" height="316" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633760640391" />
+    <state width="1877" height="353" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633769424422" />
     <state width="1877" height="202" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1632970440189" />
     <state width="1877" height="99" key="GridCell.Tab.1.bottom" timestamp="1632735932032">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -1006,10 +969,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="628" y="231" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632705499343" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1632820508884">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1633760814966">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1632820508884" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1633760814966" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1632878903541">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
