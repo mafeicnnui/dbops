@@ -43,6 +43,7 @@ class TokenHandler(BaseHandler):
         self.token_passed = True
         self.username = result['data']['username']
         self.userid = result['data']['userid']
+        self.token = token
 
 
 class TokenHandlerLogin(BaseHandler):

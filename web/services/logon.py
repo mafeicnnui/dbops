@@ -40,6 +40,7 @@ class update_token(base_handler.TokenHandler):
     async def post(self):
         print('update_token=>url=',self.request.uri)
         token=refresh_token(self.get_argument("token"))
+        self.token = token
         self.write({"token": token})
 
 class index(base_handler.TokenHandlerLogin):
