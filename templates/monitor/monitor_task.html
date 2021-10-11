@@ -241,6 +241,32 @@
                                    </div>
                                    <div class="form-group">
                                         <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_monitor_db_server">*</span>监控数据库</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select  class="form-control select" id="add_monitor_db_server" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in task_db_servers %}
+                                                  <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_monitor_db_template">*</span>监控模板</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select  class="form-control select" id="add_monitor_db_template" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in db_monitor_templates %}
+                                                  <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
                                             <label class="col-md-2 control-label"><span id="s_add_monitor_task_run_time">*</span>运行时间</label>
                                         </div>
                                         <div class="col-md-10">
@@ -268,7 +294,7 @@
                                             <label class="col-md-2 control-label"><span id="s_add_monitor_task_script_name">*</span>脚本名称</label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input id="add_monitor_task_script_name"  type="text" class="form-control" placeholder="请输入脚本名称">
+                                            <input id="add_monitor_task_script_name"  type="text" readonly class="form-control" placeholder="请输入脚本名称" value="monitor_agent.py">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -475,6 +501,32 @@
                                            </div>
                                        </div>
                                        <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_upd_monitor_db_server">*</span>监控数据库</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select  class="form-control select" id="upd_monitor_db_server" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in task_db_servers %}
+                                                  <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                        </div>
+                                       </div>
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span id="s_upd_monitor_db_template">*</span>监控模板</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <select  class="form-control select" id="upd_monitor_db_template" >
+                                                    <option value='' selected = "selected">......</option>
+                                                    {% for var in db_monitor_templates %}
+                                                      <option value={{var[0]}} >{{var[1]}}</option>
+                                                    {% end %}
+                                                </select>
+                                            </div>
+                                       </div>
+                                       <div class="form-group">
                                             <div>
                                                 <label class="col-md-2 control-label"><span id="s_upd_monitor_task_run_time">*</span>运行时间</label>
                                             </div>
@@ -503,7 +555,7 @@
                                                 <label class="col-md-2 control-label"><span id="s_upd_monitor_task_script_name">*</span>脚本名称</label>
                                             </div>
                                             <div class="col-md-10">
-                                                <input id="upd_monitor_task_script_name"  type="text" class="form-control" placeholder="请输入脚本名称">
+                                                <input id="upd_monitor_task_script_name"  type="text" readonly class="form-control" placeholder="请输入脚本名称" value="monitor_agent.py">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -601,7 +653,7 @@
                           scrollX    :false,
                           scrollCollapse: true,
                           paging:     true,
-                          iDisplayLength: 14,
+                          iDisplayLength: 12,
                           data: dataSet,
                           columns: [
                              { "title": "任务标识" },
@@ -630,6 +682,21 @@
                       $('#task_stop_btn').attr("disabled",true);
                    }
              })
+        }
+
+        function set_gather_title(){
+            if ($('#add_gather_task_db_server').val()!=''){
+                var options=$('#add_gather_task_db_server option:selected');
+                $("#add_gather_task_tag").val('gather_task_db_'+$(options[0]).val());
+                $("#add_gather_task_desc").val('采集任务['+$(options[0]).text()+']');
+            } else if($('#add_gather_server').val()!='' ){
+                var options=$('#add_gather_server option:selected');
+                $("#add_gather_task_tag").val('gather_task_server_'+$(options[0]).val());
+                $("#add_gather_task_desc").val('采集任务['+$(options[0]).text()+']');
+            } else {
+                $("#add_gather_task_tag").val('');
+                $("#add_gather_task_desc").val('');
+            }
         }
 
         $("#add_gather_task_templete_name").change(function () {
@@ -661,21 +728,6 @@
                 set_gather_title()
             }
          });
-
-        function set_gather_title(){
-            if ($('#add_gather_task_db_server').val()!=''){
-                var options=$('#add_gather_task_db_server option:selected');
-                $("#add_gather_task_tag").val('gather_task_db_'+$(options[0]).val());
-                $("#add_gather_task_desc").val('采集任务['+$(options[0]).text()+']');
-            } else if($('#add_gather_server').val()!='' ){
-                var options=$('#add_gather_server option:selected');
-                $("#add_gather_task_tag").val('gather_task_server_'+$(options[0]).val());
-                $("#add_gather_task_desc").val('采集任务['+$(options[0]).text()+']');
-            } else {
-                $("#add_gather_task_tag").val('');
-                $("#add_gather_task_desc").val('');
-            }
-        }
 
         $('#add_gather_server').change(function() {
            set_gather_title()
@@ -759,6 +811,8 @@
                           $('#upd_monitor_task_tag').val(dataSet['task_tag'])
                           $('#upd_monitor_task_desc').val(dataSet['comments'])
                           $('#upd_monitor_server').val(dataSet['server_id'])
+                          $('#upd_monitor_db_server').val(dataSet['ds_id'])
+                          $('#upd_monitor_db_template').val(dataSet['template_id'])
                           $('#upd_monitor_task_run_time').val(dataSet['run_time'])
                           $('#upd_monitor_task_python3_home').val(dataSet['python3_home'])
                           $('#upd_monitor_task_script_base').val(dataSet['script_path'])
@@ -828,6 +882,8 @@
                         add_monitor_task_tag          : $('#add_monitor_task_tag').val(),
                         add_monitor_task_desc         : $('#add_monitor_task_desc').val(),
                         add_monitor_server            : $('#add_monitor_server').val(),
+                        add_monitor_db_server         : $('#add_monitor_db_server').val(),
+                        add_monitor_db_template       : $('#add_monitor_db_template').val(),
                         add_monitor_task_run_time     : $('#add_monitor_task_run_time').val(),
                         add_monitor_task_python3_home : $('#add_monitor_task_python3_home').val(),
                         add_monitor_task_script_base  : $('#add_monitor_task_script_base').val(),
@@ -839,7 +895,7 @@
                         console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("保存成功", "", "success")
-                            query_index()
+                            query_task()
                         } else {
                             swal(dataSet.message, "", "error")
                         }
@@ -890,6 +946,8 @@
                         upd_monitor_task_tag          : $('#upd_monitor_task_tag').val(),
                         upd_monitor_task_desc         : $('#upd_monitor_task_desc').val(),
                         upd_monitor_server            : $('#upd_monitor_server').val(),
+                        upd_monitor_db_server         : $('#upd_monitor_db_server').val(),
+                        upd_monitor_db_template       : $('#upd_monitor_db_template').val(),
                         upd_monitor_task_run_time     : $('#upd_monitor_task_run_time').val(),
                         upd_monitor_task_python3_home : $('#upd_monitor_task_python3_home').val(),
                         upd_monitor_task_script_base  : $('#upd_monitor_task_script_base').val(),
@@ -901,7 +959,7 @@
                         console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("更新成功", "", "success")
-                            query_index()
+                            query_task()
                         } else {
                             swal(dataSet.message, "", "error")
                         }

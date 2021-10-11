@@ -298,15 +298,17 @@ async def save_monitor_task(p_task):
     if val['code']=='-1':
         return val
     try:
-        sql ="""insert into t_monitor_task(task_tag,comments,server_id,run_time,script_path,script_file,python3_home,api_server,status)
-                  values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')
+        sql ="""insert into t_monitor_task(task_tag,comments,server_id,run_time,script_path,script_file,python3_home,api_server,status,ds_id,template_id)
+                  values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')
             """.format(p_task['add_monitor_task_tag'], p_task['add_monitor_task_desc'],
                         p_task['add_monitor_server'], p_task['add_monitor_task_run_time'],
                         format_sql(p_task['add_monitor_task_script_base']),
                         format_sql(p_task['add_monitor_task_script_name']),
                         format_sql(p_task['add_monitor_task_python3_home']),
                         p_task['add_monitor_task_api_server'],
-                        p_task['add_monitor_task_status'])
+                        p_task['add_monitor_task_status'],
+                        p_task['add_monitor_db_server'],
+                        p_task['add_monitor_db_template'])
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '保存成功!'}
     except:
@@ -352,7 +354,9 @@ async def upd_monitor_task(p_task):
                           script_file='{}',
                           python3_home='{}',
                           api_server='{}',
-                          status='{}'
+                          status='{}',
+                          ds_id='{}',
+                          template_id='{}'
                     where task_tag='{}'
                 """.format( p_task['upd_monitor_task_run_time'],
                             p_task['upd_monitor_task_script_base'],
@@ -360,8 +364,11 @@ async def upd_monitor_task(p_task):
                             p_task['upd_monitor_task_python3_home'],
                             p_task['upd_monitor_task_api_server'],
                             p_task['upd_monitor_task_status'],
+                            p_task['upd_monitor_db_server'],
+                            p_task['upd_monitor_db_template'],
                             p_task['upd_monitor_task_tag']
                         )
+        print(sql)
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '保存成功!'}
     except:

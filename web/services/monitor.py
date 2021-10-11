@@ -12,7 +12,7 @@ from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
 from   web.model.t_monitor   import push_monitor_task,run_monitor_task,stop_monitor_task,query_monitor_svr,query_monitor_proj,query_monitor_proj_log
-from   web.model.t_dmmx      import get_dmm_from_dm,get_gather_server,get_templete_names,get_sync_db_server,get_gather_tasks
+from   web.model.t_dmmx      import get_dmm_from_dm,get_gather_server,get_templete_names,get_sync_db_server,get_gather_tasks,get_db_moitor_templates
 from   web.utils.common      import get_day_nday_ago,now
 from   web.model.t_ds        import get_dss
 from   web.utils             import base_handler
@@ -147,11 +147,12 @@ class monitor_templete_indexes(base_handler.TokenHandler):
 class monitortaskquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_task.html",
-                    gather_servers    = await get_gather_server(),
-                    templete_names    = await get_templete_names(),
-                    task_db_servers   = await get_sync_db_server(),
-                    gather_tasks      = await get_gather_tasks(),
-                    monitor_servers   = await get_gather_server()
+                    gather_servers       = await get_gather_server(),
+                    templete_names       = await get_templete_names(),
+                    task_db_servers      = await get_sync_db_server(),
+                    db_monitor_templates = await get_db_moitor_templates(),
+                    gather_tasks         = await get_gather_tasks(),
+                    monitor_servers      = await get_gather_server()
                     )
 
 class monitortask_query(base_handler.TokenHandler):
@@ -186,6 +187,8 @@ class monitortaskadd_save_monitor(base_handler.TokenHandler):
         d_task['add_monitor_task_tag']           = self.get_argument("add_monitor_task_tag")
         d_task['add_monitor_task_desc']          = self.get_argument("add_monitor_task_desc")
         d_task['add_monitor_server']             = self.get_argument("add_monitor_server")
+        d_task['add_monitor_db_server']          = self.get_argument("add_monitor_db_server")
+        d_task['add_monitor_db_template']        = self.get_argument("add_monitor_db_template")
         d_task['add_monitor_task_run_time']      = self.get_argument("add_monitor_task_run_time")
         d_task['add_monitor_task_python3_home']  = self.get_argument("add_monitor_task_python3_home")
         d_task['add_monitor_task_script_base']   = self.get_argument("add_monitor_task_script_base")
@@ -219,6 +222,8 @@ class monitortaskupd_save_monitor(base_handler.TokenHandler):
         d_task['upd_monitor_task_tag']           = self.get_argument("upd_monitor_task_tag")
         d_task['upd_monitor_task_desc']          = self.get_argument("upd_monitor_task_desc")
         d_task['upd_monitor_server']             = self.get_argument("upd_monitor_server")
+        d_task['upd_monitor_db_server']          = self.get_argument("upd_monitor_db_server")
+        d_task['upd_monitor_db_template']        = self.get_argument("upd_monitor_db_template")
         d_task['upd_monitor_task_run_time']      = self.get_argument("upd_monitor_task_run_time")
         d_task['upd_monitor_task_python3_home']  = self.get_argument("upd_monitor_task_python3_home")
         d_task['upd_monitor_task_script_base']   = self.get_argument("upd_monitor_task_script_base")
