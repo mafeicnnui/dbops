@@ -29,6 +29,7 @@ from web.urls.db       import db
 from web.urls.slow     import slow
 from web.urls.minio    import minio
 from web.urls.bbtj     import bbtj
+from web.urls.bbgl     import bbgl
 
 
 urls = []
@@ -56,3 +57,4 @@ urls.extend(db)
 urls.extend(slow)
 urls.extend(minio)
 urls.extend(bbtj)
+urls.extend(bbgl)
