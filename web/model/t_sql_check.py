@@ -814,7 +814,6 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                                                       AND b.table_schema=DATABASE()
                                                       AND a.table_name=b.table_name
                                                       AND b.column_name='{}')  union all \n'''.format(col,'dbops_' + ob, col)
-
         if op == 'CREATE_TABLE':
             if (await check_mysql_tab_exists(p_ds, ob)) > 0:
                 return  '表:{0}已存在!'.format(ob)
@@ -846,31 +845,35 @@ async def get_tab_rows(p_ds,p_sql):
         return rs[0]
     return 0
 
-async def get_tab_has_fields_multi(p_ds,p_sql,config):
+async def get_tab_has_fields_multi(p_ds,p_sql,p_rule):
+    ob = get_obj_name(p_sql)
+    op = get_obj_op(p_sql)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql)
-        op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
-        dp = 'drop table {}'
-        st = '''SELECT table_name,'create_time' AS column_name 
-                 FROM  information_schema.tables a  
-                WHERE a.table_schema=DATABASE()  
-                  AND a.table_name= LOWER('{0}')
-                  AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
-                                 WHERE a.table_schema=b.table_schema
-                                   AND b.table_schema=DATABASE()
-                                   AND a.table_name=b.table_name
-                                   AND b.column_name='create_time')
-                UNION ALL
-                SELECT table_name,'update_time' AS column_name 
-                 FROM  information_schema.tables a  
-                WHERE a.table_schema=DATABASE()  
-                  AND a.table_name = LOWER('{1}')
-                  AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
-                                 WHERE a.table_schema=b.table_schema
-                                   AND b.table_schema=DATABASE()
-                                   AND a.table_name=b.table_name
-                                   AND b.column_name='update_time')'''
+        st = ''
+        for col in p_rule['rule_value'].split(','):
+            if op == 'CREATE_TABLE':
+                st = st + '''SELECT table_name,'{}' AS column_name
+                                        FROM  information_schema.tables a
+                                       WHERE a.table_schema=DATABASE()
+                                         AND a.table_name= LOWER('{}')
+                                         AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
+                                                        WHERE a.table_schema=b.table_schema
+                                                          AND b.table_schema=DATABASE()
+                                                          AND a.table_name=b.table_name
+                                                          AND b.column_name='{}')  union all \n'''.format(col, ob, col)
+            elif op == 'ALTER_TABLE_ADD':
+                st = st + '''SELECT table_name,'{}' AS column_name
+                                        FROM  information_schema.tables a
+                                       WHERE a.table_schema=DATABASE()
+                                         AND a.table_name= LOWER('{}')
+                                         AND NOT EXISTS(SELECT 1 FROM information_schema.columns b
+                                                        WHERE a.table_schema=b.table_schema
+                                                          AND b.table_schema=DATABASE()
+                                                          AND a.table_name=b.table_name
+                                                          AND b.column_name='{}')  union all \n'''.format(col,
+                                                                                                          'dbops_' + ob,
+                                                                                                          col)
 
         if op == 'CREATE_TABLE':
             rs = await async_processer.query_list_by_ds(p_ds, st.format(ob,ob))
@@ -881,7 +884,6 @@ async def get_tab_has_fields_multi(p_ds,p_sql,config):
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
                 rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-                #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                 config['dbops_' + ob] = dp.format('dbops_' +ob)
                 return rs
     except Exception as e:
@@ -1853,7 +1855,6 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                     print('检查时间字段默认值...')
                     v = await get_time_col_default_value_multi(ds, st,cfg)
                     e = rule['error']
-                    print('v==============',v,type(v))
                     try:
                         for i in v:
                             if i[3] == 0:
@@ -1884,17 +1885,18 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
             if rule['rule_code'] == 'switch_tab_has_time_fields' and tp == 'TABLE':
                 if op == 'CREATE_TABLE':
                     print('表必须拥有字段...')
-                    v = await get_tab_has_fields_multi(ds, st,cfg)
-                    e = rule['error']
-                    try:
-                        for i in v:
+                    if rule['rule_value'] != '':
+                        v = await get_tab_has_fields_multi(ds, st,rule)
+                        e = rule['error']
+                        try:
+                            for i in v:
+                                res = False
+                                rule['error'] = e.format(i[0], i[1])
+                                await save_check_results(rule, p_user,st,sxh)
+                        except:
                             res = False
-                            rule['error'] = e.format(i[0], i[1])
-                            await save_check_results(rule, p_user,st,sxh)
-                    except:
-                        res = False
-                        rule['error'] = v
-                        await save_check_results(rule,p_user, st,sxh)
+                            rule['error'] = v
+                            await save_check_results(rule,p_user, st,sxh)
 
             if rule['rule_code'] == 'switch_tab_tcol_datetime' and rule['rule_value'] == 'true' and tp == 'TABLE':
                 if get_obj_op(st.strip()) == 'CREATE_TABLE':
