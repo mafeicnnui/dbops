@@ -819,7 +819,7 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                 return  '表:{0}已存在!'.format(ob)
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
-                col = await async_processer.query_list_by_ds(p_ds, st[0:-12].replace('$$TAB$$',ob))
+                col = await async_processer.query_list_by_ds(p_ds, st[0:-12])
                 await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
                 return col
         elif op == 'ALTER_TABLE_ADD':
@@ -845,7 +845,7 @@ async def get_tab_rows(p_ds,p_sql):
         return rs[0]
     return 0
 
-async def get_tab_has_fields_multi(p_ds,p_sql,p_rule):
+async def get_tab_has_fields_multi(p_ds,p_sql,p_rule,config):
     ob = get_obj_name(p_sql)
     op = get_obj_op(p_sql)
     dp = 'drop table {}'
@@ -874,16 +874,16 @@ async def get_tab_has_fields_multi(p_ds,p_sql,p_rule):
                                                           AND b.column_name='{}')  union all \n'''.format(col,
                                                                                                           'dbops_' + ob,
                                                                                                           col)
-
+        print('st------------------>',st)
         if op == 'CREATE_TABLE':
-            rs = await async_processer.query_list_by_ds(p_ds, st.format(ob,ob))
+            rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format(ob,ob))
             config[ob] = dp.format(ob)
             return rs
         elif op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
             if config.get('dbops_' + ob) is None:
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
+                rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format('dbops_' + ob,'dbops_' + ob))
                 config['dbops_' + ob] = dp.format('dbops_' +ob)
                 return rs
     except Exception as e:
@@ -1886,7 +1886,7 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                 if op == 'CREATE_TABLE':
                     print('表必须拥有字段...')
                     if rule['rule_value'] != '':
-                        v = await get_tab_has_fields_multi(ds, st,rule)
+                        v = await get_tab_has_fields_multi(ds, st,rule,cfg)
                         e = rule['error']
                         try:
                             for i in v:
