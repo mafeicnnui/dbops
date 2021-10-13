@@ -68,7 +68,7 @@ class sql_release(base_handler.TokenHandler):
        desc       = self.get_argument("desc")
        type       = self.get_argument("type")
        time       = self.get_argument("time")
-       result     = await save_sql(dbid,cdb,sql,desc,user,type,time,self.username,self.request.host,self.token)
+       result     = await save_sql(dbid,cdb,sql,desc,user,type,time,self.username,self.request.host)
        self.write({"code": result['code'], "message": result['message']})
 
 class sql_check(base_handler.TokenHandler):
@@ -112,7 +112,7 @@ class sql_audit(base_handler.TokenHandler):
        sqlid    = self.get_argument("sqlid")
        status   = self.get_argument("status")
        message  = self.get_argument("message")
-       result   = await upd_sql(sqlid,self.username,status,message,self.request.host,self.token)
+       result   = await upd_sql(sqlid,self.username,status,message,self.request.host)
        self.write({"code": result['code'], "message": result['message']})
 
 class sqlrun(base_handler.TokenHandler):

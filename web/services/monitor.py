@@ -194,6 +194,7 @@ class monitortaskadd_save_monitor(base_handler.TokenHandler):
         d_task['add_monitor_task_script_base']   = self.get_argument("add_monitor_task_script_base")
         d_task['add_monitor_task_script_name']   = self.get_argument("add_monitor_task_script_name")
         d_task['add_monitor_task_api_server']    = self.get_argument("add_monitor_task_api_server")
+        d_task['add_monitor_receiver']           = self.get_argument("add_monitor_receiver")
         d_task['add_monitor_task_status']        = self.get_argument("add_monitor_task_status")
         result = await save_monitor_task(d_task)
         self.write({"code": result['code'], "message": result['message']})
@@ -229,7 +230,9 @@ class monitortaskupd_save_monitor(base_handler.TokenHandler):
         d_task['upd_monitor_task_script_base']   = self.get_argument("upd_monitor_task_script_base")
         d_task['upd_monitor_task_script_name']   = self.get_argument("upd_monitor_task_script_name")
         d_task['upd_monitor_task_api_server']    = self.get_argument("upd_monitor_task_api_server")
+        d_task['upd_monitor_receiver']           = self.get_argument("upd_monitor_receiver")
         d_task['upd_monitor_task_status']        = self.get_argument("upd_monitor_task_status")
+        d_task['upd_monitor_task_tag_old']       = self.get_argument("upd_monitor_task_tag_old")
         result = await upd_monitor_task(d_task)
         self.write({"code": result['code'], "message": result['message']})
 

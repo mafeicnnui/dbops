@@ -789,29 +789,6 @@
 
         }
 
-        function syn_tab_edit(row){
-           v =unescape(row).split(',')
-           console.log('syn_tab_query='+v);
-
-           //设置显示项为只读
-           $('#sync_tab_name').attr("disabled",false);
-           $('#sync_tab_incr_col').attr("disabled",false);
-           $('#sync_tab_time').attr("readonly",false);
-           $('#sync_sele_col').attr("disabled",false);
-           $('#sync_tab_col').attr("disabled",false);
-           $('#ion-arrow-down').attr("disabled",false);
-           $('#ion-arrow-up').attr("disabled",false);
-
-           //显示项赋值
-           $('#sync_tab_id').val(v[0]);
-           $('#sync_tab_name').val(v[1]+'.'+v[2]+'.'+v[3]);
-           set_sync_tab_incr_col();
-           $('#sync_tab_incr_col').val(v[5]);
-           $('#sync_tab_time').val(v[6]);
-           set_tab_cols(v[4]);
-           //按钮设置为可用
-           $('#save_sync_tab_config').attr("disabled",false);
-        }
 
         function syn_tab_add(){
            //设置显示项为只读
@@ -832,6 +809,30 @@
            //按钮设置为可用
            $('#save_sync_tab_config').attr("disabled",false);
         }
+
+        function syn_tab_edit(row){
+           v =unescape(row).split(',')
+           console.log('syn_tab_query='+v);
+           //设置显示项为只读
+           $('#sync_tab_name').attr("disabled",false);
+           $('#sync_tab_incr_col').attr("disabled",false);
+           $('#sync_tab_time').attr("readonly",false);
+           $('#sync_sele_col').attr("disabled",false);
+           $('#sync_tab_col').attr("disabled",false);
+           $('#ion-arrow-down').attr("disabled",false);
+           $('#ion-arrow-up').attr("disabled",false);
+
+           //显示项赋值
+           $('#sync_tab_id').val(v[0]);
+           $('#sync_tab_name').val(v[1]+'.'+v[2]+'.'+v[3]);
+           set_sync_tab_incr_col();
+           $('#sync_tab_incr_col').val(v[5]);
+           $('#sync_tab_time').val(v[6]);
+           set_tab_cols(v[4]);
+           //按钮设置为可用
+           $('#save_sync_tab_config').attr("disabled",false);
+        }
+
 
         function syn_tab_del(row){
              v =unescape(row).split(',')
@@ -974,9 +975,11 @@
         function set_tab_cols(p_cols){
                v_col_list = p_cols.split('#');
                if (sour_ds['db_type'] == '2') {
-                   vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
+                   // vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
+                   vUrl =  "/get_mssql_columns"
                } else if (sour_ds['db_type'] == '0') {
-                   vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
+                   // vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
+                   vUrl =  "/get_mysql_columns"
                    sour_ds['service'] = $('#sync_schema').val()
                }
 
@@ -991,7 +994,8 @@
                       db_user   : sour_ds['user'],
                       db_pass   : sour_ds['password'],
                       db_tab    : $('#sync_tab_name').val(),
-                      timeout   : 1000
+                      timeout   : 1000,
+                      proxy_server: sour_ds['proxy_server']
                   },
                   success: function (dataSet) {
                       //设置未同步列选择框

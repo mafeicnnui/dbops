@@ -305,7 +305,14 @@
                                             <input id="add_monitor_task_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
                                         </div>
                                    </div>
-
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_monitor_receiver">*</span>收件人</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_monitor_receiver"  type="text"  class="form-control"  placeholder="请输入收件人">
+                                        </div>
+                                   </div>
                                    <div class="form-group">
                                         <div >
                                             <label class="col-md-2 control-label"><span id="s_add_monitor_task_status">*</span>任务状态</label>
@@ -566,7 +573,14 @@
                                                 <input id="upd_monitor_task_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
                                             </div>
                                        </div>
-
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span id="s_upd_monitor_receiver">*</span>收件人</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_monitor_receiver"  type="text"  class="form-control"  placeholder="请输入收件人">
+                                            </div>
+                                       </div>
                                        <div class="form-group">
                                             <div >
                                                 <label class="col-md-2 control-label"><span id="s_upd_monitor_task_status">*</span>任务状态</label>
@@ -737,6 +751,7 @@
             set_gather_title()
         });
 
+
         $('#add_monitor_server').change(function() {
             if ($('#add_monitor_server').val()!=''){
                 var options=$('#add_monitor_server option:selected');
@@ -745,6 +760,39 @@
             } else {
                 $("#add_monitor_task_tag").val('');
                 $("#add_monitor_task_desc").val('');
+            }
+        });
+
+        $('#add_monitor_db_server').change(function() {
+            if ($('#add_monitor_db_server').val()!=''){
+                var options=$('#add_monitor_db_server option:selected');
+                $("#add_monitor_task_tag").val('monitor_task_'+$('#add_monitor_server').val()+'_'+$(options[0]).val());
+                $("#add_monitor_task_desc").val('监控任务['+$(options[0]).text()+']');
+            } else {
+                $("#add_monitor_task_tag").val('');
+                $("#add_monitor_task_desc").val('');
+            }
+        });
+
+        $('#upd_monitor_server').change(function() {
+            if ($('#upd_monitor_server').val()!=''){
+                var options=$('#upd_monitor_server option:selected');
+                $("#upd_monitor_task_tag").val($("#add_monitor_server").val()+'_'+$(options[0]).val());
+                $("#upd_monitor_task_desc").val('监控任务['+$(options[0]).text()+']');
+            } else {
+                $("#upd_monitor_task_tag").val('');
+                $("#upd_monitor_task_desc").val('');
+            }
+        });
+
+        $('#upd_monitor_db_server').change(function() {
+            if ($('#upd_monitor_db_server').val()!=''){
+                var options=$('#upd_monitor_db_server option:selected');
+                $("#upd_monitor_task_tag").val('monitor_task_'+$("#upd_monitor_server").val()+'_'+$(options[0]).val());
+                $("#upd_monitor_task_desc").val('监控任务['+$(options[0]).text()+']');
+            } else {
+                $("#upd_monitor_task_tag").val('');
+                $("#upd_monitor_task_desc").val('');
             }
         });
 
@@ -811,13 +859,14 @@
                           $('#upd_monitor_task_tag').val(dataSet['task_tag'])
                           $('#upd_monitor_task_desc').val(dataSet['comments'])
                           $('#upd_monitor_server').val(dataSet['server_id'])
-                          $('#upd_monitor_db_server').val(dataSet['ds_id'])
-                          $('#upd_monitor_db_template').val(dataSet['template_id'])
+                          $('#upd_monitor_db_server').val(dataSet['db_id'])
+                          $('#upd_monitor_db_template').val(dataSet['templete_id'])
                           $('#upd_monitor_task_run_time').val(dataSet['run_time'])
                           $('#upd_monitor_task_python3_home').val(dataSet['python3_home'])
                           $('#upd_monitor_task_script_base').val(dataSet['script_path'])
                           $('#upd_monitor_task_script_name').val(dataSet['script_file'])
                           $('#upd_monitor_task_api_server').val(dataSet['api_server'])
+                          $('#upd_monitor_receiver').val(dataSet['receiver'])
                           $('#upd_monitor_task_status').val(dataSet['status'])
                           $('#upd_monitor_server').attr('disabled','disabled')
                           $('#activeTabInputHidden').val('监控任务')
@@ -889,6 +938,7 @@
                         add_monitor_task_script_base  : $('#add_monitor_task_script_base').val(),
                         add_monitor_task_script_name  : $('#add_monitor_task_script_name').val(),
                         add_monitor_task_api_server   : $('#add_monitor_task_api_server').val(),
+                        add_monitor_receiver          : $('#add_monitor_receiver').val(),
                         add_monitor_task_status       : $('#add_monitor_task_status').val(),
                     },
                     success: function (dataSet) {
@@ -953,7 +1003,9 @@
                         upd_monitor_task_script_base  : $('#upd_monitor_task_script_base').val(),
                         upd_monitor_task_script_name  : $('#upd_monitor_task_script_name').val(),
                         upd_monitor_task_api_server   : $('#upd_monitor_task_api_server').val(),
+                        upd_monitor_receiver          : $('#upd_monitor_receiver').val(),
                         upd_monitor_task_status       : $('#upd_monitor_task_status').val(),
+                        upd_monitor_task_tag_old      : $('#upd_task_tag_hidden').val()
                     },
                     success: function (dataSet) {
                         console.log(dataSet.code, dataSet.message);

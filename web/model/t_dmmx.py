@@ -157,7 +157,7 @@ async def get_sync_db_server():
 
 
 async def get_db_moitor_templates():
-    sql = """SELECT t.code,t.name FROM t_monitor_templete t WHERE t.type='2' AND t.name LIKE '%监控%';"""
+    sql = """SELECT t.id,t.name FROM t_monitor_templete t WHERE t.type='2' AND t.name LIKE '%监控%';"""
     return await async_processer.query_list(sql)
 
 
