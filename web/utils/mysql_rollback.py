@@ -188,7 +188,7 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
         logging.info(('rollback statement:',rollback))
         cr=db.cursor()
         cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
-        cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,beauty_sql(format_sql(rollback))))
+        cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,format_sql(rollback)))
         db.commit()
         return format_sql(rollback)
     except:

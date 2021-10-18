@@ -26,9 +26,6 @@ def main():
             if tasks!=[]:
                 print('tasks=',tasks)
                 all_task = [executor.submit(exe_sql_sync,t['db_id'], t['db_name'], t['sql_id'], t['user_name']) for t in tasks]
-                # wait(all_task, return_when=FIRST_COMPLETED)
-                # print(wait(all_task, timeout=3))
-
                 for future in as_completed(all_task):
                     res = future.result()
                     print("res=",res)

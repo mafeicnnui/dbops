@@ -131,6 +131,7 @@ class syncedit_datax(base_handler.TokenHandler):
     async def get(self):
         sync_id   = self.get_argument("sync_id")
         d_sync    = await query_datax_by_id(sync_id)
+        print('d_sync=',d_sync)
         self.render("./datax/sync_datax_edit.html",
                     sync_id              = sync_id,
                     sync_server          = await get_sync_server(),

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>报表查询</title>
+</head>
+<body>
+  <form class="form-horizontal" role="form">
+       <div class="row">
+            <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon">报表代码</span>
+                    <select class="form-control select" id="bbdm" name="bbdm">
+                        <option value='' selected = "selected">请选择报表</option>
+                        {% for var in dm_bbdm %}
+                          <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                 </div>
+            </div>
+            <div class="col-md-1">
+                 <span class="input-group-btn">
+                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+            <div class="col-md-1">
+                <span id="query_time"></span>
+            </div>
+      </div>
+  </form>
+  <br>
+  <form class="form-horizontal" role="form" id="form_bbgl_filter"></form>
+  <br>
+  <div id='div-table'>
+      <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
+  </div>
+
+  <script>
+      $(document).ready(function() {
+          var table;
+          $('#bbdm').change(function(){
+                $.ajax({
+                    url     : "/bbgl/filter",
+                    type    : "post",
+                    datatype: "json",
+                    data: {
+                        bbdm   :  $('#bbdm').val(),
+                    },
+                    success: function (filter) {
+                      var htmlFilter='<div class="row">'
+                      for (i=0;i<filter.length;i++){
+                          if (filter[i].filter_type=='1') {
+                               htmlFilter=htmlFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input name="'+filter[i].filter_code+'" type="text" class="form-control" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+
+                          }  else if (filter[i].filter_type=='2') {
+                               htmlFilter=htmlFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input name="'+filter[i].filter_code+'"  readonly type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+
+                          }  else if  (filter[i].filter_type=='3') {
+                                htmlFilter=htmlFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input name="'+filter[i].filter_code+'" readonly type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+                          }
+                      }
+                      htmlFilter=htmlFilter+'</div>'
+                      $('#form_bbgl_filter').append(htmlFilter)
+
+                      $.fn.datepicker.dates['zh-CN'] = {
+                            days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+                            daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+                            daysMin: ["日", "一", "二", "三", "四", "五", "六"],
+                            months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                            monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+                            today: "今天",
+                            monthsTitle: "选择月份",
+                            clear: "清除",
+                            format: "yyyy-mm-dd",
+                            titleFormat: "yyyy年mm月",
+                            weekStart: 1
+                        };
+
+                      $('.datepicker').datepicker({
+                            language: 'zh-CN',
+                            format: "yyyy-mm-dd",
+                            autoclose: true,
+                            todayBtn: true,
+                            todayHighlight: true,
+                            defaultTIme: false
+                      });
+
+                      $('.datetimepicker').datetimepicker({
+                        language: 'zh-CN',
+                        CustomFormat: 'yyyy-mm-dd HH:ii:ss',
+                        weekStart: 1,
+                        todayBtn: 1,            //显示当天按钮，点击则选择当天当天时间
+                        autoclose: 1,           //选完时间自动关闭
+                        todayHighlight: 1,      //当天时间高亮
+                        startView: 2,           //从月视图开始，选天
+                        minView: 0,             //提供选择分钟的视图
+                        forceParse: 0,
+                        minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
+                    });
+
+                   },
+                });
+          })
+
+          $("#query_btn").click(function() {
+                   $('#query_time').text('');
+
+                   if ($('#bbdm').val()=='') {
+                      showtips('info','请选择报表!');
+                      return false;
+                    }
+                   if (table!=undefined ){
+                         table.destroy();
+                    }
+                    $('#example').empty();
+
+                    obj = $('#form_bbgl_filter').serializeObject()
+                    $.ajax({
+                        url     : "/bbgl/query/data",
+                        type    : "post",
+                        datatype: "json",
+                        data: {
+                            bbdm   :  $('#bbdm').val(),
+                            db     :  '',
+                            param  :  JSON.stringify(obj),
+                        },
+                        success: function (dataSet) {
+                            if (dataSet.status=="1") {
+                                showtips('error',dataSet.msg);
+                            } else {
+                                table=$('#example').DataTable( {
+                                    "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                    destroy       : true,
+                                    async         : true,
+                                    data          : dataSet.data,
+                                    columns       : dataSet.column,
+                                    scrollX       : false,
+                                    scrollY       : true,
+                                    scrollCollapse: true,
+                                    paging        : true,
+                                    iDisplayLength: 14,
+                                    "language"    : get_languages()
+                                });
+
+                                if (dataSet.msg!='' ){
+                                    $('#query_time').css('color','red')
+                                    $('#query_time').text('查询用时:'+dataSet.msg+'秒')
+                                } else {
+                                     $('#query_time').text('');
+                                }
+                           }
+                       },
+                    });
+             });
+
+      });
+   </script>
+
+</body>
+
+</html>
