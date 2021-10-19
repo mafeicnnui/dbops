@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>报表导出</title>
+    <style>
+       .modal-dialog {
+            width :50%;
+       }
+    </style>
+</head>
+<body>
+  <form class="form-horizontal" role="form">
+       <div class="row">
+            <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon">报表代码</span>
+                    <select class="form-control select" id="bbdm" name="bbdm">
+                        <option value='' selected = "selected">请选择报表</option>
+                        {% for var in dm_bbdm %}
+                          <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                 </div>
+            </div>
+            <div class="col-md-1">
+                 <span class="input-group-btn">
+                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                </span>
+                <span class="input-group-btn">
+                  <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>
+                </span>
+            </div>
+      </div>
+  </form>
+  <br>
+  <div id='div-table'>
+      <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
+  </div>
+
+  <!-- 导出输入条件窗口 -->
+  <div id="modal-exp-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">选择条件</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                  <div class="panel-body">
+                      <form class="form-horizontal" role="form" id="form_export_filter">
+                      </form>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="export_data_btn" >导出</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+              </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+    <input id='cur_bbdm' type="hidden">
+  <script>
+      function open_model(p_model_name) {
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#'+p_model_name).modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+      }
+
+      function show_config(p_bbdm) {
+
+      }
+
+      function downloads_data(p_bbdm){
+
+      }
+
+      function del_export(p_bbdm) {
+             swal({
+                    title: "确认要删除吗?",
+                    text: "删除报表信息["+p_bbdm+']',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是, 删除!",
+                    cancelButtonText:  "否, 取消!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+             }, function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                                url: "/bbgl/delete",
+                                type: "post",
+                                datatype: "json",
+                                data: {
+                                    bbdm : p_bbdm,
+                                },
+                                success: function (dataSet) {
+                                     if (dataSet.code=='0') {
+                                        swal("已删除!", "报表["+p_bbdm+"]已删除!", "success");
+                                        $("#query_btn").click();
+                                     } else {
+                                        swal("删除失败!", "报表["+p_bbdm+"]"+dataSet.message+"!", "error");
+                                     }
+                                },
+                           });
+
+                    } else {
+                        swal("已取消", "报表["+p_bbdm+"]未删除!", "error");
+                    }
+                });
+         }
+
+      $('#exp_btn').click(function(){
+            if ($('#bbdm').val()=='') {
+                swal("请选择报表!", '报表不能为空!', "error");
+                return false;
+            }
+
+            $.ajax({
+                    url     : "/bbgl/filter",
+                    type    : "post",
+                    datatype: "json",
+                    data: {
+                        bbdm   :  $('#bbdm').val()
+                    },
+                    success: function (filter) {
+                      var htmlFilter='<div class="row">'
+                      $('#form_export_filter').empty();
+                      for (i=0;i<filter.length;i++){
+                          if (filter[i].filter_type=='1') {
+                               htmlFilter=htmlFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input name="'+filter[i].filter_code+'" type="text" class="form-control" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+
+                          }  else if (filter[i].filter_type=='2') {
+                               htmlFilter=htmlFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input name="'+filter[i].filter_code+'"  readonly type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+
+                          }  else if  (filter[i].filter_type=='3') {
+                                htmlFilter=htmlFilter+
+                                     '<div class="col-md-4">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input name="'+filter[i].filter_code+'" readonly type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+                          }
+                      }
+                      htmlFilter=htmlFilter+'</div>'
+
+                      $('#form_export_filter').append(htmlFilter)
+
+                      $.fn.datepicker.dates['zh-CN'] = {
+                            days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+                            daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+                            daysMin: ["日", "一", "二", "三", "四", "五", "六"],
+                            months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                            monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+                            today: "今天",
+                            monthsTitle: "选择月份",
+                            clear: "清除",
+                            format: "yyyy-mm-dd",
+                            titleFormat: "yyyy年mm月",
+                            weekStart: 1
+                        };
+
+                      $('.datepicker').datepicker({
+                            language: 'zh-CN',
+                            format: "yyyy-mm-dd",
+                            autoclose: true,
+                            todayBtn: true,
+                            todayHighlight: true,
+                            defaultTIme: false
+                      });
+
+                     $('.datetimepicker').datetimepicker({
+                            language: 'zh-CN',
+                            CustomFormat: 'yyyy-mm-dd HH:ii:ss',
+                            weekStart: 1,
+                            todayBtn: 1,            //显示当天按钮，点击则选择当天当天时间
+                            autoclose: 1,           //选完时间自动关闭
+                            todayHighlight: 1,      //当天时间高亮
+                            startView: 2,           //从月视图开始，选天
+                            minView: 0,             //提供选择分钟的视图
+                            forceParse: 0,
+                            minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
+                      });
+
+                      $('#cur_bbdm').val($('#bbdm').val())
+
+                   },
+                });
+            open_model('modal-exp-filter')
+      });
+
+      $('#export_data_btn').click(function(){
+           obj = $('#form_export_filter').serializeObject();
+           $.ajax({
+                url: "/bbgl/export/data",
+                type: "post",
+                datatype: "json",
+                data: {
+                    bbdm  : $('#cur_bbdm').val(),
+                    param : JSON.stringify(obj),
+                },
+                success: function (dataSet) {
+                   console.log('export=',dataSet)
+                },
+            })
+      });
+
+
+      $(document).ready(function() {
+          $("#query_btn").click(function() {
+                $.ajax({
+                    url     : "/bbgl/query/config",
+                    type    : "post",
+                    datatype: "json",
+                    data: {
+                        bbdm :  $('#bbdm').val(),
+                    },
+                    success: function (dataSet) {
+                       $('#example').DataTable( {
+                              "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                              destroy    :true,
+                              async      :true,
+                              scrollY    :true,
+                              scrollX    :false,
+                              scrollCollapse: true,
+                              paging:     true,
+                              iDisplayLength: 12,
+                              data: dataSet,
+                              columns: [
+                                { "title": "报表代码" },
+                                { "title": "报表名称"},
+                                { "title": "数据源名" },
+                                { "title": "创建人" },
+                                { "title": "创建日期" },
+                                { "title": "最近更新" },
+                                {
+                                    "title":"功能",
+                                    "width": "60px",
+                                    "render": function(data,type,row)
+                                    {
+                                       bbdm = row[0]
+                                       msg ='&nbsp;'+
+                                          // '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="export_data(\''+bbdm+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_config(\''+bbdm+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_export(\''+bbdm+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloads_data(\''+bbdm+'\');"/>';
+                                       return msg;
+                                    }
+                                },
+                              ],
+                              "language": get_languages()
+                       });
+                   },
+                });
+           });
+          $("#query_btn").click();
+      });
+   </script>
+
+</body>
+
+</html>

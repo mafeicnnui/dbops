@@ -19,7 +19,7 @@ from   web.model.t_bbgl  import query_bbgl_data,get_bbgl_bbdm,get_filter,get_con
 from   web.model.t_bbgl  import update_bbgl_header,delete_bbgl_header
 from   web.model.t_bbgl  import update_bbgl_filter,delete_bbgl_filter
 from   web.model.t_bbgl  import query_bbgl_preprocess_detail,update_bbgl_preprocess,delete_bbgl_preprocess
-from   web.model.t_bbgl  import update_bbgl_statement,query_bbgl_config,delete_bbgl
+from   web.model.t_bbgl  import update_bbgl_statement,query_bbgl_config,delete_bbgl,export_bbgl_data
 
 class bbgl_query(base_handler.TokenHandler):
    async def get(self):
@@ -272,3 +272,22 @@ class bbgl_delete (base_handler.TokenHandler):
         v_list      = await delete_bbgl(bbdm)
         v_json      = json.dumps(v_list)
         self.write(v_json)
+
+
+class bbgl_export(base_handler.TokenHandler):
+   async def get(self):
+        self.render("./bbgl/bbgl_export.html",
+                    dm_bbdm = await get_bbgl_bbdm())
+
+
+class bbgl_export_data(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       bbdm   = self.get_argument("bbdm")
+       param = self.get_argument("param")
+       param = json.loads(param)
+       v_list = await export_bbgl_data(bbdm, param,self.userid)
+       v_json = json.dumps(v_list)
+       print(v_json)
+       self.write(v_json)
+

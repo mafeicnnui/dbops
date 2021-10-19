@@ -12,6 +12,8 @@ from web.utils.mysql_async import async_processer
 from web.utils.common  import format_sql as fmt_sql,get_seconds
 from web.model.t_ds    import get_ds_by_dsid
 from web.model.t_sql  import exe_query
+from web.utils.mysql_sync import sync_processer
+
 
 async def get_config(p_bbdm):
     st = "select * from t_bbgl_config where bbdm='{}'".format(p_bbdm)
@@ -257,7 +259,6 @@ async def query_bbgl_config(p_bbdm):
     print('st=',st)
     return  await async_processer.query_list(st)
 
-
 async def delete_bbgl(p_bbdm):
     try:
         st = "delete from  t_bbgl_header where  bbdm='{}'".format(p_bbdm)
@@ -277,3 +278,28 @@ async def delete_bbgl(p_bbdm):
     except Exception as e:
         traceback.print_exc()
         return {'code': -1, 'message': '删除失败!'}
+
+async def export_insert(p_bbdm, p_param, p_userid):
+    st = """insert into t_bbgl_export(bbdm,filter,status,process,creator,create_time)
+                values('{}','{}','1','0%','{}',now())""".format(p_bbdm, json.dumps(p_param), p_userid)
+    id = await async_processer.exec_ins_sql(st)
+    return id
+
+async def update_export(p_id,p_status,p_process):
+    st = "update t_bbgl_export set status='2',process='10%' where id={}".format(p_status,p_process,p_id)
+    await async_processer.exec_sql(st)
+
+async def export_bbgl_data(bbdm, param,userid):
+    id = await export_insert(bbdm,param,userid)
+    print('export_bbgl_data=',id)
+
+    result = await query_bbgl_data(bbdm,param)
+    await update_export(id,'2','20%')
+
+    # 3. write excel among write process
+    # 4. export complete write status
+    # 5. write table header
+    # 5. common write excel
+    #return result
+    return {}
+
