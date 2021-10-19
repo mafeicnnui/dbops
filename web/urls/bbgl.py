@@ -12,8 +12,9 @@ from web.services.bbgl  import bbgl_add_statement_save,bbgl_statement_query
 from web.services.bbgl  import bbgl_query,bbgl_query_data,bbgl_filter,bbgl_config
 from web.services.bbgl  import bbgl_update_header,bbgl_delete_header
 from web.services.bbgl  import bbgl_update_filter,bbgl_delete_filter
-from web.services.bbgl  import bbgl_query_preprocess,bbgl_update_preprocess,bbgl_delete_preprocess
-from web.services.bbgl  import bbgl_update_statement
+from web.services.bbgl  import bbgl_query_preprocess,bbgl_update_preprocess,bbgl_delete_preprocess,bbgl_update_statement
+from web.services.bbgl  import bbgl_change,bbgl_query_config
+from web.services.bbgl  import bbgl_edit,bbgl_delete
 
 bbgl = [
         # 报表定义
@@ -46,7 +47,11 @@ bbgl = [
         (r"/bbgl/query/preprocess",  bbgl_query_preprocess),
         (r"/bbgl/update/preprocess", bbgl_update_preprocess),
         (r"/bbgl/delete/preprocess", bbgl_delete_preprocess),
+        (r"/bbgl/update/statement", bbgl_update_statement),
 
-        # (r"/bbgl/update/statement", bbgl_update_statement),
+        (r"/bbgl/change", bbgl_change),
+        (r"/bbgl/query/config", bbgl_query_config),
+        (r"/bbgl/edit", bbgl_edit),
+        (r"/bbgl/delete", bbgl_delete),
 
  ]

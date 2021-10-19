@@ -23,7 +23,7 @@
                    <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
                 </span>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <span id="query_time"></span>
             </div>
       </div>
@@ -162,7 +162,7 @@
 
                                 if (dataSet.msg!='' ){
                                     $('#query_time').css('color','red')
-                                    $('#query_time').text('查询用时:'+dataSet.msg+'秒')
+                                    $('#query_time').text('查询:'+dataSet.msg+'秒,预处理:'+dataSet.preTime+'秒')
                                 } else {
                                      $('#query_time').text('');
                                 }

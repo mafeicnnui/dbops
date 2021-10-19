@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>报表定义</title>
+    <title>报表变更</title>
     <style>
        .modal-dialog {
             width :60%;
@@ -26,7 +26,7 @@
                     <label class="col-md-3 control-label"><span>*</span>代码</label>
                 </div>
                 <div class="col-md-9">
-                    <input id="bbdm"  type="text" class="form-control" placeholder="请输入报表代码">
+                    <input id="bbdm"  type="text" readonly ="form-control" placeholder="请输入报表代码" value={{bbdm}}>
                 </div>
             </div>
             <div class="form-group col-md-3">
@@ -1016,27 +1016,27 @@
              }
         });
 
-         $("#bbdm").bind("input propertychange",function(){
-             if ( $('#bbdm').val()!='') {
-                  $.ajax({
-                        url     : "/bbgl/config",
-                        type    : "post",
-                        datatype: "json",
-                        data: {
-                            bbdm : $('#bbdm').val(),
-                        },
-                        success: function (config) {
-                           $('#bbmc').val(config.bbmc)
-                           $('#dsid').val(config.dsid)
-                           $("#dsid").selectpicker('refresh')
-                           $('#add_tab_btn').attr('onclick',"addBtn();");
-                           $('#cur_bbdm').val($('#bbdm').val())
-                           query_header()
-                       },
-                });
-             }
-
-         });
+         // $("#bbdm").bind("input propertychange",function(){
+         //     if ( $('#bbdm').val()!='') {
+         //          $.ajax({
+         //                url     : "/bbgl/config",
+         //                type    : "post",
+         //                datatype: "json",
+         //                data: {
+         //                    bbdm : $('#bbdm').val(),
+         //                },
+         //                success: function (config) {
+         //                   $('#bbmc').val(config.bbmc)
+         //                   $('#dsid').val(config.dsid)
+         //                   $("#dsid").selectpicker('refresh')
+         //                   $('#add_tab_btn').attr('onclick',"addBtn();");
+         //                   $('#cur_bbdm').val($('#bbdm').val())
+         //                   query_header()
+         //               },
+         //        });
+         //     }
+         //
+         // });
 
          $(document).ready(function() {
               set_selected();
@@ -1047,6 +1047,26 @@
               set_editor('upd_pre_process_state')
               $('#add_tab_btn').removeAttr('onclick');
               $("#dsid").selectpicker('refresh')
+
+              if ( $('#bbdm').val()!='') {
+                  $.ajax({
+                      url: "/bbgl/config",
+                      type: "post",
+                      datatype: "json",
+                      data: {
+                          bbdm: $('#bbdm').val(),
+                      },
+                      success: function (config) {
+                          $('#bbmc').val(config.bbmc)
+                          $('#dsid').val(config.dsid)
+                          $("#dsid").selectpicker('refresh')
+                          $('#add_tab_btn').attr('onclick', "addBtn();");
+                          $('#cur_bbdm').val($('#bbdm').val())
+                          query_header()
+                      },
+                  });
+              }
+
         });
 
    </script>

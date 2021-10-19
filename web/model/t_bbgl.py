@@ -6,15 +6,19 @@
 # @Software: PyCharm
 
 import json
+import datetime
 import traceback
 from web.utils.mysql_async import async_processer
-from web.utils.common  import format_sql as fmt_sql
+from web.utils.common  import format_sql as fmt_sql,get_seconds
 from web.model.t_ds    import get_ds_by_dsid
 from web.model.t_sql  import exe_query
 
 async def get_config(p_bbdm):
     st = "select * from t_bbgl_config where bbdm='{}'".format(p_bbdm)
-    return  await async_processer.query_dict_one(st)
+    if (await async_processer.query_one(st)) is not None:
+       return  await async_processer.query_dict_one(st)
+    else:
+       return  {}
 
 async def get_preprocess(p_bbdm):
     st = "select statement,description from t_bbgl_preproccess where bbdm='{}' ORDER BY xh".format(p_bbdm)
@@ -147,13 +151,15 @@ async def query_bbgl_data(bbdm,param):
                  s['replace_statement']= s['replace_statement'].replace('$$'+key+'$$',value)
 
          #3. 执行预处理代码
+         start_time = datetime.datetime.now()
          for s in preprocess:
              print('exec:',s['replace_statement'])
              await async_processer.exec_sql_by_ds(ds,s['replace_statement'])
+         preProcessTime = get_seconds(start_time)
 
          # 调用查询语句返回数据
          result = await exe_query(cfg['dsid'],cfg['statement'],'hopsonone_do')
-         result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg']}
+         result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime)}
          return  result
 
      except:
@@ -197,6 +203,77 @@ async def delete_bbgl_filter(p_bbdm,p_xh):
         st = "delete from  t_bbgl_filter where  bbdm='{}' and xh={}".format(p_bbdm,p_xh)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '删除成功!'}
+    except Exception as e:
+        traceback.print_exc()
+        return {'code': -1, 'message': '删除失败!'}
+
+async def query_bbgl_preprocess_detail(p_bbdm,p_xh):
+    st = "select * from t_bbgl_preproccess where bbdm='{}' and xh={}".format(p_bbdm,p_xh)
+    return await async_processer.query_dict_one(st)
+
+async def update_bbgl_preprocess(p_bbdm,p_xh,p_statement,p_description):
+    try:
+        st = "update t_bbgl_preproccess " \
+             " set statement='{}',`description`='{}' " \
+             "  where bbdm='{}' and xh={}".format(p_statement,p_description,p_bbdm,p_xh)
+        await async_processer.exec_sql(st)
+        return {'code': 0, 'message': '更新成功!'}
+    except Exception as e:
+        traceback.print_exc()
+        return {'code': -1, 'message': '更新失败!'}
+
+async def delete_bbgl_preprocess(p_bbdm,p_xh):
+    try:
+        st = "delete from  t_bbgl_preproccess where  bbdm='{}' and xh={}".format(p_bbdm,p_xh)
+        await async_processer.exec_sql(st)
+        return {'code': 0, 'message': '删除成功!'}
+    except Exception as e:
+        traceback.print_exc()
+        return {'code': -1, 'message': '删除失败!'}
+
+
+async def update_bbgl_statement(p_bbdm,p_statement):
+    try:
+        st = "update t_bbgl_config  set statement='{}' where bbdm='{}'".format(fmt_sql(p_statement),p_bbdm)
+        await async_processer.exec_sql(st)
+        return {'code': 0, 'message': '更新成功!'}
+    except Exception as e:
+        traceback.print_exc()
+        return {'code': -1, 'message': '更新失败!'}
+
+async def query_bbgl_config(p_bbdm):
+    vv=''
+    if p_bbdm!='':
+       vv = " and a.bbdm='{}'".format(p_bbdm)
+    st = """select 
+                 bbdm,
+                 bbmc,
+                 b.db_desc,
+                 u.name,
+                 date_format(a.create_date,'%Y-%m-%d')    create_date,
+                 date_format(a.last_update_date,'%Y-%m-%d') last_update_date 
+           from t_bbgl_config a,t_db_source b,t_user u
+           where a.dsid=b.id and a.creator=u.id  {} """.format(vv)
+    print('st=',st)
+    return  await async_processer.query_list(st)
+
+
+async def delete_bbgl(p_bbdm):
+    try:
+        st = "delete from  t_bbgl_header where  bbdm='{}'".format(p_bbdm)
+        await async_processer.exec_sql(st)
+
+        st = "delete from  t_bbgl_preproccess where  bbdm='{}'".format(p_bbdm)
+        await async_processer.exec_sql(st)
+
+        st = "delete from  t_bbgl_filter where  bbdm='{}'".format(p_bbdm)
+        await async_processer.exec_sql(st)
+
+        st = "delete from  t_bbgl_config where  bbdm='{}'".format(p_bbdm)
+        await async_processer.exec_sql(st)
+
+        return {'code': 0, 'message': '删除成功!'}
+
     except Exception as e:
         traceback.print_exc()
         return {'code': -1, 'message': '删除失败!'}
