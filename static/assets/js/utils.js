@@ -184,6 +184,18 @@ function centerModals() {
       });
  }
 
+ //窗口居中
+function topModals() {
+      $('.modal').each(function(i) {
+        var $clone = $(this).clone().css('display', 'block').appendTo('body');
+        var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+        top = top > 50 ? top : 0;
+        $clone.remove();
+        $(this).find('.modal-content').css("margin-top", 50);
+      });
+ }
+
+
  //画柱状图
 function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
         Morris.Bar({

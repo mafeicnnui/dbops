@@ -19,7 +19,7 @@ from   web.model.t_bbgl  import query_bbgl_data,get_bbgl_bbdm,get_filter,get_con
 from   web.model.t_bbgl  import update_bbgl_header,delete_bbgl_header
 from   web.model.t_bbgl  import update_bbgl_filter,delete_bbgl_filter
 from   web.model.t_bbgl  import query_bbgl_preprocess_detail,update_bbgl_preprocess,delete_bbgl_preprocess
-from   web.model.t_bbgl  import update_bbgl_statement,query_bbgl_config,delete_bbgl,export_bbgl_data
+from   web.model.t_bbgl  import update_bbgl_statement,query_bbgl_config,delete_bbgl,export_bbgl_data,get_download,query_bbgl_export,del_export
 
 class bbgl_query(base_handler.TokenHandler):
    async def get(self):
@@ -254,6 +254,15 @@ class bbgl_query_config(base_handler.TokenHandler):
        print('v_json=',v_json)
        self.write(v_json)
 
+class bbgl_query_export(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       bbdm   = self.get_argument("bbdm")
+       v_list = await query_bbgl_export(bbdm)
+       v_json = json.dumps(v_list,cls=DateEncoder)
+       print('v_json=',v_json)
+       self.write(v_json)
+
 
 class bbgl_edit(base_handler.TokenHandler):
    async def get(self):
@@ -284,10 +293,32 @@ class bbgl_export_data(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        bbdm   = self.get_argument("bbdm")
-       param = self.get_argument("param")
-       param = json.loads(param)
-       v_list = await export_bbgl_data(bbdm, param,self.userid)
-       v_json = json.dumps(v_list)
+       param  = self.get_argument("param")
+       param  = json.loads(param)
+       path   = self.get_template_path().replace("templates", "static")
+       res = await export_bbgl_data(bbdm, param,self.userid,path)
+       v_json = json.dumps(res)
        print(v_json)
        self.write(v_json)
+
+
+class bbgl_download(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id   = self.get_argument("id")
+       res = await get_download(id)
+       v_json = json.dumps(res,cls=DateEncoder)
+       print(v_json)
+       self.write(v_json)
+
+class bbgl_delete_export(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id = self.get_argument("id")
+       res = await del_export(id)
+       v_json = json.dumps(res, cls=DateEncoder)
+       print(v_json)
+       self.write(v_json)
+
+
 

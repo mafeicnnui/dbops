@@ -5,8 +5,13 @@
     <title>报表导出</title>
     <style>
        .modal-dialog {
-            width :50%;
+           width :50%;
        }
+
+        #modal-exp-filter{
+              margin-top:10px;
+           padding-top:10px;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +68,55 @@
       </div>
      </div>
 
-    <input id='cur_bbdm' type="hidden">
+  <!--导出详情窗口 -->
+  <div id="modal-exp-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-dialog-small">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">导出详情</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                  <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                       <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >条件：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="exp_filter"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >文件名：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="exp_file_name"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">大小：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="exp_file_size"  class="form-control">
+                           </div>
+                        </div>
+                      </form>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+              </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+  <input id='cur_bbdm' type="hidden">
   <script>
       function open_model(p_model_name) {
             $('.modal').on('show.bs.modal', centerModals);
@@ -74,18 +127,57 @@
              });
       }
 
-      function show_config(p_bbdm) {
-
+      function open_model2(p_model_name) {
+            $('.modal').on('show.bs.modal', topModals);
+            $(window).on('resize', topModals);
+            $('#'+p_model_name).modal({
+                   keyboard: false,
+                   backdrop:false
+             });
       }
 
-      function downloads_data(p_bbdm){
-
+      function show_config(p_id) {
+           $.ajax({
+                url: "/bbgl/download",
+                type: "post",
+                datatype: "json",
+                data:{
+                   id  : p_id,
+                },
+                success: function (dataSet) {
+                    $('#exp_filter').val(dataSet.filter);
+                    $('#exp_file_name').val(dataSet.file);
+                    $('#exp_file_size').val(dataSet.size+'b');
+                    open_model('modal-exp-detail')
+                },
+            })
       }
 
-      function del_export(p_bbdm) {
+      function downloads_data(p_id){
+            $.ajax({
+                url: "/bbgl/download",
+                type: "post",
+                datatype: "json",
+                data:{
+                   id  : p_id,
+                },
+                success: function (dataSet) {
+                    var link = $("<a/>")
+                    link.html('　');
+                    link.attr('href', dataSet.file);
+                    link.attr('class', 'link');
+                    link.attr('id', 'download_id');
+                    link.attr('name', 'download_name');
+                    link.appendTo('body')
+                    link[0].click();
+                },
+            })
+      }
+
+      function del_export(p_id) {
              swal({
                     title: "确认要删除吗?",
-                    text: "删除报表信息["+p_bbdm+']',
+                    text: "删除导出信息["+p_id+']',
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
@@ -96,24 +188,24 @@
              }, function (isConfirm) {
                     if (isConfirm) {
                         $.ajax({
-                                url: "/bbgl/delete",
+                                url: "/bbgl/delete/export",
                                 type: "post",
                                 datatype: "json",
                                 data: {
-                                    bbdm : p_bbdm,
+                                    id : p_id,
                                 },
                                 success: function (dataSet) {
                                      if (dataSet.code=='0') {
-                                        swal("已删除!", "报表["+p_bbdm+"]已删除!", "success");
+                                        swal("已删除!", "导出["+p_id+"]已删除!", "success");
                                         $("#query_btn").click();
                                      } else {
-                                        swal("删除失败!", "报表["+p_bbdm+"]"+dataSet.message+"!", "error");
+                                        swal("删除失败!", "导出["+p_id+"]"+dataSet.message+"!", "error");
                                      }
                                 },
                            });
 
                     } else {
-                        swal("已取消", "报表["+p_bbdm+"]未删除!", "error");
+                        swal("已取消", "导出["+p_id+"]未删除!", "error");
                     }
                 });
          }
@@ -190,7 +282,7 @@
                             defaultTIme: false
                       });
 
-                     $('.datetimepicker').datetimepicker({
+                      $('.datetimepicker').datetimepicker({
                             language: 'zh-CN',
                             CustomFormat: 'yyyy-mm-dd HH:ii:ss',
                             weekStart: 1,
@@ -205,32 +297,17 @@
 
                       $('#cur_bbdm').val($('#bbdm').val())
 
+                      open_model2('modal-exp-filter')
+
                    },
                 });
-            open_model('modal-exp-filter')
+
+
       });
 
-      $('#export_data_btn').click(function(){
-           obj = $('#form_export_filter').serializeObject();
-           $.ajax({
-                url: "/bbgl/export/data",
-                type: "post",
-                datatype: "json",
-                data: {
-                    bbdm  : $('#cur_bbdm').val(),
-                    param : JSON.stringify(obj),
-                },
-                success: function (dataSet) {
-                   console.log('export=',dataSet)
-                },
-            })
-      });
-
-
-      $(document).ready(function() {
-          $("#query_btn").click(function() {
+      $("#query_btn").click(function() {
                 $.ajax({
-                    url     : "/bbgl/query/config",
+                    url     : "/bbgl/query/export",
                     type    : "post",
                     datatype: "json",
                     data: {
@@ -249,12 +326,13 @@
                               iDisplayLength: 12,
                               data: dataSet,
                               columns: [
+                                { "title": "报表ID" },
                                 { "title": "报表代码" },
                                 { "title": "报表名称"},
-                                { "title": "数据源名" },
+                                { "title": "导出状态" },
+                                { "title": "导出进度" },
                                 { "title": "创建人" },
                                 { "title": "创建日期" },
-                                { "title": "最近更新" },
                                 {
                                     "title":"功能",
                                     "width": "60px",
@@ -262,7 +340,6 @@
                                     {
                                        bbdm = row[0]
                                        msg ='&nbsp;'+
-                                          // '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="export_data(\''+bbdm+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_config(\''+bbdm+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_export(\''+bbdm+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloads_data(\''+bbdm+'\');"/>';
@@ -275,6 +352,29 @@
                    },
                 });
            });
+
+      $('#export_data_btn').click(function(){
+           obj = $('#form_export_filter').serializeObject();
+           $.ajax({
+                url: "/bbgl/export/data",
+                type: "post",
+                datatype: "json",
+                data: {
+                    bbdm  : $('#cur_bbdm').val(),
+                    param : JSON.stringify(obj),
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == 0) {
+                        swal("导出成功", "", "success")
+                         $("#query_btn").click();
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                },
+            })
+      });
+
+      $(document).ready(function() {
           $("#query_btn").click();
       });
    </script>

@@ -92,7 +92,7 @@ class _kpi_export(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         month = self.get_argument("month")
         market_id = self.get_argument("market_id")
-        static_path = self.get_template_path().replace("templates", "static");
+        static_path = self.get_template_path().replace("templates", "static")
         zipfile = await exp_kpi(static_path,month,market_id)
         self.write({"code": 0, "message": zipfile})
 

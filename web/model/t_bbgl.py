@@ -8,11 +8,14 @@
 import json
 import datetime
 import traceback
+import xlwt
+import os,zipfile
 from web.utils.mysql_async import async_processer
 from web.utils.common  import format_sql as fmt_sql,get_seconds
 from web.model.t_ds    import get_ds_by_dsid
 from web.model.t_sql  import exe_query
 from web.utils.mysql_sync import sync_processer
+from web.utils.common import current_rq
 
 
 async def get_config(p_bbdm):
@@ -248,14 +251,28 @@ async def query_bbgl_config(p_bbdm):
     if p_bbdm!='':
        vv = " and a.bbdm='{}'".format(p_bbdm)
     st = """select 
-                 bbdm,
-                 bbmc,
-                 b.db_desc,
-                 u.name,
+                 bbdm,bbmc,b.db_desc,u.name,
                  date_format(a.create_date,'%Y-%m-%d')    create_date,
                  date_format(a.last_update_date,'%Y-%m-%d') last_update_date 
            from t_bbgl_config a,t_db_source b,t_user u
            where a.dsid=b.id and a.creator=u.id  {} """.format(vv)
+    return  await async_processer.query_list(st)
+
+async def query_bbgl_export(p_bbdm):
+    vv=''
+    if p_bbdm!='':
+       vv = " and a.bbdm='{}'".format(p_bbdm)
+
+    st = """SELECT 
+                 t.id,
+                 a.bbdm,
+                 a.bbmc,
+                 m.dmmc AS STATUS,
+                 t.process,
+                 u.name,
+                 DATE_FORMAT(t.create_date,'%Y-%m-%d %H:%i:%s')    create_date
+            FROM t_bbgl_config a,t_bbgl_export t,t_user u,t_dmmx m
+            WHERE a.bbdm=t.bbdm AND t.creator=u.id AND m.dm='43' AND m.dmm=t.status  {}""".format(vv)
     print('st=',st)
     return  await async_processer.query_list(st)
 
@@ -280,26 +297,161 @@ async def delete_bbgl(p_bbdm):
         return {'code': -1, 'message': '删除失败!'}
 
 async def export_insert(p_bbdm, p_param, p_userid):
-    st = """insert into t_bbgl_export(bbdm,filter,status,process,creator,create_time)
+    st = """insert into t_bbgl_export(bbdm,filter,status,process,creator,create_date)
                 values('{}','{}','1','0%','{}',now())""".format(p_bbdm, json.dumps(p_param), p_userid)
     id = await async_processer.exec_ins_sql(st)
     return id
 
-async def update_export(p_id,p_status,p_process):
-    st = "update t_bbgl_export set status='2',process='10%' where id={}".format(p_status,p_process,p_id)
+async def update_export(p_id,p_status,p_process,p_file='',p_real_file='',p_size='',p_error=''):
+    st = "update t_bbgl_export a " \
+            " set a.status='{}',a.process='{}',a.file='{}',a.real_file='{}',a.size='{}',a.error='{}' where id={}"\
+        .format(p_status,p_process,p_file,p_real_file,p_size,p_error,p_id)
     await async_processer.exec_sql(st)
 
-async def export_bbgl_data(bbdm, param,userid):
-    id = await export_insert(bbdm,param,userid)
-    print('export_bbgl_data=',id)
 
-    result = await query_bbgl_data(bbdm,param)
-    await update_export(id,'2','20%')
+def set_header_styles(p_fontsize,p_color):
+    header_borders = xlwt.Borders()
+    header_styles  = xlwt.XFStyle()
+    # add table header style
+    header_borders.left   = xlwt.Borders.THIN
+    header_borders.right  = xlwt.Borders.THIN
+    header_borders.top    = xlwt.Borders.THIN
+    header_borders.bottom = xlwt.Borders.THIN
+    header_styles.borders = header_borders
+    header_pattern = xlwt.Pattern()
+    header_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    header_pattern.pattern_fore_colour = p_color
+    # add font
+    font = xlwt.Font()
+    font.name = u'微软雅黑'
+    font.bold = True
+    font.size = p_fontsize
+    header_styles.font = font
+    #add alignment
+    header_alignment = xlwt.Alignment()
+    header_alignment.horz = xlwt.Alignment.HORZ_CENTER
+    header_alignment.vert = xlwt.Alignment.VERT_CENTER
+    header_styles.alignment = header_alignment
+    header_styles.borders = header_borders
+    header_styles.pattern = header_pattern
+    return header_styles
 
-    # 3. write excel among write process
-    # 4. export complete write status
-    # 5. write table header
-    # 5. common write excel
-    #return result
-    return {}
+def set_row_styles(p_fontsize,p_color):
+    cell_borders   = xlwt.Borders()
+    cell_styles    = xlwt.XFStyle()
 
+    # add font
+    font = xlwt.Font()
+    font.name = u'微软雅黑'
+    font.bold = True
+    font.size = p_fontsize
+    cell_styles.font = font
+
+    #add col style
+    cell_borders.left     = xlwt.Borders.THIN
+    cell_borders.right    = xlwt.Borders.THIN
+    cell_borders.top      = xlwt.Borders.THIN
+    cell_borders.bottom   = xlwt.Borders.THIN
+
+    row_pattern           = xlwt.Pattern()
+    row_pattern.pattern   = xlwt.Pattern.SOLID_PATTERN
+    row_pattern.pattern_fore_colour = p_color
+
+    # add alignment
+    cell_alignment        = xlwt.Alignment()
+    cell_alignment.horz   = xlwt.Alignment.HORZ_LEFT
+    cell_alignment.vert   = xlwt.Alignment.VERT_CENTER
+
+    cell_styles.alignment = cell_alignment
+    cell_styles.borders   = cell_borders
+    cell_styles.pattern   = row_pattern
+    cell_styles.font      = font
+    return cell_styles
+
+async def exp_data(static_path,p_bbdm,p_data,p_id):
+    try:
+        row_data  = 0
+        workbook  = xlwt.Workbook(encoding='utf8')
+        worksheet = workbook.add_sheet(p_bbdm)
+        header_styles = set_header_styles(45,1)
+        file_path = static_path + '/downloads/bbtj'
+        os.system('cd {0}'.format(file_path))
+        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
+        file_name_s = 'exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
+
+        # write header
+        for k in range(len(p_data['column'])):
+            worksheet.write(row_data, k, p_data['column'][k]['title'], header_styles)
+        await update_export(p_id, '3', '25%')
+
+        # write body
+        n_batch_size = 100
+        n_total_rows = len(p_data['data'])
+        print('n_total_rows=',n_total_rows)
+        row_data = row_data + 1
+        for i in p_data['data']:
+            for j in range(len(i)):
+                if i[j] is None:
+                    worksheet.write(row_data, j, '')
+                else:
+                    worksheet.write(row_data, j, str(i[j]))
+            row_data = row_data + 1
+            if row_data % n_batch_size == 0:
+               await update_export(p_id, '3', str(round(row_data/75,2)*100)+'%')
+
+        await update_export(p_id, '3', '98%')
+
+        workbook.save(file_name)
+        print("{0} export complete!".format(file_name))
+
+        zip_file = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,current_rq())
+        rzip_file = '/static/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,current_rq())
+
+        if os.path.exists(zip_file):
+            os.system('rm -f {0}'.format(zip_file))
+
+        z = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+        z.write(file_name, arcname=file_name_s)
+        z.close()
+
+        file_size = os.path.getsize(file_name)
+        os.system('rm -f {0}'.format(file_name))
+
+        #update path,file,size
+        await update_export(p_id, '3', '100%',rzip_file,zip_file,file_size)
+        return rzip_file
+    except:
+        await update_export(p_id, '34', '0%', '' ,'','',traceback.print_exc())
+        return ''
+
+
+
+async def export_bbgl_data(bbdm, param,userid,path):
+    try:
+        id  = await export_insert(bbdm,param,userid)
+
+        data = await query_bbgl_data(bbdm,param)
+
+        await update_export(id,'2','20%')
+
+        zip_file = await exp_data(path,bbdm,data,id)
+
+        return {"code": 0, "message": zip_file}
+
+    except:
+        return {"code": -1, "message": traceback.print_exc()}
+
+async def get_download(p_id):
+      st = "select *from t_bbgl_export where id={}".format(p_id)
+      return  await async_processer.query_dict_one(st)
+
+async def del_export(p_id):
+    try:
+        res = await get_download(p_id)
+        os.system('rm -f {0}'.format(res.get('real_file')))
+        st = "delete from t_bbgl_export where id={}".format(p_id)
+        await async_processer.exec_sql(st)
+        return {'code': 0, 'message': '删除成功!'}
+    except Exception as e:
+        traceback.print_exc()
+        return {'code': -1, 'message': '删除失败!'}
