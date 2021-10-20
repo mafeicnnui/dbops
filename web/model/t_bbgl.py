@@ -13,7 +13,7 @@ import os,zipfile
 from web.utils.mysql_async import async_processer
 from web.utils.common  import format_sql as fmt_sql,get_seconds
 from web.model.t_ds    import get_ds_by_dsid
-from web.model.t_sql  import exe_query
+from web.model.t_sql  import exe_query_exp
 from web.utils.mysql_sync import sync_processer
 from web.utils.common import current_rq
 
@@ -163,7 +163,7 @@ async def query_bbgl_data(bbdm,param):
          preProcessTime = get_seconds(start_time)
 
          # 调用查询语句返回数据
-         result = await exe_query(cfg['dsid'],cfg['statement'],'hopsonone_do')
+         result = await exe_query_exp(cfg['dsid'],cfg['statement'],'hopsonone_do')
          result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime)}
          return  result
 
@@ -424,17 +424,19 @@ async def exp_data(static_path,p_bbdm,p_data,p_id):
         await update_export(p_id, '34', '0%', '' ,'','',traceback.print_exc())
         return ''
 
-
-
 async def export_bbgl_data(bbdm, param,userid,path):
     try:
         id  = await export_insert(bbdm,param,userid)
 
-        data = await query_bbgl_data(bbdm,param)
+        res = await query_bbgl_data(bbdm,param)
+
+        if res['status'] == '1':
+           print('res=',res)
+           return {"code": -1, "message":res['msg']}
 
         await update_export(id,'2','20%')
 
-        zip_file = await exp_data(path,bbdm,data,id)
+        zip_file = await exp_data(path,bbdm,res,id)
 
         return {"code": 0, "message": zip_file}
 

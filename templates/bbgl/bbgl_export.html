@@ -210,6 +210,32 @@
                 });
          }
 
+      function export_no_filter(){
+           if ($('#bbdm').val()=='') {
+                swal("请选择报表!", '报表不能为空!', "error");
+                return false;
+           }
+
+           $.ajax({
+                url: "/bbgl/export/data",
+                type: "post",
+                datatype: "json",
+                data: {
+                    bbdm  : $('#bbdm').val(),
+                    param : '[]',
+                },
+                success: function (dataSet) {
+                    console.log('export=',dataSet)
+                    if (dataSet.code == 0) {
+                        swal("导出成功", "", "success")
+                         $("#query_btn").click();
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                },
+            })
+      }
+
       $('#exp_btn').click(function(){
             if ($('#bbdm').val()=='') {
                 swal("请选择报表!", '报表不能为空!', "error");
@@ -217,14 +243,18 @@
             }
 
             $.ajax({
-                    url     : "/bbgl/filter",
-                    type    : "post",
-                    datatype: "json",
-                    data: {
-                        bbdm   :  $('#bbdm').val()
-                    },
-                    success: function (filter) {
-                      var htmlFilter='<div class="row">'
+                url     : "/bbgl/filter",
+                type    : "post",
+                datatype: "json",
+                data: {
+                    bbdm   :  $('#bbdm').val()
+                },
+                success: function (filter) {
+                  console.log('filter=',filter,filter.length)
+                  if (filter.length == 0) {
+                      export_no_filter();
+                  } else {
+                     var htmlFilter='<div class="row">'
                       $('#form_export_filter').empty();
                       for (i=0;i<filter.length;i++){
                           if (filter[i].filter_type=='1') {
@@ -272,7 +302,6 @@
                             titleFormat: "yyyy年mm月",
                             weekStart: 1
                         };
-
                       $('.datepicker').datepicker({
                             language: 'zh-CN',
                             format: "yyyy-mm-dd",
@@ -281,7 +310,6 @@
                             todayHighlight: true,
                             defaultTIme: false
                       });
-
                       $('.datetimepicker').datetimepicker({
                             language: 'zh-CN',
                             CustomFormat: 'yyyy-mm-dd HH:ii:ss',
@@ -294,14 +322,12 @@
                             forceParse: 0,
                             minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
                       });
-
                       $('#cur_bbdm').val($('#bbdm').val())
 
                       open_model2('modal-exp-filter')
-
-                   },
-                });
-
+                  }
+               },
+          });
 
       });
 
@@ -364,6 +390,7 @@
                     param : JSON.stringify(obj),
                 },
                 success: function (dataSet) {
+                    console.log('export=',dataSet)
                     if (dataSet.code == 0) {
                         swal("导出成功", "", "success")
                          $("#query_btn").click();
@@ -373,6 +400,8 @@
                 },
             })
       });
+
+
 
       $(document).ready(function() {
           $("#query_btn").click();

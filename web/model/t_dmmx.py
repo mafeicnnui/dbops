@@ -155,6 +155,12 @@ async def get_sync_db_server():
             WHERE  db_type in(0,1,2,4,5,6) and db_env in(1,2,3,4,5,6)  and STATUS=1  ORDER BY db_desc,db_type"""
     return await async_processer.query_list(sql)
 
+async def get_bbtj_db_server():
+    sql = """SELECT id,db_desc FROM t_db_source 
+            WHERE  db_type in(0,1,2,4,5,6) and db_env in(1,2,3,4,5,6)  and STATUS=1  and id=19 ORDER BY db_desc,db_type"""
+    return await async_processer.query_list(sql)
+
+
 
 async def get_db_moitor_templates():
     sql = """SELECT t.id,t.name FROM t_monitor_templete t WHERE t.type='2' AND t.name LIKE '%监控%';"""

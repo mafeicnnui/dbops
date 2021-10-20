@@ -193,6 +193,94 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         result['column'] = ''
         return result
 
+async def get_mysql_result_exp(p_ds,p_sql,curdb):
+    result   = {}
+    columns  = []
+    data     = []
+    p_env    = ''
+    start_time = datetime.datetime.now()
+    #get read timeout
+    read_timeout = int((await get_audit_rule('switch_export_timeout'))['rule_value'])
+    print('read_timeout=',read_timeout)
+    if p_ds['db_env']=='1':
+        p_env='PROD'
+    if p_ds['db_env']=='2':
+        p_env='DEV'
+
+    p_ds['service'] = curdb
+    if p_ds['proxy_status'] == '0':
+        db = get_connection_ds_read_limit(p_ds, read_timeout)
+    else:
+        p_ds['ip'] = p_ds['proxy_server'].split(':')[0]
+        p_ds['port'] = p_ds['proxy_server'].split(':')[1]
+        db = get_connection_ds_read_limit(p_ds, read_timeout)
+
+    try:
+        cr = db.cursor()
+        cr.execute(p_sql)
+        rs = cr.fetchall()
+        #get sensitive column
+        c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
+        #process desc
+        i_sensitive = []
+        desc = cr.description
+        for i in range(len(desc)):
+            if desc[i][0] in c_sensitive:
+                i_sensitive.append(i)
+            columns.append({"title": desc[i][0]})
+
+        #check sql rwos
+        rule = await get_audit_rule('switch_export_rows')
+        if len(rs)>int(rule['rule_value']):
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+
+        #process data
+        for i in rs:
+            tmp = []
+            for j in range(len(desc)):
+                if i[j] is None:
+                   tmp.append('')
+                else:
+                   if j in  i_sensitive:
+                       tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
+                   else:
+                       tmp.append(str(i[j]))
+            data.append(tmp)
+
+        result['status'] = '0'
+        result['msg'] =str(get_seconds(start_time))
+        result['data'] = data
+        result['column'] = columns
+        cr.close()
+        db.close()
+        return result
+    except pymysql.err.OperationalError as e:
+        err= traceback.format_exc()
+        if err.find('timed out')>0:
+            rule  = await get_audit_rule('switch_export_timeout')
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+        else:
+            result['status'] = '1'
+            result['msg'] = format_mysql_error(p_env, exception_info_mysql())
+            result['data'] = ''
+            result['column'] = ''
+            return result
+    except:
+        print('get_mysql_result_exp=',traceback.format_exc())
+        result['status'] = '1'
+        result['msg'] = format_mysql_error(p_env,exception_info_mysql())
+        result['data'] = ''
+        result['column'] = ''
+        return result
+
 def get_mysql_proxy_result(p_ds,p_sql,curdb):
     result = {}
     p_ds['service'] = curdb
@@ -334,6 +422,48 @@ async def exe_query(p_dbid,p_sql,curdb):
            result = get_mysql_proxy_result(p_ds,p_sql,curdb)
         else:
            result = await get_mysql_result(p_ds,p_sql,curdb)
+
+    # 查询MSQLServer数据源
+    if p_ds['db_type'] == '2':
+        if p_ds['proxy_status'] == '1':
+            result = get_sqlserver_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_sqlserver_result(p_ds, p_sql, curdb)
+
+    # 查询Redis数据源
+    if p_ds['db_type'] == '5':
+        if p_ds['proxy_status'] == '1':
+            result = get_redis_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_redis_result(p_ds, p_sql, curdb)
+
+    # 查询MongoDB数据源
+    if p_ds['db_type'] == '6':
+        if p_ds['proxy_status'] == '1':
+            result = get_mongo_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_mongo_result(p_ds, p_sql, curdb)
+
+
+    return result
+
+
+async def exe_query_exp(p_dbid,p_sql,curdb):
+    result = {}
+
+    # 查询校验
+    val = check_sql(p_dbid, p_sql,curdb)
+    if val['status'] != '0':
+        return val
+
+    p_ds  = await get_ds_by_dsid(p_dbid)
+
+    # 查询MySQL数据源
+    if p_ds['db_type']=='0':
+        if p_ds['proxy_status'] == '1':
+           result = get_mysql_proxy_result(p_ds,p_sql,curdb)
+        else:
+           result = await get_mysql_result_exp(p_ds,p_sql,curdb)
 
     # 查询MSQLServer数据源
     if p_ds['db_type'] == '2':

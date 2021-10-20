@@ -10,7 +10,7 @@ from   web.utils   import base_handler
 from   web.model.t_dmmx  import get_dmm_from_dm
 from   web.utils.common  import DateEncoder
 
-from   web.model.t_dmmx  import get_sync_db_server
+from   web.model.t_dmmx  import get_bbtj_db_server
 from   web.model.t_bbgl  import save_bbgl,save_bbgl_header,query_bbgl_header
 from   web.model.t_bbgl  import save_bbgl_filter,query_bbgl_filter
 from   web.model.t_bbgl  import save_bbgl_preprocess,query_bbgl_preprocess
@@ -58,7 +58,7 @@ class bbgl_config(base_handler.TokenHandler):
 class bbgl_add(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbgl/bbgl_add.html",
-                    db_server = await get_sync_db_server(),
+                    db_server = await get_bbtj_db_server(),
                     dm_filter = await get_dmm_from_dm('42'),
               )
 
@@ -270,7 +270,7 @@ class bbgl_edit(base_handler.TokenHandler):
         print('bbgl_edit=',bbdm)
         self.render("./bbgl/bbgl_edit.html",
                     bbdm = bbdm,
-                    db_server=await get_sync_db_server(),
+                    db_server=await get_bbtj_db_server(),
                     dm_filter=await get_dmm_from_dm('42')
                     )
 

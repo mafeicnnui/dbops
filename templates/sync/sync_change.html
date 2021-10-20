@@ -257,6 +257,7 @@
                                });
                           },
                           success: function (dataSet) {
+                              console.log('a=',dataSet)
                               if (dataSet['code']== '200') {
                                   swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
                                   $('#ace-editor').html(dataSet['msg'])

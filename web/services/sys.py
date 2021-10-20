@@ -88,6 +88,10 @@ class audit_rule_save(base_handler.TokenHandler):
        rule['switch_timeout']                = self.get_argument("switch_timeout")
        rule['switch_sensitive_columns']      = self.get_argument("switch_sensitive_columns")
 
+       # 导出开关
+       rule['switch_export_rows']            = self.get_argument("switch_export_rows")
+       rule['switch_export_timeout']         = self.get_argument("switch_export_timeout")
+
        result = await save_audit_rule(rule)
        self.write({"code": result['code'], "message": result['message']})
 

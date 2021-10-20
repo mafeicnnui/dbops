@@ -669,6 +669,44 @@
             </div>
         </div>
     </div>
+
+     <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default panel-border">
+                <div class="panel-heading">
+                    <h3 class="panel-title">SQL导出规则</h3>
+                    <hr>
+                </div>
+                <div class="panel-body">
+                    <div class="row" >
+                        <div class="col-md-3">
+                             <div class="form-group">
+                                <div class="col-md-6 text-right">
+                                   <label class="control-label">导出查询行数</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <input id="switch_export_rows"  type="text" value="100000">
+                                </div>
+
+                             </div>
+                        </div>
+                        <div class="col-md-3">
+                             <div class="form-group">
+                                <div class="col-md-6 text-right">
+                                   <label class="control-label text-left">导出超时时间</label>
+                                </div>
+                                <div class="col-md-6 text-left">
+                                    <input id="switch_export_timeout"  type="text" value="300">
+                                </div>
+
+                             </div>
+                        </div>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <br>
     <div class="col-lg-12">
         <div class="panel panel-border panel-pink">
@@ -1152,6 +1190,10 @@
                 switch_query_rows               : $('#switch_query_rows').val(),
                 switch_timeout                  : $('#switch_timeout').val(),
                 switch_sensitive_columns        : $('#switch_sensitive_columns').val(),
+
+                //导出规则
+                switch_export_rows              : $('#switch_export_rows').val(),
+                switch_export_timeout           : $('#switch_export_timeout').val(),
 
             },
             success: function (dataSet) {

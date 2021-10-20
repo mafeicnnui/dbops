@@ -63,7 +63,6 @@
     <input id='upd_filter_xh' type="hidden">
     <input id='upd_preprocess_xh' type="hidden">
 
-
     <div  class="panel panel-default">
         <div class="panel-body">
             <ul class="nav nav-pills m-b-30 pull-left">
@@ -794,7 +793,29 @@
                 });
          }
 
+         function check_valid(){
+             if ($('#bbdm').val()==''){
+                  swal("报表代码不能为空", "", "error")
+                  return false
+             }
+             if ($('#bbmc').val()==''){
+                  swal("报表名称不能为空", "", "error")
+                   return false
+             }
+
+             if ($('#dsid').val()==''){
+                  swal("数据源不能为空", "", "error")
+                   return false
+             }
+             return true;
+
+         }
+
          $('#upd_header_btn').click(function () {
+                if (!check_valid()) {
+                  return false;
+                }
+
                 var xh = $('#upd_header_xh').val()
                 $.ajax({
                     url: "/bbgl/update/header",
@@ -818,6 +839,10 @@
          })
 
          $('#upd_filter_btn').click(function () {
+                if (!check_valid()) {
+                  return false;
+                }
+
                 var xh = $('#upd_filter_xh').val()
                 $.ajax({
                     url: "/bbgl/update/filter",
@@ -842,6 +867,10 @@
          })
 
          $('#upd_preprocess_btn').click(function () {
+                if (!check_valid()) {
+                  return false;
+                }
+
                var editor = ace.edit("upd_pre_process_state");
                 $.ajax({
                     url: "/bbgl/update/preprocess",
@@ -865,6 +894,10 @@
          })
 
          $('#upd_query_btn').click(function () {
+                if (!check_valid()) {
+                  return false;
+                }
+
                var editor = ace.edit("editor_bbgl_query")
                console.log('editor.getValue()=',editor.getValue())
 
@@ -888,6 +921,11 @@
          })
 
          $('#save_btn').click(function(){
+
+              if (!check_valid()) {
+                  return false;
+              }
+
               $.ajax({
                     url: "/bbgl/add/save",
                     type: "post",
@@ -911,6 +949,10 @@
          });
 
          $('#save_header_btn').click(function(){
+                if (!check_valid()) {
+                  return false;
+                }
+
               $.ajax({
                     url: "/bbgl/add/header/save",
                     type: "post",
@@ -933,6 +975,10 @@
          });
 
          $('#save_filter_btn').click(function(){
+                if (!check_valid()) {
+                  return false;
+                }
+
               $.ajax({
                     url: "/bbgl/add/filter/save",
                     type: "post",
@@ -956,6 +1002,10 @@
          });
 
          $('#save_pre_process_btn').click(function(){
+                if (!check_valid()) {
+                  return false;
+                }
+
               var editor = ace.edit("add_pre_process_state")
               $.ajax({
                     url: "/bbgl/add/preprocess/save",
@@ -978,6 +1028,10 @@
          });
 
          $('#save_statement_btn').click(function(){
+                if (!check_valid()) {
+                  return false;
+                }
+
               var editor = ace.edit("add_query_statement")
               $.ajax({
                     url: "/bbgl/add/statement/save",
