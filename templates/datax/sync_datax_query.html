@@ -302,6 +302,60 @@
                             </div>
                        </div>
                       </div>
+                 </div>
+
+                 <div class="row">
+                       <div class="col-md-12">
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span>*</span>doris实例</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="form-control select" disabled id="db_doris" >
+                                        <option value='' selected = "selected">......</option>
+                                        {% for var in db_server_doris %}
+                                          <option value={{var[0]}} >{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="row">
+                       <div class="col-md-12">
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span>*</span>doris库名</label>
+                                </div>
+                               <div class="col-md-10">
+                                    <input id="doris_db_name"  type="text" class="form-control" disabled>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="row">
+                       <div class="col-md-12">
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span>*</span>doris表名</label>
+                                </div>
+                               <div class="col-md-10">
+                                    <input id="doris_tab_name"  type="text" class="form-control" disabled>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="row">
+                     <div class="col-md-12">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label"><span>*</span>doris批大小</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input id="doris_batch_size"  type="text" class="form-control" disabled >
+                            </div>
+                       </div>
+                      </div>
                    </div>
 
                    <div class="row">
@@ -622,6 +676,11 @@
             $('#es_service').attr("value",obj[22]);
             $('#es_index_name').attr("value",obj[23]);
             $('#es_type_name').attr("value",obj[24]);
+            $('#db_doris').val(obj[26]);
+            $('#doris_db_name').val(obj[27]);
+            $('#doris_tab_name').val(obj[28]);
+            $('#doris_batch_size').val(obj[29]);
+
         }
 
         function showdetail(v) {
@@ -704,10 +763,50 @@
                       },
                 });
 
-            } else {
+            } else if (obj[25] == '6') {
                 console.log('es_templete');
                 $.ajax({
                       url: "/datax/_query/es_templete",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          sync_id: v
+                      },
+                      success: function (dataSet) {
+                          console.log('message=',dataSet.message,'code=',dataSet.code);
+                          console.log('incr_col=',dataSet.message['incr_col']);
+                          var editor_full = ace.edit("ace-editor-full");
+                          var position = editor_full.getCursorPosition()
+                          editor_full.setValue('')
+                          editor_full.insert(dataSet.message['full']);
+                          editor_full.setReadOnly(true);
+                          editor_full.moveCursorToPosition(position);
+
+                          if (dataSet.message['incr_col']!='') {
+                              var editor_incr = ace.edit("ace-editor-incr");
+                              var position = editor_incr.getCursorPosition()
+                              editor_incr.setValue('')
+                              editor_incr.insert(dataSet.message['incr']);
+                              editor_incr.setReadOnly(true);
+                              editor_incr.moveCursorToPosition(position);
+                              $('#incr_li').show()
+                              $('#ncr-templete').show()
+                          } else {
+                              $('#incr_li').hide()
+                              $('#ncr-templete').hide()
+                          }
+
+                          $('#con-close-modal-templete').modal({
+                               keyboard: false,
+                               backdrop:false
+                          });
+
+                      },
+                });
+            } else if (obj[25] == '7') {
+                console.log('doris_templete');
+                $.ajax({
+                      url: "/datax/_query/doris_templete",
                       type: "post",
                       datatype: "json",
                       data:{

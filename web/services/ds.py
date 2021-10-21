@@ -75,6 +75,7 @@ class dsadd_save(base_handler.TokenHandler):
         d_ds['proxy_status'] = self.get_argument("proxy_status")
         d_ds['proxy_server'] = self.get_argument("proxy_server")
         d_ds['read_db']      = self.get_argument("read_db")
+        d_ds['stream_load']  = self.get_argument("stream_load")
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -117,6 +118,7 @@ class dsedit(base_handler.TokenHandler):
                      proxy_status = d_ds['proxy_status'],
                      proxy_server = d_ds['proxy_server'],
                      read_db      = d_ds['id_ro'],
+                     stream_load  = d_ds['stream_load'],
                     )
 
 class dsedit_save(base_handler.TokenHandler):
@@ -138,7 +140,7 @@ class dsedit_save(base_handler.TokenHandler):
         d_ds['proxy_status'] = self.get_argument("proxy_status")
         d_ds['proxy_server'] = self.get_argument("proxy_server")
         d_ds['read_db']      = self.get_argument("read_db")
-        print('d_ds=',d_ds)
+        d_ds['stream_load']  = self.get_argument("stream_load")
         result = await upd_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -165,6 +167,7 @@ class dsclone(base_handler.TokenHandler):
                      status       = d_ds['status'],
                      proxy_status = d_ds['proxy_status'],
                      proxy_server = d_ds['proxy_server'],
+                     stream_load  = d_ds['stream_load'],
                     )
 
 
@@ -185,6 +188,7 @@ class dsclone_save(base_handler.TokenHandler):
         d_ds['status']       = self.get_argument("status")
         d_ds['proxy_status'] = self.get_argument("proxy_status")
         d_ds['proxy_server'] = self.get_argument("proxy_server")
+        d_ds['stream_load']  = self.get_argument("stream_load")
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 

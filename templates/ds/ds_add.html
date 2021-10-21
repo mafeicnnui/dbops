@@ -86,6 +86,14 @@
            </div>
            <div class="form-group">
                 <div>
+                    <label class="col-md-2 control-label">StreamLoad地址</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="stream_load" type="text" class="form-control" placeholder="请输入StreamLoad地址">
+                </div>
+           </div>
+           <div class="form-group">
+                <div>
                     <label class="col-md-2 control-label">数据源服务名</label>
                 </div>
                 <div class="col-md-10">
@@ -170,6 +178,15 @@
         $(document).ready(function() {
           set_selected()
 
+          $('#db_type').change(function(){
+                 if ($('#db_type').val() == '8') {
+                    $('#stream_load').attr("readonly",false);
+                 } else {
+                     $('#stream_load').val('')
+                     $('#stream_load').attr("readonly",true);
+                 }
+          });
+
           $('#proxy_status').change(function() {
             if ($('#proxy_status').val() == '0') {
                 $("#proxy_server").empty();
@@ -215,6 +232,7 @@
                         proxy_status  :$('#proxy_status').val(),
                         proxy_server  :$('#proxy_server').val(),
                         read_db       :$('#read_db').val(),
+                        stream_load   :$('#stream_load').val()
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {

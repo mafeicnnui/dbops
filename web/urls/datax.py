@@ -8,7 +8,7 @@
 from web.services.datax import syncadd_datax,syncadd_datax_save,syncdataxquery,sync_datax_query,sync_datax_query_detail,sync_datax_query_dataxTemplete
 from web.services.datax import sync_datax_downloads_dataxTemplete,syncchange_datax,syncedit_datax,syncedit_save_datax,syncedit_del_datax,syncedit_push_datax
 from web.services.datax import syncedit_pushall_datax,syncedit_run_datax,syncedit_stop_datax,syncclone_datax,syncclone_save_datax,syncloganalyze_datax,sync_log_analyze_datax,get_datax_sync_tasks
-from web.services.datax import sync_datax_query_es_dataxTemplete,sync_datax_downloads_es_dataxTemplete
+from web.services.datax import sync_datax_query_es_dataxTemplete,sync_datax_downloads_es_dataxTemplete,sync_datax_query_doris_dataxTemplete
 
 datax = [
         (r"/datax/add", syncadd_datax),
@@ -33,4 +33,6 @@ datax = [
         (r"/get/datax/sync/task", get_datax_sync_tasks),
         (r"/datax/_query/es_templete", sync_datax_query_es_dataxTemplete),
         (r"/datax/_query/es_downloads", sync_datax_downloads_es_dataxTemplete),
+        (r"/datax/_query/doris_templete", sync_datax_query_doris_dataxTemplete),
+
 ]

@@ -351,11 +351,13 @@ async def get_db_name(dbid):
     try:
         res = {}
         pds = await get_ds_by_dsid(dbid)
+        print('pds=',pds)
         sql = """SELECT schema_name FROM information_schema.`SCHEMATA` 
                        WHERE schema_name NOT IN('information_schema','mysql','performance_schema')
                      ORDER BY schema_name"""
         res['code'] = '0'
         res['message'] = await async_processer.query_list_by_ds(pds,sql)
+        print('xxx=',res['message'] )
         return res
     except:
         traceback.print_exc()

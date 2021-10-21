@@ -57,6 +57,12 @@ def get_mysql_columns(p_sync):
        v=v+'''"{}",'''.format(i)
     return v[0:-1]
 
+def get_mysql_columns_doris(p_sync):
+    v = ''
+    for i in p_sync['sync_columns'].split(','):
+       v=v+'''"{}",'''.format(i)
+    return v[0:-1]
+
 async def query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env):
     v_where=' and  1=1 '
     if sync_tag != '':
@@ -113,8 +119,12 @@ async def query_datax_sync_detail(sync_id):
                  a.hbase_thrift,
                  a.es_service,
                  a.es_index_name,
-                 a.es_type_name,    
-                 a.sync_type             
+                 a.es_type_name,                      
+                 a.sync_type ,
+                 a.doris_id,
+                 a.doris_db_name,
+                 a.doris_tab_name,
+                 a.doris_batch_size           
             FROM t_datax_sync_config a,t_server b ,t_dmmx c,t_dmmx d,t_db_source e
             WHERE a.server_id=b.id AND b.status='1' 
             AND a.sour_db_id=e.id
@@ -160,7 +170,15 @@ async def query_datax_by_id(sync_id):
                  a.es_service,
                  a.es_index_name,
                  a.es_type_name,
-                 a.sync_es_columns
+                 a.sync_es_columns,
+                 a.doris_id,
+                 (select user from t_db_source x where x.id=a.doris_id) as doris_user,
+                 (select password from t_db_source x where x.id=a.doris_id) as doris_password,
+                 (select stream_load from t_db_source x where x.id=a.doris_id) as doris_stream_load,
+                 (select concat(x.ip,':',x.port) from t_db_source x where x.id=a.doris_id) as doris_jbdc_url,
+                 a.doris_db_name,
+                 a.doris_tab_name,
+                 a.doris_batch_size
             FROM t_datax_sync_config a,t_server b ,t_dmmx c,t_dmmx d,t_db_source e
             WHERE a.server_id=b.id AND b.status='1' 
             AND a.sour_db_id=e.id
@@ -226,6 +244,40 @@ async def process_templete_es(p_sync_id,p_templete):
     v_templete['full'] = v_templete['full'].replace('$$ES_COLUMN_NAMES$$', p_sync['sync_es_columns'])
     return v_templete
 
+async def process_templete_doris(p_sync_id,p_templete):
+    v_templete = p_templete
+    p_sync = await query_datax_by_id(p_sync_id)
+    #replace full templete
+    v_templete['full'] = v_templete['full'].replace('$$USERNAME$$',p_sync['user'])
+    v_templete['full'] = v_templete['full'].replace('$$PASSWORD$$',await aes_decrypt(p_sync['password'],p_sync['user']))
+    v_templete['full'] = v_templete['full'].replace('$$MYSQL_COLUMN_NAMES$$', get_mysql_columns_doris(p_sync))
+    v_templete['full'] = v_templete['full'].replace('$$MYSQL_TABLE_NAME$$', p_sync['sync_table'])
+    v_templete['full'] = v_templete['full'].replace('$$MYSQL_URL$$', p_sync['mysql_url'])
+    v_templete['full'] = v_templete['full'].replace('$$USERNAME$$', p_sync['user'])
+    v_templete['full'] = v_templete['full'].replace('$$DORIS_FE_LOAD_URL$$', p_sync['doris_stream_load'])
+    v_templete['full'] = v_templete['full'].replace('$$DORIS_JDBC_URL$$', p_sync['doris_jbdc_url'])
+    v_templete['full'] = v_templete['full'].replace('$$DORIS_DATABASE$$', p_sync['doris_db_name'])
+    v_templete['full'] = v_templete['full'].replace('$$DORIS_TABLE$$', p_sync['doris_tab_name'])
+    v_templete['full'] = v_templete['full'].replace('$$DORIS_USER$$', p_sync['doris_user'])
+    v_templete['full'] = v_templete['full'].replace('$$DORIS_PASSWORD$$', await aes_decrypt(p_sync['doris_password'],p_sync['doris_user']))
+    v_templete['full'] = v_templete['full'].replace('$$MAX_BATCH_ROWS$$', p_sync['doris_batch_size'])
+
+    #replacre incr templete
+    v_templete['incr'] = v_templete['incr'].replace('$$USERNAME$$', p_sync['user'])
+    v_templete['incr'] = v_templete['incr'].replace('$$PASSWORD$$', await aes_decrypt(p_sync['password'],p_sync['user']))
+    v_templete['incr'] = v_templete['incr'].replace('$$MYSQL_COLUMN_NAMES$$', get_mysql_columns_doris(p_sync))
+    v_templete['incr'] = v_templete['incr'].replace('$$MYSQL_TABLE_NAME$$', p_sync['sync_table'])
+    v_templete['incr'] = v_templete['incr'].replace('$$MYSQL_URL$$', p_sync['mysql_url'])
+    v_templete['incr'] = v_templete['incr'].replace('$$MYSQL_WHERE$$', p_sync['sync_incr_where'])
+    v_templete['incr'] = v_templete['incr'].replace('$$DORIS_FE_LOAD_URL$$', p_sync['doris_stream_load'])
+    v_templete['incr'] = v_templete['incr'].replace('$$DORIS_JDBC_URL$$', p_sync['doris_jbdc_url'])
+    v_templete['incr'] = v_templete['incr'].replace('$$DORIS_DATABASE$$', p_sync['doris_db_name'])
+    v_templete['incr'] = v_templete['incr'].replace('$$DORIS_TABLE$$', p_sync['doris_tab_name'])
+    v_templete['incr'] = v_templete['incr'].replace('$$DORIS_USER$$', p_sync['doris_user'])
+    v_templete['incr'] = v_templete['incr'].replace('$$DORIS_PASSWORD$$', await aes_decrypt(p_sync['doris_password'],p_sync['doris_user']))
+    v_templete['incr'] = v_templete['full'].replace('$$MAX_BATCH_ROWS$$', p_sync['doris_batch_size'])
+    return v_templete
+
 async def query_datax_sync_dataxTemplete(sync_id):
     templete = {}
     p_sync   = await query_datax_by_id(sync_id)
@@ -248,12 +300,30 @@ async def query_datax_sync_es_dataxTemplete(sync_id):
     v_templete['incr_col'] = p_sync['sync_incr_col']
     return v_templete
 
+async def query_datax_sync_doris_dataxTemplete(sync_id):
+    templete = {}
+    p_sync   = await query_datax_by_id(sync_id)
+    sql_full = 'select contents from t_templete where templete_id=5'
+    sql_incr = 'select contents from t_templete where templete_id=6'
+    templete['full'] = (await async_processer.query_one(sql_full))[0]
+    templete['incr'] = (await async_processer.query_one(sql_incr))[0]
+    v_templete = await process_templete_doris(sync_id,templete)
+    v_templete['incr_col'] = p_sync['sync_incr_col']
+    return v_templete
+
 async def downloads_datax_sync_dataxTemplete(sync_id,static_path):
     sync_obj  = await query_datax_by_id(sync_id)
     sync_tag  = sync_obj['sync_tag']
 
     #获取模板内容至templete字典中
-    templete = await query_datax_sync_dataxTemplete(sync_id)
+    if sync_obj['sync_type'] == '5':
+        templete = await query_datax_sync_dataxTemplete(sync_id)
+    elif sync_obj['sync_type'] == '6':
+        templete = await query_datax_sync_es_dataxTemplete(sync_id)
+    elif sync_obj['sync_type'] == '7':
+        templete = await query_datax_sync_doris_dataxTemplete(sync_id)
+    else:
+        pass
 
     #切换工作目录
     os.system('cd {0}'.format(static_path+'/downloads/datax'))
@@ -452,24 +522,33 @@ async def save_datax_sync(p_sync):
         es_type_name           = p_sync['es_type_name']
         sync_incr_where        = get_sync_incr_where(p_sync)
         sync_es_columns        = await get_es_columns(p_sync)
+        db_doris               = p_sync['db_doris']
+        doris_db_name          = p_sync['doris_db_name']
+        doris_tab_name         = p_sync['doris_tab_name']
+        doris_batch_size       = p_sync['doris_batch_size']
+
         sql="""insert into t_datax_sync_config(
                        sync_tag,server_id,sour_db_id,sync_schema,sync_table,
                        sync_columns,sync_incr_col,zk_hosts,sync_ywlx,sync_type,
                        script_path,run_time,comments,datax_home,sync_time_type,
                        sync_gap,api_server,status,sync_hbase_table,sync_hbase_rowkey,
-                       sync_hbase_rowkey_separator,sync_hbase_columns,sync_hbase_rowkey_sour,
-                       sync_incr_where,python3_home,hbase_thrift,es_service,es_index_name,es_type_name,sync_es_columns)
+                       sync_hbase_rowkey_separator,sync_hbase_columns,sync_hbase_rowkey_sour,sync_incr_where,python3_home,
+                       hbase_thrift,es_service,es_index_name,es_type_name,sync_es_columns,
+                       doris_id,doris_db_name,doris_tab_name,doris_batch_size)
                values('{0}','{1}','{2}','{3}','{4}',
                       '{5}','{6}','{7}','{8}','{9}',
                       '{10}','{11}','{12}','{13}','{14}',
                       '{15}','{16}','{17}','{18}','{19}',
-                      '{20}','{21}','{22}','{23}','{24}','{25}','{26}')
+                      '{20}','{21}','{22}','{23}','{24}',
+                      '{25}','{26}','{27}','{28}','{29}',
+                      '{30}','{31}','{32}','{33}')
             """.format(sync_tag,sync_server,sour_db_server,sour_db_name,sour_tab_name,
                        sour_tab_cols,sour_incr_col,zk_hosts,sync_ywlx,sync_data_type,
                        script_base,run_time,task_desc,datax_home,sync_time_type,
                        sync_gap,api_server,status,sync_hbase_table,sync_hbase_rowkey,
-                       sync_hbase_rowkey_separator,sync_hbase_columns,sync_hbase_rowkey_sour,
-                       sync_incr_where,python3_home,hbase_thrift,es_service,es_index_name,es_type_name,sync_es_columns)
+                       sync_hbase_rowkey_separator,sync_hbase_columns,sync_hbase_rowkey_sour,sync_incr_where,python3_home,
+                       hbase_thrift,es_service,es_index_name,es_type_name,sync_es_columns,
+                       db_doris,doris_db_name,doris_tab_name,doris_batch_size)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='保存成功!'
@@ -518,6 +597,11 @@ async def upd_datax_sync(p_sync):
         es_index_name          = p_sync['es_index_name']
         es_type_name           = p_sync['es_type_name']
         sync_es_columns        = await get_es_columns(p_sync)
+        db_doris               = p_sync['db_doris']
+        doris_db_name          = p_sync['doris_db_name']
+        doris_tab_name         = p_sync['doris_tab_name']
+        doris_batch_size       = p_sync['doris_batch_size']
+
         sql="""update t_datax_sync_config 
                   set  
                       sync_tag                     ='{0}',
@@ -549,14 +633,20 @@ async def upd_datax_sync(p_sync):
                       es_service                   ='{26}',
                       es_index_name                ='{27}',
                       es_type_name                 ='{28}',
-                      sync_es_columns              ='{29}'                                            
-                where id={30}""".format(sync_tag,sync_server,sour_db_server,sour_db_name,sour_tab_name,
+                      sync_es_columns              ='{29}',
+                      doris_id                     ='{30}',
+                      doris_db_name                ='{31}',
+                      doris_tab_name               ='{32}',
+                      doris_batch_size             ='{33}'                                                    
+                where id={34}""".format(sync_tag,sync_server,sour_db_server,sour_db_name,sour_tab_name,
                                         sour_tab_cols,sour_incr_col,zk_hosts,sync_ywlx,sync_data_type,
                                         script_base,run_time,task_desc,datax_home,sync_time_type,
                                         sync_gap,api_server,status,sync_hbase_table,sync_hbase_rowkey,
                                         sync_hbase_rowkey_sp,sync_hbase_columns,sync_hbase_rowkey_sour,
                                         sync_incr_where,python3_home,hbase_thrift,es_service,
-                                        es_index_name,es_type_name,sync_es_columns,sync_id)
+                                        es_index_name,es_type_name,sync_es_columns,
+                                        db_doris, doris_db_name, doris_tab_name,doris_batch_size,
+                                        sync_id)
         await async_processer.exec_sql(sql)
         result={}
         result['code']='0'

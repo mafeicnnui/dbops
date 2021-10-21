@@ -10,8 +10,9 @@ from   web.model.t_sync_datax import query_datax_sync,save_datax_sync,query_data
 from   web.model.t_sync_datax import query_datax_sync_detail,query_datax_sync_dataxTemplete,downloads_datax_sync_dataxTemplete,get_datax_sync_tags_by_env
 from   web.model.t_sync_datax import push_datax_sync_task,pushall_datax_sync_task,run_datax_sync_task,stop_datax_sync_task,update_datax_sync_status
 from   web.model.t_sync_datax import query_datax_sync_log_analyze,query_datax_sync_log_detail,query_sync_log_analyze
-from   web.model.t_sync_datax import query_datax_sync_es_dataxTemplete
-from   web.model.t_dmmx       import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_datax_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx_by_market_id,get_datax_sync_tags
+from   web.model.t_sync_datax import query_datax_sync_es_dataxTemplete,query_datax_sync_doris_dataxTemplete
+from   web.model.t_dmmx       import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_datax_sync_db_server,get_db_sync_tags
+from   web.model.t_dmmx       import get_db_sync_tags_by_market_id,get_db_sync_ywlx_by_market_id,get_datax_sync_tags,get_datax_sync_db_server_doris
 from   web.utils.common       import current_rq2,get_day_nday_ago,now
 from web.utils                import base_handler
 
@@ -21,6 +22,7 @@ class syncdataxquery(base_handler.TokenHandler):
         self.render("./datax/sync_datax_query.html",
                     dm_sync_ywlx = await get_dmm_from_dm('08'),
                     dm_sync_data_type = await get_dmm_from_dm('09'),
+                    db_server_doris=await get_datax_sync_db_server_doris(),
                     )
 
 class sync_datax_query(base_handler.TokenHandler):
@@ -39,6 +41,7 @@ class sync_datax_query_detail(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id   = self.get_argument("sync_id")
         v_list    = await query_datax_sync_detail(sync_id)
+        print('v_list=',v_list)
         v_json    = json.dumps(v_list)
         self.write({"code": 0, "message": v_json})
 
@@ -54,7 +57,7 @@ class sync_datax_downloads_dataxTemplete(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_id     = self.get_argument("sync_id")
         static_path = self.get_template_path().replace("templates", "static")
-        zipfile     = await downloads_datax_sync_dataxTemplete(sync_id,static_path)
+        zipfile = await downloads_datax_sync_dataxTemplete(sync_id, static_path)
         self.write({"code": 0, "message": zipfile})
 
 
@@ -64,6 +67,14 @@ class sync_datax_query_es_dataxTemplete(base_handler.TokenHandler):
         sync_id  = self.get_argument("sync_id")
         templete = await query_datax_sync_es_dataxTemplete(sync_id)
         self.write({"code": 0, "message": templete})
+
+class sync_datax_query_doris_dataxTemplete(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        sync_id  = self.get_argument("sync_id")
+        templete = await query_datax_sync_doris_dataxTemplete(sync_id)
+        self.write({"code": 0, "message": templete})
+
 
 class sync_datax_downloads_es_dataxTemplete(base_handler.TokenHandler):
     async def post(self):
@@ -78,9 +89,10 @@ class syncadd_datax(base_handler.TokenHandler):
         self.render("./datax/sync_datax_add.html",
                     sync_server          = await get_sync_server(),
                     db_server            = await get_datax_sync_db_server(),
+                    db_server_doris      = await get_datax_sync_db_server_doris(),
                     dm_db_type           = await get_dmm_from_dm('02'),
                     dm_sync_ywlx         = await get_dmm_from_dm('08'),
-                    dm_sync_data_type    = await get_dmm_from_dm2('09','5,6'),
+                    dm_sync_data_type    = await get_dmm_from_dm2('09','5,6,7'),
                     dm_sync_time_type    = await get_dmm_from_dm('10'),
                     dm_sync_zk_host      = await get_dmm_from_dm('15'),
                     dm_sync_hbase_thrift = await get_dmm_from_dm('16')
@@ -115,6 +127,10 @@ class syncadd_datax_save(base_handler.TokenHandler):
         d_sync['sync_gap']             = self.get_argument("sync_gap")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
+        d_sync['db_doris']             = self.get_argument("db_doris")
+        d_sync['doris_db_name']        = self.get_argument("doris_db_name")
+        d_sync['doris_tab_name']       = self.get_argument("doris_tab_name")
+        d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
         result = await save_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -168,7 +184,11 @@ class syncedit_datax(base_handler.TokenHandler):
                     api_server           = d_sync['api_server'],
                     status               = d_sync['status'],
                     python3_home         = d_sync['python3_home'],
-
+                    db_server_doris      = await get_datax_sync_db_server_doris(),
+                    db_doris             = d_sync['doris_id'],
+                    doris_db_name        = d_sync['doris_db_name'],
+                    doris_tab_name       = d_sync['doris_tab_name'],
+                    doris_batch_size     = d_sync['doris_batch_size'],
         )
 
 class syncedit_save_datax(base_handler.TokenHandler):
@@ -190,6 +210,10 @@ class syncedit_save_datax(base_handler.TokenHandler):
         d_sync['es_service']           = self.get_argument("es_service")
         d_sync['es_index_name']        = self.get_argument("es_index_name")
         d_sync['es_type_name']         = self.get_argument("es_type_name")
+        d_sync['db_doris']             = self.get_argument("db_doris")
+        d_sync['doris_db_name']        = self.get_argument("doris_db_name")
+        d_sync['doris_tab_name']       = self.get_argument("doris_tab_name")
+        d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
         d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
         d_sync['sync_data_type']       = self.get_argument("sync_data_type")
         d_sync['script_base']          = self.get_argument("script_base")
@@ -245,6 +269,11 @@ class syncclone_datax(base_handler.TokenHandler):
                     api_server           = d_sync['api_server'],
                     status               = d_sync['status'],
                     python3_home         = d_sync['python3_home'],
+                    db_server_doris      = await get_datax_sync_db_server_doris(),
+                    db_doris             = d_sync['doris_id'],
+                    doris_db_name        = d_sync['doris_db_name'],
+                    doris_tab_name       = d_sync['doris_tab_name'],
+                    doris_batch_size     = d_sync['doris_batch_size'],
 
         )
 
@@ -264,6 +293,13 @@ class syncclone_save_datax(base_handler.TokenHandler):
         d_sync['sync_hbase_table']     = self.get_argument("sync_hbase_table")
         d_sync['sync_hbase_rowkey']    = self.get_argument("sync_hbase_rowkey")
         d_sync['sync_hbase_rowkey_separator'] = self.get_argument("sync_hbase_rowkey_separator")
+        d_sync['es_service']           = self.get_argument("es_service")
+        d_sync['es_index_name']        = self.get_argument("es_index_name")
+        d_sync['es_type_name']         = self.get_argument("es_type_name")
+        d_sync['db_doris']             = self.get_argument("db_doris")
+        d_sync['doris_db_name']        = self.get_argument("doris_db_name")
+        d_sync['doris_tab_name']       = self.get_argument("doris_tab_name")
+        d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
         d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
         d_sync['sync_data_type']       = self.get_argument("sync_data_type")
         d_sync['script_base']          = self.get_argument("script_base")

@@ -183,10 +183,11 @@ async def get_ds_by_dsid(p_dsid):
                   market_id,
                   proxy_status,
                   proxy_server,
-                  id_ro
+                  id_ro,
+                  stream_load
            from t_db_source where id={0}""".format(p_dsid)
     ds = await async_processer.query_dict_one(sql)
-    ds['password'] = await aes_decrypt(ds['password'],ds['user'])
+    ds['password'] = '' if ds['password']=='' else await aes_decrypt(ds['password'],ds['user'])
     ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])
     return ds
 
@@ -322,6 +323,7 @@ async def save_ds(p_ds):
         ds_proxy_status = p_ds['proxy_status']
         ds_proxy_server = p_ds['proxy_server']
         read_db         = p_ds['read_db']
+        stream_load     = p_ds['stream_load']
 
         if p_ds['pass'] != '':
             ds_pass    = await aes_encrypt(p_ds['pass'], ds_user)
@@ -330,11 +332,11 @@ async def save_ds(p_ds):
         status         = p_ds['status']
 
         sql="""insert into t_db_source
-                (id,db_type,db_env,db_desc,ip,port,service,user,password,status,creation_date,creator,last_update_date,updator,market_id,inst_type,proxy_status,proxy_server,id_ro) 
-               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')
+                (id,db_type,db_env,db_desc,ip,port,service,user,password,status,creation_date,creator,last_update_date,updator,market_id,inst_type,proxy_status,proxy_server,id_ro,stream_load) 
+               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}')
             """.format(ds_id,ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
                        ds_user,ds_pass,status,current_rq(),'DBA',current_rq(),'DBA',ds_market_id,ds_inst_type,
-                       ds_proxy_status,ds_proxy_server,read_db)
+                       ds_proxy_status,ds_proxy_server,read_db,stream_load)
         await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
@@ -366,6 +368,7 @@ async def upd_ds(p_ds):
         ds_proxy_status = p_ds['proxy_status']
         ds_proxy_server = p_ds['proxy_server']
         ds_read_db      = p_ds['read_db']
+        stream_load     = p_ds['stream_load']
 
         if p_ds['pass']!='':
            ds_pass     = await aes_encrypt(p_ds['pass'],ds_user)
@@ -389,10 +392,11 @@ async def upd_ds(p_ds):
                        inst_type    ='{12}',
                        proxy_status ='{13}',
                        proxy_server ='{14}',
-                       id_ro        ='{15}'
-                where id='{16}'""".format(ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
+                       id_ro        ='{15}',
+                       stream_load  ='{16}'
+                where id='{17}'""".format(ds_db_type,ds_db_env,ds_db_desc,ds_ip,ds_port,ds_service,
                                           ds_user,ds_pass,status,current_rq(),'DBA',ds_market_id,ds_inst_type,
-                                          ds_proxy_status,ds_proxy_server,ds_read_db,ds_id)
+                                          ds_proxy_status,ds_proxy_server,ds_read_db,stream_load,ds_id)
         print(sql)
         await async_processer.exec_sql(sql)
         result={}

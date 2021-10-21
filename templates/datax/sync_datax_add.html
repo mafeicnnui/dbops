@@ -243,7 +243,7 @@
                         <label class="col-md-2 control-label"><span id="s_hbase_table">*</span>hbase表名</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="hbase_table"  type="text" class="form-control" placeholder="请输入hbase表名" >
+                        <input id="hbase_table"  type="text" class="form-control"  >
                     </div>
                </div>
               </div>
@@ -255,7 +255,7 @@
                         <label class="col-md-2 control-label"><span id="s_hbase_rowkey">*</span>hbase行键</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="hbase_rowkey"  type="text" class="form-control" placeholder="请输入hbase行键" >
+                        <input id="hbase_rowkey"  type="text" class="form-control"  >
                     </div>
                </div>
               </div>
@@ -304,6 +304,63 @@
                     </div>
                     <div class="col-md-10">
                         <input id="es_type_name"  type="text" class="form-control">
+                    </div>
+               </div>
+              </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label"><span>*</span>doris实例</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select class="form-control select" id="db_doris" >
+                                <option value='' selected = "selected">......</option>
+                                {% for var in db_server_doris %}
+                                  <option value={{var[0]}} >{{var[1]}}</option>
+                                {% end %}
+                            </select>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label"><span>*</span>doris库名</label>
+                        </div>
+                       <div class="col-md-10">
+                            <select class="form-control select" id="doris_db_name" >
+                                <option value='' selected = "selected">......</option>
+                            </select>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label"><span>*</span>doris表名</label>
+                        </div>
+                       <div class="col-md-10">
+                            <select class="form-control select" id="doris_tab_name" >
+                                <option value='' selected = "selected">......</option>
+                            </select>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>doris批大小</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="doris_batch_size"  type="text" class="form-control" >
                     </div>
                </div>
               </div>
@@ -464,6 +521,36 @@
    </div><!-- /.modal -->
 
     <script>
+
+        function selectAll() {
+            try {
+               options=$('#sour_tab_cols option');
+               if(options.length>0){
+                    for (var i=0;i<options.length;i++){
+                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
+                          value=$(options[i]).val();
+                          text =$(options[i]).text();
+                          $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
+                    }
+                    $('#sour_tab_cols option').remove();
+               }
+            } catch(err){
+                console.log(err)
+            }
+        }
+
+        function cancelAll() {
+               options=$('#sele_sour_tab_cols option');
+               if(options.length>0){
+                    for (var i=0;i<options.length;i++){
+                          value=$(options[i]).val();
+                          text =$(options[i]).text();
+                          $('#sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
+                    }
+                    $('#sele_sour_tab_cols option').remove();
+               }
+        }
+
         function get_selec_cols(){
              var tmp='';
              var val='';
@@ -557,7 +644,12 @@
                     sync_time_type       : $('#sync_time_type').val(),
                     sync_gap             : $('#sync_gap').val(),
                     api_server           : $('#api_server').val(),
-                    status               : $('#status').val()
+                    status               : $('#status').val(),
+                    db_doris             : $('#db_doris').val(),
+                    doris_db_name        : $('#doris_db_name').val(),
+                    doris_tab_name       : $('#doris_tab_name').val(),
+                    doris_batch_size     : $('#doris_batch_size').val(),
+
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {
@@ -738,8 +830,32 @@
         });
 
         $('#sync_data_type').change(function() {
+            //考虑直接隐藏这些元素，最后调试
+            if  ( $('#sync_data_type').val() =='7') {
+                $("#zk_hosts").empty();
+                $("#hbase_thrift").empty();
+                $("#hbase_table").val('');
+                $('#hbase_rowkey').val('');
+                $('#hbase_rowkey_separator').val('');
+                $('#zk_hosts').attr("disabled",true);
+                $('#hbase_thrift').attr("disabled",true);
+                $('#hbase_table').attr("readonly","readonly");
+                $('#hbase_rowkey').attr("readonly","readonly");
+                $('#hbase_rowkey_separator').attr("readonly","readonly");
 
-            if ( $('#sync_data_type').val() =='6') {
+                $("#es_service").val('');
+                $("#es_index_name").val('');
+                $('#es_type_name').val('');
+                $('#es_service').attr("disabled",true);
+                $('#es_index_name').attr("disabled",true);
+                $('#es_type_name').attr("disabled",true);
+
+                $("#db_doris").attr("disabled", false);
+                $("#doris_db_name").attr("disabled", false);
+                $("#doris_tab_name").attr("disabled", false);
+                $("#doris_batch_size").attr("disabled", false);
+
+            } else if ( $('#sync_data_type').val() =='6') {
                 $("#zk_hosts").empty();
                 $("#hbase_thrift").empty();
                 $("#hbase_table").val('');
@@ -753,6 +869,10 @@
                 $('#es_service').attr("readonly",false);
                 $('#es_index_name').attr("readonly",false);
                 $('#es_type_name').attr("readonly",false);
+                $("#db_doris").attr("disabled", true);
+                $("#doris_db_name").attr("disabled", true);
+                $("#doris_tab_name").attr("disabled", true);
+                $("#doris_batch_size").attr("disabled", true);
             } else {
                 $('#zk_hosts').attr("disabled",false);
                 $('#hbase_thrift').attr("disabled",false);
@@ -765,38 +885,71 @@
                 $('#es_index_name').attr("readonly",true);
                 $('#es_type_name').val('');
                 $('#es_type_name').attr("readonly",true);
+                $("#db_doris").val('');
+                $("#doris_db_name").val('');
+                $("#doris_tab_name").val('');
+                $("#doris_batch_size").val('');
+                $("#db_doris").attr("disabled", true);
+                $("#doris_db_name").attr("disabled", true);
+                $("#doris_tab_name").attr("disabled", true);
+                $("#doris_batch_size").attr("disabled", true);
             }
 
         });
 
-        function selectAll() {
-            try {
-               options=$('#sour_tab_cols option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#sour_tab_cols option').remove();
-               }
-            } catch(err){
-                console.log(err)
+        $('#db_doris').change(function(){
+           if ($('#db_doris').val()!=''){
+                $.ajax({
+                      url: "/get_database",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#db_doris').val(),
+                      },
+                      success: function (dataSet) {
+                         console.log('db_doris=',dataSet)
+                         $("#doris_db_name").empty();
+                         $("#doris_tab_name").empty();
+                         $("#doris_db_name").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#doris_db_name").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      }
+                });
+            } else {
+                $("#doris_db_name").empty();
+                $("#doris_db_name").append("<option value=''>...</option>");
             }
-        }
+        });
 
-        function cancelAll() {
-               options=$('#sele_sour_tab_cols option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#sele_sour_tab_cols option').remove();
-               }
-        }
+        $('#doris_db_name').change(function() {
+            $("#doris_tab_name").empty();
+            if ($('#doris_db_name').val()!=''){
+                $.ajax({
+                      url: "/get_tables",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid    : $('#db_doris').val(),
+                          db_name : $('#doris_db_name').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#doris_tab_name").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#doris_tab_name").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      }
+                });
+            } else {
+                $("#doris_tab_name").append("<option value=''>......</option>");
+            }
+        });
 
         $(document).ready(function() {
            set_selected();
