@@ -155,7 +155,6 @@ class async_processer:
                     rs = await cur.fetchone()
         return capital_to_lower(rs)
 
-
 def preProcesses(matched):
     value = matched.group(0)
     return value.replace(';','^^^')
@@ -166,34 +165,34 @@ def reReplace(p_sql):
     if pattern0.findall(p_sql) != []:
        logging.info('一: 将comment中的;替换为^^^ ...')
        p_sql_pre = re.sub(pattern0,preProcesses,p_sql)
-       logging.info(('1:',p_sql_pre))
+       logging.info(('1:',str(p_sql_pre)))
 
     pattern1 = re.compile(r'(\s*\)\s*;\s*)')
     if pattern1.findall(p_sql_pre)!=[]:
        logging.info('二: 将);替换为)$$$ ...')
        p_sql_pre = re.sub(pattern1, ')$$$', p_sql_pre)
-       logging.info(('2:', p_sql_pre))
+       logging.info(('2:', str(p_sql_pre)))
 
     pattern2 = re.compile(r'(\s*\'\s*;\s*)')
     if pattern2.findall(p_sql_pre) != []:
        logging.info('三: 将\';替换为\'$$$ ...')
        p_sql_pre = re.sub(pattern2, "'$$$", p_sql_pre)
-       logging.info(('3:', p_sql_pre))
+       logging.info(('3:', str(p_sql_pre)))
 
     pattern3 = re.compile(r'(\s*;\s*)')
     if pattern3.findall(p_sql_pre) != []:
         logging.info('四: 将;替换为$$$')
         p_sql_pre = re.sub(pattern3, "$$$\n", p_sql_pre)
-        logging.info(('4:', p_sql_pre))
+        logging.info(('4:', str(p_sql_pre)))
 
     logging.info('五: 通过$$$将p_sql_pre处理为列表...')
     p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
-    logging.info(('5=', p_sql_pre))
-    logging.info('5-len=', len(p_sql_pre))
+    logging.info(('5=', str(p_sql_pre)))
+    logging.info(('5-len=', len(p_sql_pre)))
 
     logging.info(('六: 将列表中每个语句comment中的^^^替为;...'))
     p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
-    logging.info(('6=', p_sql_pre))
+    logging.info(('6=', str(p_sql_pre)))
     logging.info(('6-len=', len(p_sql_pre)))
 
     if len(p_sql_pre) == 1:
