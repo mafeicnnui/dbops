@@ -28,6 +28,10 @@
             -moz-text-overflow: ellipsis;
         }
 
+        #doris_tab_config{
+            height:200px;
+        }
+
     </style>
 </head>
 <body>
@@ -40,7 +44,7 @@
                             <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="sync_tag"  type="text" readonly class="form-control" placeholder="请输入同步标识号">
+                            <input id="sync_tag"  type="text"  class="form-control" placeholder="请输入同步标识号">
                         </div>
                    </div>
                </div>
@@ -346,9 +350,7 @@
                             <label class="col-md-2 control-label"><span>*</span>doris表名</label>
                         </div>
                        <div class="col-md-10">
-                            <select class="form-control select" id="doris_tab_name" >
-                                <option value='' selected = "selected">......</option>
-                            </select>
+                             <input id="doris_tab_name"  type="text" class="form-control" readonly  >
                        </div>
                    </div>
                </div>
@@ -360,12 +362,41 @@
                         <label class="col-md-2 control-label"><span>*</span>doris批大小</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="doris_batch_size"  type="text" class="form-control" >
+                        <input id="doris_batch_size"  type="text" class="form-control"  value="200">
                     </div>
                </div>
               </div>
            </div>
-
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>JVM配置</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="doris_jvm"  type="text" class="form-control" value="-Xms1G -Xmx1G">
+                    </div>
+               </div>
+              </div>
+           </div>
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>表配置</label>
+                    </div>
+                    <div class="col-md-10">
+                         <div id='doris_tab_config' class="col-md-12">COMMENT "OLAP"
+DISTRIBUTED BY HASH(`id`) BUCKETS 3
+PROPERTIES (
+"replication_allocation" = "tag.location.default: 1",
+"in_memory" = "false",
+"storage_format" = "V2"
+)</div>
+                    </div>
+               </div>
+              </div>
+           </div>
            <div class="row">
              <div class="col-md-6">
                <div class="form-group">
@@ -614,6 +645,7 @@
         }
 
         $("#add").click(function () {
+            var editor = ace.edit("doris_tab_config")
             $.ajax({
                 url: "/datax/add/save",
                 type: "post",
@@ -649,7 +681,8 @@
                     doris_db_name        : $('#doris_db_name').val(),
                     doris_tab_name       : $('#doris_tab_name').val(),
                     doris_batch_size     : $('#doris_batch_size').val(),
-
+                    doris_jvm            : $('#doris_jvm').val(),
+                    doris_tab_config     : editor.getValue(),
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {
@@ -722,6 +755,9 @@
         $('#sour_tab_name').change(function() {
             $('#hbase_table').val('');
             if ($('#sour_tab_name').val()!=''){
+
+                $('#doris_tab_name').val($('#sour_tab_name').val())
+
                 //更新源数据库列名
                 $.ajax({
                       url: "/get_columns",
@@ -951,8 +987,27 @@
             }
         });
 
+        function set_editor(p_editor) {
+              var editor = ace.edit(p_editor);
+              editor.setTheme("ace/theme/xcode");
+              editor.getSession().setMode("ace/mode/mysql");
+              editor.getSession().setUseSoftTabs(true);
+              editor.getSession().setUseWrapMode(true);
+              editor.setShowPrintMargin(false);
+              editor.setFontSize(14);
+              editor.setOption("wrap", "free");
+              ace.require("ace/ext/language_tools");
+              editor.setOptions({
+                 enableBasicAutocompletion: true,
+                 enableSnippets: true,
+                 enableLiveAutocompletion: true
+              });
+              editor.setHighlightActiveLine(true);
+        }
+
         $(document).ready(function() {
            set_selected();
+           set_editor('doris_tab_config')
         });
    </script>
 </body>

@@ -582,3 +582,15 @@ class get_mysql_incr_columns(base_handler.TokenHandler):
         v_list     = get_mysql_incr_columns_list(db_ip, db_port, db_service, db_user, db_pass,db_tab,proxy_server)
         v_json     = json.dumps(v_list)
         self.write(v_json)
+
+
+class sync_real(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./sync/sync_real.html",
+                    sync_server       = await get_sync_server(),
+                    db_server         = await get_sync_db_server(),
+                    dm_db_type        = await get_dmm_from_dm('02'),
+                    dm_sync_ywlx      = await get_dmm_from_dm('08'),
+                    dm_sync_data_type = await get_dmm_from_dm2('09','8'),
+                    dm_sync_time_type = await get_dmm_from_dm('10')
+                    )

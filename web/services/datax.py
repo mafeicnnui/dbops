@@ -131,6 +131,8 @@ class syncadd_datax_save(base_handler.TokenHandler):
         d_sync['doris_db_name']        = self.get_argument("doris_db_name")
         d_sync['doris_tab_name']       = self.get_argument("doris_tab_name")
         d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
+        d_sync['doris_jvm']            = self.get_argument("doris_jvm")
+        d_sync['doris_tab_config']     = self.get_argument("doris_tab_config")
         result = await save_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -189,6 +191,9 @@ class syncedit_datax(base_handler.TokenHandler):
                     doris_db_name        = d_sync['doris_db_name'],
                     doris_tab_name       = d_sync['doris_tab_name'],
                     doris_batch_size     = d_sync['doris_batch_size'],
+                    doris_jvm            = d_sync['doris_jvm'],
+                    doris_tab_config     = d_sync['doris_tab_config'],
+
         )
 
 class syncedit_save_datax(base_handler.TokenHandler):
@@ -214,6 +219,8 @@ class syncedit_save_datax(base_handler.TokenHandler):
         d_sync['doris_db_name']        = self.get_argument("doris_db_name")
         d_sync['doris_tab_name']       = self.get_argument("doris_tab_name")
         d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
+        d_sync['doris_jvm']            = self.get_argument("doris_jvm")
+        d_sync['doris_tab_config']     = self.get_argument("doris_tab_config")
         d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
         d_sync['sync_data_type']       = self.get_argument("sync_data_type")
         d_sync['script_base']          = self.get_argument("script_base")
@@ -274,6 +281,8 @@ class syncclone_datax(base_handler.TokenHandler):
                     doris_db_name        = d_sync['doris_db_name'],
                     doris_tab_name       = d_sync['doris_tab_name'],
                     doris_batch_size     = d_sync['doris_batch_size'],
+                    doris_jvm            = d_sync['doris_jvm'],
+                    doris_tab_config     = d_sync['doris_tab_config'],
 
         )
 
@@ -300,6 +309,8 @@ class syncclone_save_datax(base_handler.TokenHandler):
         d_sync['doris_db_name']        = self.get_argument("doris_db_name")
         d_sync['doris_tab_name']       = self.get_argument("doris_tab_name")
         d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
+        d_sync['doris_jvm']            = self.get_argument("doris_jvm")
+        d_sync['doris_tab_config']     = self.get_argument("doris_tab_config")
         d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
         d_sync['sync_data_type']       = self.get_argument("sync_data_type")
         d_sync['script_base']          = self.get_argument("script_base")

@@ -442,7 +442,7 @@ async def get_tab_incr_col(dbid,db_name,tab_name):
     except Exception as e:
         traceback.print_exc()
         result['code'] = '-1'
-        result['message'] = '获取数据库列名失败！'
+        result['message'] = '获取数据库列名失败!'
     return result
 
 async def get_tab_structure(dbid,db_name,tab_name):

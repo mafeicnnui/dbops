@@ -539,6 +539,7 @@
            $("#query_btn").click();
         });
 
+
         $(document).ready(function() {
             //ace editor
             var editor_full = ace.edit("ace-editor-full");
@@ -560,6 +561,7 @@
             editor_incr.setFontSize(16);
             editor_incr.getSession().setUseSoftTabs(true);
             editor_incr.setReadOnly(true);
+
 
             $("#query_btn").click(function() {
               $.ajax({

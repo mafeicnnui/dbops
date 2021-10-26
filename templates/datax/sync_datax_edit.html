@@ -27,6 +27,9 @@
             text-overflow: ellipsis;
             -moz-text-overflow: ellipsis;
         }
+        #doris_tab_config{
+            height:200px;
+        }
 
     </style>
 </head>
@@ -371,10 +374,7 @@
                             <label class="col-md-2 control-label"><span>*</span>doris表名</label>
                         </div>
                         <div class="col-md-10">
-                            <select class="form-control select" id="doris_tab_name" >
-                                <option value=''  >......</option>
-                                <option value='{{doris_tab_name}}' selected = "selected">{{doris_tab_name}}</option>
-                            </select>
+                            <input id="doris_tab_name"  type="text" class="form-control"  readonly value='{{doris_tab_name}}' >
                        </div>
                    </div>
                </div>
@@ -387,6 +387,31 @@
                     </div>
                     <div class="col-md-10">
                         <input id="doris_batch_size"  type="text" class="form-control" value='{{doris_batch_size}}' >
+                    </div>
+               </div>
+              </div>
+           </div>
+
+          <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>JVM配置</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="doris_jvm"  type="text" class="form-control"  value='{{doris_jvm}}' >
+                    </div>
+               </div>
+              </div>
+           </div>
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>表配置</label>
+                    </div>
+                    <div class="col-md-10">
+                         <div id='doris_tab_config' class="col-md-12">{{doris_tab_config}}</div>
                     </div>
                </div>
               </div>
@@ -652,7 +677,7 @@
         });
 
         $("#save").click(function () {
-          console.log(" status:",$('#status').val())
+          var editor = ace.edit("doris_tab_config")
           $.ajax({
             url: "/datax/edit/save",
             type: "post",
@@ -678,6 +703,8 @@
                     doris_db_name        : $('#doris_db_name').val(),
                     doris_tab_name       : $('#doris_tab_name').val(),
                     doris_batch_size     : $('#doris_batch_size').val(),
+                    doris_jvm            : $('#doris_jvm').val(),
+                    doris_tab_config     : editor.getValue(),
                     sync_ywlx            : $('#sync_ywlx').val(),
                     sync_data_type       : $('#sync_data_type').val(),
                     script_base          : $('#script_base').val(),
@@ -760,6 +787,9 @@
         $('#sour_tab_name').change(function() {
             console.log('sour_tab_name=',$('#sour_tab_name').val());
             if ($('#sour_tab_name').val()!=''){
+
+                $('#doris_tab_name').val($('#sour_tab_name').val())
+
                 //更新源数据库列名
                 $.ajax({
                       url: "/get_columns",
@@ -902,34 +932,36 @@
             }
         });
 
-        $('#doris_db_name').change(function() {
-            $("#doris_tab_name").empty();
-            if ($('#doris_db_name').val()!=''){
-                $.ajax({
-                      url: "/get_tables",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid    : $('#db_doris').val(),
-                          db_name : $('#doris_db_name').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#doris_tab_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#doris_tab_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-            } else {
-                $("#doris_tab_name").append("<option value=''>......</option>");
-            }
-        });
+        // $('#doris_db_name').change(function() {
+        //     $("#doris_tab_name").empty();
+        //     if ($('#doris_db_name').val()!=''){
+        //         $.ajax({
+        //               url: "/get_tables",
+        //               type: "post",
+        //               datatype: "json",
+        //               async:false,
+        //               data:{
+        //                   dbid    : $('#db_doris').val(),
+        //                   db_name : $('#doris_db_name').val(),
+        //               },
+        //               success: function (dataSet) {
+        //                  $("#doris_tab_name").append("<option value=''>...</option>");
+        //                  for(i=0;i<dataSet['message'].length;i++){
+        //                       var val  = dataSet['message'][i];
+        //                       var text = dataSet['message'][i];
+        //                       $("#doris_tab_name").append("<option value='"+val+"'>"+text+"</option>");
+        //                  }
+        //               }
+        //         });
+        //     } else {
+        //         $("#doris_tab_name").append("<option value=''>......</option>");
+        //     }
+        // });
 
-        $('#sync_data_type').change(function() {
-            //考虑直接隐藏这些元素，最后调试
+
+
+        function set_item_status() {
+                //考虑直接隐藏这些元素，最后调试
             if  ( $('#sync_data_type').val() =='7') {
                 $("#zk_hosts").empty();
                 $("#hbase_thrift").empty();
@@ -994,8 +1026,29 @@
                 $("#doris_tab_name").attr("disabled", true);
                 $("#doris_batch_size").attr("disabled", true);
             }
+        }
 
+        $('#sync_data_type').change(function() {
+            set_item_status();
         });
+
+        function set_editor(p_editor) {
+              var editor = ace.edit(p_editor);
+              editor.setTheme("ace/theme/xcode");
+              editor.getSession().setMode("ace/mode/mysql");
+              editor.getSession().setUseSoftTabs(true);
+              editor.getSession().setUseWrapMode(true);
+              editor.setShowPrintMargin(false);
+              editor.setFontSize(14);
+              editor.setOption("wrap", "free");
+              ace.require("ace/ext/language_tools");
+              editor.setOptions({
+                 enableBasicAutocompletion: true,
+                 enableSnippets: true,
+                 enableLiveAutocompletion: true
+              });
+              editor.setHighlightActiveLine(true);
+        }
 
         $(document).keydown(function(event){
             if (event.keyCode == 13) { //判断为Enter键
@@ -1007,6 +1060,10 @@
 
             //必填项标签前加红色*
             set_selected();
+
+            set_editor('doris_tab_config')
+
+            set_item_status()
 
             //加载源数据库列表
             $.ajax({
@@ -1061,12 +1118,10 @@
             });
 
             //加载同步列名
-            console.log('a=',$('#sele_sour_tab_cols').val())
             var sele_sour_tab_cols_arr=$('#sele_sour_tab_cols').val()[0].split(',')
             $("#sele_sour_tab_cols").empty();
             for (i=0;i<sele_sour_tab_cols_arr.length;i++){
                   value=sele_sour_tab_cols_arr[i];
-                  console.log('value=',value);
                   $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+value+"</option>");
             }
 
