@@ -489,6 +489,14 @@ SELECT
         v=v+str(i[0])
     return v[0:-1]
 
+async def check_tab_exists_pk(cfg):
+    ds = await get_ds_by_dsid(cfg['sour_db_server'])
+    ds['service'] = cfg['sour_db_name']
+    st = """select count(0) from information_schema.columns
+              where table_schema='{}' and table_name='{}' and column_key='PRI'""".format(cfg['sour_db_name'],cfg['doris_tab_name'])
+    rs = await async_processer.query_one_by_ds(ds,st)
+    return rs[0]
+
 async def save_datax_sync(p_sync):
     val  = await check_datax_sync(p_sync,'add')
     if val['code']=='-1':
@@ -751,7 +759,10 @@ async def check_sync_tag(p_sync):
     st = "SELECT count(0) as rec FROM t_datax_sync_config  WHERE sync_tag='{}'".format(p_sync['sync_tag'])
     return (await async_processer.query_dict_one(st))['rec']
 
+
+
 async def check_datax_sync(p_sync,p_flag):
+    print('check_datax_sync=',p_sync)
     result = {}
     if p_sync["sync_tag"]=="":
         result['code']='-1'
@@ -788,37 +799,37 @@ async def check_datax_sync(p_sync,p_flag):
         result['message'] = '选择同步列名不能为空！'
         return result
 
-    if p_sync["zk_hosts"]=="" and p_sync['sync_data_type'] == 5:
+    if p_sync["zk_hosts"]=="" and p_sync['sync_data_type'] == '5':
         result['code']='-1'
         result['message']='zookeeper地址不能为空！'
         return result
 
-    if p_sync["hbase_thrift"]=="" and p_sync['sync_data_type'] == 5:
+    if p_sync["hbase_thrift"]=="" and p_sync['sync_data_type'] == '5':
         result['code']='-1'
         result['message']='hbase_thrift地址不能为空！'
         return result
 
-    if p_sync["sync_hbase_table"] == "" and p_sync['sync_data_type'] == 5:
+    if p_sync["sync_hbase_table"] == "" and p_sync['sync_data_type'] == '5':
         result['code'] = '-1'
         result['message'] = 'hbase表名不能为空！'
         return result
 
-    if p_sync["sync_hbase_rowkey"] == "" and p_sync['sync_data_type'] == 5:
+    if p_sync["sync_hbase_rowkey"] == "" and p_sync['sync_data_type'] == '5':
         result['code'] = '-1'
         result['message'] = 'hbase行键不能为空！'
         return result
 
-    if p_sync["es_service"]=="" and p_sync['sync_data_type'] == 6:
+    if p_sync["es_service"]=="" and p_sync['sync_data_type'] == '6':
         result['code']='-1'
         result['message']='ElasticSearch服务不能为空！'
         return result
 
-    if p_sync["es_index_name"] == "" and p_sync['sync_data_type'] == 6:
+    if p_sync["es_index_name"] == "" and p_sync['sync_data_type'] == '6':
         result['code'] = '-1'
         result['message'] = 'ElasticSearch索引名不能为空！'
         return result
 
-    if p_sync["es_type_name"] == "" and p_sync['sync_data_type'] == 6:
+    if p_sync["es_type_name"] == "" and p_sync['sync_data_type'] == '6':
         result['code'] = '-1'
         result['message'] = 'ElasticSearch类型名不能为空！'
         return result
@@ -874,6 +885,29 @@ async def check_datax_sync(p_sync,p_flag):
         result['message'] = '任务状态不能为空！'
         return result
 
+    if p_sync['sync_data_type'] == '7':
+
+        if p_sync["db_doris"] == "":
+            result['code'] = '-1'
+            result['message'] = 'doris数据源为空!'
+            return result
+
+        if p_sync["doris_db_name"] == "":
+            result['code'] = '-1'
+            result['message'] = 'doris数据库不能为空!'
+            return result
+
+        if p_sync["doris_tab_name"] == "":
+            result['code'] = '-1'
+            result['message'] = 'doris表名不能为空!'
+            return result
+
+        if (await check_tab_exists_pk(p_sync)) == 0:
+           result['code'] = '-1'
+           result['message'] = '表`{}`无主键!'.format(p_sync['doris_tab_name'])
+           return result
+
+
     result['code'] = '0'
     result['message'] = '验证通过'
     return result
@@ -885,8 +919,6 @@ def push_datax_sync_task(p_tag,p_api):
     url = 'http://{}/push_datax_remote_sync'.format(p_api)
     res = requests.post(url, data=data)
     jres = res.json()
-    print('res=',res)
-    print('jres=',jres)
     v = ''
     for c in jres['msg']:
         if c.count(p_tag) > 0:

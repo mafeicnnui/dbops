@@ -36,6 +36,10 @@
             height:30%;
       }
 
+      #example{
+         width: 100% !important;
+      }
+
     </style>
 </head>
 
@@ -695,11 +699,20 @@
                                 data          : dataSet.data,
                                 columns       : dataSet.column,
                                 scrollX       : true,
-                                scrollY       :$("#h_tab_height").val(),
-                                scrollCollapse: true,
+                                scrollY       : $("#h_tab_height").val(),
+                                //scrollCollapse: true,
                                 paging        : false,
+                                ordering      : false,
+                                autoWidth     : true,
                                 "language"    : get_languages()
-                            });
+                             });
+
+                              if (dataSet.msg!='' ){
+                                    $('#query_time').css('color','red')
+                                    $('#query_time').text('查询用时:'+dataSet.msg+'秒')
+                             } else {
+                                     $('#query_time').text('');
+                             }
                        }
                     },
                  });
@@ -769,62 +782,29 @@
               })
 
               $("#query_btn").click(function() {
-                  $('#query_time').text('');
-                  var editor = ace.edit("ace-editor");
-                  v_sql=editor.session.getValue()
+                    $('#query_time').text('');
+                    var editor = ace.edit("ace-editor");
+                    v_sql=editor.session.getValue()
 
-                  if($('#db_source').val()=='') {
-                      showtips('info','请选择数据源!');
-                      return false;
-                  }
-                  if(v_sql=='') {
+                    if($('#db_source').val()=='') {
+                       showtips('info','请选择数据源!');
+                       return false;
+                    }
+
+                    if(v_sql=='') {
                       showtips('info','请选中查询语句!');
                       return false;
-                  }
+                    }
 
-                 $.ajax({
-                    url     : "/sql/_query",
-                    type    : "post",
-                    datatype: "json",
-                    data: {
-                        dbid  :  $('#db_source').val(),
-                        sql   :  v_sql,
-                        cur_db:  $('#curr_db').val()
-                    },
-                    success: function (dataSet) {
-                        console.log(dataSet);
-                        if (dataSet.status=="1") {
-                            showtips('error',dataSet.msg);
-                        } else {
+                    var editor = ace.edit("ace-editor");
+                    if (table!=undefined ){
+                        table.destroy();
+                        $('#example').empty();
+                    } else {
+                        $('#example').empty();
+                    }
+                    query_table(v_sql)
 
-                            if (table!=undefined ){
-                                 console.log("table is defined=",table);
-                                 table.destroy();
-                                 $('#example').empty();
-                            } else {
-                                 $('#example').empty();
-                            }
-                            table=$('#example').DataTable( {
-                                    "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                    destroy       : true,
-                                    async         : true,
-                                    data          : dataSet.data,
-                                    columns       : dataSet.column,
-                                    scrollX       : false,
-                                    scrollY       : $("#h_tab_height").val(),
-                                    scrollCollapse: true,
-                                    paging        : false,
-                                    "language"    : get_languages()
-                            });
-                            if (dataSet.msg!='' ){
-                                $('#query_time').css('color','red')
-                                $('#query_time').text('查询用时:'+dataSet.msg+'秒')
-                            } else {
-                                 $('#query_time').text('');
-                            }
-                       }
-                     }
-                 });
               });
 
               $('.modal').on('show.bs.modal', centerModals);

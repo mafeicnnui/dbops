@@ -56,10 +56,10 @@
                             <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
                         </div>
                         <div class="col-md-10">
-                            <select class="form-control select" id="sync_server" >
-                                <option value='' selected = "selected">......</option>
+                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_server">
+                                <option value='' selected = "selected">...</option>
                                 {% for var in sync_server %}
-                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                  <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                                 {% end %}
                             </select>
                        </div>
@@ -73,10 +73,10 @@
                             <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源数据库实例</label>
                         </div>
                        <div class="col-md-10">
-                            <select class="form-control select" id="sour_db_server" >
-                                <option value='' selected = "selected">......</option>
+                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_server">
+                                <option value='' selected = "selected">...</option>
                                 {% for var in db_server %}
-                                  <option value={{var[0]}} >{{var[1]}}</option>
+                                  <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                                 {% end %}
                             </select>
                        </div>
@@ -89,9 +89,9 @@
                         <div>
                             <label class="col-md-2 control-label"><span id="s_sour_db_name">*</span>源数据库名称</label>
                         </div>
-                       <div class="col-md-10">
-                            <select class="form-control select" id="sour_db_name" >
-                                <option value='' selected = "selected">......</option>
+                        <div class="col-md-10">
+                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_name">
+                                <option value=''  selected = "selected">...</option>
                             </select>
                        </div>
                    </div>
@@ -103,9 +103,9 @@
                         <div>
                             <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
                         </div>
-                       <div class="col-md-10">
-                            <select class="form-control select" id="sour_tab_name" >
-                                <option value='' selected = "selected">......</option>
+                        <div class="col-md-10">
+                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_tab_name">
+                                <option value=''  selected = "selected">...</option>
                             </select>
                        </div>
                    </div>
@@ -386,8 +386,10 @@
                         <label class="col-md-2 control-label"><span>*</span>表配置</label>
                     </div>
                     <div class="col-md-10">
-                         <div id='doris_tab_config' class="col-md-12">COMMENT "OLAP"
-DISTRIBUTED BY HASH(`id`) BUCKETS 3
+                         <div id='doris_tab_config' class="col-md-12">ENGINE=OLAP
+UNIQUE KEY($$PK_NAMES$$)
+COMMENT "OLAP"
+DISTRIBUTED BY HASH($$PK_NAMES$$) BUCKETS 3
 PROPERTIES (
 "replication_allocation" = "tag.location.default: 1",
 "in_memory" = "false",
@@ -711,8 +713,9 @@ PROPERTIES (
                          for(i=0;i<dataSet['message'].length;i++){
                               var val  = dataSet['message'][i];
                               var text = dataSet['message'][i];
-                              $("#sour_db_name").append("<option value='"+val+"'>"+text+"</option>");
+                              $("#sour_db_name").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                          }
+                         $("#sour_db_name").selectpicker('refresh')
                       }
                 });
             } else {
@@ -728,6 +731,8 @@ PROPERTIES (
             $('#hbase_table').val('');
 
             if ($('#sour_db_name').val()!=''){
+                console.log('dbid=',$('#sour_db_server').val())
+                console.log('db_name=',$('#sour_db_name').val())
                 $.ajax({
                       url: "/get_tables",
                       type: "post",
@@ -738,12 +743,16 @@ PROPERTIES (
                           db_name : $('#sour_db_name').val(),
                       },
                       success: function (dataSet) {
+                         console.log('sour_db_name changed!')
+                         console.log('dataSet=',dataSet)
                          $("#sour_tab_name").append("<option value=''>...</option>");
                          for(i=0;i<dataSet['message'].length;i++){
                               var val  = dataSet['message'][i];
                               var text = dataSet['message'][i];
-                              $("#sour_tab_name").append("<option value='"+val+"'>"+text+"</option>");
+                              console.log(val,text)
+                              $("#sour_tab_name").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                          }
+                         $("#sour_tab_name").selectpicker('refresh')
                       }
                 });
             } else {
@@ -781,7 +790,9 @@ PROPERTIES (
                          }
 
                          var db_prefix=$('#sour_db_name').val().split('_')[1]
-                         $('#hbase_table').val('hopsonone:source_'+db_prefix+'_'+$('#sour_tab_name').val());
+                         if ($('#sync_data_type').val() == '7') {
+                             $('#hbase_table').val('hopsonone:source_'+db_prefix+'_'+$('#sour_tab_name').val());
+                         }
                          $('#sync_tag').val('datax_'+$('#sour_db_name').val()+'.'+$('#sour_tab_name').val()+'_v1')
                          $('#task_desc').val('dataX同步[source_'+db_prefix+'_'+$('#sour_tab_name').val()+'_v1]')
                          $('#ion-arrow-down').attr('disabled',false);
@@ -813,21 +824,23 @@ PROPERTIES (
                 });
 
                 //更新hbase行键
-                $.ajax({
-                      url: "/get_keys",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid     : $('#sour_db_server').val(),
-                          db_name  : $('#sour_db_name').val(),
-                          tab_name : $('#sour_tab_name').val()
-                      },
-                      success: function (dataSet) {
-                         $("#hbase_rowkey").val(dataSet['message'])
-                         $('#hbase_rowkey').attr("readonly","readonly");
-                      }
-                });
+                if ($('#sync_data_type').val() == '7') {
+                     $.ajax({
+                          url: "/get_keys",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                              dbid     : $('#sour_db_server').val(),
+                              db_name  : $('#sour_db_name').val(),
+                              tab_name : $('#sour_tab_name').val()
+                          },
+                          success: function (dataSet) {
+                             $("#hbase_rowkey").val(dataSet['message'])
+                             $('#hbase_rowkey').attr("readonly","readonly");
+                          }
+                    });
+                }
 
             } else {
                 $("#sour_tab_cols").empty();
@@ -1008,6 +1021,10 @@ PROPERTIES (
         $(document).ready(function() {
            set_selected();
            set_editor('doris_tab_config')
+           $("#sync_server").selectpicker('refresh')
+           $("#sour_db_server").selectpicker('refresh')
+           $("#sour_tab_name").selectpicker('refresh')
+
         });
    </script>
 </body>
