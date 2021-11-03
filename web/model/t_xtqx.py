@@ -9,7 +9,7 @@ import traceback
 from web.utils.common      import current_rq,get_connection_ds_sqlserver
 from web.model.t_user      import get_user_by_loginame,get_user_by_userid,get_user_by_userid_sync
 from web.model.t_ds        import get_ds_by_dsid
-from web.model.t_sql       import get_mysql_proxy_result_dict,get_sqlserver_proxy_result_dict
+from web.model.t_sql import get_mysql_proxy_result_dict, get_sqlserver_proxy_result_dict, get_mysql_proxy_result
 from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync import  sync_processer
 
@@ -348,76 +348,91 @@ async def get_tab_ddl_by_tname(dbid,tab,cur_db):
         return res
 
 async def get_db_name(dbid):
+    res = {}
+    pds = await get_ds_by_dsid(dbid)
+    print('get_db_name=', pds)
+    sql = """select schema_name FROM information_schema.`SCHEMATA` 
+                where schema_name NOT IN('information_schema','mysql','performance_schema') order by schema_name"""
     try:
-        res = {}
-        pds = await get_ds_by_dsid(dbid)
-        print('pds=',pds)
-        sql = """SELECT schema_name FROM information_schema.`SCHEMATA` 
-                       WHERE schema_name NOT IN('information_schema','mysql','performance_schema')
-                     ORDER BY schema_name"""
         res['code'] = '0'
         res['message'] = await async_processer.query_list_by_ds(pds,sql)
-        print('xxx=',res['message'] )
         return res
     except:
-        traceback.print_exc()
-        res = {}
-        res['code'] = '-1'
-        res['message'] = '获取数据库名失败！'
-        return res
+        try:
+            print('from agent server:{} get db name!'.format(pds['proxy_server']))
+            res = get_mysql_proxy_result(pds, sql, 'information_schema')
+            res['code'] = '0'
+            res['message'] = res['data']
+            return res
+        except:
+            traceback.print_exc()
+            return {'code':-1,'message':['获取数据库名失败!']}
 
 async def get_tab_name(dbid,db_name):
+    res = {}
+    pds = await get_ds_by_dsid(dbid)
+    sql = """SELECT table_name FROM information_schema.tables  
+               WHERE table_schema='{0}' ORDER BY table_name""".format(db_name)
     try:
-        res = {}
-        pds = await get_ds_by_dsid(dbid)
-        sql = """SELECT table_name FROM information_schema.tables  WHERE table_schema='{0}' ORDER BY table_name""".format(db_name)
-        res['code'] = '0'
-        res['message'] = await async_processer.query_list_by_ds(pds,sql)
-        return res
-    except :
-        traceback.print_exc()
-        res = {}
-        res['code'] = '-1'
-        res['message'] = '获取数据库名失败！'
-        return res
-
-async def get_tab_columns(dbid,db_name,tab_name):
-    try:
-        res = {}
-        pds = await get_ds_by_dsid(dbid)
-        sql = """SELECT column_name,column_comment 
-                     FROM information_schema.columns
-                    WHERE table_schema='{0}'  AND table_name='{1}'
-                      ORDER BY ordinal_position""".format(db_name,tab_name)
         res['code'] = '0'
         res['message'] = await async_processer.query_list_by_ds(pds,sql)
         return res
     except:
-        traceback.print_exc()
-        res = {}
-        res['code'] = '-1'
-        res['message'] = '获取数据库列名失败！'
+        try:
+            print('from agent server:{} get table name!'.format(pds['proxy_server']))
+            res = get_mysql_proxy_result(pds, sql, 'information_schema')
+            res['code'] = '0'
+            res['message'] = res['data']
+            return res
+        except:
+            traceback.print_exc()
+            return {'code': -1, 'message': ['获取表名失败!']}
+
+async def get_tab_columns(dbid,db_name,tab_name):
+    res = {}
+    pds = await get_ds_by_dsid(dbid)
+    sql = """SELECT column_name,column_comment 
+                         FROM information_schema.columns
+                        WHERE table_schema='{0}'  AND table_name='{1}'
+                          ORDER BY ordinal_position""".format(db_name, tab_name)
+    try:
+        res['code'] = '0'
+        res['message'] = await async_processer.query_list_by_ds(pds,sql)
         return res
+    except:
+        try:
+            print('from agent server:{} get column name!'.format(pds['proxy_server']))
+            res = get_mysql_proxy_result(pds, sql, 'information_schema')
+            res['code'] = '0'
+            res['message'] = res['data']
+            return res
+        except:
+            traceback.print_exc()
+            return {'code': -1, 'message': ['获取数据库列名失败!']}
 
 async def get_tab_keys(dbid,db_name,tab_name):
+    res = {}
+    pds = await get_ds_by_dsid(dbid)
+    sql = """SELECT GROUP_CONCAT(column_name)
+                        FROM information_schema.columns
+                       WHERE table_schema='{0}'  AND table_name='{1}'
+                          AND column_key='PRI'
+                         ORDER BY ordinal_position""".format(db_name, tab_name)
     try:
-        res = {}
-        pds = await get_ds_by_dsid(dbid)
-        sql = """SELECT GROUP_CONCAT(column_name)
-                     FROM information_schema.columns
-                    WHERE table_schema='{0}'  AND table_name='{1}'
-                       AND column_key='PRI'
-                      ORDER BY ordinal_position""".format(db_name,tab_name)
         rs = await async_processer.query_one_by_ds(pds,sql)
         res['code'] = '0'
         res['message'] = rs[0]
         return res
     except:
-        traceback.print_exc()
-        res = {}
-        res['code'] = '-1'
-        res['message'] = '获取数据库列名失败！'
-        return res
+        try:
+            print('from agent server:{} get tab key!'.format(pds['proxy_server']))
+            res = get_mysql_proxy_result(pds, sql, 'information_schema')
+            res['code'] = '0'
+            res['message'] = res['data']
+            return res
+        except:
+            traceback.print_exc()
+            return {'code': -1, 'message': ['获取数据库列名失败!']}
 
 async def query_ds(dsid):
     try:
@@ -427,23 +442,27 @@ async def query_ds(dsid):
        return {"code":"-1","message":"获取数据源信息失败!"}
 
 async def get_tab_incr_col(dbid,db_name,tab_name):
-    try:
-        result = {}
-        p_ds   = await get_ds_by_dsid(dbid)
-        sql    = """
-                    SELECT column_name,column_comment 
-                     FROM information_schema.columns
+    res = {}
+    pds = await get_ds_by_dsid(dbid)
+    sql = """SELECT column_name,column_comment 
+                FROM information_schema.columns
                     WHERE table_schema='{0}'  AND table_name='{1}'
-                       AND data_type IN('timestamp','datetime','date')
-                      ORDER BY ordinal_position
-                 """.format(db_name,tab_name)
-        result['code'] = '0'
-        result['message'] = await async_processer.query_list_by_ds(p_ds,sql)
-    except Exception as e:
-        traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '获取数据库列名失败!'
-    return result
+                        AND data_type IN('timestamp','datetime','date')
+                            ORDER BY ordinal_position""".format(db_name, tab_name)
+    try:
+        res['code'] = '0'
+        res['message'] = await async_processer.query_list_by_ds(pds,sql)
+        return res
+    except:
+        try:
+            print('from agent server:{} get tab incr column!'.format(pds['proxy_server']))
+            res = get_mysql_proxy_result(pds, sql, 'information_schema')
+            res['code'] = '0'
+            res['message'] = res['data']
+            return res
+        except:
+            traceback.print_exc()
+            return {'code': -1, 'message': ['获取数据库增量列名失败!']}
 
 async def get_tab_structure(dbid,db_name,tab_name):
     p_ds   = await get_ds_by_dsid(dbid)

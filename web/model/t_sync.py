@@ -241,6 +241,53 @@ async def save_sync(p_backup):
         result['message'] = '保存失败！'
         return result
 
+async def save_sync_real(p_backup):
+    val = await check_sync_real(p_backup,'add')
+    if val['code']=='-1':
+        return val
+    try:
+        result               = {}
+        sync_server          = p_backup['sync_server']
+        sour_db_server       = p_backup['sour_db_server']
+        desc_db_server       = p_backup['desc_db_server']
+        sync_tag             = p_backup['sync_tag']
+        sync_ywlx            = p_backup['sync_ywlx']
+        sync_type            = p_backup['sync_data_type']
+        script_base          = p_backup['script_base']
+        script_name          = p_backup['script_name']
+        run_time             = p_backup['run_time']
+        task_desc            = p_backup['task_desc']
+        python3_home         = p_backup['python3_home']
+        sync_tables          = p_backup['sync_tables']
+        sync_schema_dest     = p_backup['sync_schema_dest']
+        sync_batch_size      = p_backup['sync_batch_size']
+        sync_batch_size_incr = p_backup['sync_batch_size_incr']
+        api_server           = p_backup['api_server']
+        status               = p_backup['status']
+
+        sql = """insert into t_db_sync_config(
+                      sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
+                      comments,run_time,sync_table,sync_schema_dest,batch_size,batch_size_incr,
+                      script_path,script_file,python3_home,api_server,status)
+                  values('{0}','{1}','{2}','{3}','{4}','{5}',
+                         '{6}','{7}','{8}','{9}','{10}','{11}',
+                         '{12}','{13}','{14}','{15}','{16}')
+               """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
+                          task_desc, run_time, sync_tables,sync_schema_dest,sync_batch_size, sync_batch_size_incr,
+                          script_base, script_name, python3_home, api_server, status)
+        await async_processer.exec_sql(sql)
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except:
+        result = {}
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
+
+
+
 async def check_sync_tab(p_sync_id):
     st = "select count(0) from t_db_sync_tab_config where id={}".format(p_sync_id)
     rs = await async_processer.query_one(st)
@@ -533,6 +580,104 @@ async def check_sync(p_server,p_flag):
     if p_server["sync_time_type"] == "":
         result['code'] = '-1'
         result['message'] = '同步时间类型不能为空！'
+        return result
+
+    if p_server["api_server"] == "":
+        result['code'] = '-1'
+        result['message'] = 'API服务器不能为空！'
+        return result
+
+    if p_server["status"] == "":
+        result['code'] = '-1'
+        result['message'] = '任务状态不能为空！'
+        return result
+
+    if p_flag == 'add':
+        v = await  check_sync_repeat(p_server)
+        if v['code']:
+            result['code'] = '-1'
+            result['message'] = v['message']
+            return result
+    result['code']    = '0'
+    result['message'] = '验证通过'
+    return result
+
+
+async def check_sync_real(p_server,p_flag):
+    result = {}
+    if p_server["sync_server"]=="":
+        result['code']    = '-1'
+        result['message'] = '同步服务器不能为空！'
+        return result
+
+    if p_server["sour_db_server"]=="":
+        result['code']='-1'
+        result['message']='源端数据库不能为空！'
+        return result
+
+    if p_server["desc_db_server"]=="":
+        result['code']='-1'
+        result['message']='目标数据库不能为空！'
+        return result
+
+    if p_server["sync_tag"]=="":
+        result['code']='-1'
+        result['message']='同步标识号不能为空！'
+        return result
+
+    if p_server["sync_ywlx"] == "":
+        result['code'] = '-1'
+        result['message'] = '同步业务类型不能为空！'
+        return result
+
+    if p_server["sync_data_type"] == "":
+        result['code'] = '-1'
+        result['message'] = '同步数据方向不能为空！'
+        return result
+
+    if p_server["script_base"] == "":
+        result['code'] = '-1'
+        result['message'] = '脚本主目录不能为空！'
+        return result
+
+    if p_server["script_name"] == "":
+        result['code'] = '-1'
+        result['message'] = '备份脚本名不能为空！'
+        return result
+
+    if p_server["run_time"] == "":
+        result['code'] = '-1'
+        result['message'] = '检测时间不能为空！'
+        return result
+
+    if p_server["task_desc"] == "":
+        result['code'] = '-1'
+        result['message'] = '任务描述不能为空！'
+        return result
+
+    if p_server["python3_home"] == "":
+        result['code'] = '-1'
+        result['message'] = 'PYTHON3主目录不能为空！'
+        return result
+
+    if p_server["sync_tables"] == "":
+        result['code'] = '-1'
+        result['message'] = '同步表列表不能为空！'
+        return result
+
+    if p_server["sync_schema_dest"] == "":
+        result['code'] = '-1'
+        result['message'] = '目标数据库名不能为空！'
+        return result
+
+    if p_server["sync_batch_size"] == "":
+        result['code'] = '-1'
+        result['message'] = '全量批大小不能为空！'
+        return result
+
+    if p_server["sync_batch_size_incr"] == "":
+        result['code'] = '-1'
+        result['message'] = '增量批大小不能为空！'
         return result
 
     if p_server["api_server"] == "":

@@ -10,8 +10,8 @@ from   web.model.t_sync import query_sync,query_sync_tab,query_sync_tab_cfg,save
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_sync import get_mssql_tables_list,get_mysql_tables_list,get_mssql_columns_list,get_mysql_columns_list,get_mssql_incr_columns_list,get_mysql_incr_columns_list
-from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
-from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx,query_db_order_num
+from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_mysql_server,get_datax_sync_db_server_doris,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
+from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx,query_db_order_num,save_sync_real
 from   web.utils.common import current_rq2,get_day_nday_ago,now,DateEncoder
 from   web.utils import base_handler
 
@@ -588,9 +588,35 @@ class sync_real(base_handler.TokenHandler):
     async def get(self):
         self.render("./sync/sync_real.html",
                     sync_server       = await get_sync_server(),
+                    db_mysql_server   = await get_sync_db_mysql_server(),
+                    db_server_doris   = await get_datax_sync_db_server_doris(),
                     db_server         = await get_sync_db_server(),
                     dm_db_type        = await get_dmm_from_dm('02'),
                     dm_sync_ywlx      = await get_dmm_from_dm('08'),
-                    dm_sync_data_type = await get_dmm_from_dm2('09','8'),
+                    dm_sync_data_type = await get_dmm_from_dm2('09','7,8'),
                     dm_sync_time_type = await get_dmm_from_dm('10')
                     )
+
+
+class sync_real_save(base_handler.TokenHandler):
+    async def post(self):
+        d_sync = {}
+        d_sync['sync_server']          = self.get_argument("sync_server")
+        d_sync['sour_db_server']       = self.get_argument("sour_db_server")
+        d_sync['desc_db_server']       = self.get_argument("desc_db_server")
+        d_sync['sync_tag']             = self.get_argument("sync_tag")
+        d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
+        d_sync['sync_data_type']       = self.get_argument("sync_data_type")
+        d_sync['script_base']          = self.get_argument("script_base")
+        d_sync['script_name']          = self.get_argument("script_name")
+        d_sync['run_time']             = self.get_argument("run_time")
+        d_sync['task_desc']            = self.get_argument("task_desc")
+        d_sync['python3_home']         = self.get_argument("python3_home")
+        d_sync['sync_tables']          = self.get_argument("sync_tables")
+        d_sync['sync_schema_dest']     = self.get_argument("sync_schema_dest")
+        d_sync['sync_batch_size']      = self.get_argument("sync_batch_size")
+        d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
+        d_sync['api_server']           = self.get_argument("api_server")
+        d_sync['status']               = self.get_argument("status")
+        result = await save_sync_real(d_sync)
+        self.write({"code": result['code'], "message": result['message']})

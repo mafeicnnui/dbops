@@ -360,8 +360,14 @@
                         </div>
                        <div class="col-md-10">
                             <select class="form-control select" id="doris_db_name" >
-                                <option value=''  >......</option>
-                                <option value='{{doris_db_name}}' selected = "selected">{{doris_db_name}}</option>
+                                {% for var in dm_doris_db_names %}
+                                   {%  if var[0]==doris_db_name %}
+                                      <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                   {% else %}
+                                       <option value={{var[0]}}>{{var[1]}}</option>
+                                   {% end %}
+                                {% end %}
+                                <option value=''>......</option>
                             </select>
                        </div>
                    </div>
@@ -915,7 +921,7 @@
                           dbid : $('#db_doris').val(),
                       },
                       success: function (dataSet) {
-                         console.log('db_doris=',dataSet)
+                         console.log('doris_db_name=',dataSet)
                          $("#doris_db_name").empty();
                          $("#doris_tab_name").empty();
                          $("#doris_db_name").append("<option value=''>...</option>");

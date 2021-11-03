@@ -8,6 +8,8 @@
 import requests
 import traceback
 import os,json,zipfile
+
+from web.model.t_sql import get_mysql_proxy_result
 from web.utils.common    import aes_decrypt
 from web.model.t_ds       import get_ds_by_dsid
 from web.utils.mysql_async import async_processer
@@ -1002,3 +1004,20 @@ def update_datax_sync_status():
         result['code'] = '-1'
         result['message'] = '执行失败！'
         return result
+
+
+async def get_datax_sync_db_names_doris(dbid):
+    pds = await get_ds_by_dsid(dbid)
+    sql = """select schema_name,schema_name FROM information_schema.`SCHEMATA` 
+                where schema_name NOT IN('information_schema','mysql','performance_schema') order by schema_name"""
+    try:
+        res = await async_processer.query_list_by_ds(pds,sql)
+        return res
+    except:
+        try:
+            print('from agent server:{} get db name!'.format(pds['proxy_server']))
+            res = get_mysql_proxy_result(pds, sql, 'information_schema')
+            return res['data']
+        except:
+            traceback.print_exc()
+            return {'message':['获取数据库名失败!']}

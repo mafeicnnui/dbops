@@ -52,7 +52,7 @@
                         <div class="col-md-10">
                             <select class="form-control select" id="sour_db_server" >
                                 <option value='' selected = "selected">......</option>
-                                {% for var in db_server %}
+                                {% for var in db_mysql_server %}
                                   <option value={{var[0]}} >{{var[1]}}</option>
                                 {% end %}
                             </select>
@@ -69,7 +69,7 @@
                        <div class="col-md-10">
                             <select class="form-control select" id="desc_db_server" >
                                 <option value='' selected = "selected">......</option>
-                                {% for var in db_server %}
+                                {% for var in db_server_doris %}
                                   <option value={{var[0]}} >{{var[1]}}</option>
                                 {% end %}
                             </select>
@@ -154,7 +154,7 @@
                             <label class="col-md-2 control-label"><span id="s_script_name">*</span>同步脚本名</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="script_name"  type="text" class="form-control" placeholder="请输入同步脚本名" value='mysql2ck_syncer.py'>
+                            <input id="script_name"  type="text" class="form-control" placeholder="请输入同步脚本名" value='mysql2doris_syncer.py'>
                         </div>
                    </div>
                 </div>
@@ -171,7 +171,6 @@
                    </div>
                 </div>
              </div>
-
              <div class="row">
                 <div class="col-md-6">
                    <div class="form-group">
@@ -183,39 +182,15 @@
                         </div>
                    </div>
                 </div>
-             </div>
-             <div class="row">
-                    <div class="col-md-6">
-                       <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label"><span id="s_sync_schema">*</span>源数据库名</label>
-                            </div>
-                            <div class="col-md-10">
-                                <input id="sync_schema"  type="text" class="form-control" placeholder="请输入源数据库名">
-                            </div>
-                       </div>
-                    </div>
               </div>
               <div class="row">
-                    <div class="col-md-6">
-                       <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label">目标数据库名</label>
-                            </div>
-                            <div class="col-md-10">
-                                <input id="sync_schema_dest"  type="text" class="form-control" placeholder="请输入目标数据库名">
-                            </div>
-                       </div>
-                    </div>
-               </div>
-               <div class="row">
                     <div class="col-md-6">
                        <div class="form-group">
                             <div>
                                 <label class="col-md-2 control-label"><span id="s_sync_tables">*</span>同步表列表</label>
                             </div>
                             <div class="col-md-10">
-                                <input id="sync_tables"  type="text" class="form-control" readonly placeholder="请输入同步表">
+                                <input id="sync_tables"  type="text" class="form-control"  placeholder="请输入同步表">
                             </div>
                        </div>
                     </div>
@@ -226,6 +201,18 @@
                             </div>
                        </div>
                    </div>
+               </div>
+               <div class="row">
+                    <div class="col-md-6">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label">目标数据库名</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input id="sync_schema_dest"  type="text" class="form-control" placeholder="请输入目标数据库名">
+                            </div>
+                       </div>
+                    </div>
                </div>
                <div class="row">
                     <div class="col-md-6">
@@ -917,7 +904,7 @@
            $("#div-add-panal").css("height",$("#div-tab-panal").height());
            $("#add").click(function () {
               $.ajax({
-                url: "/sync/add/save",
+                url: "/sync/real/add/save",
                 type: "post",
                 datatype: "json",
                 data: {
@@ -932,16 +919,10 @@
                     run_time             : $('#run_time').val(),
                     task_desc            : $('#task_desc').val(),
                     python3_home         : $('#python3_home').val(),
-                    sync_schema          : $('#sync_schema').val(),
-                    sync_schema_dest     : $('#sync_schema_dest').val(),
                     sync_tables          : $('#sync_tables').val(),
+                    sync_schema_dest     : $('#sync_schema_dest').val(),
                     sync_batch_size      : $('#sync_batch_size').val(),
                     sync_batch_size_incr : $('#sync_batch_size_incr').val(),
-                    sync_gap             : $('#sync_gap').val(),
-                    sync_col_name        : $('#sync_col_name').val(),
-                    sync_col_val         : $('#sync_col_val').val(),
-                    sync_time_type       : $('#sync_time_type').val(),
-                    sync_repair_day      : $('#sync_repair_day').val(),
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val()
                 },

@@ -9,9 +9,9 @@ import json
 from   web.model.t_sync_datax import query_datax_sync,save_datax_sync,query_datax_by_id,upd_datax_sync,del_datax_sync,query_datax_sync_log
 from   web.model.t_sync_datax import query_datax_sync_detail,query_datax_sync_dataxTemplete,downloads_datax_sync_dataxTemplete,get_datax_sync_tags_by_env
 from   web.model.t_sync_datax import push_datax_sync_task,pushall_datax_sync_task,run_datax_sync_task,stop_datax_sync_task,update_datax_sync_status
-from   web.model.t_sync_datax import query_datax_sync_log_analyze,query_datax_sync_log_detail,query_sync_log_analyze
+from   web.model.t_sync_datax import query_datax_sync_log_analyze,query_datax_sync_log_detail,query_sync_log_analyze,get_datax_sync_db_names_doris
 from   web.model.t_sync_datax import query_datax_sync_es_dataxTemplete,query_datax_sync_doris_dataxTemplete
-from   web.model.t_dmmx       import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_datax_sync_db_server,get_db_sync_tags
+from   web.model.t_dmmx       import get_dmm_from_dm, get_dmm_from_dm2, get_sync_server, get_datax_sync_db_server, get_db_sync_tags
 from   web.model.t_dmmx       import get_db_sync_tags_by_market_id,get_db_sync_ywlx_by_market_id,get_datax_sync_tags,get_datax_sync_db_server_doris
 from   web.utils.common       import current_rq2,get_day_nday_ago,now
 from web.utils                import base_handler
@@ -150,6 +150,7 @@ class syncedit_datax(base_handler.TokenHandler):
         sync_id   = self.get_argument("sync_id")
         d_sync    = await query_datax_by_id(sync_id)
         print('d_sync=',d_sync)
+        print('d_sync_dm=',await get_dmm_from_dm('02'))
         self.render("./datax/sync_datax_edit.html",
                     sync_id              = sync_id,
                     sync_server          = await get_sync_server(),
@@ -188,6 +189,7 @@ class syncedit_datax(base_handler.TokenHandler):
                     python3_home         = d_sync['python3_home'],
                     db_server_doris      = await get_datax_sync_db_server_doris(),
                     db_doris             = d_sync['doris_id'],
+                    dm_doris_db_names    = await get_datax_sync_db_names_doris(d_sync['doris_id']),
                     doris_db_name        = d_sync['doris_db_name'],
                     doris_tab_name       = d_sync['doris_tab_name'],
                     doris_batch_size     = d_sync['doris_batch_size'],
@@ -278,6 +280,7 @@ class syncclone_datax(base_handler.TokenHandler):
                     python3_home         = d_sync['python3_home'],
                     db_server_doris      = await get_datax_sync_db_server_doris(),
                     db_doris             = d_sync['doris_id'],
+                    dm_doris_db_names    = await get_datax_sync_db_names_doris(d_sync['doris_id']),
                     doris_db_name        = d_sync['doris_db_name'],
                     doris_tab_name       = d_sync['doris_tab_name'],
                     doris_batch_size     = d_sync['doris_batch_size'],

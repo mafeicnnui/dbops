@@ -37,7 +37,7 @@
 <body>
    <p></p>
     <form class="form-horizontal" role="form">
-          <div class="row">
+           <div class="row">
                <div class="col-md-6">
                    <div class="form-group">
                         <div>
@@ -98,80 +98,6 @@
                </div>
            </div>
            <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
-                        </div>
-                        <div class="col-md-10">
-                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_tab_name">
-                                <option value=''  selected = "selected">...</option>
-                            </select>
-                       </div>
-                   </div>
-               </div>
-               <div class="col-md-1">
-                   <div class="form-group">
-                        <div>
-                            <button type="button" id='mdi-view-list' class="btn btn-xs waves-effect waves-light" disabled  onclick=showTabDetail()><i class="mdi mdi-view-list"></i></button>
-                        </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-                   <div class="col-md-6">
-                       <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label">源数据库列名</label>
-                            </div>
-                            <div class="col-md-10">
-                                <select multiple="multiple" class="form-control" id="sour_tab_cols" >
-                                </select>
-                            </div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group m-b-0">
-                    <div class="col-sm-offset-6 col-sm-9">
-                        <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"  disabled onclick=selectAll()><i class="ion-arrow-down-a"></i></button>
-                        <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"  disabled onclick=cancelAll()><i class="ion-arrow-up-a"></i></button>
-                    </div>
-               </div>
-              </div>
-           </div>
-
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sele_sour_tab_cols">*</span>选择同步列名</label>
-                    </div>
-                     <div class="col-md-10">
-                        <select multiple="multiple" class="form-control" id="sele_sour_tab_cols" >
-                        </select>
-                     </div>
-               </div>
-             </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label">增量同步列名</label>
-                        </div>
-                       <div class="col-md-10">
-                            <select class="form-control select" id="sour_incr_col" >
-                                <option value='' selected = "selected">......</option>
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
              <div class="col-md-6">
                <div class="form-group">
                     <div>
@@ -204,6 +130,77 @@
                    </div>
                </div>
               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_tab_name">
+                                <option value=''  selected = "selected">...</option>
+                            </select>
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-1">
+                   <div class="form-group">
+                        <div>
+                            <button type="button" id='mdi-view-list' class="btn btn-xs waves-effect waves-light" disabled  onclick=showTabDetail()><i class="mdi mdi-view-list"></i></button>
+                        </div>
+                   </div>
+               </div>
+           </div>
+           <div class="row">
+                   <div class="col-md-6">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label">源数据库列名</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select multiple="multiple" class="form-control" id="sour_tab_cols" >
+                                </select>
+                            </div>
+                       </div>
+                   </div>
+           </div>
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group m-b-0">
+                    <div class="col-sm-offset-6 col-sm-9">
+                        <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"  disabled onclick=selectAll()><i class="ion-arrow-down-a"></i></button>
+                        <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"  disabled onclick=cancelAll()><i class="ion-arrow-up-a"></i></button>
+                    </div>
+               </div>
+              </div>
+           </div>
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sele_sour_tab_cols">*</span>选择同步列名</label>
+                    </div>
+                     <div class="col-md-10">
+                        <select multiple="multiple" class="form-control" id="sele_sour_tab_cols" >
+                        </select>
+                     </div>
+               </div>
+             </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label">增量同步列名</label>
+                        </div>
+                       <div class="col-md-10">
+                            <select class="form-control select" id="sour_incr_col" >
+                                <option value='' selected = "selected">......</option>
+                            </select>
+                       </div>
+                   </div>
+               </div>
            </div>
            <div class="row">
              <div class="col-md-6">
@@ -239,7 +236,6 @@
                </div>
               </div>
            </div>
-
            <div class="row">
              <div class="col-md-6">
                <div class="form-group">
@@ -516,7 +512,7 @@ PROPERTIES (
               </div>
            </div>
            <br>
-          <div class="row">
+           <div class="row">
              <div class="col-md-6">
                <div class="form-group m-b-0">
                     <div class="col-sm-offset-6 col-sm-9">
@@ -765,8 +761,6 @@ PROPERTIES (
             $('#hbase_table').val('');
             if ($('#sour_tab_name').val()!=''){
 
-                $('#doris_tab_name').val($('#sour_tab_name').val())
-
                 //更新源数据库列名
                 $.ajax({
                       url: "/get_columns",
@@ -790,11 +784,23 @@ PROPERTIES (
                          }
 
                          var db_prefix=$('#sour_db_name').val().split('_')[1]
-                         if ($('#sync_data_type').val() == '7') {
-                             $('#hbase_table').val('hopsonone:source_'+db_prefix+'_'+$('#sour_tab_name').val());
+                         if ($('#sync_data_type').val() == '5'){
+                             $('#hbase_table').val('hopsonone:doris'+db_prefix+'_'+$('#sour_tab_name').val());
+                         } else if ( $('#sync_data_type').val() =='7') {
+                             $('#doris_tab_name').val($('#sour_tab_name').val())
                          }
+
                          $('#sync_tag').val('datax_'+$('#sour_db_name').val()+'.'+$('#sour_tab_name').val()+'_v1')
-                         $('#task_desc').val('dataX同步[source_'+db_prefix+'_'+$('#sour_tab_name').val()+'_v1]')
+
+                         if ($('#sync_data_type').val() == '5') {
+                             $('#task_desc').val('dataX同步[source_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         } else if ($('#sync_data_type').val() == '6') {
+                             $('#task_desc').val('dataX同步[es_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         } else if ($('#sync_data_type').val() == '7') {
+                             $('#task_desc').val('dataX同步[doris_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         } else if ($('#sync_data_type').val() == '8') {
+                             $('#task_desc').val('dataX同步[ck_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         }
                          $('#ion-arrow-down').attr('disabled',false);
                          $('#ion-arrow-up').attr('disabled',false);
                          $('#mdi-view-list').attr('disabled',false);
@@ -824,7 +830,7 @@ PROPERTIES (
                 });
 
                 //更新hbase行键
-                if ($('#sync_data_type').val() == '7') {
+                if ($('#sync_data_type').val() == '5') {
                      $.ajax({
                           url: "/get_keys",
                           type: "post",

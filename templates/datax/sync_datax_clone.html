@@ -360,8 +360,14 @@
                         </div>
                        <div class="col-md-10">
                             <select class="form-control select" id="doris_db_name" >
-                                <option value=''  >......</option>
-                                <option value='{{doris_db_name}}' selected = "selected">{{doris_db_name}}</option>
+                                {% for var in dm_doris_db_names %}
+                                   {%  if var[0]==doris_db_name %}
+                                      <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                   {% else %}
+                                       <option value={{var[0]}}>{{var[1]}}</option>
+                                   {% end %}
+                                {% end %}
+                                <option value=''>......</option>
                             </select>
                        </div>
                    </div>
@@ -458,7 +464,7 @@
                         <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
                     </div>
                     <div class="col-md-10">
-                        <input id="task_desc"  type="text"  readonly class="form-control"  value="{{comments}}">
+                        <input id="task_desc"  type="text"  class="form-control"  value="{{comments}}">
                     </div>
                </div>
               </div>
@@ -808,8 +814,6 @@
                                    $('#hbase_table').val('hopsonone:source_'+db_prefix+'_'+$('#sour_tab_name').val());
                               } else if ( $('#sync_data_type').val() =='7') {
                                    $('#doris_tab_name').val($('#sour_tab_name').val())
-                              } else {
-
                               }
                          }
                          $('#ion-arrow-down').attr('disabled',false);
@@ -840,20 +844,23 @@
                 });
 
                 //更新hbase行键
-                $.ajax({
-                      url: "/get_keys",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          dbid     : $('#sour_db_server').val(),
-                          db_name  : $('#sour_db_name').val(),
-                          tab_name : $('#sour_tab_name').val()
-                      },
-                      success: function (dataSet) {
-                         $("#hbase_rowkey").val(dataSet['message'])
-                         $('#hbase_rowkey').attr("readonly","readonly");
-                      }
-                });
+                if ($('#sync_data_type').val() == '5') {
+                     $.ajax({
+                          url: "/get_keys",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                              dbid     : $('#sour_db_server').val(),
+                              db_name  : $('#sour_db_name').val(),
+                              tab_name : $('#sour_tab_name').val()
+                          },
+                          success: function (dataSet) {
+                             $("#hbase_rowkey").val(dataSet['message'])
+                             $('#hbase_rowkey').attr("readonly","readonly");
+                          }
+                    });
+                }
 
             } else {
                 $("#sour_tab_cols").empty();
