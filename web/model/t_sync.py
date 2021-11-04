@@ -259,22 +259,28 @@ async def save_sync_real(p_backup):
         task_desc            = p_backup['task_desc']
         python3_home         = p_backup['python3_home']
         sync_tables          = p_backup['sync_tables']
-        sync_schema_dest     = p_backup['sync_schema_dest']
         sync_batch_size      = p_backup['sync_batch_size']
         sync_batch_size_incr = p_backup['sync_batch_size_incr']
+        sync_gap             = p_backup['sync_gap']
+        batch_timeout        = p_backup['batch_timeout']
+        batch_row_event      = p_backup['batch_row_event']
+        apply_timeout        = p_backup['apply_timeout']
         api_server           = p_backup['api_server']
         status               = p_backup['status']
 
         sql = """insert into t_db_sync_config(
-                      sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
-                      comments,run_time,sync_table,sync_schema_dest,batch_size,batch_size_incr,
-                      script_path,script_file,python3_home,api_server,status)
+                          sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
+                          comments,run_time,sync_table,batch_size,batch_size_incr,script_path,
+                          script_file,python3_home,api_server,status,
+                          sync_gap,batch_timeout,batch_row_event,apply_timeout)
                   values('{0}','{1}','{2}','{3}','{4}','{5}',
                          '{6}','{7}','{8}','{9}','{10}','{11}',
-                         '{12}','{13}','{14}','{15}','{16}')
+                         '{12}','{13}','{14}','{15}',
+                         '{16}','{17}','{18}','{19}')
                """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
-                          task_desc, run_time, sync_tables,sync_schema_dest,sync_batch_size, sync_batch_size_incr,
-                          script_base, script_name, python3_home, api_server, status)
+                          task_desc, run_time, sync_tables,sync_batch_size, sync_batch_size_incr,script_base,
+                          script_name, python3_home, api_server, status,
+                          sync_gap,batch_timeout,batch_row_event,apply_timeout)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='保存成功！'

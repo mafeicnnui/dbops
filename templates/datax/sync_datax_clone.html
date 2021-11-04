@@ -401,7 +401,7 @@
              <div class="col-md-6">
                <div class="form-group">
                     <div>
-                        <label class="col-md-2 control-label"><span>*</span>JVM配置</label>
+                        <label class="col-md-2 control-label"><span>*</span>dataX JVM配置/label>
                     </div>
                     <div class="col-md-10">
                         <input id="doris_jvm"  type="text" class="form-control" value='{{doris_jvm}}' >
@@ -413,11 +413,31 @@
              <div class="col-md-6">
                <div class="form-group">
                     <div>
-                        <label class="col-md-2 control-label"><span>*</span>表配置</label>
+                        <label class="col-md-2 control-label"><span>*</span>doris表配置</label>
                     </div>
                     <div class="col-md-10">
                          <div id='doris_tab_config' class="col-md-12">{{doris_tab_config}}</div>
                     </div>
+               </div>
+              </div>
+           </div>
+           <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sync_doris_type">*</span>doris同步类型</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="doris_sync_type" >
+                            {% for var in dm_doris_sync_type %}
+                                {%  if var[0]==doris_sync_type %}
+                                   <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                {% else %}
+                                   <option value={{var[0]}} >{{var[1]}}</option>
+                                {% end %}
+                            {% end %}
+                        </select>
+                   </div>
                </div>
               </div>
            </div>
@@ -719,6 +739,7 @@
                     doris_batch_size     : $('#doris_batch_size').val(),
                     doris_jvm            : $('#doris_jvm').val(),
                     doris_tab_config     : editor.getValue(),
+                    doris_sync_type      : $('#doris_sync_type').val()
             },
             success: function (dataSet) {
                 if (dataSet.code==0) {

@@ -586,7 +586,7 @@ class get_mysql_incr_columns(base_handler.TokenHandler):
 
 class sync_real(base_handler.TokenHandler):
     async def get(self):
-        self.render("./sync/sync_real.html",
+        self.render("./sync/sync_add_real.html",
                     sync_server       = await get_sync_server(),
                     db_mysql_server   = await get_sync_db_mysql_server(),
                     db_server_doris   = await get_datax_sync_db_server_doris(),
@@ -613,9 +613,12 @@ class sync_real_save(base_handler.TokenHandler):
         d_sync['task_desc']            = self.get_argument("task_desc")
         d_sync['python3_home']         = self.get_argument("python3_home")
         d_sync['sync_tables']          = self.get_argument("sync_tables")
-        d_sync['sync_schema_dest']     = self.get_argument("sync_schema_dest")
         d_sync['sync_batch_size']      = self.get_argument("sync_batch_size")
         d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
+        d_sync['sync_gap']             = self.get_argument("sync_gap")
+        d_sync['batch_timeout']        = self.get_argument("batch_timeout")
+        d_sync['batch_row_event']      = self.get_argument("batch_row_event")
+        d_sync['apply_timeout']        = self.get_argument("apply_timeout")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
         result = await save_sync_real(d_sync)

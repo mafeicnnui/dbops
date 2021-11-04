@@ -182,7 +182,8 @@ async def query_datax_by_id(sync_id):
                  a.doris_tab_name,
                  a.doris_batch_size,
                  a.doris_jvm,
-                 a.doris_tab_config
+                 a.doris_tab_config,
+                 a.doris_sync_type
             FROM t_datax_sync_config a,t_server b ,t_dmmx c,t_dmmx d,t_db_source e
             WHERE a.server_id=b.id AND b.status='1' 
             AND a.sour_db_id=e.id
@@ -541,6 +542,7 @@ async def save_datax_sync(p_sync):
         doris_batch_size       = p_sync['doris_batch_size']
         doris_jvm              = p_sync['doris_jvm']
         doris_tab_config       = p_sync['doris_tab_config']
+        doris_sync_type        = p_sync['doris_sync_type']
 
         sql="""insert into t_datax_sync_config(
                        sync_tag,server_id,sour_db_id,sync_schema,sync_table,
@@ -549,21 +551,23 @@ async def save_datax_sync(p_sync):
                        sync_gap,api_server,status,sync_hbase_table,sync_hbase_rowkey,
                        sync_hbase_rowkey_separator,sync_hbase_columns,sync_hbase_rowkey_sour,sync_incr_where,python3_home,
                        hbase_thrift,es_service,es_index_name,es_type_name,sync_es_columns,
-                       doris_id,doris_db_name,doris_tab_name,doris_batch_size,doris_jvm,doris_tab_config)
+                       doris_id,doris_db_name,doris_tab_name,doris_batch_size,doris_jvm,doris_tab_config,doris_sync_type)
                values('{0}','{1}','{2}','{3}','{4}',
                       '{5}','{6}','{7}','{8}','{9}',
                       '{10}','{11}','{12}','{13}','{14}',
                       '{15}','{16}','{17}','{18}','{19}',
                       '{20}','{21}','{22}','{23}','{24}',
                       '{25}','{26}','{27}','{28}','{29}',
-                      '{30}','{31}','{32}','{33}','{34}','{35}')
+                      '{30}','{31}','{32}','{33}','{34}',
+                      '{35}','{36}')
             """.format(sync_tag,sync_server,sour_db_server,sour_db_name,sour_tab_name,
                        sour_tab_cols,sour_incr_col,zk_hosts,sync_ywlx,sync_data_type,
                        script_base,run_time,task_desc,datax_home,sync_time_type,
                        sync_gap,api_server,status,sync_hbase_table,sync_hbase_rowkey,
                        sync_hbase_rowkey_separator,sync_hbase_columns,sync_hbase_rowkey_sour,sync_incr_where,python3_home,
                        hbase_thrift,es_service,es_index_name,es_type_name,sync_es_columns,
-                       db_doris,doris_db_name,doris_tab_name,doris_batch_size,doris_jvm,doris_tab_config)
+                       db_doris,doris_db_name,doris_tab_name,doris_batch_size,doris_jvm,
+                       doris_tab_config,doris_sync_type)
         await async_processer.exec_sql(sql)
         result['code']='0'
         result['message']='保存成功!'
@@ -618,7 +622,7 @@ async def upd_datax_sync(p_sync):
         doris_batch_size       = p_sync['doris_batch_size']
         doris_jvm              = p_sync['doris_jvm']
         doris_tab_config       = p_sync['doris_tab_config']
-
+        doris_sync_type        = p_sync['doris_sync_type']
 
         sql="""update t_datax_sync_config 
                   set  
@@ -657,8 +661,9 @@ async def upd_datax_sync(p_sync):
                       doris_tab_name               ='{32}',
                       doris_batch_size             ='{33}',
                       doris_jvm                    ='{34}',
-                      doris_tab_config             ='{35}'
-                where id={36}""".format(sync_tag,sync_server,sour_db_server,sour_db_name,sour_tab_name,
+                      doris_tab_config             ='{35}',
+                      doris_sync_type              ='{36}'
+                where id={37}""".format(sync_tag,sync_server,sour_db_server,sour_db_name,sour_tab_name,
                                         sour_tab_cols,sour_incr_col,zk_hosts,sync_ywlx,sync_data_type,
                                         script_base,run_time,task_desc,datax_home,sync_time_type,
                                         sync_gap,api_server,status,sync_hbase_table,sync_hbase_rowkey,
@@ -666,8 +671,9 @@ async def upd_datax_sync(p_sync):
                                         sync_incr_where,python3_home,hbase_thrift,es_service,
                                         es_index_name,es_type_name,sync_es_columns,
                                         db_doris, doris_db_name, doris_tab_name,doris_batch_size,
-                                        doris_jvm,doris_tab_config,
+                                        doris_jvm,doris_tab_config,doris_sync_type,
                                         sync_id)
+        print(sql)
         await async_processer.exec_sql(sql)
         result={}
         result['code']='0'
@@ -902,6 +908,11 @@ async def check_datax_sync(p_sync,p_flag):
         if p_sync["doris_tab_name"] == "":
             result['code'] = '-1'
             result['message'] = 'doris表名不能为空!'
+            return result
+
+        if p_sync["doris_sync_type"] == "":
+            result['code'] = '-1'
+            result['message'] = 'doris同步类型不能为空!'
             return result
 
         if (await check_tab_exists_pk(p_sync)) == 0:

@@ -206,18 +206,6 @@
                     <div class="col-md-6">
                        <div class="form-group">
                             <div>
-                                <label class="col-md-2 control-label">目标数据库名</label>
-                            </div>
-                            <div class="col-md-10">
-                                <input id="sync_schema_dest"  type="text" class="form-control" placeholder="请输入目标数据库名">
-                            </div>
-                       </div>
-                    </div>
-               </div>
-               <div class="row">
-                    <div class="col-md-6">
-                       <div class="form-group">
-                            <div>
                                 <label class="col-md-2 control-label"><span id="s_sync_batch_size">*</span>全量批大小</label>
                             </div>
                             <div class="col-md-10">
@@ -238,6 +226,55 @@
                        </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input id="sync_gap"  type="text" class="form-control" placeholder="请输入同步间隔"  value="3" >
+                            </div>
+                       </div>
+                    </div>
+               </div>
+
+              <div class="row">
+                    <div class="col-md-6">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label"><span>*</span>批超时设置</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input id="batch_timeout"  type="text" class="form-control" placeholder="请输入批超时设置"  value="10" >
+                            </div>
+                       </div>
+                    </div>
+               </div>
+               <div class="row">
+                    <div class="col-md-6">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label"><span>*</span>行事件数阀值</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input id="batch_row_event"  type="text" class="form-control" placeholder="行事件数"  value="1000" >
+                            </div>
+                       </div>
+                    </div>
+               </div>
+               <div class="row">
+                    <div class="col-md-6">
+                       <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label"><span>*</span>配置更新间隔</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input id="apply_timeout"  type="text" class="form-control" placeholder="请输入配置更新间隔"  value="6" >
+                            </div>
+                       </div>
+                    </div>
+               </div>
                <div class="row">
                     <div class="col-md-6">
                        <div class="form-group">
@@ -920,9 +957,12 @@
                     task_desc            : $('#task_desc').val(),
                     python3_home         : $('#python3_home').val(),
                     sync_tables          : $('#sync_tables').val(),
-                    sync_schema_dest     : $('#sync_schema_dest').val(),
                     sync_batch_size      : $('#sync_batch_size').val(),
                     sync_batch_size_incr : $('#sync_batch_size_incr').val(),
+                    sync_gap             : $('#sync_gap').val(),
+                    batch_timeout        : $('#batch_timeout').val(),
+                    batch_row_event      : $('#batch_row_event').val(),
+                    apply_timeout        : $('#apply_timeout').val(),
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val()
                 },

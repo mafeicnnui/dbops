@@ -402,7 +402,7 @@
              <div class="col-md-6">
                <div class="form-group">
                     <div>
-                        <label class="col-md-2 control-label"><span>*</span>JVM配置</label>
+                        <label class="col-md-2 control-label"><span>*</span>dataX JVM配置</label>
                     </div>
                     <div class="col-md-10">
                         <input id="doris_jvm"  type="text" class="form-control"  value='{{doris_jvm}}' >
@@ -414,7 +414,7 @@
              <div class="col-md-6">
                <div class="form-group">
                     <div>
-                        <label class="col-md-2 control-label"><span>*</span>表配置</label>
+                        <label class="col-md-2 control-label"><span>*</span>doris表配置</label>
                     </div>
                     <div class="col-md-10">
                          <div id='doris_tab_config' class="col-md-12">{{doris_tab_config}}</div>
@@ -422,7 +422,26 @@
                </div>
               </div>
            </div>
-
+          <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sync_doris_type">*</span>doris同步类型</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="doris_sync_type" >
+                            {% for var in dm_doris_sync_type %}
+                                {%  if var[0]==doris_sync_type %}
+                                   <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                {% else %}
+                                   <option value={{var[0]}} >{{var[1]}}</option>
+                                {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+              </div>
+           </div>
            <div class="row">
              <div class="col-md-6">
                <div class="form-group">
@@ -722,6 +741,8 @@
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val(),
                     python3_home         : $('#python3_home').val(),
+                    doris_sync_type      : $('#doris_sync_type').val()
+
             },
             success: function (dataSet) {
                 if (dataSet.code==0) {
@@ -964,8 +985,6 @@
         //     }
         // });
 
-
-
         function set_item_status() {
                 //考虑直接隐藏这些元素，最后调试
             if  ( $('#sync_data_type').val() =='7') {
@@ -1124,7 +1143,7 @@
             });
 
             //加载同步列名
-            var sele_sour_tab_cols_arr=$('#sele_sour_tab_cols').val()[0].split(',')
+            var sele_sour_tab_cols_arr = $('#sele_sour_tab_cols').val()[0].split(',')
             $("#sele_sour_tab_cols").empty();
             for (i=0;i<sele_sour_tab_cols_arr.length;i++){
                   value=sele_sour_tab_cols_arr[i];

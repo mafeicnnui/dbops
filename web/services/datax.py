@@ -95,7 +95,8 @@ class syncadd_datax(base_handler.TokenHandler):
                     dm_sync_data_type    = await get_dmm_from_dm2('09','5,6,7'),
                     dm_sync_time_type    = await get_dmm_from_dm('10'),
                     dm_sync_zk_host      = await get_dmm_from_dm('15'),
-                    dm_sync_hbase_thrift = await get_dmm_from_dm('16')
+                    dm_sync_hbase_thrift = await get_dmm_from_dm('16'),
+                    dm_sync_doris_type   = await get_dmm_from_dm('44'),
                     )
 
 class syncadd_datax_save(base_handler.TokenHandler):
@@ -133,6 +134,7 @@ class syncadd_datax_save(base_handler.TokenHandler):
         d_sync['doris_batch_size']     = self.get_argument("doris_batch_size")
         d_sync['doris_jvm']            = self.get_argument("doris_jvm")
         d_sync['doris_tab_config']     = self.get_argument("doris_tab_config")
+        d_sync['doris_sync_type']      = self.get_argument("doris_sync_type")
         result = await save_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -195,6 +197,8 @@ class syncedit_datax(base_handler.TokenHandler):
                     doris_batch_size     = d_sync['doris_batch_size'],
                     doris_jvm            = d_sync['doris_jvm'],
                     doris_tab_config     = d_sync['doris_tab_config'],
+                    dm_doris_sync_type   = await get_dmm_from_dm('44'),
+                    doris_sync_type      = d_sync['doris_sync_type'],
 
         )
 
@@ -235,6 +239,7 @@ class syncedit_save_datax(base_handler.TokenHandler):
         d_sync['status']               = self.get_argument("status")
         d_sync['sync_id']              = self.get_argument("sync_id")
         d_sync['python3_home']         = self.get_argument("python3_home")
+        d_sync['doris_sync_type']      = self.get_argument("doris_sync_type")
         result = await upd_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -286,6 +291,8 @@ class syncclone_datax(base_handler.TokenHandler):
                     doris_batch_size     = d_sync['doris_batch_size'],
                     doris_jvm            = d_sync['doris_jvm'],
                     doris_tab_config     = d_sync['doris_tab_config'],
+                    dm_doris_sync_type   = await get_dmm_from_dm('44'),
+                    doris_sync_type      = d_sync['doris_sync_type'],
 
         )
 
@@ -326,6 +333,7 @@ class syncclone_save_datax(base_handler.TokenHandler):
         d_sync['status']               = self.get_argument("status")
         d_sync['sync_id']              = self.get_argument("sync_id")
         d_sync['python3_home']         = self.get_argument("python3_home")
+        d_sync['doris_sync_type']      = self.get_argument("doris_sync_type")
         result = await save_datax_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
