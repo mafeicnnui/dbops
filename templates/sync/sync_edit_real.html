@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>同步变更</title>
+    <title>实时同步变更</title>
     <style>
        #example{
             width: 100% !important;
@@ -24,9 +24,9 @@
 </head>
 <body>
     <p></p>
-
     <form class="form-horizontal" role="form">
        <input  id="sync_id" type="hidden"  value={{sync_id}} >
+
        <div class="row">
           <div class="col-md-6">
                <div class="form-group">
@@ -47,7 +47,6 @@
                </div>
           </div>
        </div>
-
        <div class="row">
           <div class="col-md-6">
             <div class="form-group">
@@ -68,7 +67,6 @@
             </div>
           </div>
        </div>
-
        <div class="row">
           <div class="col-md-6">
             <div class="form-group">
@@ -77,7 +75,7 @@
                 </div>
                <div class="col-md-10">
                     <select class="form-control select" id="desc_db_server" >
-                        {% for var in db_server %}
+                        {% for var in db_server_doris %}
                                {%  if var[0]==desc_db_server %}
                                   <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
                                {% else %}
@@ -89,7 +87,6 @@
            </div>
          </div>
        </div>
-
        <div class="row">
           <div class="col-md-6">
            <div class="form-group">
@@ -102,12 +99,23 @@
            </div>
          </div>
        </div>
-
+       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述" value="{{task_desc}}">
+                </div>
+           </div>
+         </div>
+       </div>
        <div class="row">
          <div class="col-md-6">
             <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>同步业务类型</label>
+                    <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>业务类型</label>
                 </div>
                <div class="col-md-10">
                     <select class="form-control select" id="sync_ywlx" >
@@ -123,12 +131,11 @@
             </div>
          </div>
        </div>
-
        <div class="row">
          <div class="col-md-6">
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>同步数据方向</label>
+                    <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>数据方向</label>
                 </div>
                <div class="col-md-10">
                     <select class="form-control select" id="sync_data_type" >
@@ -144,7 +151,6 @@
            </div>
          </div>
        </div>
-
        <div class="row">
          <div class="col-md-6">
            <div class="form-group">
@@ -170,12 +176,11 @@
            </div>
          </div>
        </div>
-
        <div class="row">
          <div class="col-md-6">
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>检测时间</label>
                 </div>
                 <div class="col-md-10">
                     <input id="run_time"  type="text" class="form-control" placeholder="请输入备份运行时间" value="{{run_time}}">
@@ -183,20 +188,6 @@
            </div>
          </div>
        </div>
-
-       <div class="row">
-         <div class="col-md-6">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述" value="{{task_desc}}">
-                </div>
-           </div>
-         </div>
-       </div>
-
        <div class="row">
          <div class="col-md-6">
            <div class="form-group">
@@ -255,16 +246,52 @@
          </div>
        </div>
        <div class="row">
-         <div class="col-md-6">
+        <div class="col-md-6">
            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="sync_gap"  type="text" class="form-control" placeholder="请输入同步间隔"  value="{{sync_gap}}">
+                    <input id="sync_gap"  type="text" class="form-control" placeholder="请输入同步间隔"  value="{{sync_gap}}" >
                 </div>
            </div>
-         </div>
+        </div>
+       </div>
+       <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>批超时设置</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="batch_timeout"  type="text" class="form-control" placeholder="请输入批超时设置"  value="{{batch_timeout}}" >
+                    </div>
+               </div>
+            </div>
+       </div>
+       <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>行事件数阀值</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="batch_row_event"  type="text" class="form-control" placeholder="行事件数"  value="{{batch_row_event}}" >
+                    </div>
+               </div>
+            </div>
+       </div>
+       <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>配置更新间隔</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="apply_timeout"  type="text" class="form-control" placeholder="请输入配置更新间隔"  value="{{apply_timeout}}" >
+                    </div>
+               </div>
+            </div>
        </div>
        <div class="row">
          <div class="col-md-6">
@@ -278,7 +305,6 @@
            </div>
          </div>
        </div>
-
        <div class="row">
          <div class="col-md-6">
            <div class="form-group">
@@ -301,7 +327,6 @@
             </div>
          </div>
        </div>
-
        <br>
        <div class="row">
          <div class="col-md-6">
@@ -313,7 +338,6 @@
            </div>
          </div>
        </div>
-
     </form>
 
     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
@@ -353,44 +377,13 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                   <input type="hidden"  id="sync_tab_id" />
+                                   <input type="hidden"  id="sync_tab_id" values="-1"/>
                                    <div class="form-group">
                                         <div>
-                                            <label class="col-md-2 control-label"><span id="s_sync_tab_name">*</span>表名称</label>
+                                            <label class="col-md-3 control-label"><span>*</span>源库名</label>
                                         </div>
                                         <div class="col-md-9">
-                                            <select class="form-control select" id="sync_tab_name" >
-                                                <option value='' selected = "selected">......</option>
-                                            </select>
-                                       </div>
-                                       <div class="col-md-1">
-                                           <div class="form-group">
-                                                <div>
-                                                    <button type="button" id='btn-sync-tab-add' class="btn btn-xs waves-effect waves-light"   onclick=syn_tab_add()><i class="ion-android-add"></i></button>
-                                                </div>
-                                           </div>
-                                       </div>
-                                   </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                   <div class="form-group">
-                                        <div>
-                                            <label class="col-md-2 control-label"><span id="s_sync_tab_time">*</span>同时长</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <input type="text"  class="form-control" id="sync_tab_time" value="1"/>
-                                       </div>
-                                   </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                   <div class="form-group">
-                                        <div>
-                                            <label class="col-md-2 control-label"><span>&nbsp;</span>增量列</label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <select  class="form-control select" id="sync_tab_incr_col" >
+                                            <select class="form-control select" id="mysql_db_name" >
                                                 <option value='' selected = "selected">......</option>
                                             </select>
                                        </div>
@@ -400,26 +393,33 @@
                                 <div class="row">
                                    <div class="form-group">
                                         <div>
-                                            <label class="col-md-2 control-label"><span id="s_sync_tab_col">*</span>同步列</label>
+                                            <label class="col-md-3 control-label"><span>*</span>表名称</label>
                                         </div>
-                                        <div class="col-md-4">
-                                            <select multiple="multiple" class="form-control select" id="sync_tab_col" >
+                                        <div class="col-md-9">
+                                            <select  class="form-control select" id="sync_tab_name" >
+                                                <option value='*' selected = "selected">*</option>
                                             </select>
                                        </div>
-                                        <div class="col-md-1 xyz">
-                                            <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light" onclick=selectSysAll()><i class="ion-arrow-right-a"></i></button>
-                                            <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"   onclick=cancelSysAll()><i class="ion-arrow-left-a"></i></button>
-                                       </div>
-                                        <div class="col-md-4">
-                                            <select multiple="multiple" class="form-control select" id="sync_sele_col" >
-                                            </select>
-                                       </div>
-
                                    </div>
                                 </div>
+                                <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-3 control-label"><span>*</span>目标库</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="form-control select" id="desc_db_name" >
+                                                <option value='' selected = "selected">......</option>
+                                            </select>
+                                       </div>
+                                   </div>
+                                </div>
+                                <br>
                                 <br>
                                 <div class="col-sm-offset-5 col-sm-5">
                                      <input  id='save_sync_tab_config' class="btn btn-custom waves-effect waves-light btn-md" type='button' value="保存"/>
+                                     <input  id='upd_sync_tab_config' class="btn btn-custom waves-effect waves-light btn-md" type='button' value="变更"/>
                                 </div>
                             </div>
                         </div>
@@ -432,7 +432,7 @@
 
     <script>
         var sour_ds='';
-        var vUrl='';
+        var desc_ds='';
 
         String.prototype.format = function () {
             var values = arguments;
@@ -445,81 +445,36 @@
             });
         };
 
-        $('#return').on('click', function() {
-           $('#main-container-div').load('/sync/change');
-        });
+        function showTabDetail() {
+             if ($('#sync_tag').val()=='') {
+                  swal("同步标识不能为空!", "", "error")
+                  $('#sync_tag').focus();
+                  return;
+             }
+             if (!get_ds()) {
+                 return;
+             }
 
-        $("#db_server").bind("input propertychange",function(){
-            $("#task_desc").val($("#db_server").find("option:selected").text()+'备份')
-        });
+             if (!get_doris_ds()) {
+                 return;
+             }
 
-        $("#save").click(function () {
-          console.log(" status:",$('#status').val())
-          $.ajax({
-            url: "/sync/edit/save",
-            type: "post",
-            datatype: "json",
-            data: {
-                    sync_id              : $('#sync_id').val(),
-                    sync_server          : $('#sync_server').val(),
-                    sour_db_server       : $('#sour_db_server').val(),
-                    desc_db_server       : $('#desc_db_server').val(),
-                    sync_tag             : $('#sync_tag').val(),
-                    sync_ywlx            : $('#sync_ywlx').val(),
-                    sync_data_type       : $('#sync_data_type').val(),
-                    script_base          : $('#script_base').val(),
-                    script_name          : $('#script_name').val(),
-                    run_time             : $('#run_time').val(),
-                    task_desc            : $('#task_desc').val(),
-                    python3_home         : $('#python3_home').val(),
-                    sync_schema          : $('#sync_schema').val(),
-                    sync_schema_dest     : $('#sync_schema_dest').val(),
-                    sync_tables          : $('#sync_tables').val(),
-                    sync_batch_size      : $('#sync_batch_size').val(),
-                    sync_batch_size_incr : $('#sync_batch_size_incr').val(),
-                    sync_gap             : $('#sync_gap').val(),
-                    batch_timeout        : $('#batch_timeout').val(),
-                    batch_row_event      : $('#batch_row_event').val(),
-                    apply_timeout        : $('#apply_timeout').val(),
-                    api_server           : $('#api_server').val(),
-                    status               : $('#status').val()
-            },
-            success: function (dataSet) {
-                console.log(dataSet.code, dataSet.message);
-                if (dataSet.code==0) {
-                   swal("变更成功", "", "success")
-                } else {
-                   swal(dataSet.message, "", "error")
-                }
-            },
-         });
-      });
-
-        function centerModals() {
-          $('.modal').each(function(i) {
-            var $clone = $(this).clone().css('display', 'block').appendTo('body');
-            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-            top = top > 50 ? top : 0;
-            $clone.remove();
-            $(this).find('.modal-content').css("margin-top", top - 50);
-          });
+             $('.modal').on('show.bs.modal', centerModals);
+             $(window).on('resize', centerModals);
+             $('#con-close-modal').modal({
+                 keyboard: false,
+                 backdrop:false
+             });
+             set_mysql_database();
+             set_sync_tabs();
+             set_desc_database();
+             query_tab_sync();
         }
 
         function init_tab_config(){
-             $('#sync_tab_name').val('...');
-             $("#sync_tab_col").empty();
-             $("#sync_sele_col").empty();
-             $("#sync_tab_incr_col").empty();
-             $("#sync_tab_time").val('');
-             //设置显示项为只读
-             $('#sync_tab_name').attr("disabled","disabled");
-             $('#sync_tab_incr_col').attr("disabled","disabled");
-             $('#sync_tab_time').attr("readonly","readonly");
-             $('#sync_sele_col').attr("disabled","disabled");
-             $('#sync_tab_col').attr("disabled","disabled");
-             $('#ion-arrow-down').attr("disabled","disabled");
-             $('#ion-arrow-up').attr("disabled","disabled");
-
+           $("#mysql_db_name").val('');
+           $("#sync_tab_name").val('');
+           $("#desc_db_name").val('');
         }
 
         function get_ds() {
@@ -545,25 +500,34 @@
             }
         }
 
-        function set_sync_tabs() {
-
-           if (sour_ds['db_type'] == '2') {
-               //vUrl = "http://{0}/get_mssql_tables".format(sour_ds['proxy_server'])
-               vUrl = "/get_mssql_tables"
-           }
-
-           if (sour_ds['db_type'] == '0') {
-              vUrl = "/get_mysql_tables"
-              sour_ds['service'] = $('#sync_schema').val()
-           }
-
+        function get_doris_ds() {
            $.ajax({
-                  url : vUrl,
+                  url: "/ds/query/id",
                   type: "post",
                   datatype: "json",
-                  headers: {
-
+                  async   :false,
+                  data:{
+                      dsid  :$('#desc_db_server').val(),
                   },
+                  success: function (dataSet) {
+                      desc_ds = dataSet;
+                      console.log('desc_ds=',desc_ds);
+                  },
+             });
+
+            if (desc_ds['proxy_status'] == '0') {
+                swal("doris数据库代理未启用!", "", "error")
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function set_mysql_database() {
+           $.ajax({
+                  url: "get_mysql_databases",
+                  type: "post",
+                  datatype: "json",
                   data:{
                       db_ip       : sour_ds['ip'],
                       db_port     : sour_ds['port'],
@@ -573,181 +537,84 @@
                       proxy_server: sour_ds['proxy_server']
                   },
                   success: function (dataSet) {
-                     $("#sync_tab_name").empty();
-                     $("#sync_tab_name").append("<option value=''>...</option>");
+                     $("#mysql_db_name").empty();
+                     $("#mysql_db_name").append("<option value=''>...</option>");
                      for(i=0;i<dataSet['msg'].length;i++){
-                         if (sour_ds['db_type'] == '2') {
-                             var val  = dataSet['msg'][i][0] + '.' + dataSet['msg'][i][1] + '.' + dataSet['msg'][i][2];
-                             var text = dataSet['msg'][i][1] + '.' + dataSet['msg'][i][2];
-                             $("#sync_tab_name").append("<option value='" + val + "'>" + text + "</option>");
-                         }
-
-                         if (sour_ds['db_type'] == '0') {
-                             var val  = dataSet['msg'][i][0] + '.' + dataSet['msg'][i][1] + '.' + dataSet['msg'][i][2];
-                             var text = dataSet['msg'][i][2];
-                             $("#sync_tab_name").append("<option value='" + val + "'>" + text + "</option>");
-                         }
+                          var val  = dataSet['msg'][i][0]
+                          $("#mysql_db_name").append("<option value='"+val+"'>"+val+"</option>");
                      }
                   },
              })
         }
 
-        function set_sync_tab_cols() {
-
-             if (sour_ds['db_type'] == '2') {
-                  //vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
-                  vUrl = "/get_mssql_columns"
-             } else if (sour_ds['db_type'] == '0') {
-                  //vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
-                  vUrl = "/get_mysql_columns"
-                  sour_ds['service'] = $('#sync_schema').val()
-             }
-             console.log('vUrl=',vUrl)
-             console.log('set_sync_tab_cols=',$('#sync_tab_name').val(),sour_ds['service'])
-
-             $.ajax({
-                  url : vUrl,
+        function set_sync_tabs() {
+           $.ajax({
+                  url: "get_mysql_tables",
                   type: "post",
                   datatype: "json",
-                  async   :false,
+                  async:false,
                   data:{
-                      db_ip     : sour_ds['ip'],
-                      db_port   : sour_ds['port'],
-                      db_service: sour_ds['service'],
-                      db_user   : sour_ds['user'],
-                      db_pass   : sour_ds['password'],
-                      db_tab    : $('#sync_tab_name').val(),
-                      timeout   : 1000,
+                      db_ip       : sour_ds['ip'],
+                      db_port     : sour_ds['port'],
+                      db_service  : $("#mysql_db_name").val(),
+                      db_user     : sour_ds['user'],
+                      db_pass     : sour_ds['password'],
                       proxy_server: sour_ds['proxy_server']
                   },
                   success: function (dataSet) {
-                         $("#sync_tab_col").empty();
-                         $("#sync_sele_col").empty();
-                         $("#sync_tab_incr_col").empty();
-                         for(i=0;i<dataSet['msg'].length;i++){
-                              var val  = dataSet['msg'][i][0];
-                              var text = dataSet['msg'][i][0];
-                              $("#sync_tab_col").append("<option value='"+val+"'>"+text+"</option>");
-                         }
+                     $("#sync_tab_name").empty();
+                     $("#sync_tab_name").append("<option value='*'>*</option>");
+                     for(i=0;i<dataSet['msg'].length;i++){
+                          var val  = dataSet['msg'][i][2]
+                          $("#sync_tab_name").append("<option value='"+val+"'>"+val+"</option>");
+                     }
                   },
-             });
+             })
         }
 
-        function set_sync_tab_incr_col() {
-
-             if (sour_ds['db_type'] == '2') {
-                  //vUrl = "http://{0}/get_mssql_incr_columns".format(sour_ds['proxy_server'])
-                  vUrl = "/get_mssql_incr_columns"
-             } else if (sour_ds['db_type'] == '0') {
-                  //vUrl = "http://{0}/get_mysql_incr_columns".format(sour_ds['proxy_server'])
-                  sour_ds['service'] = $('#sync_schema').val()
-                  vUrl = "/get_mysql_incr_columns"
-             }
-             console.log('vUrl=',vUrl)
-
-             $.ajax({
-                  url : vUrl,
+        function set_desc_database() {
+           $.ajax({
+                  url: "/get_ck_databases",
                   type: "post",
                   datatype: "json",
-                  async   :false,
                   data:{
-                      db_ip     : sour_ds['ip'],
-                      db_port   : sour_ds['port'],
-                      db_service: sour_ds['service'],
-                      db_user   : sour_ds['user'],
-                      db_pass   : sour_ds['password'],
-                      db_tab    :$('#sync_tab_name').val(),
-                      timeout   : 1000,
-                      proxy_server: sour_ds['proxy_server']
+                      db_ip       : desc_ds['ip'],
+                      db_port     : desc_ds['port'],
+                      db_service  : desc_ds['service'],
+                      db_user     : desc_ds['user'],
+                      db_pass     : desc_ds['password'],
+                      proxy_server: desc_ds['proxy_server']
                   },
                   success: function (dataSet) {
-                         $("#sync_tab_incr_col").empty();
-                         $("#sync_tab_incr_col").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['msg'].length;i++){
-                              var val  = dataSet['msg'][i][0];
-                              var text = dataSet['msg'][i][0];
-                              $("#sync_tab_incr_col").append("<option value='"+val+"'>"+text+"</option>");
-                         }
+                     $("#desc_db_name").empty();
+                     $("#desc_db_name").append("<option value=''>...</option>");
+                     for(i=0;i<dataSet['msg'].length;i++){
+                          var val  = dataSet['msg'][i][0]
+                          $("#desc_db_name").append("<option value='"+val+"'>"+val+"</option>");
+                     }
                   },
-             });
-        }
-
-        function syn_tab_query(row){
-           v =unescape(row).split(',')
-           console.log('syn_tab_query='+v);
-
-           //设置显示项为只读
-           $('#sync_tab_name').attr("disabled","disabled");
-           $('#sync_tab_incr_col').attr("disabled","disabled");
-           $('#sync_tab_time').attr("readonly","readonly");
-           $('#sync_sele_col').attr("disabled","disabled");
-           $('#sync_tab_col').attr("disabled","disabled");
-           $('#ion-arrow-down').attr("disabled","disabled");
-           $('#ion-arrow-up').attr("disabled","disabled");
-
-           //显示项赋值
-           $('#sync_tab_id').val('-1');
-           console.log('syn_tab_query=>...',v[1]+'.'+v[2]+'.'+v[3])
-           $('#sync_tab_name').val(v[1]+'.'+v[2]+'.'+v[3]);
-           $('#sync_tab_incr_col').empty();
-           $('#sync_tab_incr_col').append("<option value='"+v[5]+"'>"+v[5]+"</option>");
-           $('#sync_tab_time').val(v[6]);
-           set_tab_cols(v[4]);
-
-           //按钮设置为不可用
-           $('#save_sync_tab_config').attr("disabled","disabled");
-
-        }
-
-
-        function syn_tab_add(){
-           //设置显示项为只读
-           $('#sync_tab_name').attr("disabled",false);
-           $('#sync_tab_incr_col').attr("disabled",false);
-           $('#sync_tab_time').attr("readonly",false);
-           $('#sync_sele_col').attr("disabled",false);
-           $('#sync_tab_col').attr("disabled",false);
-           $('#ion-arrow-down').attr("disabled",false);
-           $('#ion-arrow-up').attr("disabled",false);
-
-           //显示项赋值
-           $('#sync_tab_id').val('-1');
-           set_sync_tabs();
-           //set_sync_tab_incr_col();
-           $('#sync_tab_time').val('1');
-
-           //按钮设置为可用
-           $('#save_sync_tab_config').attr("disabled",false);
+             })
         }
 
         function syn_tab_edit(row){
            v =unescape(row).split(',')
-           console.log('syn_tab_query='+v);
-           //设置显示项为只读
-           $('#sync_tab_name').attr("disabled",false);
-           $('#sync_tab_incr_col').attr("disabled",false);
-           $('#sync_tab_time').attr("readonly",false);
-           $('#sync_sele_col').attr("disabled",false);
-           $('#sync_tab_col').attr("disabled",false);
-           $('#ion-arrow-down').attr("disabled",false);
-           $('#ion-arrow-up').attr("disabled",false);
-
-           //显示项赋值
+           console.log('v=',v)
            $('#sync_tab_id').val(v[0]);
-           $('#sync_tab_name').val(v[1]+'.'+v[2]+'.'+v[3]);
-           set_sync_tab_incr_col();
-           $('#sync_tab_incr_col').val(v[5]);
-           $('#sync_tab_time').val(v[6]);
-           set_tab_cols(v[4]);
-           //按钮设置为可用
-           $('#save_sync_tab_config').attr("disabled",false);
+           $("#mysql_db_name").val(v[1]);
+           if (!get_ds()) {
+                 return;
+           }
+           if (!get_doris_ds()) {
+                 return;
+           }
+           set_sync_tabs();
+           $("#sync_tab_name").val(v[2]);
+           $("#desc_db_name").val(v[3]);
         }
-
 
         function syn_tab_del(row){
              v =unescape(row).split(',')
              var tab = v[1]+'.'+v[2]+'.'+v[3]
-             console.log('syn_tab_del='+v);
              swal({
                 title: "确认要删除吗?",
                 text: "表["+tab+"]删除后无法进行数据同步了！",
@@ -786,7 +653,7 @@
 
         function query_tab_sync(){
             $.ajax({
-                  url: "/sync/_query/tab",
+                  url: "/sync/_query/tab/real",
                   type: "post",
                   async   :false,
                   datatype: "json",
@@ -809,194 +676,110 @@
                               data: dataSet,
                               columns: [
                                    { "title": "标识","width":"5%" },
-                                   { "title": "库名","width":"10%" },
-                                   { "title": "模式名","width":"15%" },
-                                   { "title": "表名","width":"15%" },
-                                   { "title": "同步列","width":"15%","visible":false},
-                                   { "title": "增量列","width":"15%","visible":false},
-                                   { "title": "时间","width":"15%","visible":false},
+                                   { "title": "源库名","width":"10%" },
+                                   { "title": "表名称","width":"15%" },
+                                   { "title": "目标库","width":"15%" },
                                    {
                                         "title":"操作",
                                         "width":"10%",
                                          "render": function(data,type,row,meta) {
-                                           var query = '&nbsp;'+'<button class="btn btn-xs btn-icon waves-effect btn-default m-b-5"  onclick="syn_tab_query(\''+escape(row)+'\');"> <i class="ion-search"></i> </button> ' + '&nbsp;'
                                            var edit  = '&nbsp;'+'<button class="btn btn-xs btn-icon waves-effect btn-default m-b-5"  onclick="syn_tab_edit(\''+escape(row)+'\');" > <i class="ion-edit"></i> </button> ' + '&nbsp;'
                                            var del   = '&nbsp;'+'<button class="btn btn-xs btn-icon waves-effect btn-default m-b-5"  onclick="syn_tab_del(\''+escape(row)+'\');"> <i class="ion-close"></i> </button> ' + '&nbsp;'
-                                           return query+edit+del;
+                                           return edit+del;
                                         }
                                    },
                               ],
                               "language": get_languages()
-                      });
+                     });
                   },
              })
         }
-
-        function showTabDetail() {
-
-             if ($('#sync_tag').val()=='') {
-                  swal("同步标识不能为空!", "", "error")
-                  $('#sync_tag').focus();
-                  return;
-             }
-             if (!get_ds()) {
-                 return;
-             }
-
-             $('.modal').on('show.bs.modal', centerModals);
-             $(window).on('resize', centerModals);
-             $('#con-close-modal').modal({
-                 keyboard: false,
-                 backdrop:false
-             });
-             set_sync_tabs();
-             query_tab_sync();
-             init_tab_config();
-
-        }
-
-        function selectSysAll() {
-            try {
-               options=$('#sync_tab_col option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#sync_sele_col').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#sync_tab_col option').remove();
-               }
-            } catch(err){
-                console.log(err)
-                console.log(err.message);
-            }
-         }
-
-         function isInArray(arr,value){
-            for(var i = 0; i < arr.length; i++){
-                if(value === arr[i]){
-                    return true;
-                }
-            }
-            return false;
-          }
-
-        function set_tab_cols(p_cols){
-               v_col_list = p_cols.split('#');
-               if (sour_ds['db_type'] == '2') {
-                   // vUrl = "http://{0}/get_mssql_columns".format(sour_ds['proxy_server'])
-                   vUrl =  "/get_mssql_columns"
-               } else if (sour_ds['db_type'] == '0') {
-                   // vUrl = "http://{0}/get_mysql_columns".format(sour_ds['proxy_server'])
-                   vUrl =  "/get_mysql_columns"
-                   sour_ds['service'] = $('#sync_schema').val()
-               }
-
-               $.ajax({
-                  url : vUrl,
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      db_ip     : sour_ds['ip'],
-                      db_port   : sour_ds['port'],
-                      db_service: sour_ds['service'],
-                      db_user   : sour_ds['user'],
-                      db_pass   : sour_ds['password'],
-                      db_tab    : $('#sync_tab_name').val(),
-                      timeout   : 1000,
-                      proxy_server: sour_ds['proxy_server']
-                  },
-                  success: function (dataSet) {
-                      //设置未同步列选择框
-                      $("#sync_tab_col").empty();
-                      for(i=0;i<dataSet['msg'].length;i++){
-                          var val  = dataSet['msg'][i][0];
-                          var text = dataSet['msg'][i][0];
-                          if (!isInArray(v_col_list,val)) {
-                             $("#sync_tab_col").append("<option value='"+val+"'>"+text+"</option>");
-                          }
-                      }
-
-                      //设置同步列选择框
-                      $("#sync_sele_col").empty();
-                      for (var i=0;i<v_col_list.length;i++){
-                           $('#sync_sele_col').append("<option value='"+v_col_list[i]+"'>"+v_col_list[i]+"</option>");
-                      }
-                  },
-             });
-         }
-
-        function cancelSysAll() {
-               options=$('#sync_sele_col option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#sync_tab_col').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#sync_sele_col option').remove();
-               }
-        }
-
-        function get_tab_cols(){
-             var tmp='';
-             var val='';
-             $('#sync_sele_col option').each(function(){
-               val=$(this).val();
-               tmp=tmp+'#'+val;
-             });
-             return tmp.substr(1);
-         }
-
-        $('#sync_tab_name').change(function() {
-            set_sync_tab_cols();
-            set_sync_tab_incr_col();
-        });
 
         $('#save_sync_tab_config').click(function(){
 
-                if ($('#sync_tab_name').val()=='') {
-                      swal("同步表名不能为空!", "", "error")
-                      return;
-                }
+            if ($('#mysql_db_name').val()=='') {
+                  swal("源库名不能为空!", "", "error")
+                  return;
+            }
 
-                if ($('#sync_sele_col').val()=='') {
-                      swal("同步列名不能为空!", "", "error")
-                      return;
-                }
+            if ($('#sync_tab_name').val()=='') {
+                  swal("同步表不能为空!", "", "error")
+                  return;
+            }
 
-                if ($('#sync_tab_incr_col').val()!='') {
-                    if ($('#sync_tab_time').val()=='') {
-                          swal("同步时长不能为空!", "", "error")
-                          return;
-                    }
-                }
+            if ($('#desc_db_name').val()=='') {
+                  swal("目标库不能为空!", "", "error")
+                  return;
+            }
 
-                $.ajax({
-                      url: "/sync/add/save/tab",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          'sync_id'      :$('#sync_tab_id').val(),
-                          'sync_tag'     : $('#sync_tag').val(),
-                          'db_name'      : $('#sync_tab_name').val().split('.')[0],
-                          'schema_name'  : $('#sync_tab_name').val().split('.')[1],
-                          'tab_name'     : $('#sync_tab_name').val().split('.')[2],
-                          'sync_cols'    : get_tab_cols(),
-                          'sync_incr_col': $('#sync_tab_incr_col').val(),
-                          'sync_time'    : $('#sync_tab_time').val(),
-                  },
-                  success: function (dataSet) {
-                    if (dataSet.code==0) {
-                       swal("保存成功", "", "success")
-                       init_tab_config();
-                       query_tab_sync();
-                    } else {
-                       swal(dataSet.message, "", "error")
-                    }
-                  },
-             })
+            $.ajax({
+                  url: "/sync/add/save/tab",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      'sync_id'      : '-1',
+                      'sync_tag'     : $('#sync_tag').val(),
+                      'db_name'      : $('#mysql_db_name').val(),
+                      'schema_name'  : $('#desc_db_name').val(),
+                      'tab_name'     : $('#sync_tab_name').val(),
+                      'sync_cols'    : '',
+                      'sync_incr_col': '',
+                      'sync_time'    : '',
+              },
+              success: function (dataSet) {
+                if (dataSet.code==0) {
+                   swal("保存成功", "", "success")
+                   query_tab_sync();
+                   init_tab_config();
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+              },
+           })
+
+        });
+
+        $('#upd_sync_tab_config').click(function(){
+
+            if ($('#mysql_db_name').val()=='') {
+                  swal("源库名不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#sync_tab_name').val()=='') {
+                  swal("同步表不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#desc_db_name').val()=='') {
+                  swal("目标库不能为空!", "", "error")
+                  return;
+            }
+
+            $.ajax({
+                  url: "/sync/add/save/tab",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      'sync_id'      : $('#sync_tab_id').val(),
+                      'sync_tag'     : $('#sync_tag').val(),
+                      'db_name'      : $('#mysql_db_name').val(),
+                      'schema_name'  : $('#desc_db_name').val(),
+                      'tab_name'     : $('#sync_tab_name').val(),
+                      'sync_cols'    : '',
+                      'sync_incr_col': '',
+                      'sync_time'    : '',
+              },
+              success: function (dataSet) {
+                if (dataSet.code==0) {
+                   swal("更新成功", "", "success")
+                   query_tab_sync();
+                   init_tab_config();
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+              },
+           })
 
         });
 
@@ -1014,47 +797,14 @@
             }
         });
 
-        $('#sync_tab_incr_col').change(function(){
-             if ($('#sync_tab_incr_col').val()!='') {
-                document.all['s_sync_tab_time'].style.color="#ff0000";
-             } else {
-                document.all['s_sync_tab_time'].style.color="#000000";
-             }
-         });
-
-        $("#sync_tab_col").click(function () {
-               options=$('#sync_tab_col option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#sync_sele_col').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#sync_tab_col option:selected').remove();
-               }
-          });
-
-        $("#sync_sele_col").click(function () {
-               options=$('#sync_sele_col option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#sync_tab_col').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#sync_sele_col option:selected').remove();
-               }
-          });
-
         $('.modal').on('hidden.bs.modal', function () {
-              $.ajax({
-                  url: "/sync/_query/sync/tabs",
+               $.ajax({
+                  url: "/sync/_query/sync/tabs/real",
                   type: "post",
                   datatype: "json",
                   async   :false,
                   data:{
                       sync_tag  : $('#sync_tag').val()
-
                   },
                   success: function (dataSet) {
                       console.log('/sync/_query/sync/tabs=',dataSet)
@@ -1067,6 +817,60 @@
              });
 
         });
+
+        $('#return').on('click', function() {
+           $('#main-container-div').load('/sync/change');
+        });
+
+        $("#db_server").bind("input propertychange",function(){
+            $("#task_desc").val($("#db_server").find("option:selected").text()+'备份')
+        });
+
+        $("#save").click(function () {
+          console.log(" status:",$('#status').val())
+          $.ajax({
+            url: "/sync/real/edit/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                    sync_id              : $('#sync_id').val(),
+                    sync_server          : $('#sync_server').val(),
+                    sour_db_server       : $('#sour_db_server').val(),
+                    desc_db_server       : $('#desc_db_server').val(),
+                    sync_tag             : $('#sync_tag').val(),
+                    sync_ywlx            : $('#sync_ywlx').val(),
+                    sync_data_type       : $('#sync_data_type').val(),
+                    script_base          : $('#script_base').val(),
+                    script_name          : $('#script_name').val(),
+                    run_time             : $('#run_time').val(),
+                    task_desc            : $('#task_desc').val(),
+                    python3_home         : $('#python3_home').val(),
+                    sync_tables          : $('#sync_tables').val(),
+                    sync_batch_size      : $('#sync_batch_size').val(),
+                    sync_batch_size_incr : $('#sync_batch_size_incr').val(),
+                    sync_gap             : $('#sync_gap').val(),
+                    batch_timeout        : $('#batch_timeout').val(),
+                    batch_row_event      : $('#batch_row_event').val(),
+                    apply_timeout        : $('#apply_timeout').val(),
+                    api_server           : $('#api_server').val(),
+                    status               : $('#status').val()
+            },
+            success: function (dataSet) {
+                console.log(dataSet.code, dataSet.message);
+                if (dataSet.code==0) {
+                   swal("变更成功", "", "success")
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+            },
+         });
+      });
+
+        $('#mysql_db_name').change(function(){
+            if ($("#mysql_db_name").val()!='') {
+                set_sync_tabs()
+            }
+        })
 
         $(document).ready(function() {
            set_selected();

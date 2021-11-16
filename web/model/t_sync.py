@@ -64,6 +64,21 @@ async def query_sync_tab(sync_tag,sync_tab):
               """.format(sync_tag,sync_tab)
     return await async_processer.query_list(sql)
 
+
+async def query_sync_tab_real(sync_tag,sync_tab):
+    sql = """SELECT  
+                    a.id,
+                    a.db_name,
+                    a.tab_name,
+                    a.schema_name
+             FROM t_db_sync_tab_config a
+            WHERE a.sync_tag='{}' 
+             and  instr(a.tab_name,'{}')>0
+            order by 1
+              """.format(sync_tag,sync_tab)
+    return await async_processer.query_list(sql)
+
+
 async def query_sync_tab_cfg(sync_tag):
     sql = """SELECT  
                 GROUP_CONCAT(
@@ -82,6 +97,22 @@ async def query_sync_tab_cfg(sync_tag):
        return 'None'
     else:
        return rs[0]
+
+
+async def query_sync_tab_cfg_real(sync_tag):
+    sql = """SELECT  
+                GROUP_CONCAT(CONCAT(a.db_name,'.',a.tab_name,'$',a.schema_name)) AS sync_tab
+             FROM t_db_sync_tab_config a
+            WHERE a.sync_tag='{}' 
+            order by 1
+          """.format(sync_tag)
+    rs = await async_processer.query_one(sql)
+    if rs[0] is None :
+       return 'None'
+    else:
+       return rs[0]
+
+
 
 async def query_sync_log(sync_tag,market_id,sync_ywlx,begin_date,end_date):
     v_where=' and 1=1 '
@@ -296,6 +327,7 @@ async def save_sync_real(p_backup):
 
 async def check_sync_tab(p_sync_id):
     st = "select count(0) from t_db_sync_tab_config where id={}".format(p_sync_id)
+    print('st=',st)
     rs = await async_processer.query_one(st)
     print('check_sync_tab=>st=',st,rs[0])
     return rs[0]
@@ -330,7 +362,7 @@ async def save_sync_tab(p_sync):
                        where id = '{}'""".format(sync_tag,db_name, schema_name, tab_name, sync_cols, sync_incr_col, sync_time,sync_id)
             result['code']    = '0'
             result['message'] = '更新成功!'
-        print(sql)
+        print('save_sync_tab=',sql)
         await async_processer.exec_sql(sql)
         await async_processer.exec_sql("update t_db_sync_config set sync_table='{}' where sync_tag='{}'".format(sync_tag,await query_sync_tab_cfg(sync_tag)))
         return result
@@ -460,6 +492,74 @@ async def upd_sync(p_sync):
         result['message'] = '更新失败！'
         return result
 
+async def upd_sync_real(p_sync):
+    result={}
+    val = await check_sync(p_sync,'upd')
+    if  val['code'] == '-1':
+        return val
+    try:
+        sync_server          = p_sync['sync_server']
+        sour_db_server       = p_sync['sour_db_server']
+        desc_db_server       = p_sync['desc_db_server']
+        sync_tag             = p_sync['sync_tag']
+        sync_ywlx            = p_sync['sync_ywlx']
+        sync_type            = p_sync['sync_data_type']
+        script_base          = p_sync['script_base']
+        script_name          = p_sync['script_name']
+        run_time             = p_sync['run_time']
+        task_desc            = p_sync['task_desc']
+        python3_home         = p_sync['python3_home']
+        sync_tables          = p_sync['sync_tables']
+        sync_batch_size      = p_sync['sync_batch_size']
+        sync_batch_size_incr = p_sync['sync_batch_size_incr']
+        sync_gap             = p_sync['sync_gap']
+        batch_timeout        = p_sync['batch_timeout']
+        batch_row_event      = p_sync['batch_row_event']
+        apply_timeout        = p_sync['apply_timeout']
+        api_server           = p_sync['api_server']
+        status               = p_sync['status']
+        sync_id              = p_sync['sync_id']
+
+        sql = """update t_db_sync_config 
+                     set server_id         ='{0}',
+                         sour_db_id        ='{1}',
+                         desc_db_id        ='{2}',
+                         sync_tag          ='{3}',
+                         sync_ywlx         ='{4}',
+                         sync_type         ='{5}', 
+                         comments          ='{6}',
+                         run_time          ='{7}',
+                         sync_table        ='{8}',
+                         batch_size        ='{9}',
+                         batch_size_incr   ='{10}',
+                         sync_gap          ='{11}',
+                         script_path       ='{12}',
+                         script_file       ='{13}',
+                         python3_home      ='{14}',
+                         api_server        ='{15}',
+                         status            ='{16}',
+                         batch_timeout     ='{17}',
+                         batch_row_event   ='{18}',
+                         apply_timeout     ='{19}'
+                   where id={20}""".format(sync_server, sour_db_server, desc_db_server,
+                                           sync_tag, sync_ywlx, sync_type,
+                                           task_desc, run_time, sync_tables,
+                                           sync_batch_size, sync_batch_size_incr, sync_gap,
+                                           script_base, script_name,python3_home,
+                                           api_server, status,batch_timeout,
+                                           batch_row_event, apply_timeout,sync_id)
+        print(sql)
+        await async_processer.exec_sql(sql)
+        result={}
+        result['code']='0'
+        result['message']='更新成功！'
+        return result
+    except :
+        result['code'] = '-1'
+        result['message'] = '更新失败！'
+        return result
+
+
 async def del_sync(p_syncid):
     try:
         sql="delete from t_db_sync_config  where id='{0}'".format(p_syncid)
@@ -548,10 +648,12 @@ async def check_sync(p_server,p_flag):
         result['message'] = 'PYTHON3主目录不能为空！'
         return result
 
-    if p_server["sync_schema"] == "":
-        result['code'] = '-1'
-        result['message'] = '同步数据库名不能为空！'
-        return result
+
+    if  p_server["sync_data_type"] not in('7','8','9'):
+        if p_server["sync_schema"] == "":
+            result['code'] = '-1'
+            result['message'] = '同步数据库名不能为空！'
+            return result
 
     if p_server["sync_tables"] == "":
         result['code'] = '-1'
@@ -573,20 +675,22 @@ async def check_sync(p_server,p_flag):
         result['message'] = '同步间隔不能为空！'
         return result
 
-    if p_server["sync_col_name"] == "":
-        result['code'] = '-1'
-        result['message'] = '新增同步列名不能为空！'
-        return result
+    if p_server["sync_data_type"] not in ('7', '8', '9'):
 
-    if p_server["sync_col_val"] == "":
-        result['code'] = '-1'
-        result['message'] = '新增同步列值不能为空！'
-        return result
+        if p_server["sync_col_name"] == "":
+            result['code'] = '-1'
+            result['message'] = '新增同步列名不能为空！'
+            return result
 
-    if p_server["sync_time_type"] == "":
-        result['code'] = '-1'
-        result['message'] = '同步时间类型不能为空！'
-        return result
+        if p_server["sync_col_val"] == "":
+            result['code'] = '-1'
+            result['message'] = '新增同步列值不能为空！'
+            return result
+
+        if p_server["sync_time_type"] == "":
+            result['code'] = '-1'
+            result['message'] = '同步时间类型不能为空！'
+            return result
 
     if p_server["api_server"] == "":
         result['code'] = '-1'
@@ -671,11 +775,6 @@ async def check_sync_real(p_server,p_flag):
         result['message'] = '同步表列表不能为空！'
         return result
 
-    if p_server["sync_schema_dest"] == "":
-        result['code'] = '-1'
-        result['message'] = '目标数据库名不能为空！'
-        return result
-
     if p_server["sync_batch_size"] == "":
         result['code'] = '-1'
         result['message'] = '全量批大小不能为空！'
@@ -729,7 +828,10 @@ async def get_sync_by_syncid(p_syncid):
                     api_server,
                     status,
                     ifnull(sync_schema_dest,'') as sync_schema_dest,
-                    sync_repair_day
+                    sync_repair_day,
+                    batch_timeout,
+                    apply_timeout,
+                    batch_row_event
              from t_db_sync_config where id={0}""".format(p_syncid)
     return await async_processer.query_dict_one(sql)
 
@@ -1229,6 +1331,35 @@ def get_mysql_tables_list(db_ip, db_port, db_service, db_user, db_pass,proxy_ser
         'db_pass': db_pass,
     }
     url = 'http://{}/get_mysql_tables'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+def get_mysql_databases_list(db_ip, db_port, db_service, db_user, db_pass,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+    }
+    url = 'http://{}/get_mysql_databases'.format(proxy_server)
+    res = requests.post(url, data=data)
+    res = json.loads(res.text)
+    return res
+
+
+def get_ck_databases_list(db_ip, db_port, db_service, db_user, db_pass,proxy_server):
+    data = {
+        'db_ip': db_ip,
+        'db_port': db_port,
+        'db_service': db_service,
+        'db_user': db_user,
+        'db_pass': db_pass,
+    }
+    url = 'http://{}/get_ck_databases'.format(proxy_server)
+    print('url=',url)
+    print('data=',data)
     res = requests.post(url, data=data)
     res = json.loads(res.text)
     return res

@@ -128,27 +128,31 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         db = get_connection_ds_read_limit(p_ds, read_timeout)
 
     try:
+        # check sql rwos
         cr = db.cursor()
+        st = """select count(0) from ({}) AS x""".format(p_sql)
+        cr.execute(st)
+        rs = cr.fetchone()
+        rule = await get_audit_rule('switch_query_rows')
+        if rs[0] > int(rule['rule_value']):
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+
+        # execute query
         cr.execute(p_sql)
         rs = cr.fetchall()
-        #get sensitive column
+        # get sensitive column
         c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
-        #process desc
+        # process desc
         i_sensitive = []
         desc = cr.description
         for i in range(len(desc)):
             if desc[i][0] in c_sensitive:
                 i_sensitive.append(i)
             columns.append({"title": desc[i][0]})
-
-        #check sql rwos
-        rule = await get_audit_rule('switch_query_rows')
-        if len(rs)>int(rule['rule_value']):
-            result['status'] = '1'
-            result['msg'] = rule['error'].format(rule['rule_value'])
-            result['data'] = ''
-            result['column'] = ''
-            return result
 
         #process data
         for i in rs:

@@ -322,7 +322,7 @@ async def save_ds(p_ds):
         ds_user         = p_ds['user']
         ds_proxy_status = p_ds['proxy_status']
         ds_proxy_server = p_ds['proxy_server']
-        read_db         = p_ds['read_db']
+        read_db         = p_ds.get('read_db')
         stream_load     = p_ds['stream_load']
 
         if p_ds['pass'] != '':

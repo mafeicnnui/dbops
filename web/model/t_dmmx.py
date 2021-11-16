@@ -193,6 +193,6 @@ async def get_datax_sync_db_server():
     return await async_processer.query_list(sql)
 
 async def get_datax_sync_db_server_doris():
-    sql = """select id,db_desc from t_db_source  where  db_type in(8) and db_env in(1,2,3,4) 
+    sql = """select id,db_desc from t_db_source  where  db_type in(8,9) and db_env in(1,2,3,4) 
                 and STATUS=1 and user!='puppet' order by db_desc,db_type"""
     return await async_processer.query_list(sql)
