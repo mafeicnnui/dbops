@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>实时同步变更</title>
+    <title>实时同步克隆</title>
     <style>
        #example{
             width: 100% !important;
@@ -77,39 +77,6 @@
                         {% end %}
                     </select>
                </div>
-           </div>
-         </div>
-       </div>
-       <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>日志数据库</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="sour_db_log_server" >
-                        <option value='' selected = "selected">......</option>
-                        {% for var in db_server %}
-                               {%  if var[0]==sour_db_log_server %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                        {% end %}
-                    </select>
-               </div>
-            </div>
-          </div>
-       </div>
-       <div class="row">
-          <div class="col-md-6">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>日志库名称</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="log_db_name"  type="text" class="form-control" placeholder="请输入日志库名称" value="{{log_db_name}}">
-                </div>
            </div>
          </div>
        </div>
@@ -901,7 +868,7 @@
         $("#save").click(function () {
           console.log(" status:",$('#status').val())
           $.ajax({
-            url: "/sync/real/edit/save",
+            url: "/sync/real/clone/save",
             type: "post",
             datatype: "json",
             data: {
@@ -909,8 +876,6 @@
                     sync_server          : $('#sync_server').val(),
                     sour_db_server       : $('#sour_db_server').val(),
                     desc_db_server       : $('#desc_db_server').val(),
-                    sour_db_log_server   : $('#sour_db_log_server').val(),
-                    log_db_name          : $('#log_db_name').val(),
                     sync_tag             : $('#sync_tag').val(),
                     sync_ywlx            : $('#sync_ywlx').val(),
                     sync_data_type       : $('#sync_data_type').val(),
@@ -933,7 +898,7 @@
             success: function (dataSet) {
                 console.log(dataSet.code, dataSet.message);
                 if (dataSet.code==0) {
-                   swal("变更成功", "", "success")
+                   swal("克隆成功", "", "success")
                 } else {
                    swal(dataSet.message, "", "error")
                 }

@@ -403,7 +403,7 @@ PROPERTIES (
                     </div>
                    <div class="col-md-10">
                         <select class="form-control select" id="doris_sync_type" >
-                            {% for var in dm_doris_sync_type %}
+                            {% for var in dm_sync_doris_type %}
                                 {%  if var[0]=='3' %}
                                    <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
                                 {% else %}

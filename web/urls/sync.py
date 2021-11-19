@@ -8,7 +8,7 @@
 from web.services.sync  import syncadd,syncadd_save,syncadd_save_tab,syncadd_del_tab,syncquery,sync_query,sync_query_tab,sync_query_sync_tabs,syncchange,syncedit,syncedit_save,syncclone,syncclone_save,syncedit_del,synclogquery
 from web.services.sync  import sync_log_query,sync_log_query_detail,syncedit_push,syncedit_run,syncedit_stop,syncloganalyze,sync_log_analyze,get_sync_tasks,get_sync,get_mssql_tables,get_mysql_tables
 from web.services.sync  import get_mssql_columns,get_mysql_columns,get_mssql_incr_columns,get_mysql_incr_columns,sync_real_edit_save
-from web.services.sync  import sync_real,sync_real_save,get_mysql_databases,sync_query_tab_real,sync_query_sync_tabs_real,get_ck_databases
+from web.services.sync  import sync_real,sync_real_save,get_mysql_databases,sync_query_tab_real,sync_query_sync_tabs_real,get_ck_databases,sync_real_clone_save
 
 sync = [
 
@@ -52,6 +52,7 @@ sync = [
         (r"/sync/real", sync_real),
         (r"/sync/real/add/save", sync_real_save),
         (r"/sync/real/edit/save", sync_real_edit_save),
+        (r"/sync/real/clone/save", sync_real_clone_save),
 
 
 

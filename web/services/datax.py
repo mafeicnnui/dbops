@@ -197,7 +197,7 @@ class syncedit_datax(base_handler.TokenHandler):
                     doris_batch_size     = d_sync['doris_batch_size'],
                     doris_jvm            = d_sync['doris_jvm'],
                     doris_tab_config     = d_sync['doris_tab_config'],
-                    dm_doris_sync_type   = await get_dmm_from_dm('44'),
+                    dm_sync_doris_type   = await get_dmm_from_dm('44'),
                     doris_sync_type      = d_sync['doris_sync_type'],
 
         )
@@ -291,7 +291,7 @@ class syncclone_datax(base_handler.TokenHandler):
                     doris_batch_size     = d_sync['doris_batch_size'],
                     doris_jvm            = d_sync['doris_jvm'],
                     doris_tab_config     = d_sync['doris_tab_config'],
-                    dm_doris_sync_type   = await get_dmm_from_dm('44'),
+                    dm_sync_doris_type   = await get_dmm_from_dm('44'),
                     doris_sync_type      = d_sync['doris_sync_type'],
 
         )

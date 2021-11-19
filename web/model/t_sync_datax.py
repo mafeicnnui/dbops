@@ -13,6 +13,7 @@ from web.model.t_sql import get_mysql_proxy_result
 from web.utils.common    import aes_decrypt
 from web.model.t_ds       import get_ds_by_dsid
 from web.utils.mysql_async import async_processer
+from web.utils.mysql_sync import  sync_processer
 
 def get_sync_incr_where(p_sync):
     v_rq_col=p_sync['sour_incr_col']

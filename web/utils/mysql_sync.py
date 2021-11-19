@@ -110,6 +110,15 @@ class sync_processer:
                   v_list.append(list(r))
          return v_list
 
+    def query_list_by_ds(p_ds,p_sql):
+         with mysqlDsManager(p_ds) as cur:
+               cur.execute(p_sql)
+               v_list = []
+               rs = cur.fetchall()
+               for r in rs:
+                  v_list.append(list(r))
+         return v_list
+
     def query_dict_one(p_sql):
          with mysqlDictManager(db) as cur:
               cur.execute(p_sql)

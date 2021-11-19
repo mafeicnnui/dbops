@@ -197,6 +197,18 @@
                    </div>
                </div>
                <div class="row">
+                 <div class="col-md-6">
+                   <div class="form-group">
+                        <div>
+                            <label class="col-md-2 control-label"><span>*</span>目标库前缀</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="desc_db_prefix"  type="text" class="form-control" placeholder="请输入目标库前缀">
+                        </div>
+                   </div>
+                 </div>
+               </div>
+               <div class="row">
                     <div class="col-md-6">
                        <div class="form-group">
                             <div>
@@ -767,7 +779,8 @@
                     batch_row_event      : $('#batch_row_event').val(),
                     apply_timeout        : $('#apply_timeout').val(),
                     api_server           : $('#api_server').val(),
-                    status               : $('#status').val()
+                    status               : $('#status').val(),
+                    desc_db_prefix       : $('#desc_db_prefix').val(),
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {

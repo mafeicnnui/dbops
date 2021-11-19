@@ -10,7 +10,9 @@ from   web.model.t_sync import query_sync,query_sync_tab,query_sync_tab_cfg,save
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log,query_sync_tab_cfg_real
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_sync import get_mssql_tables_list,get_mysql_tables_list,get_mssql_columns_list,get_mysql_columns_list,get_mssql_incr_columns_list,get_mysql_incr_columns_list
-from   web.model.t_dmmx import get_dmm_from_dm,get_dmm_from_dm2,get_sync_server,get_sync_db_mysql_server,get_datax_sync_db_server_doris,get_sync_db_server,get_db_sync_tags,get_db_sync_tags_by_market_id,get_db_sync_ywlx,get_db_sync_ywlx_by_market_id
+from web.model.t_dmmx import get_dmm_from_dm, get_dmm_from_dm2, get_sync_server, get_sync_db_mysql_server, \
+    get_datax_sync_db_server_doris, get_sync_db_server, get_db_sync_tags, get_db_sync_tags_by_market_id, \
+    get_db_sync_ywlx, get_db_sync_ywlx_by_market_id, get_datax_real_sync_db_server
 from   web.model.t_sync import query_db_active_num,query_db_slow_num,query_sys_stats_num,query_sys_stats_idx,query_db_order_num,save_sync_real,get_mysql_databases_list,query_sync_tab_real
 from   web.model.t_sync import upd_sync_real,get_ck_databases_list
 from   web.utils.common import current_rq2,get_day_nday_ago,now,DateEncoder
@@ -122,14 +124,14 @@ class syncadd_save_tab(base_handler.TokenHandler):
         d_sync['sync_cols']         = self.get_argument("sync_cols")
         d_sync['sync_incr_col']     = self.get_argument("sync_incr_col")
         d_sync['sync_time']         = self.get_argument("sync_time")
+        d_sync['tab_status']        = self.get_argument("tab_status")
         result = await save_sync_tab(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
 class syncadd_del_tab(base_handler.TokenHandler):
     async def post(self):
-        d_sync = {}
-        d_sync['sync_id'] = self.get_argument("sync_id")
-        result = await del_sync_tab(d_sync)
+        sync_id = self.get_argument("sync_id")
+        result = await del_sync_tab(sync_id)
         self.write({"code": result['code'], "message": result['message']})
 
 class syncchange(base_handler.TokenHandler):
@@ -148,7 +150,7 @@ class syncedit(base_handler.TokenHandler):
                         sync_id                  =  sync_id,
                         sync_server              =  await get_sync_server(),
                         db_server                =  await get_sync_db_server(),
-                        db_server_doris          =  await get_datax_sync_db_server_doris(),
+                        db_server_doris          =  await get_datax_real_sync_db_server(),
                         dm_db_type               =  await get_dmm_from_dm('02'),
                         dm_sync_ywlx             =  await get_dmm_from_dm('08'),
                         dm_sync_data_type        =  await get_dmm_from_dm('09'),
@@ -156,6 +158,8 @@ class syncedit(base_handler.TokenHandler):
                         server_id                =  d_sync['server_id'],
                         sour_db_server           =  d_sync['sour_db_server'],
                         desc_db_server           =  d_sync['desc_db_server'],
+                        sour_db_log_server       =  d_sync['log_db_id'],
+                        log_db_name              =  d_sync['log_db_name'],
                         sync_tag                 =  d_sync['sync_tag'],
                         sync_ywlx                =  d_sync['sync_ywlx'],
                         sync_data_type           =  d_sync['sync_data_type'],
@@ -175,6 +179,7 @@ class syncedit(base_handler.TokenHandler):
                         apply_timeout            =  d_sync['apply_timeout'],
                         api_server               =  d_sync['api_server'],
                         status                   =  d_sync['status'],
+                        desc_db_prefix           =  d_sync['desc_db_prefix'],
                         )
         else:
             self.render("./sync/sync_edit.html",
@@ -214,68 +219,104 @@ class syncedit_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_sync = {}
-        d_sync['sync_server']     = self.get_argument("sync_server")
-        d_sync['sour_db_server']  = self.get_argument("sour_db_server")
-        d_sync['desc_db_server']  = self.get_argument("desc_db_server")
-        d_sync['sync_tag']        = self.get_argument("sync_tag")
-        d_sync['sync_ywlx']       = self.get_argument("sync_ywlx")
-        d_sync['sync_data_type']  = self.get_argument("sync_data_type")
-        d_sync['script_base']     = self.get_argument("script_base")
-        d_sync['script_name']     = self.get_argument("script_name")
-        d_sync['run_time']        = self.get_argument("run_time")
-        d_sync['task_desc']       = self.get_argument("task_desc")
-        d_sync['python3_home']    = self.get_argument("python3_home")
-        d_sync['sync_schema']     = self.get_argument("sync_schema")
-        d_sync['sync_schema_dest'] = self.get_argument("sync_schema_dest")
-        d_sync['sync_tables']     = self.get_argument("sync_tables")
-        d_sync['sync_batch_size'] = self.get_argument("sync_batch_size")
+        d_sync['sync_server']        = self.get_argument("sync_server")
+        d_sync['sour_db_server']     = self.get_argument("sour_db_server")
+        d_sync['desc_db_server']     = self.get_argument("desc_db_server")
+        d_sync['sync_tag']           = self.get_argument("sync_tag")
+        d_sync['sync_ywlx']          = self.get_argument("sync_ywlx")
+        d_sync['sync_data_type']     = self.get_argument("sync_data_type")
+        d_sync['script_base']        = self.get_argument("script_base")
+        d_sync['script_name']        = self.get_argument("script_name")
+        d_sync['run_time']           = self.get_argument("run_time")
+        d_sync['task_desc']          = self.get_argument("task_desc")
+        d_sync['python3_home']       = self.get_argument("python3_home")
+        d_sync['sync_schema']        = self.get_argument("sync_schema")
+        d_sync['sync_schema_dest']   = self.get_argument("sync_schema_dest")
+        d_sync['sync_tables']        = self.get_argument("sync_tables")
+        d_sync['sync_batch_size']    = self.get_argument("sync_batch_size")
         d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
-        d_sync['sync_gap']       = self.get_argument("sync_gap")
-        d_sync['sync_col_name']  = self.get_argument("sync_col_name")
-        d_sync['sync_col_val']   = self.get_argument("sync_col_val")
-        d_sync['sync_time_type'] = self.get_argument("sync_time_type")
-        d_sync['sync_repair_day']= self.get_argument("sync_repair_day")
-        d_sync['api_server']     = self.get_argument("api_server")
-        d_sync['status']         = self.get_argument("status")
-        d_sync['sync_id']        = self.get_argument("sync_id")
+        d_sync['sync_gap']           = self.get_argument("sync_gap")
+        d_sync['sync_col_name']      = self.get_argument("sync_col_name")
+        d_sync['sync_col_val']       = self.get_argument("sync_col_val")
+        d_sync['sync_time_type']     = self.get_argument("sync_time_type")
+        d_sync['sync_repair_day']    = self.get_argument("sync_repair_day")
+        d_sync['api_server']         = self.get_argument("api_server")
+        d_sync['status']             = self.get_argument("status")
+        d_sync['sync_id']            = self.get_argument("sync_id")
         result = await upd_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
 class syncclone(base_handler.TokenHandler):
     async def get(self):
-        sync_id   = self.get_argument("sync_id")
-        d_sync    = await get_sync_by_syncid(sync_id)
-        self.render("./sync/sync_clone.html",
-                    sync_server          = await get_sync_server(),
-                    db_server            = await get_sync_db_server(),
-                    dm_db_type           = await get_dmm_from_dm('02'),
-                    dm_sync_ywlx         = await get_dmm_from_dm('08'),
-                    dm_sync_data_type    = await get_dmm_from_dm('09'),
-                    dm_sync_time_type    = await get_dmm_from_dm('10'),
-                    server_id            = d_sync['server_id'],
-                    sour_db_server       = d_sync['sour_db_server'],
-                    desc_db_server       = d_sync['desc_db_server'],
-                    sync_tag             = d_sync['sync_tag']+'_clone',
-                    sync_ywlx            = d_sync['sync_ywlx'],
-                    sync_data_type       = d_sync['sync_data_type'],
-                    script_base          = d_sync['script_base'],
-                    script_name          = d_sync['script_name'],
-                    run_time             = d_sync['run_time'],
-                    task_desc            = d_sync['task_desc']+'_clone',
-                    python3_home         = d_sync['python3_home'],
-                    sync_schema          = d_sync['sync_schema'],
-                    sync_schema_dest     = d_sync['sync_schema_dest'],
-                    sync_tables          = d_sync['sync_tables'],
-                    sync_batch_size      = d_sync['sync_batch_size'],
-                    sync_batch_size_incr = d_sync['sync_batch_size_incr'],
-                    sync_gap             = d_sync['sync_gap'],
-                    sync_col_name        = d_sync['sync_col_name'],
-                    sync_col_val         = d_sync['sync_col_val'],
-                    sync_time_type       = d_sync['sync_time_type'],
-                    sync_repair_day      = d_sync['sync_repair_day'],
-                    api_server           = d_sync['api_server'],
-                    status               = d_sync['status'],
-                    )
+        sync_id = self.get_argument("sync_id")
+        d_sync  = await get_sync_by_syncid(sync_id)
+        print('d_sync=',d_sync)
+        if d_sync['sync_data_type'] in ('7', '8', '9'):
+            self.render("./sync/sync_clone_real.html",
+                        sync_id              =  sync_id,
+                        sync_server          = await get_sync_server(),
+                        db_server            = await get_sync_db_server(),
+                        db_server_doris      = await get_datax_real_sync_db_server(),
+                        dm_db_type           = await get_dmm_from_dm('02'),
+                        dm_sync_ywlx         = await get_dmm_from_dm('08'),
+                        dm_sync_data_type    = await get_dmm_from_dm('09'),
+                        dm_sync_time_type    = await get_dmm_from_dm('10'),
+                        server_id            = d_sync['server_id'],
+                        sour_db_server       = d_sync['sour_db_server'],
+                        desc_db_server       = d_sync['desc_db_server'],
+                        sync_tag             = d_sync['sync_tag'],
+                        sync_ywlx            = d_sync['sync_ywlx'],
+                        sync_data_type       = d_sync['sync_data_type'],
+                        script_base          = d_sync['script_base'],
+                        script_name          = d_sync['script_name'],
+                        run_time             = d_sync['run_time'],
+                        task_desc            = d_sync['task_desc'],
+                        python3_home         = d_sync['python3_home'],
+                        sync_schema          = d_sync['sync_schema'],
+                        sync_schema_dest     = d_sync['sync_schema_dest'],
+                        sync_tables          = d_sync['sync_tables'],
+                        sync_batch_size      = d_sync['sync_batch_size'],
+                        sync_batch_size_incr = d_sync['sync_batch_size_incr'],
+                        sync_gap             = d_sync['sync_gap'],
+                        batch_timeout        = d_sync['batch_timeout'],
+                        batch_row_event      = d_sync['batch_row_event'],
+                        apply_timeout        = d_sync['apply_timeout'],
+                        api_server           = d_sync['api_server'],
+                        status               = d_sync['status'],
+                        desc_db_prefix       = d_sync['desc_db_prefix'],
+                        )
+        else:
+            self.render("./sync/sync_clone.html",
+                        sync_server          = await get_sync_server(),
+                        db_server            = await get_sync_db_server(),
+                        dm_db_type           = await get_dmm_from_dm('02'),
+                        dm_sync_ywlx         = await get_dmm_from_dm('08'),
+                        dm_sync_data_type    = await get_dmm_from_dm('09'),
+                        dm_sync_time_type    = await get_dmm_from_dm('10'),
+                        server_id            = d_sync['server_id'],
+                        sour_db_server       = d_sync['sour_db_server'],
+                        desc_db_server       = d_sync['desc_db_server'],
+                        sync_tag             = d_sync['sync_tag']+'_clone',
+                        sync_ywlx            = d_sync['sync_ywlx'],
+                        sync_data_type       = d_sync['sync_data_type'],
+                        script_base          = d_sync['script_base'],
+                        script_name          = d_sync['script_name'],
+                        run_time             = d_sync['run_time'],
+                        task_desc            = d_sync['task_desc']+'_clone',
+                        python3_home         = d_sync['python3_home'],
+                        sync_schema          = d_sync['sync_schema'],
+                        sync_schema_dest     = d_sync['sync_schema_dest'],
+                        sync_tables          = d_sync['sync_tables'],
+                        sync_batch_size      = d_sync['sync_batch_size'],
+                        sync_batch_size_incr = d_sync['sync_batch_size_incr'],
+                        sync_gap             = d_sync['sync_gap'],
+                        sync_col_name        = d_sync['sync_col_name'],
+                        sync_col_val         = d_sync['sync_col_val'],
+                        sync_time_type       = d_sync['sync_time_type'],
+                        sync_repair_day      = d_sync['sync_repair_day'],
+                        api_server           = d_sync['api_server'],
+                        status               = d_sync['status'],
+                        )
 
 class syncclone_save(base_handler.TokenHandler):
     async def post(self):
@@ -666,7 +707,7 @@ class sync_real(base_handler.TokenHandler):
         self.render("./sync/sync_add_real.html",
                     sync_server       = await get_sync_server(),
                     db_mysql_server   = await get_sync_db_mysql_server(),
-                    db_server_doris   = await get_datax_sync_db_server_doris(),
+                    db_server_doris   = await get_datax_real_sync_db_server(),
                     db_server         = await get_sync_db_server(),
                     dm_db_type        = await get_dmm_from_dm('02'),
                     dm_sync_ywlx      = await get_dmm_from_dm('08'),
@@ -698,11 +739,45 @@ class sync_real_save(base_handler.TokenHandler):
         d_sync['apply_timeout']        = self.get_argument("apply_timeout")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
+        d_sync['desc_db_prefix']      = self.get_argument("desc_db_prefix")
+
         result = await save_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
 
 class sync_real_edit_save(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        d_sync = {}
+        d_sync['sync_server']          = self.get_argument("sync_server")
+        d_sync['sour_db_server']       = self.get_argument("sour_db_server")
+        d_sync['desc_db_server']       = self.get_argument("desc_db_server")
+        d_sync['sour_db_log_server']   = self.get_argument("sour_db_log_server")
+        d_sync['log_db_name']          = self.get_argument("log_db_name")
+        d_sync['sync_tag']             = self.get_argument("sync_tag")
+        d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
+        d_sync['sync_data_type']       = self.get_argument("sync_data_type")
+        d_sync['script_base']          = self.get_argument("script_base")
+        d_sync['script_name']          = self.get_argument("script_name")
+        d_sync['run_time']             = self.get_argument("run_time")
+        d_sync['task_desc']            = self.get_argument("task_desc")
+        d_sync['python3_home']         = self.get_argument("python3_home")
+        d_sync['sync_tables']          = self.get_argument("sync_tables")
+        d_sync['sync_batch_size']      = self.get_argument("sync_batch_size")
+        d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
+        d_sync['sync_gap']             = self.get_argument("sync_gap")
+        d_sync['batch_timeout']        = self.get_argument("batch_timeout")
+        d_sync['batch_row_event']      = self.get_argument("batch_row_event")
+        d_sync['apply_timeout']        = self.get_argument("apply_timeout")
+        d_sync['api_server']           = self.get_argument("api_server")
+        d_sync['status']               = self.get_argument("status")
+        d_sync['sync_id']              = self.get_argument("sync_id")
+        d_sync['desc_db_prefix']      = self.get_argument("desc_db_prefix")
+        result = await upd_sync_real(d_sync)
+        self.write({"code": result['code'], "message": result['message']})
+
+
+class sync_real_clone_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         d_sync = {}
@@ -726,6 +801,6 @@ class sync_real_edit_save(base_handler.TokenHandler):
         d_sync['apply_timeout']        = self.get_argument("apply_timeout")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
-        d_sync['sync_id']              = self.get_argument("sync_id")
-        result = await upd_sync_real(d_sync)
+        d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
+        result = await save_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
