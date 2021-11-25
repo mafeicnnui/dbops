@@ -244,27 +244,14 @@
                        </div>
                     </div>
                </div>
-
-              <div class="row">
-                    <div class="col-md-6">
-                       <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label"><span>*</span>批超时设置</label>
-                            </div>
-                            <div class="col-md-10">
-                                <input id="batch_timeout"  type="text" class="form-control" placeholder="请输入批超时设置"  value="10" >
-                            </div>
-                       </div>
-                    </div>
-               </div>
                <div class="row">
                     <div class="col-md-6">
                        <div class="form-group">
                             <div>
-                                <label class="col-md-2 control-label"><span>*</span>行事件数阀值</label>
+                                <label class="col-md-2 control-label"><span>*</span>进程数</label>
                             </div>
                             <div class="col-md-10">
-                                <input id="batch_row_event"  type="text" class="form-control" placeholder="行事件数"  value="1000" >
+                                <input id="process_num"  type="text" class="form-control" placeholder="进程数"  value="1000" >
                             </div>
                        </div>
                     </div>
@@ -775,8 +762,7 @@
                     sync_batch_size      : $('#sync_batch_size').val(),
                     sync_batch_size_incr : $('#sync_batch_size_incr').val(),
                     sync_gap             : $('#sync_gap').val(),
-                    batch_timeout        : $('#batch_timeout').val(),
-                    batch_row_event      : $('#batch_row_event').val(),
+                    process_num          : $('#process_num').val(),
                     apply_timeout        : $('#apply_timeout').val(),
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val(),

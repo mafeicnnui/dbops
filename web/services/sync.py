@@ -174,8 +174,7 @@ class syncedit(base_handler.TokenHandler):
                         sync_batch_size          =  d_sync['sync_batch_size'],
                         sync_batch_size_incr     =  d_sync['sync_batch_size_incr'],
                         sync_gap                 =  d_sync['sync_gap'],
-                        batch_timeout            =  d_sync['batch_timeout'],
-                        batch_row_event          =  d_sync['batch_row_event'],
+                        process_num              =  d_sync['process_num'],
                         apply_timeout            =  d_sync['apply_timeout'],
                         api_server               =  d_sync['api_server'],
                         status                   =  d_sync['status'],
@@ -264,6 +263,8 @@ class syncclone(base_handler.TokenHandler):
                         server_id            = d_sync['server_id'],
                         sour_db_server       = d_sync['sour_db_server'],
                         desc_db_server       = d_sync['desc_db_server'],
+                        sour_db_log_server   = d_sync['log_db_id'],
+                        log_db_name          = d_sync['log_db_name'],
                         sync_tag             = d_sync['sync_tag'],
                         sync_ywlx            = d_sync['sync_ywlx'],
                         sync_data_type       = d_sync['sync_data_type'],
@@ -734,12 +735,11 @@ class sync_real_save(base_handler.TokenHandler):
         d_sync['sync_batch_size']      = self.get_argument("sync_batch_size")
         d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
         d_sync['sync_gap']             = self.get_argument("sync_gap")
-        d_sync['batch_timeout']        = self.get_argument("batch_timeout")
-        d_sync['batch_row_event']      = self.get_argument("batch_row_event")
+        d_sync['process_num']          = self.get_argument("process_num")
         d_sync['apply_timeout']        = self.get_argument("apply_timeout")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
-        d_sync['desc_db_prefix']      = self.get_argument("desc_db_prefix")
+        d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
 
         result = await save_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
@@ -766,8 +766,7 @@ class sync_real_edit_save(base_handler.TokenHandler):
         d_sync['sync_batch_size']      = self.get_argument("sync_batch_size")
         d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
         d_sync['sync_gap']             = self.get_argument("sync_gap")
-        d_sync['batch_timeout']        = self.get_argument("batch_timeout")
-        d_sync['batch_row_event']      = self.get_argument("batch_row_event")
+        d_sync['process_num']          = self.get_argument("process_num")
         d_sync['apply_timeout']        = self.get_argument("apply_timeout")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
@@ -796,11 +795,11 @@ class sync_real_clone_save(base_handler.TokenHandler):
         d_sync['sync_batch_size']      = self.get_argument("sync_batch_size")
         d_sync['sync_batch_size_incr'] = self.get_argument("sync_batch_size_incr")
         d_sync['sync_gap']             = self.get_argument("sync_gap")
-        d_sync['batch_timeout']        = self.get_argument("batch_timeout")
-        d_sync['batch_row_event']      = self.get_argument("batch_row_event")
+        d_sync['process_num']          = self.get_argument("process_num")
         d_sync['apply_timeout']        = self.get_argument("apply_timeout")
         d_sync['api_server']           = self.get_argument("api_server")
         d_sync['status']               = self.get_argument("status")
         d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
+        d_sync['sync_id']              = self.get_argument("sync_id")
         result = await save_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})

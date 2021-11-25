@@ -296,6 +296,7 @@ async def save_sync_real(p_backup):
         return val
     try:
         result               = {}
+        sync_id              = p_backup['sync_id']
         sync_server          = p_backup['sync_server']
         sour_db_server       = p_backup['sour_db_server']
         desc_db_server       = p_backup['desc_db_server']
@@ -311,27 +312,34 @@ async def save_sync_real(p_backup):
         sync_batch_size      = p_backup['sync_batch_size']
         sync_batch_size_incr = p_backup['sync_batch_size_incr']
         sync_gap             = p_backup['sync_gap']
-        batch_timeout        = p_backup['batch_timeout']
-        batch_row_event      = p_backup['batch_row_event']
+        process_num          = p_backup['process_num']
         apply_timeout        = p_backup['apply_timeout']
         api_server           = p_backup['api_server']
         status               = p_backup['status']
         desc_db_prefix       = p_backup['desc_db_prefix']
 
-        sql = """insert into t_db_sync_config(
+        st = """insert into t_db_sync_config(
                           sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
                           comments,run_time,sync_table,batch_size,batch_size_incr,script_path,
                           script_file,python3_home,api_server,status,
-                          sync_gap,batch_timeout,batch_row_event,apply_timeout,desc_db_prefix)
+                          sync_gap,batch_timeout,process_num,desc_db_prefix)
                   values('{0}','{1}','{2}','{3}','{4}','{5}',
                          '{6}','{7}','{8}','{9}','{10}','{11}',
                          '{12}','{13}','{14}','{15}',
-                         '{16}','{17}','{18}','{19}','{20}')
+                         '{16}','{17}','{18}','{19}')
                """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
                           task_desc, run_time, sync_tables,sync_batch_size, sync_batch_size_incr,script_base,
                           script_name, python3_home, api_server, status,
-                          sync_gap,batch_timeout,batch_row_event,apply_timeout,desc_db_prefix)
-        await async_processer.exec_sql(sql)
+                          sync_gap,process_num,apply_timeout,desc_db_prefix)
+        await async_processer.exec_sql(st)
+
+        st = """insert into t_db_sync_tab_config(sync_tag,db_name,schema_name,tab_name,STATUS)
+                select '{}',db_name,schema_name,tab_name,status 
+                from t_db_sync_tab_config 
+                where sync_tag=(select sync_tag from t_db_sync_config where id={})
+             """.format(sync_tag,sync_id)
+        await async_processer.exec_sql(st)
+
         result['code']='0'
         result['message']='保存成功！'
         return result
@@ -544,8 +552,7 @@ async def upd_sync_real(p_sync):
         sync_batch_size      = p_sync['sync_batch_size']
         sync_batch_size_incr = p_sync['sync_batch_size_incr']
         sync_gap             = p_sync['sync_gap']
-        batch_timeout        = p_sync['batch_timeout']
-        batch_row_event      = p_sync['batch_row_event']
+        process_num          = p_sync['process_num']
         apply_timeout        = p_sync['apply_timeout']
         api_server           = p_sync['api_server']
         status               = p_sync['status']
@@ -570,19 +577,18 @@ async def upd_sync_real(p_sync):
                          python3_home      ='{14}',
                          api_server        ='{15}',
                          status            ='{16}',
-                         batch_timeout     ='{17}',
-                         batch_row_event   ='{18}',
-                         apply_timeout     ='{19}',
-                         desc_db_prefix    ='{20}',
-                         log_db_id         ='{21}',
-                         log_db_name       ='{22}'                         
-                   where id={23}""".format(sync_server, sour_db_server, desc_db_server,
+                         process_num       ='{17}',
+                         apply_timeout     ='{18}',
+                         desc_db_prefix    ='{19}',
+                         log_db_id         ='{20}',
+                         log_db_name       ='{21}'                         
+                   where id={22}""".format(sync_server, sour_db_server, desc_db_server,
                                            sync_tag, sync_ywlx, sync_type,
                                            task_desc, run_time, sync_tables,
                                            sync_batch_size, sync_batch_size_incr, sync_gap,
                                            script_base, script_name,python3_home,
-                                           api_server, status,batch_timeout,
-                                           batch_row_event, apply_timeout,desc_db_prefix,sour_db_log_server,log_db_name,
+                                           api_server, status,process_num,
+                                           apply_timeout,desc_db_prefix,sour_db_log_server,log_db_name,
                                            sync_id)
         print(sql)
         await async_processer.exec_sql(sql)
@@ -865,9 +871,8 @@ async def get_sync_by_syncid(p_syncid):
                     status,
                     ifnull(sync_schema_dest,'') as sync_schema_dest,
                     sync_repair_day,
-                    batch_timeout,
                     apply_timeout,
-                    batch_row_event,
+                    process_num,
                     desc_db_prefix,
                     log_db_id,
                     log_db_name

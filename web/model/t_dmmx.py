@@ -152,7 +152,7 @@ async def get_db_backup_tags_by_env_type(p_env,p_type):
 
 async def get_sync_db_server():
     sql = """SELECT id,db_desc FROM t_db_source 
-            WHERE  db_type in(0,1,2,4,5,6) and db_env in(1,2,3,4,5,6)  and STATUS=1  ORDER BY db_desc,db_type"""
+            WHERE  db_type in(0,1,2,3,4,5,6) and db_env in(1,2,3,4,5,6)  and STATUS=1  ORDER BY db_desc,db_type"""
     return await async_processer.query_list(sql)
 
 async def get_bbtj_db_server():
