@@ -136,22 +136,19 @@ class get_time(base_handler.TokenHandler):
     def post(self):
         self.write(china_time())
 
-class logout(base_handler.TokenHandler):
+class logout(base_handler.BaseHandler):
     def get(self):
-        self.set_secure_cookie("username", '',expires_days=None)
-        self.set_secure_cookie("userid", '', expires_days=None)
-        self.set_secure_cookie("screen_lock_status", 'unlock')
         self.render("./login/page-logout.html")
 
 class error(base_handler.TokenHandler):
     def get(self):
         self.render("./login/page-500.html")
 
-class forget_password(base_handler.TokenHandler):
+class forget_password(base_handler.BaseHandler):
     def get(self):
         self.render("./login/forget_password.html")
 
-class forget_password_check_user(base_handler.TokenHandler):
+class forget_password_check_user(base_handler.BaseHandler):
     async def post(self):
         user    = self.get_argument("user")
         email   = self.get_argument("email")
@@ -164,19 +161,19 @@ class forget_password_check_user(base_handler.TokenHandler):
            v_title   = '用户:{0} 口令变更激活邮件.{1}'.format(user,current_time())
            v_content = """<p><h4>用户名：</h4>{}<p><h4>授权码：</h4>{}<p><h4>有效期：</h4>1分钟""".format(user,auth_string)
            settings  = await get_sys_settings()
-           send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'),email, v_title, v_content)
+           send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'),email, '',v_title, v_content)
            self.write({"code": '0', "message": '授权码已发送至邮箱!'})
         else:
            self.write({"code": result['code'], "message": result['message']})
 
-class forget_password_check_auth(base_handler.TokenHandler):
+class forget_password_check_auth(base_handler.BaseHandler):
     async def post(self):
         user     = self.get_argument("user")
         auth     = self.get_argument("auth")
         result   = await check_authcode(user,auth)
         self.write({"code": result['code'], "message": result['message']})
 
-class forget_password_check_pass(base_handler.TokenHandler):
+class forget_password_check_pass(base_handler.BaseHandler):
     async def post(self):
         user    = self.get_argument("user")
         auth    = self.get_argument("auth")

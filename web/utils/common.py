@@ -355,6 +355,7 @@ async def aes_encrypt(p_password,p_key):
 async def aes_decrypt(p_password,p_key):
         sql="""select aes_decrypt(unhex('{0}'),'{1}')""".format(p_password,p_key[::-1])
         rs = await async_processer.query_one(sql)
+        print(rs)
         return str(rs[0],encoding = "utf-8")
 
 
@@ -512,7 +513,7 @@ def get_file_contents(filename):
 
 def format_exception(v_sql):
     try:
-      return v_sql.split(',')[1].replace('"','')[0:-1]+'!'
+      return v_sql.split(',')[1].replace("'","").replace('"','')[0:-1]+'!'
     except:
       return v_sql
 

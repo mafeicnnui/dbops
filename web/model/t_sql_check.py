@@ -227,8 +227,6 @@ async def get_obj_privs_grammar(p_ds,p_sql):
         ob = get_obj_name(p_sql)
         db = get_db_name(p_sql)
         dp = 'drop table {}'
-        print('db=',db)
-        print('ds=',p_ds['service'])
         if db is not None:
             if db != p_ds['service']:
                return '语句中库名:{}与运行库名{}不同!'.format(db,p_ds['service'])
@@ -254,7 +252,6 @@ async def get_obj_privs_grammar(p_ds,p_sql):
                return '0'
     except :
         e = traceback.format_exc().split('Error: ')[1]
-        print('e=',e)
         return e
 
 async def get_obj_privs_grammar_proc(p_ds,p_sql):
@@ -333,10 +330,10 @@ async def get_tab_comment_multi(p_ds,p_sql,config):
         return str(e)
 
 async def get_col_comment(p_ds,p_sql):
+    ob = get_obj_name(p_sql)
+    op = get_obj_op(p_sql)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql)
-        op = get_obj_op(p_sql)
-        dp = 'drop table {}'
         st = '''SELECT table_name,column_name,CASE WHEN column_comment!='' THEN 1 ELSE 0 END 
                   FROM  information_schema.columns   
                      WHERE UPPER(table_schema)=DATABASE()  AND UPPER(table_name) = upper('{}')'''
@@ -361,6 +358,10 @@ async def get_col_comment(p_ds,p_sql):
                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                return col
     except Exception as e:
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_col_comment_multi(p_ds,p_sql,config):
@@ -391,11 +392,11 @@ async def get_col_comment_multi(p_ds,p_sql,config):
         return process_result(str(e))
 
 async def get_col_default_value(p_ds,p_sql):
+    ob = get_obj_name(p_sql)
+    op = get_obj_op(p_sql)
+    tb = await f_get_table_ddl(p_ds, ob)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql)
-        op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
-        dp = 'drop table {}'
         st = '''SELECT table_name,column_name,CASE WHEN column_default is NULL AND is_nullable='NO' THEN 0 ELSE 1 END 
                  FROM  information_schema.columns   
                   WHERE UPPER(table_schema)=DATABASE()  
@@ -419,6 +420,10 @@ async def get_col_default_value(p_ds,p_sql):
                return rs
     except Exception as e:
         traceback.print_exc()
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_col_default_value_multi(p_ds,p_sql,config):
@@ -447,10 +452,10 @@ async def get_col_default_value_multi(p_ds,p_sql,config):
         return process_result(str(e))
 
 async def get_time_col_default_value(p_ds,p_sql):
+    ob = get_obj_name(p_sql)
+    op = get_obj_op(p_sql)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql)
-        op = get_obj_op(p_sql)
-        dp = 'drop table {}'
         st = '''SELECT  table_name, column_name,'CURRENT_TIMESTAMP',
                         CASE WHEN column_default='CURRENT_TIMESTAMP'  THEN  1 ELSE 0 END
                   FROM  information_schema.columns   
@@ -488,6 +493,11 @@ async def get_time_col_default_value(p_ds,p_sql):
               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
               return rs
     except Exception as e:
+        traceback.print_exc()
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_time_col_default_value_multi(p_ds,p_sql,config):
@@ -530,15 +540,23 @@ async def get_time_col_default_value_multi(p_ds,p_sql,config):
 async def get_tab_char_col_len(p_ds,p_sql,rule):
     ob = get_obj_name(p_sql)
     dp = 'drop table {}'
-    st = '''SELECT 
-                table_name,column_name,CASE WHEN character_maximum_length<={0} THEN 1 ELSE 0 END AS val
-              FROM  information_schema.columns   
-              WHERE UPPER(table_schema)=DATABASE()  AND data_type IN('varchar','char')
-                AND column_key!='PRI' AND UPPER(table_name) = upper('{1}')'''.format(rule['rule_value'], ob)
-    await async_processer.exec_sql_by_ds(p_ds, p_sql)
-    rs = await async_processer.query_list_by_ds(p_ds,st)
-    await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
-    return rs
+    try:
+        st = '''SELECT 
+                    table_name,column_name,CASE WHEN character_maximum_length<={0} THEN 1 ELSE 0 END AS val
+                  FROM  information_schema.columns   
+                  WHERE UPPER(table_schema)=DATABASE()  AND data_type IN('varchar','char')
+                    AND column_key!='PRI' AND UPPER(table_name) = upper('{1}')'''.format(rule['rule_value'], ob)
+        await async_processer.exec_sql_by_ds(p_ds, p_sql)
+        rs = await async_processer.query_list_by_ds(p_ds,st)
+        await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
+        return rs
+    except:
+       traceback.print_exc()
+       try:
+           await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
+       except:
+           pass
+       return  0
 
 async def get_tab_char_col_total_len(p_ds,p_sql,rule):
     ob = get_obj_name(p_sql)
@@ -834,6 +852,10 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                 return rs
     except Exception as e:
         traceback.print_exc()
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_tab_rows(p_ds,p_sql):
@@ -890,10 +912,10 @@ async def get_tab_has_fields_multi(p_ds,p_sql,p_rule,config):
         return process_result(str(e))
 
 async def get_tab_tcol_datetime(p_ds,p_sql,p_rule):
+    ob = get_obj_name(p_sql)
+    op = get_obj_op(p_sql)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql)
-        op = get_obj_op(p_sql)
-        dp = 'drop table {}'
         st = '''SELECT table_name,
                            'create_time' AS column_name
                      FROM  information_schema.tables a
@@ -936,6 +958,10 @@ async def get_tab_tcol_datetime(p_ds,p_sql,p_rule):
                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                return rs
     except Exception as e:
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_tab_tcol_datetime_multi(p_ds,p_sql,config):
@@ -983,10 +1009,10 @@ async def get_tab_tcol_datetime_multi(p_ds,p_sql,config):
         return process_result(str(e))
 
 async def get_col_not_null(p_ds,p_sql):
+    ob = get_obj_name(p_sql)
+    op = get_obj_op(p_sql)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql)
-        op = get_obj_op(p_sql)
-        dp = 'drop table {}'
         st = '''SELECT table_name,column_name,CASE WHEN is_nullable='YES' THEN 0 ELSE 1 END 
                 FROM  information_schema.columns  WHERE UPPER(table_schema)=DATABASE()  AND UPPER(table_name) = upper('{}')'''
         if op == 'CREATE_TABLE':
@@ -1008,6 +1034,10 @@ async def get_col_not_null(p_ds,p_sql):
                 await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                 return rs
     except Exception as e:
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_col_not_null_multi(p_ds,p_sql,config):
@@ -1227,7 +1257,6 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
             if get_obj_op(p_sql) in ('CREATE_TABLE', 'ALTER_TABLE_ADD'):
                 print('检查列注释...')
                 v = await get_col_comment(ds,st)
-                print('get_col_comment=',v)
                 e = rule['error']
                 try:
                     for i in v:
@@ -1461,36 +1490,41 @@ async def process_single_ddl_proc(p_dbid,p_cdb,p_sql,p_user):
     return res
 
 async def get_dml_privs_grammar(p_ds,p_sql):
+    ob = get_obj_name(p_sql.strip())
+    db = p_ds['service'] + '.'
+    op = get_obj_op(p_sql)
+    tb = await f_get_table_ddl(p_ds, ob)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql.strip())
-        op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
-        dp = 'drop table {}'
         if op in ('INSERT','UPDATE','DELETE'):
             if await check_mysql_tab_exists(p_ds, ob) == 0:
                return '表:{0}不存在!'.format(ob)
             else:
                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               print(p_sql.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(db,'').replace(ob, 'dbops_' + ob))
                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
                return None
     except Exception as e:
         traceback.print_exc()
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def get_dml_rows(p_ds,p_sql):
+    ob = get_obj_name(p_sql.strip())
+    db = p_ds['service'] + '.'
+    op = get_obj_op(p_sql)
+    tb = await f_get_table_ddl(p_ds, ob)
+    dp = 'drop table {}'
     try:
-        ob = get_obj_name(p_sql.strip())
-        op = get_obj_op(p_sql)
-        tb = await f_get_table_ddl(p_ds, ob)
-        dp = 'drop table {}'
         if await check_mysql_tab_exists(p_ds, ob) == 0:
             return '表:{0}不存在!'.format(ob)
 
         if op == 'INSERT':
            await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-           await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
+           await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(db,'').replace(ob, 'dbops_' + ob))
            st = 'select count(0) from {0}'.format('dbops_' + ob)
            rs = await async_processer.query_one_by_ds(p_ds,st)
            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
@@ -1521,6 +1555,10 @@ async def get_dml_rows(p_ds,p_sql):
                 return rs[0]
 
     except Exception as e:
+        try:
+            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        except:
+            pass
         return process_result(str(e))
 
 async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
@@ -1581,7 +1619,7 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
                       await save_check_results(rule,p_user,st,sxh)
                       res = False
                else:
-                   rule['error'] = format_exception(v)
+                   rule['error'] = format_sql(format_exception(v))
                    await save_check_results(rule, p_user,st,sxh)
                    res = False
 

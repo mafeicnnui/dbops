@@ -43,9 +43,6 @@ def dif_time(p_tm):
 
 async def logon_user_check(login_name,password,verify_code,verify_img):
     result={}
-    user = await get_user_by_loginame(login_name)
-    print('logon_user_check=',user)
-
     if login_name == "":
         result['code'] = '-1'
         result['message'] = '用户名不能为空！'
@@ -61,19 +58,22 @@ async def logon_user_check(login_name,password,verify_code,verify_img):
         result['message'] = '验证码不能为空！'
         return result
 
+    if verify_code.upper() != verify_img.upper():
+        result['code'] = '-1'
+        result['message'] = '验证码不正确！'
+        return result
+
+
     if await check_user_exist(login_name)==0:
         result['code'] = '-1'
         result['message'] = '用户名不存在！'
         return result
 
+    user = await get_user_by_loginame(login_name)
+
     if user['password']!=password:
         result['code'] = '-1'
         result['message'] = '口令有误！'
-        return result
-
-    if verify_code.upper()!=verify_img.upper():
-        result['code'] = '-1'
-        result['message'] = '验证码不正确！'
         return result
 
     if user['status']=='0':
@@ -434,7 +434,6 @@ async def save_user(p_user):
         result['message']='保存成功！'
         return result
     except Exception as e:
-        print(e)
         result['code'] = '-1'
         result['message'] = '保存失败！'
         return result
