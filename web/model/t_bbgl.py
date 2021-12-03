@@ -376,7 +376,7 @@ async def exp_data(static_path,p_bbdm,p_data,p_id):
         header_styles = set_header_styles(45,1)
         file_path = static_path + '/downloads/bbtj'
         os.system('cd {0}'.format(file_path))
-        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
+        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xlsx'.format(p_bbdm,current_rq())
         file_name_s = 'exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
 
         # write header

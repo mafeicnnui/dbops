@@ -142,7 +142,7 @@ async def check_authcode(user,auth_str):
        result['message'] = '授权码不正确!'
        return result
 
-    v_max_rq = await get_create_date_by_auth(await get_user_by_loginame(user)['userid'],auth_str)
+    v_max_rq = await get_create_date_by_auth((await get_user_by_loginame(user))['userid'],auth_str)
     if dif_time(v_max_rq)>60:
        result['code'] = '-1'
        result['message'] = '授权码已过期!'

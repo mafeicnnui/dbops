@@ -6,10 +6,11 @@
 # @Software: PyCharm
 
 import traceback
-from web.utils.common      import current_rq,get_connection_ds_sqlserver
+from web.utils.common import current_rq, get_connection_ds_sqlserver, get_connection_ds_ck
 from web.model.t_user      import get_user_by_loginame,get_user_by_userid,get_user_by_userid_sync
 from web.model.t_ds        import get_ds_by_dsid
-from web.model.t_sql import get_mysql_proxy_result_dict, get_sqlserver_proxy_result_dict, get_mysql_proxy_result
+from web.model.t_sql import get_mysql_proxy_result_dict, get_sqlserver_proxy_result_dict, get_mysql_proxy_result, \
+    get_ck_proxy_result_dict
 from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync import  sync_processer
 
@@ -583,6 +584,75 @@ async def get_tree_by_dbid(dbid,msg):
         result['db_url'] = ''
     return result
 
+def dataConvDict(desc,data):
+    res = []
+    for i in data:
+        tmp = []
+        for j in range(len(desc)):
+            if i[j] is None:
+                tmp.append('')
+            else:
+                tmp.append(str(i[j]))
+            res.append(dict(zip([d[0] for d in desc], tmp)))
+    return res
+
+
+async def get_tree_by_dbid_ck(dbid):
+    try:
+        result = {}
+        ds  = await get_ds_by_dsid(dbid)
+        db  = get_connection_ds_ck(ds)
+        cr  = db.cursor()
+        st1 = "select name as schema_name from system.databases where name not in('information_schema','INFORMATION_SCHEMA','system','default') order by name"
+        st2 = "select lower(name) as table_name from system.tables where database='{}' order by 1"
+        n_tree = []
+        cr.execute(st1)
+        ds1 = cr.description
+        rs1 = cr.fetchall()
+        rs1 = dataConvDict(ds1,rs1)
+        for db in rs1:
+            n_parent = {
+                'id'  : db['schema_name'],
+                'text': db['schema_name'],
+                'icon': 'mdi mdi-database',
+            }
+            cr.execute(st2.format(db['schema_name']))
+            ds2 = cr.description
+            rs2 = cr.fetchall()
+            rs2 = dataConvDict(ds2, rs2)
+            n_nodes = []
+            for tab in rs2:
+                n_child = {
+                    'id'  : tab['table_name'],
+                    'text': tab['table_name'],
+                    'icon': 'mdi mdi-table-large',
+                }
+                n_nodes.append(n_child)
+            n_parent['nodes']=n_nodes
+            n_tree.append(n_parent)
+
+        if ds['db_type'] =='0':
+            db_url ='MySQL://{}:{}/{}'.format(ds['ip'],ds['port'],ds['service'] )
+        elif ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(ds['ip'], ds['port'])
+        elif ds['db_type'] =='2':
+            db_url = 'SQLServer://{}:{}'.format(ds['ip'], ds['port'])
+        else:
+            db_url =''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc']    = ds['db_desc']
+        result['db_url']  = db_url
+
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
 async def get_tree_by_dbid_proxy(dbid):
     try:
         result = {}
@@ -592,7 +662,6 @@ async def get_tree_by_dbid_proxy(dbid):
         n_tree = []
 
         ret1   = get_mysql_proxy_result_dict(p_ds,sql1,p_ds['service'])
-        print('ret1=', ret1)
         if ret1['status'] == '1':
             result['code'] = '-1'
             result['message'] = '加载失败！'
@@ -608,7 +677,6 @@ async def get_tree_by_dbid_proxy(dbid):
                 'icon': 'mdi mdi-database',
             }
             ret2 = get_mysql_proxy_result_dict(p_ds, sql2.format(db['schema_name']), p_ds['service'])
-            print('ret2=', ret2)
             if ret1['status'] == '1':
                 result['code'] = '-1'
                 result['message'] = '加载失败！'
@@ -630,6 +698,74 @@ async def get_tree_by_dbid_proxy(dbid):
 
         if p_ds['db_type'] == '0':
             db_url = 'MySQL://{}:{}/{}'.format(p_ds['ip'], p_ds['port'], p_ds['service'])
+        elif p_ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] == '2':
+            db_url = 'SQLServer://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        else:
+            db_url = ''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc'] = p_ds['db_desc']
+        result['db_url'] = db_url
+
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
+async def get_tree_by_dbid_ck_proxy(dbid):
+    try:
+        result = {}
+        p_ds   = await get_ds_by_dsid(dbid)
+        st1 = "select name as schema_name from system.databases where name not in('information_schema','INFORMATION_SCHEMA','system','default') order by name"
+        st2 = "select lower(name) as table_name from system.tables where database='{0}' order by 1"
+        n_tree = []
+        ret1   = get_ck_proxy_result_dict(p_ds,st1,p_ds['service'])
+        print('ret1=', ret1)
+        if ret1['status'] == '1':
+            result['code'] = '-1'
+            result['message'] = '加载失败！'
+            result['desc'] = ''
+            result['db_url'] = ''
+            return result
+
+        rs1 = ret1['data']
+        print('get_tree_by_dbid_ck_proxy=',rs1)
+
+        for db in rs1:
+            n_parent = {
+                'id': db['schema_name'],
+                'text': db['schema_name'],
+                'icon': 'mdi mdi-database',
+            }
+            ret2 = get_ck_proxy_result_dict(p_ds, st2.format(db['schema_name']), p_ds['service'])
+            print('ret2=', ret2)
+            if ret1['status'] == '1':
+                result['code'] = '-1'
+                result['message'] = '加载失败！'
+                result['desc'] = ''
+                result['db_url'] = ''
+                return result
+            rs2 = ret2['data']
+
+            n_nodes = []
+            for tab in rs2:
+                n_child = {
+                    'id': tab['table_name'],
+                    'text': tab['table_name'],
+                    'icon': 'mdi mdi-table-large',
+                }
+                n_nodes.append(n_child)
+            n_parent['nodes'] = n_nodes
+            n_tree.append(n_parent)
+
+        if p_ds['db_type'] == '0':
+             db_url = 'MySQL://{}:{}/{}'.format(p_ds['ip'], p_ds['port'], p_ds['service'])
         elif p_ds['db_type'] == '1':
             db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
         elif p_ds['db_type'] == '2':

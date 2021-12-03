@@ -24,6 +24,8 @@ from elasticsearch import Elasticsearch
 from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync import sync_processer
 from PIL  import Image,ImageDraw,ImageFont,ImageFilter
+from clickhouse_driver import connect
+
 
 def get_server(p_host):
     if p_host == "124.127.103.190":
@@ -91,6 +93,16 @@ def get_connection_ds_read_limit(p_ds,p_timeout):
     conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password, db=service, charset='utf8',read_timeout=p_timeout)
     return conn
 
+def get_connection_ds_read_limit_ck(p_ds,p_timeout):
+    ip       = p_ds['ip']
+    port     = p_ds['port']
+    service  = p_ds['service']
+    user     = p_ds['user']
+    password = p_ds['password']
+    conn     = connect(database=service, user=user, password=password,host=ip,port=port,connect_timeout=p_timeout)
+    return conn
+
+
 def get_connection_ds_write_limit(p_ds,p_timeout):
     ip       = p_ds['ip']
     port     = p_ds['port']
@@ -142,6 +154,15 @@ def get_connection_ds_sqlserver(p_ds):
     user     = p_ds['user']
     password = p_ds['password']
     conn     = pymssql.connect(server=ip, port=int(port), user=user, password=password, database=service, charset='utf8',timeout=3)
+    return conn
+
+def get_connection_ds_ck(p_ds):
+    ip       = p_ds['ip']
+    port     = p_ds['port']
+    service  = p_ds['service']
+    user     = p_ds['user']
+    password = p_ds['password']
+    conn     = connect(database=service, user=user, password=password,host=ip,port=port)
     return conn
 
 def get_connection_ds_uat_sqlserver(p_ds):
@@ -355,7 +376,6 @@ async def aes_encrypt(p_password,p_key):
 async def aes_decrypt(p_password,p_key):
         sql="""select aes_decrypt(unhex('{0}'),'{1}')""".format(p_password,p_key[::-1])
         rs = await async_processer.query_one(sql)
-        print(rs)
         return str(rs[0],encoding = "utf-8")
 
 
