@@ -67,6 +67,16 @@
             height:250px;
         }
 
+        #hft_prod_real_sync_mysql_clickhouse_logger{
+            width:100%;
+            height:250px;
+        }
+
+       #bi_prod_real_sync_mysql_clickhouse_logger{
+            width:100%;
+            height:250px;
+        }
+
         #monitor_review {
             width:1000px;
             height:280px;
@@ -234,7 +244,9 @@
             </ul>
             <div class="tab-content br-n pn">
                  <div class="panel-body fixed-panel">
-                    <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div>
+                    <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div><br>
+                    <div id='bi_prod_real_sync_mysql_clickhouse_logger'></div><br>
+                    <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>
                  </div>
              </div>
         </div>
@@ -576,10 +588,9 @@
 
     <script>
 
-        let n_hst_max_id = 1000
-        let n_hft_max_id = 1000
-        let n_bi_max_id = 1000
-        let data1;
+        let n_hst_max_id = 0
+        let n_hft_max_id = 0
+        let n_bi_max_id = 0
 
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
               var myChart = echarts.init($('#'+p_item)[0]);
@@ -821,28 +832,9 @@
               myChart.setOption(option);
         }
 
-        function get_charts_real_line(p_item,p_title,p_flag) {
+        function get_charts_real_line(p_item,p_title,p_flag,p_color) {
 
-             function randomData() {
-                  now = new Date(+now + oneDay);
-                  value = value + Math.random() * 21 - 10;
-                  // console.log({
-                  //   name: now.toString(),
-                  //   value: [
-                  //     [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
-                  //     Math.round(value)
-                  //   ]
-                  // })
-                  return {
-                    name: now.toString(),
-                    value: [
-                      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
-                      Math.round(value)
-                    ]
-                  };
-            }
-
-            function getRealData(p_sync_tag,p_min_id,p_max_id) {
+            function getRealData(p_sync_tag,p_max_id) {
                  let res;
                  $.ajax({
                         url: "/get/db/real/sync",
@@ -850,56 +842,51 @@
                         async:false,
                         data: {
                              'sync_tag': p_sync_tag,
-                             'min_id'  : p_min_id,
                              'max_id'  : p_max_id
                         },
                         datatype: "json",
                         success: function (dataSet) {
-                             console.log('getRealData=',dataSet)
-                             res =  dataSet
+                             //console.log('getRealData=',dataSet)
+                             res =  dataSet.data
+                             mid =  dataSet.max_id
                         }
                   });
-                 return res
+                 return  {
+                      'data':res,
+                      'mid':mid
+                 }
 
             }
 
             var myChart = echarts.init($('#'+p_item)[0],'light');
             let data = [];
-            let now = new Date(1997, 9, 3);
-            let oneDay = 24 * 3600 * 1000;
-            let value = Math.random() * 1000;
-
-            // for (var i = 0; i < 1000; i++) {
-            //   data.push(randomData(now,oneDay,value));
-            // }
-            // console.log('data1=',data)
 
             if (p_flag == 'HST') {
-                data = getRealData(p_item,1,n_hst_max_id)
-                n_hst_max_id = n_hst_max_id +1
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_hst_max_id = mid +1
             } else if  (p_flag == 'HFT') {
-                data = getRealData(p_item,1,n_hft_max_id)
-                n_hft_max_id= n_hft_max_id +1
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_hft_max_id= mid +1
             } else if  (p_flag == 'BI') {
-                data = getRealData(p_item,1,n_bi_max_id)
-                n_bi_max_id = n_bi_max_id +1
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_bi_max_id= mid +1
             }
 
             option = {
               tooltip: {
                 trigger: 'axis',
                 formatter: function (params) {
-                  console.log('params=',params)
                   params = params[0];
-                  var date = new Date(params.name);
                   return (
-                    date.getDate() +
-                    '/' +
-                    (date.getMonth() + 1) +
-                    '/' +
-                    date.getFullYear() +
+                     params.name.split(' ')[1] +
                     ' : ' +
-                    params.value[1]
+                    params.value[1]/10+'[e/s]'
                   );
                 },
                 axisPointer: {
@@ -910,18 +897,18 @@
                  text:p_title,
                  left:'center',
                  textStyle:{
-                    color:'#a4a4a4',
+                    color:p_color,
                     fontStyle:'italic',
                     fontWeight:'bold',
                     fontFamily:'宋体',
-            　　　　 fontSize:10
+            　　　　 fontSize:14
                 }
               },
               grid: {
                    top: '25px',
                    bottom: '20px',
-                   right: '15px',
-                   left:'30px'
+                   right: '25px',
+                   left:'40px'
               },
               xAxis: {
                 type: 'time',
@@ -938,29 +925,87 @@
               },
               series: [
                 {
-                  name: 'Fake Data',
+                  name: '每秒事件数',
                   type: 'line',
+                  areaStyle: {color:p_color},
+                  itemStyle: {normal:{color:p_color}},
                   showSymbol: false,
                   data: data
                 }
               ]
             };
 
-            setInterval(function () {
-              for (var i = 0; i < 5; i++) {
-                data.shift();
-                //data.push(randomData());
-                data.push(getRealData(p_item,n_hst_max_id,n_hst_max_id))
-                n_hst_max_id = n_hst_max_id +1
-              }
-              myChart.setOption({
-                series: [
-                  {
-                    data: data
+            if (p_flag == 'HST') {
+               timer = setInterval(function () {
+                  console.log('data=',data)
+                  console.log('maxid=',n_hst_max_id)
+                  if (data.length == 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_hst_max_id)
+                       data.push(res.data[0])
+                       n_hst_max_id = res.mid +1
+                  } else {
+                       data.shift();
+                       res  = getRealData(p_item,n_hst_max_id)
+                       data.push(res.data[0])
+                       n_hst_max_id = res.mid
                   }
-                ]
-              });
-            }, 3000);
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
+                }, 10000);
+            }  else if  (p_flag == 'HFT') {
+               timer2 = setInterval(function () {
+                  console.log('data2=',data)
+                  console.log('maxid2=',n_hft_max_id)
+                  if (data.length == 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_hft_max_id)
+                       data.push(res.data[0])
+                       n_hft_max_id = res.mid +1
+                  } else {
+                       data.shift();
+                       res  = getRealData(p_item,n_hft_max_id)
+                       data.push(res.data[0])
+                       n_hft_max_id = res.mid
+                  }
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
+                }, 10000);
+
+            }  else if  (p_flag == 'BI') {
+               timer3 = setInterval(function () {
+                  console.log('data3=',data)
+                  console.log('maxid3=',n_bi_max_id)
+                  if (data.length == 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_bi_max_id)
+                       data.push(res.data[0])
+                       n_bi_max_id = res.mid +1
+                  } else {
+                       data.shift();
+                       res  = getRealData(p_item,n_bi_max_id)
+                       data.push(res.data[0])
+                       n_bi_max_id = res.mid
+                  }
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
+                }, 10000);
+            }
 
             myChart.setOption(option);
 
@@ -1025,11 +1070,15 @@
                         },
                         success: function (dataSet) {
                             console.log(dataSet)
-                            get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ED')
+                            get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ed')
                         }
                     });
-                } else if (p_id.indexOf("real_sync") >= 0 ) {
-                    get_charts_real_line(p_render_id,'合生通','HST')
+                } else if (p_id.indexOf("hst_prod_real_sync") >= 0 ) {
+                    get_charts_real_line(p_render_id,'合生通[mysql->ck]','HST','#b7a9ce')
+                } else if (p_id.indexOf("hft_prod_real_sync") >= 0 ) {
+                    get_charts_real_line(p_render_id,'会付通[mysql->ck]','HFT','#8aa1a1')
+                } else if (p_id.indexOf("bi_prod_real_sync") >= 0 ) {
+                    get_charts_real_line(p_render_id,'生产BI[mysql->ck]','BI','#a39b93')
                 }
             }
 

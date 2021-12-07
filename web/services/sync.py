@@ -561,9 +561,8 @@ class db_real_sync(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag = self.get_argument("sync_tag")
-        min_id   = self.get_argument("min_id")
-        max_id   = self.get_argument("max_id")
-        v_list   = await query_db_real_sync(sync_tag,min_id,max_id)
+        max_id   = int(self.get_argument("max_id"))
+        v_list   = await query_db_real_sync(sync_tag,max_id)
         v_json   = json.dumps(v_list)
         self.write(v_json)
 

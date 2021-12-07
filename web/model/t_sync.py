@@ -1224,18 +1224,41 @@ async def query_db_active_num(p_db_id,p_begin_date,p_end_date):
     res['amount']['y_tps'] = y_tps
     return res
 
-async def query_db_real_sync(p_sync_tag,p_min_id,p_max_id):
-    sql = """SELECT DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s') AS create_date,
-                    event_amount 
-             FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={} AND id<={} 
-             ORDER BY id""".format(p_sync_tag, p_min_id, p_max_id)
+async def query_db_real_sync(p_sync_tag,p_max_id):
+    print('p_sync=',p_sync_tag,'p_max_id=',p_max_id)
     res = []
-    for r in await async_processer.query_list(sql):
-        res.append({
-            'name':r[0],
-            'value':[r[0],r[1]]
-        })
-    return res
+    if p_max_id == 1:
+        sql = """SELECT MAX(id) AS max_id FROM t_db_sync_real_log WHERE sync_tag='{}'""".format(p_sync_tag)
+        mid = (await async_processer.query_dict_one(sql))['max_id']
+        sql = """SELECT DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s') AS create_date,event_amount 
+                 FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={} AND id<={} 
+                 ORDER BY id""".format(p_sync_tag, mid-500, mid)
+
+        for r in await async_processer.query_list(sql):
+            res.append({
+                'name':r[0],
+                'value':[r[0],r[1]]
+            })
+        return {'max_id': mid, 'data': res}
+    else:
+        sql = """SELECT count(0) AS rec FROM t_db_sync_real_log WHERE sync_tag='{}' and id >={} limit 1""".format(p_sync_tag,p_max_id)
+        rec = (await async_processer.query_dict_one(sql))['rec']
+        print('>>>>',sql)
+        print('>>>',rec)
+        if rec == 0:
+            return {'max_id': p_max_id, 'data': []}
+        else:
+            sql = """SELECT max(id) AS max_id FROM t_db_sync_real_log WHERE sync_tag='{}' and id >={} limit 1""".format(p_sync_tag, p_max_id)
+            mid = (await async_processer.query_dict_one(sql))['max_id']
+            sql = """SELECT DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s') AS create_date,event_amount 
+                     FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={} 
+                     limit 1""".format(p_sync_tag, p_max_id, mid)
+            for r in await async_processer.query_list(sql):
+                res.append({
+                    'name': r[0],
+                    'value': [r[0], r[1]]
+                })
+            return {'max_id':mid,'data':res }
 
 
 async def query_db_order_num():

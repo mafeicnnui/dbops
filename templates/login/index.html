@@ -533,6 +533,9 @@
 
         <script>
             var timer ;
+            var timer2;
+            var timer3;
+
             var tabStatus = new Array;
 
             $.fn.serializeObject = function()
@@ -731,6 +734,8 @@
                       console.log('tabId=',tabId,url)
 
                       clearInterval(timer);
+                      clearInterval(timer2);
+                      clearInterval(timer3);
 
                       $('#ul_tabs').find('li').each(function() {
                            $(this).removeClass("active")

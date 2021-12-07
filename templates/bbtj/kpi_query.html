@@ -172,19 +172,19 @@
             $('#edit_month_value').val(v[8])
             $('#edit_sum_value').val(v[11])
 
-            if ($('#edit_item_type').val()=='当月考核') {
-                 document.all['s_edit_month_value'].style.color="#ff0000";
-                 document.all['s_edit_sum_value'].style.color="black";
-                 $('#edit_month_value').attr("disabled",false);
-                 $('#edit_sum_value').attr("disabled",true);
-            }
-
-             if ($('#edit_item_type').val()=='累计考核') {
-                 document.all['s_edit_month_value'].style.color="black";
-                 document.all['s_edit_sum_value'].style.color="#ff0000";
-                 $('#edit_month_value').attr("disabled",true);
-                 $('#edit_sum_value').attr("disabled",false);
-             }
+            // if ($('#edit_item_type').val()=='当月考核') {
+            //      document.all['s_edit_month_value'].style.color="#ff0000";
+            //      document.all['s_edit_sum_value'].style.color="black";
+            //      $('#edit_month_value').attr("disabled",false);
+            //      $('#edit_sum_value').attr("disabled",true);
+            // }
+            //
+            //  if ($('#edit_item_type').val()=='累计考核') {
+            //      document.all['s_edit_month_value'].style.color="black";
+            //      document.all['s_edit_sum_value'].style.color="#ff0000";
+            //      $('#edit_month_value').attr("disabled",true);
+            //      $('#edit_sum_value').attr("disabled",false);
+            //  }
 
             $('.modal').on('show.bs.modal', centerModals);
             $(window).on('resize', centerModals);
@@ -275,12 +275,12 @@
                                         $('#last_update_time').val(row[14])
                                     }
 
-                                    if (row[13] == 'N') {
+                                    // if (row[13] == 'N') {
                                          var btn = '<input class="btn btn-xs btn-primary"  type="button"  value="编辑"  onclick="edit_item(\''+escape(row)+'\');"/>' +'&nbsp;'
                                          return btn;
-                                    } else {
-                                        return ''
-                                    }
+                                    // } else {
+                                    //     return ''
+                                    // }
                                 }
                             },
                           ],
