@@ -1,12 +1,6 @@
 <html>
 <head>
     <title>工单查询</title>
-<!--    <link   type="text/css" href="{{static_url('assets/css/minified/components.min.css')}}"  rel="stylesheet" >-->
-<!--    <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">-->
-<!--    <link href="{{static_url('plugins/jquery.filer/css/jquery.filer.css')}}" rel="stylesheet" />-->
-<!--    <link href="{{static_url('plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />-->
-<!--    <link href="{{static_url('assets/css/icons.css')}}" rel="stylesheet" type="text/css" />-->
-<!--    <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />-->
     <style>
        .modal-lg-templete {
             width:60%;
@@ -15,7 +9,7 @@
             margin-top:100px;
        }
 
-       #ace-editor-release,#ace-editor-rollback,#ace-editor-error{
+       #ace-editor-release,#ace-editor-error{
            overflow-x:auto;
            overflow-y:auto;
        }
@@ -23,9 +17,7 @@
         #ace-editor-release{
            height:280px;
         }
-        #ace-editor-rollback{
-           height:200px;
-        }
+
         #ace-editor-error{
            height:80px;
         }
@@ -35,10 +27,10 @@
 
         .modal-lg-order {
             width:40%;
-            height:45%;
+            height:40%;
         }
 
-        #rollback-label,#error-label {
+        #error-label {
             margin-top:8px;
         }
 
@@ -121,7 +113,6 @@
         </div>
      </div>
     <br>
-
      <!--当前用户ID -->
      <input  id="curr_userid" type="hidden" >
 
@@ -185,12 +176,6 @@
                          <div class="row">
                             <h5>执行语句：</h5>
                             <div id='ace-editor-release' class="col-md-12"></div>
-                         </div>
-                    </div>
-                    <div id="rollback_templete" class="tab-pane" >
-                        <div class="row">
-                            <label id="rollback-label">回滚语句&nbsp;</label><span id="span-rollback"><i class="ion-arrow-down-b"></i></span>
-                            <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
                          </div>
                     </div>
                     <div id="error_templete" class="tab-pane">
@@ -596,7 +581,8 @@
                                  msg ='&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;';
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="日志" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
                                  return msg;
                             }
                          }
@@ -814,12 +800,11 @@
                 data:{id: row},
                 success: function (dataSet) {
                     setEditor('ace-editor-release',format_sql(dataSet.message.sqltext))
-                    setEditor('ace-editor-rollback',dataSet.message.rollback_statement)
                     setEditor('ace-editor-error',dataSet.message.error)
                       if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
-                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
                     }
                     $('#run_time_detail').text(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
@@ -830,6 +815,27 @@
                     });
                 }
           });
+    }
+
+    function ExpRollback(p_release_id){
+        $.ajax({
+            url: "/sql/rollback/export",
+            type: "post",
+            datatype: "json",
+            data:{
+                 release_id: p_release_id
+            },
+            success: function (dataSet) {
+                var link = $("<a/>")
+                link.html('　');
+                link.attr('href', dataSet.message);
+                link.attr('class', 'link');
+                link.attr('id', 'download_id');
+                link.attr('name', 'download_name');
+                link.appendTo('body')
+                link[0].click();
+            },
+        })
     }
 
     function editSql(row){
@@ -1440,7 +1446,7 @@
 
           //init ace editor
           initEditor('ace-editor-release');
-          initEditor('ace-editor-rollback');
+          //initEditor('ace-editor-rollback');
           initEditor('ace-editor-error');
           initEditor('ace-editor-change');
 

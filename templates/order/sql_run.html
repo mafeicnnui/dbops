@@ -101,7 +101,7 @@
                     <span id ='run_db_detail' style="color:red"></span>
                 </div>
                  <div class="row">
-                   <h5>执行语句：</h5>
+                   <h5>执行时间：</h5>
                    <div id ='run_time_detail' style="color:red"></div>
                 </div>
                 <div class="row">
@@ -244,11 +244,10 @@
                 },
                 success: function (dataSet) {
                     sql = format_sql(dataSet.message.sqltext)
-
                     if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
-                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
                     }
 
                     var editor = ace.edit("ace-editor");
@@ -257,10 +256,19 @@
                     editor.setReadOnly(true);
                     $('#run_time_detail').text(dataSet.message.run_time)
 
-                    var editor3 = ace.edit("ace-editor-rollback");
-                    editor3.setValue('')
-                    editor3.insert(format_sql(dataSet.message.rollback_statement));
-                    editor3.setReadOnly(true);
+                    if (dataSet.message.rollback.length>100) {
+                         swal("提示", "生成回滚语句超出100行，请通过[我的工单-日志]下载后查看!", "warning");
+                    } else {
+                        var editor3 = ace.edit("ace-editor-rollback");
+                        editor3.setValue('')
+                        let rollback = ''
+                        console.log(dataSet.message.rollback.length)
+                        for(i=0;i<dataSet.message.rollback.length;i++) {
+                            rollback = rollback +dataSet.message.rollback[i].rollback_statement+'\n'
+                        }
+                        editor3.insert(format_sql(rollback));
+                        editor3.setReadOnly(true);
+                    }
 
                     var editor2 = ace.edit("ace-editor-error");
                     editor2.setValue('')
@@ -271,6 +279,7 @@
                         keyboard: false,
                         backdrop:false
                     });
+
 
                 },
         });

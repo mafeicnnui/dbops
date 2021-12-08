@@ -181,7 +181,7 @@ def get_table_pk_names(db_conn,db_name,tab_name):
     cr.close()
     return v_col
 
-def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
+def write_rollback_old(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
     try:
         db = get_connection()
         rollback= '\n'.join(get_binlog(p_ds,p_file,p_start_pos,p_end_pos))
@@ -191,6 +191,20 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
         cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,format_sql(rollback)))
         db.commit()
         return format_sql(rollback)
+    except:
+      logging.error('write_rollback error:',traceback.format_exc())
+      traceback.print_exc()
+      return None
+
+def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
+    try:
+        db = get_connection()
+        cr = db.cursor()
+        cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
+        for r in get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
+            print('>>>>>:',r)
+            cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id,format_sql(r)))
+        db.commit()
     except:
       logging.error('write_rollback error:',traceback.format_exc())
       traceback.print_exc()

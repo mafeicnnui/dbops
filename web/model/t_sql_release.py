@@ -405,17 +405,51 @@ async def check_order_xh(p_message):
         return result
 
 async def query_audit_sql(id):
-    sql = """select a.sqltext,a.error,b.rollback_statement,a.run_time,a.db,a.dbid from t_sql_release a left join t_sql_backup b  on  a.id=b.release_id where a.id={0}""".format(id)
-    rs = await async_processer.query_dict_one(sql)
-
+    res = {}
+    st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid from t_sql_release a where a.id={0}""".format(id)
+    rs = await async_processer.query_dict_one(st)
+    st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={}""".format(id)
+    rs['rollback'] = await async_processer.query_dict_list(st)
     ds = await get_ds_by_dsid(rs['dbid'])
     ds['service'] = rs['db']
     rs['ds'] = ds
+    res['code'] = '0'
+    res['message'] = rs
+    return res
 
-    result = {}
-    result['code'] = '0'
-    result['message'] = rs
-    return result
+async def query_rollback(release_id):
+    st = """select rollback_statement
+                FROM `t_sql_backup` WHERE release_id={} order by id """.format(release_id)
+    rs = await async_processer.query_dict_list(st)
+    return rs
+
+async def exp_rollback(static_path,release_id):
+    os.system('cd {0}'.format(static_path + '/downloads/log'))
+    file_name = static_path + '/downloads/log/exp_log_{0}.sql'.format(release_id)
+    file_name_ext = 'exp_log_{0}.sql'.format(release_id)
+
+    res = await query_rollback(release_id)
+    with open(file_name, 'w') as f:
+        for r in res:
+            f.write(r['rollback_statement']+'\n')
+
+    # 生成zip压缩文件
+    zip_file = static_path + '/downloads/log/exp_log_{0}.zip'.format(release_id)
+    rzip_file = '/static/downloads/log/exp_log_{0}.zip'.format(release_id)
+
+    # 若文件存在则删除
+    if os.path.exists(zip_file):
+        os.system('rm -f {0}'.format(zip_file))
+
+    z = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+    z.write(file_name, arcname=file_name_ext)
+    z.close()
+
+    # 删除json文件
+    os.system('rm -f {0}'.format(file_name))
+    return rzip_file
+
+
 
 async def save_sql(p_dbid,p_sql,desc,logon_user):
     result = {}

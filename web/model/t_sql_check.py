@@ -74,9 +74,9 @@ def get_obj_name(p_sql):
                            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0:
 
        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
-           obj = re.split(r'\s+', p_sql)[3].replace('`', '')
+           obj = re.split(r'\s+', p_sql)[3]
        else:
-           obj=re.split(r'\s+', p_sql)[2].replace('`', '')
+           obj=re.split(r'\s+', p_sql)[2]
 
        if ('(') in obj:
            if obj.find('.')<0:
@@ -91,15 +91,15 @@ def get_obj_name(p_sql):
 
     if get_obj_op(p_sql) in('INSERT','DELETE'):
          if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','').find('.')<0:
-            return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','')
+            return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip()
          else:
-            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`', '').split('.')[1]
+            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().split('.')[1]
 
     if get_obj_op(p_sql) in('UPDATE'):
         if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','').find('.')<0:
-           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','')
+           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip()
         else:
-           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').split('.')[1]
+           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().split('.')[1]
 
 def get_obj_type(p_sql):
     if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
@@ -159,9 +159,7 @@ def check_idx_name_col(p_sql,rule):
 
 async def check_mysql_tab_exists(ds,tab):
    sql="""select count(0) from information_schema.tables 
-            where table_schema=database() and table_name='{0}'""".format(tab)
-   print('check_mysql_tab_exists=>p_ds=>',ds)
-   print('check_mysql_tab_exists=>sql=>',sql)
+            where table_schema=database() and table_name='{0}'""".format(tab.replace('`',''))
    rs = await async_processer.query_one_by_ds(ds,sql)
    print('check_mysql_tab_exists=>rs=>',rs,rs[0])
    return rs[0]
@@ -1489,6 +1487,10 @@ async def process_single_ddl_proc(p_dbid,p_cdb,p_sql,p_user):
         await save_check_results(rule, p_user, st,sxh)
     return res
 
+def get_tmp_name(ob):
+    o = ob.replace('`','')
+    return """{}""".format(ob.replace(o,'dbops_' + o))
+
 async def get_dml_privs_grammar(p_ds,p_sql):
     ob = get_obj_name(p_sql.strip())
     db = p_ds['service'] + '.'
@@ -1500,9 +1502,9 @@ async def get_dml_privs_grammar(p_ds,p_sql):
             if await check_mysql_tab_exists(p_ds, ob) == 0:
                return '表:{0}不存在!'.format(ob)
             else:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(db,'').replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(db,'').replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                return None
     except Exception as e:
         traceback.print_exc()
@@ -1591,7 +1593,7 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
             if op in('UPDATE','DELETE'):
                print('检测DML语句条件...')
                match = re.search(r'(\s*where\s*)',p_sql.upper().strip(),re.IGNORECASE)
-               if  match.group() is None:
+               if  match is None or match.group() is None:
                     await save_check_results(rule,p_user, st,sxh)
                     res = False
 
