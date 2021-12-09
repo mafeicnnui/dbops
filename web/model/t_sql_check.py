@@ -243,10 +243,10 @@ async def get_obj_privs_grammar(p_ds,p_sql):
             else:
                try:
                    await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_'+ob))
-                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                   await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                   await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                except:
-                   await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                   await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                return '0'
     except :
         e = traceback.format_exc().split('Error: ')[1]
@@ -269,8 +269,8 @@ async def get_obj_privs_grammar_proc(p_ds,p_sql):
             if await check_mysql_proc_exists(p_ds, ob) == 0:
                return '过程:{0} 不存在!'.format(ob)
             else:
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format(tp,'dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, dp.format(tp,get_tmp_name(ob)))
         return '0'
     except Exception as e:
         return process_result(str(e))
@@ -288,13 +288,13 @@ async def get_obj_privs_grammar_multi(p_ds,p_sql,config):
             config[ob] = dp.format(ob)
         elif op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
             tb = await f_get_table_ddl(p_ds, ob)
-            if config.get('dbops_' + ob) is None:
+            if config.get(get_tmp_name(ob)) is None:
                 if await check_mysql_tab_exists(p_ds, ob) ==  0:
                    return '表:{0}不存在!'.format(ob)
                 else:
-                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-            config['dbops_' +ob] = dp.format('dbops_' + ob)
+                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+            config['dbops_' +ob] = dp.format(get_tmp_name(ob))
         return '0'
     except Exception as e:
         return str(e)
@@ -350,14 +350,14 @@ async def get_col_comment(p_ds,p_sql):
                return '表:{0} 不存在!'.format(get_obj_name(p_sql))
             else:
                tb = await f_get_table_ddl(p_ds, ob)
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-               col = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+               col = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                return col
     except Exception as e:
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -376,12 +376,12 @@ async def get_col_comment_multi(p_ds,p_sql,config):
            config[ob] = 'drop table {}'.format(ob)
            return rs
         elif op == 'ALTER_TABLE_ADD':
-            if config.get('dbops_' + ob) is None:
+            if config.get(get_tmp_name(ob)) is None:
                 if await check_mysql_tab_exists(p_ds, ob) > 0:
-                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                   rs = await async_processer.query_lisst_by_ds(p_ds, st.format('dbops_' + ob))
-                   config['dbops_' + ob] = 'drop table {0}'.format('dbops_' + ob)
+                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                   await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                   rs = await async_processer.query_lisst_by_ds(p_ds, st.format(get_tmp_name(ob)))
+                   config[get_tmp_name(ob)] = 'drop table {0}'.format(get_tmp_name(ob))
                    return rs
                 else:
                    return '表:{0}不存在!'.format(ob)
@@ -411,15 +411,15 @@ async def get_col_default_value(p_ds,p_sql):
             if await check_mysql_tab_exists(p_ds, ob) == 0:
                return '表:{0}不存在!'.format(get_obj_name(p_sql))
             else:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' +ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                return rs
     except Exception as e:
         traceback.print_exc()
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -439,12 +439,12 @@ async def get_col_default_value_multi(p_ds,p_sql,config):
            config[ob] = dp.format(ob)
            return rs
         elif op == 'ALTER_TABLE_ADD':
-            if config.get('dbops_' + ob) is None:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-               rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
-               #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-               config['dbops_' + ob] = dp.format('dbops_' + ob)
+            if config.get(get_tmp_name(ob)) is None:
+               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+               rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob)))
+               #await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
+               config[get_tmp_name(ob)] = dp.format(get_tmp_name(ob))
                return rs
     except Exception as e:
         return process_result(str(e))
@@ -485,15 +485,15 @@ async def get_time_col_default_value(p_ds,p_sql):
               return '表:{0}不存在!'.format(get_obj_name(p_sql))
            else:
               tb   = await f_get_table_ddl(p_ds, ob)
-              await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-              await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-              rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-              await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+              await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+              await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+              rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob),get_tmp_name(ob)))
+              await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
               return rs
     except Exception as e:
         traceback.print_exc()
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -527,10 +527,10 @@ async def get_time_col_default_value_multi(p_ds,p_sql,config):
               return rs
         elif op == 'ALTER_TABLE_ADD':
               tb   = await f_get_table_ddl(p_ds, ob)
-              await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-              await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-              rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-              config['dbops_' + ob] = dp.format('dbops_' + ob)
+              await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+              await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+              rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob),get_tmp_name(ob)))
+              config[get_tmp_name(ob)] = dp.format(get_tmp_name(ob))
               return rs
     except Exception as e:
         return process_result(str(e))
@@ -624,13 +624,13 @@ async def check_idx_name_null(p_ds,p_sql):
     if await check_mysql_tab_exists(p_ds, ob) ==  0:
        return '表:{0}不存在!'.format(ob)
     else:
-       await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
+       await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
        t = re.split(r'\s+', p_sql.strip())
        if len(t) == 6 and t[5].find('(') == 0:
           col = p_sql.strip().split('(')[1].split(')')[0]
-          await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-          rs = await async_processer.query_one_by_ds(p_ds, st.format('dbops_' + ob, col))
-          await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+          await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+          rs = await async_processer.query_one_by_ds(p_ds, st.format(get_tmp_name(ob), col))
+          await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
           return rs[0]
     return 0
 
@@ -666,12 +666,12 @@ async def check_idx_numbers(p_ds,p_sql,rule):
     tb = await f_get_table_ddl(p_ds, ob)
     st = """SELECT COUNT(DISTINCT index_name) FROM mysql.innodb_index_stats a 
                     WHERE a.database_name = DATABASE() AND a.table_name='{0}' 
-                      AND index_name!='PRIMARY'""".format('dbops_' + ob)
+                      AND index_name!='PRIMARY'""".format(get_tmp_name(ob))
     if await check_mysql_tab_exists(p_ds, ob) > 0:
-        await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-        await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-        rs = await async_processer.query_one_by_ds(p_ds, st.format('dbops_' + ob))
-        await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+        await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+        rs = await async_processer.query_one_by_ds(p_ds, st.format(get_tmp_name(ob)))
+        await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         if rs[0] > int(rule['rule_value']):
             return rule['error'].format(ob)
         return None
@@ -695,10 +695,10 @@ async def check_idx_col_numbers(p_ds,p_sql,rule):
     print('st=',st)
 
     if await check_mysql_tab_exists(p_ds, ob) > 0:
-        await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_' + ob))
-        await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-        rs = await async_processer.query_one_by_ds(p_ds, st.format('dbops_' + ob))
-        await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+        await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,get_tmp_name(ob)))
+        await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+        rs = await async_processer.query_one_by_ds(p_ds, st.format(get_tmp_name(ob)))
+        await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         print('rs=',rs)
         if rs[0] > 0:
            return rule['error'].format(ob,idx)
@@ -798,7 +798,7 @@ async def get_tab_char_col_len_multi(p_ds,p_sql,rule,config):
             return rs
         elif op == 'ALTER_TABLE_ADD':
             rs = await async_processer.query_list_by_ds(p_ds, st.format(rule['rule_value'], 'dbops_' +ob))
-            config['dbops_' + ob] = dp.format('dbops_' + ob)
+            config[get_tmp_name(ob)] = dp.format(get_tmp_name(ob))
             return rs
     except Exception as e:
         return process_result(str(e))
@@ -829,7 +829,7 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                                                     WHERE a.table_schema=b.table_schema
                                                       AND b.table_schema=DATABASE()
                                                       AND a.table_name=b.table_name
-                                                      AND b.column_name='{}')  union all \n'''.format(col,'dbops_' + ob, col)
+                                                      AND b.column_name='{}')  union all \n'''.format(col,get_tmp_name(ob), col)
         if op == 'CREATE_TABLE':
             if (await check_mysql_tab_exists(p_ds, ob)) > 0:
                 return  '表:{0}已存在!'.format(ob)
@@ -843,15 +843,15 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                 return '表:{0}不存在!'.format(get_obj_name(p_sql))
             else:
                 tb = await f_get_table_ddl(p_ds, ob)
-                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format('dbops_' + ob,'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format(get_tmp_name(ob),get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                 return rs
     except Exception as e:
         traceback.print_exc()
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -892,7 +892,7 @@ async def get_tab_has_fields_multi(p_ds,p_sql,p_rule,config):
                                                           AND b.table_schema=DATABASE()
                                                           AND a.table_name=b.table_name
                                                           AND b.column_name='{}')  union all \n'''.format(col,
-                                                                                                          'dbops_' + ob,
+                                                                                                          get_tmp_name(ob),
                                                                                                           col)
         print('st------------------>',st)
         if op == 'CREATE_TABLE':
@@ -900,11 +900,11 @@ async def get_tab_has_fields_multi(p_ds,p_sql,p_rule,config):
             config[ob] = dp.format(ob)
             return rs
         elif op in('ALTER_TABLE_ADD','ALTER_TABLE_DROP'):
-            if config.get('dbops_' + ob) is None:
-                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format('dbops_' + ob,'dbops_' + ob))
-                config['dbops_' + ob] = dp.format('dbops_' +ob)
+            if config.get(get_tmp_name(ob)) is None:
+                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format(get_tmp_name(ob),get_tmp_name(ob)))
+                config[get_tmp_name(ob)] = dp.format('dbops_' +ob)
                 return rs
     except Exception as e:
         return process_result(str(e))
@@ -950,14 +950,14 @@ async def get_tab_tcol_datetime(p_ds,p_sql,p_rule):
             if await check_mysql_tab_exists(p_ds, ob) == 0:
                 return '表:{0}不存在!'.format(get_obj_name(p_sql))
             else:
-               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-               rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-               await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+               await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+               rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob),get_tmp_name(ob)))
+               await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                return rs
     except Exception as e:
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -996,12 +996,12 @@ async def get_tab_tcol_datetime_multi(p_ds,p_sql,config):
            config[ob] = dp.format(ob)
            return rs
         elif op == 'ALTER_TABLE_ADD':
-            if config.get('dbops_' + ob) is None:
-                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob,'dbops_' + ob))
-                #await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
-                config['dbops_' + ob] = dp.format('dbops_' + dp)
+            if config.get(get_tmp_name(ob)) is None:
+                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob),get_tmp_name(ob)))
+                #await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
+                config[get_tmp_name(ob)] = dp.format('dbops_' + dp)
                 return rs
     except Exception as e:
         return process_result(str(e))
@@ -1026,14 +1026,14 @@ async def get_col_not_null(p_ds,p_sql):
                 return '表:{0}不存在!'.format(ob)
             else:
                 tb = await f_get_table_ddl(p_ds, ob)
-                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                 return rs
     except Exception as e:
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -1053,11 +1053,11 @@ async def get_col_not_null_multi(p_ds,p_sql,config):
             config[ob] = dp.format(ob)
             return rs
         elif op in('ALTER_TABLE_ADD'):
-            if config.get('dbops_' + ob) is None:
-                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, 'dbops_' + ob))
-                rs = await async_processer.query_list_by_ds(p_ds, st.format('dbops_' + ob))
-                config['dbops_' + ob] = dp.format('dbops_' + dp)
+            if config.get(get_tmp_name(ob)) is None:
+                await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+                await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
+                rs = await async_processer.query_list_by_ds(p_ds, st.format(get_tmp_name(ob)))
+                config[get_tmp_name(ob)] = dp.format('dbops_' + dp)
                 return rs
     except Exception as e:
         return process_result(str(e))
@@ -1277,7 +1277,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                     for i in v:
                         if i[2] == 0:
                             res = False
-                            rule['error'] = e.format(i[0].replace('dbops_' + ob, ob),i[1])
+                            rule['error'] = e.format(i[0].replace(get_tmp_name(ob), ob),i[1])
                             await save_check_results(rule, p_user, p_sql,sxh)
                 except:
                     res = False
@@ -1294,7 +1294,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                         for i in v:
                             if i[2] == 0:
                                 res = False
-                                rule['error'] = e.format(i[0].replace('dbops_' + ob, ob),i[1])
+                                rule['error'] = e.format(i[0].replace(get_tmp_name(ob), ob),i[1])
                                 await save_check_results(rule, p_user, st,sxh)
                 except:
                     res = False
@@ -1509,7 +1509,7 @@ async def get_dml_privs_grammar(p_ds,p_sql):
     except Exception as e:
         traceback.print_exc()
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -1525,11 +1525,11 @@ async def get_dml_rows(p_ds,p_sql):
             return '表:{0}不存在!'.format(ob)
 
         if op == 'INSERT':
-           await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, 'dbops_' + ob))
-           await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(db,'').replace(ob, 'dbops_' + ob))
-           st = 'select count(0) from {0}'.format('dbops_' + ob)
+           await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
+           await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(db,'').replace(ob, get_tmp_name(ob)))
+           st = 'select count(0) from {0}'.format(get_tmp_name(ob))
            rs = await async_processer.query_one_by_ds(p_ds,st)
-           await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+           await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
            return rs[0]
         elif op in('UPDATE'):
            if p_sql.upper().find('WHERE')>=0:
@@ -1558,7 +1558,7 @@ async def get_dml_rows(p_ds,p_sql):
 
     except Exception as e:
         try:
-            await async_processer.exec_sql_by_ds(p_ds, dp.format('dbops_' + ob))
+            await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
         return process_result(str(e))
@@ -1867,7 +1867,7 @@ async def process_multi_ddl(p_dbid,p_cdb,p_sql,p_user):
                         for i in v:
                             if i[2] == 0:
                                 result = False
-                                rule['error'] = e.format(i[0].replace('dbops_' + ob, ob),i[1])
+                                rule['error'] = e.format(i[0].replace(get_tmp_name(ob), ob),i[1])
                                 await save_check_results(rule, p_user,st,sxh)
                     except:
                         result = False
