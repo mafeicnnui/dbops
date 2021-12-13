@@ -72,11 +72,6 @@
             height:150px;
         }
 
-       #bi_prod_real_sync_mysql_clickhouse_logger{
-            width:100%;
-            height:200px;
-        }
-
         #monitor_review {
             width:1000px;
             height:280px;
@@ -239,7 +234,7 @@
         <div class="panel-body">
             <ul class="nav nav-pills m-b-30 pull-left">
                 <li class="active">
-                    <a href="#hst_prod_real_sync_mysql_clickhouse_logger" data-toggle="tab" aria-expanded="true">实时同步</a>
+                    <a href="#real_sync_mysql_clickhouse" data-toggle="tab" aria-expanded="true">实时同步</a>
                 </li>
             </ul>
             <div class="tab-content br-n pn">
@@ -593,7 +588,7 @@
         let n_hft_max_id = 0
         let n_hst2_max_id = 0
         let n_hft2_max_id = 0
-        let n_timerout =10000
+        let n_timerout    = 30000
 
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
               var myChart = echarts.init($('#'+p_item)[0]);
@@ -943,12 +938,8 @@
 
             if (p_flag == 'HST') {
                timer = setInterval(function () {
-                  if (data.length == 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hst_max_id)
-                       data.push(res.data[0])
-                       n_hst_max_id = res.mid +1
-                  } else {
+                  res  = getRealData(p_item,n_hst_max_id)
+                  if (res.data.length > 0 ) {
                        data.shift();
                        res  = getRealData(p_item,n_hst_max_id)
                        data.push(res.data[0])
@@ -964,12 +955,8 @@
                 }, n_timerout);
             }  else if  (p_flag == 'HFT') {
                timer2 = setInterval(function () {
-                  if (data.length == 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hft_max_id)
-                       data.push(res.data[0])
-                       n_hft_max_id = res.mid +1
-                  } else {
+                  res  = getRealData(p_item,n_hft_max_id)
+                  if (res.data.length > 0 ) {
                        data.shift();
                        res  = getRealData(p_item,n_hft_max_id)
                        data.push(res.data[0])
@@ -986,12 +973,8 @@
 
             }  else if (p_flag == 'HST2') {
                timer3 = setInterval(function () {
-                  if (data.length == 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hst2_max_id)
-                       data.push(res.data[0])
-                       n_hst_max_id = res.mid +1
-                  } else {
+                  res  = getRealData(p_item,n_hst2_max_id)
+                  if (res.data.length > 0 ) {
                        data.shift();
                        res  = getRealData(p_item,n_hst2_max_id)
                        data.push(res.data[0])
@@ -1007,12 +990,8 @@
                 }, n_timerout);
             }  else if  (p_flag == 'HFT2') {
                timer4 = setInterval(function () {
-                  if (data.length == 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hft2_max_id)
-                       data.push(res.data[0])
-                       n_hft_max_id = res.mid +1
-                  } else {
+                  res  = getRealData(p_item,n_hft2_max_id)
+                  if (data.length > 0 ) {
                        data.shift();
                        res  = getRealData(p_item,n_hft2_max_id)
                        data.push(res.data[0])
@@ -1029,7 +1008,6 @@
 
             }
             myChart.setOption(option);
-
         }
 
         function set_sync_task(dataSet,max_syrq,sync_sts) {
@@ -1101,7 +1079,7 @@
                 }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
                     get_charts_real_line(p_render_id,'会付通[mysql->ck_>logger]','HFT','#8aa1a1')
                 }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
-                    get_charts_real_line(p_render_id,'会付通[mysql->ck_>execter]','HFT2','#9888b3')
+                    get_charts_real_line(p_render_id,'会付通[mysql->ck_>execter]','HFT2','#d08e7d')
                 }
             }
 

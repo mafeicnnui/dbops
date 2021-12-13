@@ -587,7 +587,7 @@ class create_captcha:
         # 生成验证码位数
         self.text_num = 5
         # 生成图片尺寸
-        self.pic_size = (100, 40)
+        self.pic_size = (100, 30)
         # 背景颜色，默认为白色
         self.bg_color = (255, 255, 255)
         # 字体颜色，默认为蓝色
