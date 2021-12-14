@@ -584,11 +584,11 @@
 
     <script>
 
-        let n_hst_max_id = 0
-        let n_hft_max_id = 0
+        let n_hst_max_id  = 0
+        let n_hft_max_id  = 0
         let n_hst2_max_id = 0
         let n_hft2_max_id = 0
-        let n_timerout    = 30000
+        let n_timerout    = 10000
 
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
               var myChart = echarts.init($('#'+p_item)[0]);
@@ -926,7 +926,7 @@
               },
               series: [
                 {
-                  name: '每秒事件数',
+                  //name: '每秒事件数',
                   type: 'line',
                   areaStyle: {color:p_color},
                   itemStyle: {normal:{color:p_color}},
@@ -938,6 +938,7 @@
 
             if (p_flag == 'HST') {
                timer = setInterval(function () {
+                  console.log('timer....')
                   res  = getRealData(p_item,n_hst_max_id)
                   if (res.data.length > 0 ) {
                        data.shift();
@@ -955,6 +956,7 @@
                 }, n_timerout);
             }  else if  (p_flag == 'HFT') {
                timer2 = setInterval(function () {
+                  console.log('timer2....')
                   res  = getRealData(p_item,n_hft_max_id)
                   if (res.data.length > 0 ) {
                        data.shift();
@@ -973,6 +975,7 @@
 
             }  else if (p_flag == 'HST2') {
                timer3 = setInterval(function () {
+                  console.log('timer3....')
                   res  = getRealData(p_item,n_hst2_max_id)
                   if (res.data.length > 0 ) {
                        data.shift();
@@ -990,6 +993,7 @@
                 }, n_timerout);
             }  else if  (p_flag == 'HFT2') {
                timer4 = setInterval(function () {
+                  console.log('timer4....')
                   res  = getRealData(p_item,n_hft2_max_id)
                   if (data.length > 0 ) {
                        data.shift();
@@ -1072,7 +1076,7 @@
                             get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ed')
                         }
                     });
-                } else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
+                }  else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
                     get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HST','#b7a9ce')
                 }   else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
                     get_charts_real_line(p_render_id,'合生通[mysql->ck->execter]','HST2','#d4ab9e')

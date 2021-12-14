@@ -229,6 +229,7 @@ async def get_ds_by_dsid_by_cdb(p_dsid,p_cdb):
                   db_env,inst_type,market_id
            from t_db_source where id={1}
         """.format(p_cdb,p_dsid)
+    print(sql)
     ds = await async_processer.query_dict_one(sql)
     ds['password'] = await aes_decrypt(ds['password'], ds['user'])
     ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])

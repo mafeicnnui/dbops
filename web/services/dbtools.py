@@ -8,13 +8,14 @@
 import json
 import tornado.web
 from   web.model.t_archive import query_archive_detail
+from web.model.t_db_tools import db_stru_compare
+from web.model.t_dmmx import get_sync_db_mysql_server
 from web.utils import base_handler
 
 class dict_gen(base_handler.TokenHandler):
     @tornado.web.authenticated
     def get(self):
         self.render("./archive_query.html")
-
 
 class redis_migrate(base_handler.TokenHandler):
     @tornado.web.authenticated
@@ -25,3 +26,20 @@ class redis_migrate(base_handler.TokenHandler):
         v_json      = json.dumps(v_list)
         print('archive_query_detail=',v_json)
         self.write({"code": 0, "message": v_json})
+
+class db_compare(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./tools/db_compare.html",
+                    db_server=await get_sync_db_mysql_server(),
+                    )
+
+class _db_compare(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        sour_db_server  = self.get_argument("sour_db_server")
+        sour_schema     = self.get_argument("sour_schema")
+        desc_db_server  = self.get_argument("desc_db_server")
+        desc_schema     = self.get_argument("desc_schema")
+        v_list          = await db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema)
+        self.write({"code": 0, "message": v_list})
+
