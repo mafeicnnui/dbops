@@ -8,7 +8,7 @@
 import json
 import tornado.web
 from   web.model.t_archive import query_archive_detail
-from web.model.t_db_tools import db_stru_compare
+from web.model.t_db_tools import db_stru_compare, db_stru_compare_detail
 from web.model.t_dmmx import get_sync_db_mysql_server
 from web.utils import base_handler
 
@@ -43,3 +43,15 @@ class _db_compare(base_handler.TokenHandler):
         v_list          = await db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema)
         self.write({"code": 0, "message": v_list})
 
+class _db_compare_detail(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        sour_db_server = self.get_argument("sour_db_server")
+        sour_schema    = self.get_argument("sour_schema")
+        desc_db_server = self.get_argument("desc_db_server")
+        desc_schema    = self.get_argument("desc_schema")
+        table          = self.get_argument("table")
+        column         = self.get_argument("column")
+        v_list         = await db_stru_compare_detail(sour_db_server,sour_schema,desc_db_server,desc_schema,table,column)
+        print('v_list=',v_list)
+        self.write({"code": 0, "message": v_list})

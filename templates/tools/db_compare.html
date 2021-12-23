@@ -3,14 +3,33 @@
 <head>
     <meta charset="utf-8">
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
+        .modal-lg-templete {
+            width:60%;
+            height:20%;
+            margin-left:500px;
+            margin-top:100px;
+       }
+       .dbubble-text {
+            display: inline-block;
+            font-size: 14px;
+            color: #303030;
+            line-height: 100%;
+            width: 350px;
+            white-space:normal;
+            word-wrap: break-word;
+            word-break: break-all;
+            overflow: hidden;
+        }
+
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="row">
+      <p></p>
+      <div class="row">
          <div class="col-md-3">
                <div class="form-group">
                     <div>
@@ -38,7 +57,7 @@
                 </div>
            </div>
         </div>
-        <div class="col-md-3">
+         <div class="col-md-3">
                <div class="form-group">
                     <div>
                         <label class="col-md-3 control-label">目标实例</label>
@@ -53,7 +72,7 @@
                    </div>
                </div>
           </div>
-          <div class="col-md-2">
+         <div class="col-md-2">
                <div class="form-group">
                     <div>
                         <label class="col-md-3 control-label">目标库</label>
@@ -65,20 +84,39 @@
                     </div>
                </div>
           </div>
-
-          <div class="col-md-2">
+         <div class="col-md-2">
                <div class="form-group">
                     <button id="compare_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">比较</button>
                </div>
-          </div>
+         </div>
       </div>
-
       <p></p>
       <hr>
       <div id="div-tab">
            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
       </div>
-    </div>
+
+       <!--比较详情 -->
+      <div id="con-close-modal-cmp-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-templete">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"><span id='modal_title'>比较详情</span></h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                     <div class="col-md-12">
+                          <table id="div-compare-detail" class="table table-striped table-bordered" style="width:100% !important;" cellspacing="0" ></table>
+                      </div>
+                 </div>
+                 <div class="row">
+                    <span id ='alter_sql' style="color:rgba(193,116,34,0.76)"></span>
+                 </div>
+             </div>
+        </div>
+       </div>
+     </div>
 
    <script>
 
@@ -108,11 +146,25 @@
                           iDisplayLength: 14,
                           data: dataSet.message,
                           columns: [
-                            { "title": "库名" ,"visible":true},
+                            { "title": "库名"},
                             { "title": "表名" },
                             { "title": "列名"},
                             { "title": "可空" },
-                            { "title": "列类型" },
+                            { "title": "类型" },
+                            { "title": "默认值" },
+                            { "title": "字符集" },
+                            { "title": "校对集" },
+                            { "title": "主键" },
+                            { "title": "注释" ,"visible":false},
+                            { "title": "附加","visible":false },
+                            {
+                            "title":"操作",
+                            "width": "25px",
+                            "render": function(data,type,row)
+                                {
+                                   return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info(\''+row+'\');"/>' +'&nbsp;';
+                                }
+                            },
                           ],
                          "language": get_languages()
                          });
@@ -147,7 +199,7 @@
             }
         });
 
-         $('#desc_db_server').change(function() {
+        $('#desc_db_server').change(function() {
             if ($('#desc_db_server').val()!='') {
                 $.ajax({
                       url: "/get_database",
@@ -173,6 +225,79 @@
                 $("#sour_schema").append("<option value=''>...</option>");
             }
         });
+
+        function show_info(p_row) {
+            db  = p_row.split(',')[0]
+            tab = p_row.split(',')[1]
+            col = p_row.split(',')[2]
+            $('#alter_sql').text('')
+            $.ajax({
+                  url: "/dbtools/_compare/detail",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      sour_db_server: $('#sour_db_server').val(),
+                      sour_schema   : $('#sour_schema').val(),
+                      desc_db_server: $('#desc_db_server').val(),
+                      desc_schema   : $('#desc_schema').val(),
+                      table         : tab,
+                      column        : col,
+                  },
+                  success: function (dataSet) {
+                      console.log(dataSet)
+                      $('.modal').on('show.bs.modal', centerModals);
+                      $(window).on('resize', centerModals);
+                      $('#con-close-modal-cmp-detail').modal({
+                           keyboard: false,
+                           backdrop:false
+                      });
+                      $('#div-compare-detail').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :true,
+                          scrollX    :true,
+                          scrollCollapse: true,
+                          paging      : false,
+                          "autoWidth" : false,
+                          iDisplayLength: 14,
+                          data: dataSet.message,
+                          columns: [
+                                { "title": "列属性"},
+                                { "title": "源值"},
+                                { "title": "目标值"},
+                                { "title": "结果"},
+                                { "title": "状态", "sClass":"hidden"},
+                                { "title": "语句", "sClass":"hidden"},
+                          ],
+                          columnDefs: [
+                              {
+                                     targets: 1,
+                                     render: function(data, type, row) {
+                                       return '<div class="dbubble-text">'+row[1]+'</div>'
+                                   }
+                              },
+                              {
+                                    targets: 2,
+                                    render: function(data, type, row) {
+                                       return '<div class="dbubble-text">'+row[2]+'</div>'
+                                   }
+                              }
+                          ],
+                         "language": get_languages()
+                         });
+                  }
+              })
+
+        }
+
+        $("#div-compare-detail").on("click","tr",function(){
+            var table=$("#div-compare-detail").DataTable();
+            var data=table.row(this).data();
+            $('#alter_sql').text(data[4])
+        })
 
         $(document).ready(function() {
             // $("#sour_db_server").selectpicker('refresh')
