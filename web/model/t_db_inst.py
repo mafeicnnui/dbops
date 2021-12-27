@@ -154,7 +154,7 @@ async def save_db_inst(d_inst):
         return {'code': '-1', 'message': '保存失败!'}
 
 async def upd_db_inst(d_inst):
-    val = check_db_inst(d_inst,'upd')
+    val = await check_db_inst(d_inst,'upd')
     if  val['code'] == '-1':
         return val
     try:
@@ -247,8 +247,30 @@ def create_db_inst(p_api,p_instid):
     except Exception as e:
         traceback.print_exc()
         result['code'] = '-1'
-        result['message'] = '实例正在创建失败，详见错误日志!'
+        result['message'] = '实例创建失败，详见错误日志!'
         return result
+
+def push_db_inst(p_api, p_instid):
+    try:
+        result = {}
+        result['code'] = '0'
+        result['message'] = '脚本正在推送中，详见日志...'
+        v_cmd = "curl -XPOST {0}/push_db_inst -d 'inst_id={1}'".format(p_api, p_instid)
+        print('push_db_inst=', v_cmd)
+        r = os.popen(v_cmd).read()
+        d = json.loads(r)
+        if d['code'] == 200:
+            return result
+        else:
+            result['code'] = '-1'
+            result['message'] = '{0}!'.format(d['msg'])
+            return result
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '实例推送失败，详见错误日志!'
+        return result
+
 
 def destroy_db_inst(p_api,p_instid):
     try:

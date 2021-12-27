@@ -805,6 +805,46 @@
              })
        }
 
+       function push_inst(p_inst_row) {
+            var v_inst_id   = p_inst_row.split(',')[0]
+            var v_inst_name = p_inst_row.split(',')[1]
+            $.ajax({
+                  url: "/db/inst/query/id",
+                  type: "post",
+                  datatype: "json",
+                  data: {
+                      inst_id  :v_inst_id
+                  },
+                  success: function (instObj) {
+                        $.ajax({
+                            url: "/db/inst/push",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                 inst_id   : v_inst_id,
+                                 api_server:instObj['api_server']
+                            },
+                            beforeSend: function () {
+                                  swal({
+                                        title: "正在推送脚本...",
+                                        text: "实例["+v_inst_name+"]正在推送中...",
+                                        type: "info",
+                                        showConfirmButton: false
+                                   });
+                             },
+                            success: function (dataSet) {
+                                if (dataSet.code == 0) {
+                                    swal(dataSet.message, "", "success")
+                                    $("#query_btn").click()
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            }
+                        })
+                  }
+             })
+       }
+
        function destroy_inst(p_inst_row) {
             var v_inst_id   = p_inst_row.split(',')[0]
             var v_inst_name = p_inst_row.split(',')[1]
@@ -1092,33 +1132,39 @@
                                 var create_enable   = '<input class="btn btn-xs btn-primary"  type="button"  value="创建" onclick="create_inst(\''+row+'\');"/>' +'&nbsp;'
                                 var create_disable  = '<input class="btn btn-xs btn-primary"  type="button"  value="创建" disabled onclick="create_inst(\''+row+'\');"/>' +'&nbsp;'
 
-                                var destroy_enable  = '<input class="btn btn-xs btn-primary"  type="button"  value="销毁" onclick="destroy_inst(\''+row+'\');"/>' +'&nbsp;'
-                                var destroy_disable = '<input class="btn btn-xs btn-primary"  type="button"  value="销毁" disabled onclick="destroy_inst(\''+row+'\');"/>' +'&nbsp;'
+                                if ($('#login_name').val() == 'admin' ) {
+                                    var destroy_inst  = '<input class="btn btn-xs btn-primary"  type="button"  value="销毁" onclick="destroy_inst(\''+row+'\');"/>' +'&nbsp;'
+                                }  else {
+                                    var destroy_inst = '<input class="btn btn-xs btn-primary"  type="button"  value="销毁" disabled onclick="destroy_inst(\''+row+'\');"/>' +'&nbsp;'
+                                }
 
                                 var alter_enable    = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showUpd_win(\''+row[0]+'\');"/>' +'&nbsp;'
                                 var alter_disable   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" disabled onclick="showUpd_win(\''+row[0]+'\');"/>' +'&nbsp;'
 
-                                var del_enable      = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_inst(\''+row+'\');"/>' +'&nbsp;'
-                                var del_disable     = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" disabled onclick="del_inst(\''+row+'\');"/>' +'&nbsp;'
-
+                                if ($('#login_name').val() == 'admin' ) {
+                                   var del_inst     = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_inst(\''+row+'\');"/>' +'&nbsp;'
+                                }  else {
+                                   var del_inst     = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" disabled onclick="del_inst(\''+row+'\');"/>' +'&nbsp;'
+                                }
+                                var push_enable     = '<input class="btn btn-xs btn-primary"  type="button"  value="推送" onclick="push_inst(\''+row+'\');"/>' +'&nbsp;'
 
                                 var inst_detail     = '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showDetail_win(\''+row[0]+'\');"/>' +'&nbsp;'
                                 var inst_log        = '<input class="btn btn-xs btn-primary"  type="button"  value="日志" onclick="query_log_inst(\''+row[0]+'\');"/>' +'&nbsp;'
 
                                 if (inst_status == '2') {
-                                     btn = '&nbsp;'+create_disable + destroy_enable + alter_disable + del_disable+inst_detail+inst_log
+                                     btn = '&nbsp;'+create_disable + destroy_inst + alter_disable + del_inst+push_enable+inst_detail+inst_log
                                 } else if (inst_status == '3') {
-                                     btn = '&nbsp;'+create_disable + destroy_enable + alter_enable + del_disable+inst_detail+inst_log
+                                     btn = '&nbsp;'+create_disable + destroy_inst + alter_enable + del_inst+push_enable+inst_detail+inst_log
                                 } else if (inst_status == '4') {
-                                     btn = '&nbsp;'+create_disable + destroy_enable + alter_enable + del_disable+inst_detail+inst_log
+                                     btn = '&nbsp;'+create_disable + destroy_inst + alter_enable + del_inst+push_enable+inst_detail+inst_log
                                 } else if (inst_status == '5' || inst_status == '1') {
-                                     btn = '&nbsp;'+create_enable + destroy_disable + alter_enable + del_enable+inst_detail+inst_log
+                                     btn = '&nbsp;'+create_enable + destroy_inst + alter_enable + del_inst+push_enable+inst_detail+inst_log
                                 } else {
-                                     btn = '&nbsp;'+create_disable + destroy_disable + alter_disable + del_disable+inst_detail+inst_log
+                                     btn = '&nbsp;'+create_disable + destroy_inst + alter_disable + del_inst+push_enable+inst_detail+inst_log
                                 }
 
                                 if (rds_flag =='是') {
-                                    btn = '&nbsp;'+create_disable + destroy_disable + alter_disable + del_disable+inst_detail+inst_log
+                                    btn = '&nbsp;'+create_disable + destroy_disable + alter_disable + del_disable+push_enable+inst_detail+inst_log
                                 }
 
                                 return btn

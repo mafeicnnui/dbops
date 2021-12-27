@@ -10,7 +10,8 @@ import json
 
 from web.utils import base_handler
 from  web.utils.basehandler   import basehandler
-from  web.model.t_db_inst     import query_inst,save_db_inst,upd_db_inst,query_inst_by_id,get_dss_for_inst,get_ds_by_instid,get_tree_by_instid_mssql
+from web.model.t_db_inst import query_inst, save_db_inst, upd_db_inst, query_inst_by_id, get_dss_for_inst, \
+    get_ds_by_instid, get_tree_by_instid_mssql, push_db_inst
 from  web.model.t_db_inst     import get_tree_by_instid,exe_query,del_db_inst,get_tab_ddl_by_instid,get_idx_ddl_by_instid,drop_tab_by_instid
 from  web.model.t_db_inst     import query_db_inst_para,save_db_inst_para,upd_db_inst_para,del_db_inst_para,query_db_inst_log
 from  web.model.t_db_inst     import create_db_inst,destroy_db_inst,log_db_inst,manager_db_inst,update_db_config,query_db_config
@@ -96,7 +97,14 @@ class db_inst_create(base_handler.TokenHandler):
     async def post(self):
         inst_id = self.get_argument("inst_id")
         api_server = self.get_argument("api_server")
-        result = await create_db_inst(api_server,inst_id)
+        result =  create_db_inst(api_server,inst_id)
+        self.write({"code": result['code'], "message": result['message']})
+
+class db_inst_push(base_handler.TokenHandler):
+    async def post(self):
+        inst_id = self.get_argument("inst_id")
+        api_server = self.get_argument("api_server")
+        result =  push_db_inst(api_server,inst_id)
         self.write({"code": result['code'], "message": result['message']})
 
 class db_inst_destroy(base_handler.TokenHandler):
@@ -107,11 +115,11 @@ class db_inst_destroy(base_handler.TokenHandler):
         self.write({"code": result['code'], "message": result['message']})
 
 class db_inst_manager(base_handler.TokenHandler):
-    async def post(self):
+     def post(self):
         inst_id    = self.get_argument("inst_id")
         api_server = self.get_argument("api_server")
         op_type    = self.get_argument("op_type")
-        result     = await manager_db_inst(api_server,inst_id,op_type)
+        result     =  manager_db_inst(api_server,inst_id,op_type)
         self.write({"code": result['code'], "message": result['message']})
 
 

@@ -62,15 +62,15 @@
             height:200px;
         }
 
-        /*#hst_prod_real_sync_mysql_clickhouse_logger,#hst_prod_real_sync_mysql_clickhouse_executer{*/
-        /*    width:100%;*/
-        /*    height:150px;*/
-        /*}*/
+        #hst_prod_real_sync_mysql_clickhouse_logger,#hst_prod_real_sync_mysql_clickhouse_executer{
+            width:100%;
+            height:150px;
+        }
 
-        /*#hft_prod_real_sync_mysql_clickhouse_logger,#hft_prod_real_sync_mysql_clickhouse_executer{*/
-        /*    width:100%;*/
-        /*    height:150px;*/
-        /*}*/
+        #hft_prod_real_sync_mysql_clickhouse_logger,#hft_prod_real_sync_mysql_clickhouse_executer{
+            width:100%;
+            height:150px;
+        }
 
         #monitor_review {
             width:1000px;
@@ -229,24 +229,24 @@
         </div>
     </div>
 
-<!--    &lt;!&ndash;实时同步 &ndash;&gt;-->
-<!--    <div id='div-real-sync' class="panel panel-default">-->
-<!--        <div class="panel-body">-->
-<!--            <ul class="nav nav-pills m-b-30 pull-left">-->
-<!--                <li class="active">-->
-<!--                    <a href="#real_sync_mysql_clickhouse" data-toggle="tab" aria-expanded="true">实时同步</a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--            <div class="tab-content br-n pn">-->
-<!--                 <div class="panel-body fixed-panel">-->
-<!--                    <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div><br>-->
-<!--                    <div id='hst_prod_real_sync_mysql_clickhouse_executer'></div><br>-->
-<!--                    <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>-->
-<!--                    <div id='hft_prod_real_sync_mysql_clickhouse_executer'></div>-->
-<!--                 </div>-->
-<!--             </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--实时同步 -->
+    <div id='div-real-sync' class="panel panel-default">
+        <div class="panel-body">
+            <ul class="nav nav-pills m-b-30 pull-left">
+                <li class="active">
+                    <a href="#real_sync_mysql_clickhouse" data-toggle="tab" aria-expanded="true">实时同步</a>
+                </li>
+            </ul>
+            <div class="tab-content br-n pn">
+                 <div class="panel-body fixed-panel">
+                    <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div><br>
+                    <div id='hst_prod_real_sync_mysql_clickhouse_executer'></div><br>
+                    <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>
+                    <div id='hft_prod_real_sync_mysql_clickhouse_executer'></div>
+                 </div>
+             </div>
+        </div>
+    </div>
 
     <!--数据库运行情况 合生通-主库-->
     <div class="row">
@@ -1075,16 +1075,15 @@
                             get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ed')
                         }
                     });
+                }  else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
+                    get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HST','#b7a9ce')
+                }   else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'合生通[mysql->ck->execter]','HST2','#d4ab9e')
+                }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
+                    get_charts_real_line(p_render_id,'会付通[mysql->ck_>logger]','HFT','#8aa1a1')
+                }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'会付通[mysql->ck_>execter]','HFT2','#d08e7d')
                 }
-                // else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
-                //     get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HST','#b7a9ce')
-                // }   else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
-                //     get_charts_real_line(p_render_id,'合生通[mysql->ck->execter]','HST2','#d4ab9e')
-                // }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
-                //     get_charts_real_line(p_render_id,'会付通[mysql->ck_>logger]','HFT','#8aa1a1')
-                // }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
-                //     get_charts_real_line(p_render_id,'会付通[mysql->ck_>execter]','HFT2','#d08e7d')
-                // }
             }
 
         function get_contents_from_div_large(p_id,p_render_id) {

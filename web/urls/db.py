@@ -9,7 +9,7 @@ from web.services.db_inst      import dbinstquery,db_inst_query,db_inst_save,db_
 from web.services.db_inst      import dbinstcrtquery,db_inst_crt_query,db_inst_create,db_inst_destroy,db_inst_log,db_inst_manager
 from web.services.db_inst      import dbinstparaquery,dbinstpara_query,dbinstparaadd_save,dbinstparaedit_save,dbinstparaedit_del,dbinstoptlogquery,dbinstoptlog_query
 from web.services.db_user      import dbuserquery,db_user_query,db_user_save,db_user_update,db_user_delete,db_user_sql,db_user_dbs,db_user_info,db_user_query_by_id
-from web.services.db_inst      import dbinstcfgquery,db_inst_cfg_query,db_inst_cfg_update
+from web.services.db_inst      import dbinstcfgquery,db_inst_cfg_query,db_inst_cfg_update,db_inst_push
 
 db = [
         # 功能：数据库管理-新增实例API
@@ -19,6 +19,7 @@ db = [
         (r"/db/inst/update", db_inst_update),
         (r"/db/inst/del", db_inst_delete),
         (r"/db/inst/create", db_inst_create),
+        (r"/db/inst/push",  db_inst_push),
         (r"/db/inst/destroy", db_inst_destroy),
         (r"/db/inst/log", db_inst_log),
         (r"/db/inst/manager", db_inst_manager),

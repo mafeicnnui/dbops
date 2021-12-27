@@ -2035,7 +2035,7 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
             if rule['rule_code'] == 'switch_dml_where' and rule['rule_value'] == 'true':
                 if op in ('UPDATE', 'DELETE'):
                     print('检测DML语句条件...')
-                    match = re.search(r'(\s*where\s*)', p_sql.upper().strip(), re.IGNORECASE)
+                    match = re.search(r'(\s*where\s*)', st.upper().strip(), re.IGNORECASE)
                     if match is None:
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
@@ -2050,8 +2050,7 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
             if rule['rule_code'] == 'switch_dml_select' and rule['rule_value'] == 'true':
                 if op in ('INSERT', 'UPDATE', 'DELETE'):
                     print('DML语句禁用 SELECT...')
-                    if re.search('SELECT\s+', st.upper()) is not None and re.search('\s+FROM\s+',
-                                                                                    st.upper()) is not None:
+                    if re.search('SELECT\s+', st.upper()) is not None and re.search('\s+FROM\s+',st.upper()) is not None:
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
 
@@ -2072,8 +2071,8 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
             if rule['rule_code'] == 'switch_dml_ins_exists_col' and rule['rule_value'] == 'true':
                 if op in ('INSERT'):
                     print('检查插入语句那必须存在列名...')
-                    n_pos1 = re.split(r'\s+', p_sql.strip())[2].count('(')
-                    n_pos2 = re.split(r'\s+', p_sql.strip())[3].count('(')
+                    n_pos1 = re.split(r'\s+', st.strip())[2].count('(')
+                    n_pos2 = re.split(r'\s+', st.strip())[3].count('(')
                     if n_pos1 == 0 and n_pos2 == 0:
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
@@ -2084,9 +2083,9 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
                     if op in ('INSERT'):
                         print('INSERT语句字段上限...')
                         try:
-                            n_cols = re.split(r'\s+', p_sql.strip())[2].split('(')[1].split(')')[0].count(',') + 1
+                            n_cols = re.split(r'\s+', st.strip())[2].split('(')[1].split(')')[0].count(',') + 1
                         except:
-                            n_cols = re.split(r'\s+', p_sql.strip())[3].split('(')[1].split(')')[0].count(',') + 1
+                            n_cols = re.split(r'\s+', st.strip())[3].split('(')[1].split(')')[0].count(',') + 1
                         if n_cols > int(rule['rule_value']):
                             rule['error'] = rule['error'].format(rule['rule_value'])
                             await save_check_results(rule, p_user, st, sxh)
