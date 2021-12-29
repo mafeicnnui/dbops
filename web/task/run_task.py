@@ -9,6 +9,7 @@ import time
 import pymysql
 import traceback
 import datetime
+
 from web.utils.common import get_db_conf
 
 cfg = get_db_conf()
@@ -96,10 +97,49 @@ def get_ds_by_instid(p_inst_id):
     db.commit()
     return rs
 
+
+def get_ds_by_dsid(p_dsid):
+    db = get_connection_dict()
+    cr = db.cursor()
+    sql="""select cast(id as char) as dsid,
+                  db_type,
+                  db_desc,
+                  ip       as db_ip,
+                  port     as db_port,
+                  service  as db_service,
+                  user     as db_user,
+                  password as db_password,
+                  status,
+                  date_format(creation_date,'%Y-%m-%d %H:%i:%s') as creation_date,
+                  creator,
+                  date_format(last_update_date,'%Y-%m-%d %H:%i:%s') as last_update_date,
+                  updator ,
+                  db_env,
+                  inst_type,
+                  market_id,
+                  proxy_status,
+                  proxy_server,
+                  id_ro
+           from t_db_source where id={0}""".format(p_dsid)
+    cr.execute(sql)
+    ds = cr.fetchone()
+    ds['db_pass'] = aes_decrypt(ds['db_password'], ds['db_user'])
+    return ds
+
+
 def get_task():
     db = get_connection_dict()
     cr = db.cursor()
     st = "SELECT id,inst_id,db,statement,status,message FROM t_db_inst_opt_log WHERE STATUS='1' order by id LIMIT 1 "
+    cr.execute(st)
+    rs = cr.fetchone()
+    cr.close()
+    return rs
+
+def get_ds_task():
+    db = get_connection_dict()
+    cr = db.cursor()
+    st = "SELECT id,ds_id,db,statement,status,message FROM t_db_opt_log WHERE STATUS='1' order by id LIMIT 1 "
     cr.execute(st)
     rs = cr.fetchone()
     cr.close()
@@ -111,6 +151,18 @@ def upd_task(p_task):
     st = '''update t_db_inst_opt_log set start_time='{}', end_time='{}',status ='{}',message='{}' WHERE id='{}'
          '''.format(p_task.get('start_time'),p_task.get('end_time'),p_task.get('status'),p_task.get('message'),p_task.get('id'))
     print('upd_task=',st)
+    cr.execute(st)
+    rs = cr.fetchone()
+    db.commit()
+    cr.close()
+    return rs
+
+def upd_ds_task(p_task):
+    db = get_connection_dict()
+    cr = db.cursor()
+    st = '''update t_db_opt_log set start_time='{}', end_time='{}',status ='{}',message='{}' WHERE id='{}'
+         '''.format(p_task.get('start_time'),p_task.get('end_time'),p_task.get('status'),p_task.get('message'),p_task.get('id'))
+    print('upd_ds_task=',st)
     cr.execute(st)
     rs = cr.fetchone()
     db.commit()
@@ -147,6 +199,30 @@ def run_task(p_task):
         p_task['message'] = format_sql(traceback.format_exc())
         upd_task(p_task)
 
+def run_ds_task(p_task):
+    timeout              = int(get_audit_rule('switch_ddl_timeout')['rule_value'])
+    p_ds                 = get_ds_by_dsid(p_task['ds_id'])
+    p_ds['db_service']   = p_task['db']
+    print('p_ds=',p_ds)
+    db                   = get_connection_ds(p_ds,timeout)
+    cr                   = db.cursor()
+    try:
+        p_task['start_time'] = get_time()
+        p_task['end_time']   = ''
+        p_task['status']     = '2'
+        p_task['message']    = ''
+        upd_ds_task(p_task)
+        print('statement=>',p_task['statement'])
+        cr.execute(p_task['statement'])
+        db.commit()
+        p_task['end_time'] = get_time()
+        p_task['status']   = '3'
+        upd_ds_task(p_task)
+    except:
+        p_task['status'] = '4'
+        p_task['message'] = format_sql(traceback.format_exc())
+        upd_ds_task(p_task)
+
 def init_task(p_task):
     p_task['start_time'] = ''
     p_task['end_time']   = ''
@@ -164,6 +240,17 @@ def main():
           run_task(task)
       else:
           print('\rTask not ready,sleeping ...',end='')
+          time.sleep(1)
+
+      ds_task = get_ds_task()
+      if ds_task:
+          print('\nProcessing Ds Task:', ds_task)
+          init_task(ds_task)
+          upd_ds_task(ds_task)
+          print('run ds task=>', ds_task)
+          run_ds_task(ds_task)
+      else:
+          print('\rDs Task not ready,sleeping ...', end='')
           time.sleep(1)
 
 if __name__ == '__main__':
