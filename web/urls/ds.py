@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 from web.services.ds  import dsquery,ds_query_id,ds_query,dsadd,dsadd_save,dschange,dsedit,dsedit_save,dsedit_del,\
-        dstest,ds_check_valid,dsclone,dsclone_save,get_db_by_type,dsconsole,ds_sql_query
+        dstest,ds_check_valid,dsclone,dsclone_save,get_db_by_type,dsconsole,ds_sql_query,dslogquery,dslog_query
 
 ds = [
         (r"/ds/query", dsquery),
@@ -25,4 +25,6 @@ ds = [
         (r"/ds/test", dstest),
         (r"/ds/check/valid", ds_check_valid),
         (r"/ds/get/db/type", get_db_by_type),
+        (r"/ds/log/query", dslogquery),
+        (r"/ds/log/_query", dslog_query),
 ]

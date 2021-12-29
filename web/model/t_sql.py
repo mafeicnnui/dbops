@@ -644,5 +644,12 @@ async def exe_query_exp(p_dbid,p_sql,curdb):
         else:
             result = get_mongo_result(p_ds, p_sql, curdb)
 
+        # 查询ClickHouse 数据源
+    if p_ds['db_type'] == '9':
+        if p_ds['proxy_status'] == '1':
+            result = get_ck_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = await get_ck_result(p_ds, p_sql, curdb)
+
 
     return result

@@ -619,3 +619,27 @@ def get_sqlserver_result(p_ds,p_sql,p_curdb):
         result['data']   = ''
         result['column'] = ''
         return result
+
+'''
+  操作日志查询
+'''
+async def query_ds_opt_log(p_log_name):
+    v_where=' '
+    if p_log_name != '':
+        v_where = " where a.statement like '%{0}%' or a.db like '%{1}%'".format(p_log_name,p_log_name)
+    sql = """SELECT
+                 a.id,  
+                 b.name,
+                 c.db_desc,
+                 a.db,
+                 DATE_FORMAT(a.start_time,'%Y-%m-%d %H:%i:%s') AS start_time,
+                 DATE_FORMAT(a.end_time,'%Y-%m-%d %H:%i:%s') AS end_time,
+                 d.dmmc as status,
+                 a.statement,
+                 a.message
+            FROM t_db_opt_log a,t_user b,t_db_source c,t_dmmx d
+            WHERE a.user_id=b.id
+              AND a.ds_id=c.id
+              AND a.status=d.dmm
+              AND d.dm='28' {0} ORDER BY a.start_time desc ,a.db,a.id""".format(v_where)
+    return await async_processer.query_list(sql)

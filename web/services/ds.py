@@ -6,7 +6,8 @@
 # @Software: PyCharm
 
 import json
-from   web.model.t_ds    import get_ds_by_dsid,query_ds,save_ds,upd_ds,del_ds,check_ds_valid,get_dss_sql_query,exe_query
+from web.model.t_ds import get_ds_by_dsid, query_ds, save_ds, upd_ds, del_ds, check_ds_valid, get_dss_sql_query, \
+    exe_query, query_ds_opt_log
 from   web.model.t_dmmx  import get_dmm_from_dm,get_sync_db_server_by_type,get_sync_db_server
 from web.utils           import base_handler
 
@@ -218,3 +219,17 @@ class get_db_by_type(base_handler.TokenHandler):
         db_type = self.get_argument("db_type")
         result  = await get_sync_db_server_by_type(db_type)
         self.write({"code": result['code'], "message": result['message']})
+
+
+'''操作日志'''
+class dslogquery(base_handler.TokenHandler):
+    def get(self):
+        self.render("./ds/ds_opt_log_query.html" )
+
+class dslog_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        log_name     = self.get_argument("log_name")
+        v_list       = await query_ds_opt_log(log_name)
+        v_json       = json.dumps(v_list)
+        self.write(v_json)
