@@ -70,6 +70,7 @@ async def query_sync_tab_real(sync_tag,sync_tab):
                     a.id,
                     a.db_name,
                     a.tab_name,
+                    a.sync_incr_col,
                     a.schema_name,
                     a.status
              FROM t_db_sync_tab_config a
@@ -99,7 +100,6 @@ async def query_sync_tab_cfg(sync_tag):
     else:
        return rs[0]
 
-
 # async def query_sync_tab_cfg_real(sync_tag):
 #     sql = """SELECT
 #                 GROUP_CONCAT(CONCAT(a.db_name,'.',a.tab_name,'$',a.schema_name)) AS sync_tab
@@ -115,7 +115,7 @@ async def query_sync_tab_cfg(sync_tag):
 
 async def query_sync_tab_cfg_real(sync_tag):
     sql = """SELECT  
-                CONCAT(a.db_name,'.',a.tab_name,'$',a.schema_name) 
+                CONCAT(a.db_name,'.',a.tab_name,'.',a.sync_incr_col,'$',a.schema_name) 
              FROM t_db_sync_tab_config a
             WHERE a.sync_tag='{}'  and a.status='1'
             order by 1

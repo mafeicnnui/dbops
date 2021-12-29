@@ -516,6 +516,7 @@
         function init_tab_config(){
            $("#mysql_db_name").val('');
            $("#sync_tab_name").val('');
+           $('#desc_db_part_col').val('')
            $("#desc_db_name").val('');
         }
 
@@ -722,6 +723,7 @@
                                    { "title": "标识","width":"5%" },
                                    { "title": "源库名","width":"10%" },
                                    { "title": "表名称","width":"15%" },
+                                   { "title": "分区列","width":"15%" },
                                    { "title": "目标库","width":"15%" },
                                    { "title": "状态","width":"15%" },
                                    {
@@ -736,9 +738,9 @@
                               ],
                              columnDefs: [
                              {
-                                targets: 4,
+                                targets: 5,
                                 render: function(data, type, row, meta){
-                                    if (row[4]=='1') {
+                                    if (row[5]=='1') {
                                          msg ='&nbsp;启用&nbsp;'
                                          return msg
                                     } else {
