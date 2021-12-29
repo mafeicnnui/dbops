@@ -69,7 +69,8 @@ class bbgl_add_save (base_handler.TokenHandler):
         bbdm        = self.get_argument("bbdm")
         bbmc        = self.get_argument("bbmc")
         dsid        = self.get_argument("dsid")
-        v_list      = await save_bbgl(bbdm,bbmc,dsid,self.userid)
+        db          = self.get_argument("db")
+        v_list      = await save_bbgl(bbdm,bbmc,dsid,db,self.userid)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 

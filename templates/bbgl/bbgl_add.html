@@ -21,7 +21,7 @@
 <body>
     <form class="form-horizontal" role="form" >
         <div class="row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <div>
                     <label class="col-md-3 control-label"><span>*</span>代码</label>
                 </div>
@@ -29,7 +29,7 @@
                     <input id="bbdm"  type="text" class="form-control" placeholder="请输入报表代码">
                 </div>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <div>
                     <label class="col-md-3 control-label"><span>*</span>名称</label>
                 </div>
@@ -50,8 +50,19 @@
                      </select>
                </div>
             </div>
-            <div class="form-group col-md-1"></div>
-            <div class="form-group col-md-1">
+            <div class="form-group col-md-3">
+                <div>
+                    <label class="col-md-3 control-label"><span>*</span>数据库</label>
+                </div>
+               <div class="col-md-9">
+                     <select class="selectpicker" data-live-search="true" data-style="btn-default" id="curr_db">
+                        <option value='' selected = "selected">...</option>
+                     </select>
+               </div>
+            </div>
+
+
+            <div class="form-group col-md-2" style="text-align:center">
                 <button id="save_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
             </div>
         </div>
@@ -807,8 +818,12 @@
                   swal("数据源不能为空", "", "error")
                    return false
              }
-             return true;
 
+             if ($('#curr_db').val()==''){
+                  swal("数据库不能为空", "", "error")
+                   return false
+             }
+             return true;
          }
 
          $('#upd_header_btn').click(function () {
@@ -934,6 +949,7 @@
                         bbdm   : $('#bbdm').val(),
                         bbmc   : $('#bbmc').val(),
                         dsid   : $('#dsid').val(),
+                        db     : $('#curr_db').val()
                     },
                     success: function (dataSet) {
                         if (dataSet.code == 0) {
@@ -1083,6 +1099,7 @@
                            $('#bbmc').val(config.bbmc)
                            $('#dsid').val(config.dsid)
                            $("#dsid").selectpicker('refresh')
+                           upd_db(config.db)
                            $('#add_tab_btn').attr('onclick',"addBtn();");
                            $('#cur_bbdm').val($('#bbdm').val())
                            query_header()
@@ -1091,6 +1108,35 @@
              }
 
          });
+
+         function upd_db(p_val){
+                $.ajax({
+                    url     :"/get_tree",
+                    type    :"post",
+                    datatype:"json",
+                    data: {
+                        dbid : $('#dsid').val(),
+                        msg  : $('#curr_db').val()
+                    },
+                    success: function (dataSet) {
+                           $("#curr_db").empty();
+                           $("#curr_db").append("<option value=''>...</option>");
+                            for (i=0;i<dataSet['message'].length;i++){
+                               var val  = dataSet['message'][i].id;
+                               var text = dataSet['message'][i].id;
+                               $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                           }
+                           if (p_val !='') {
+                               $("#curr_db").val(p_val)
+                           }
+                           $("#curr_db").selectpicker('refresh')
+                    }
+                 })
+          }
+
+         $('#dsid').change(function(){
+              upd_db('');
+         })
 
          $(document).ready(function() {
               set_selected();
@@ -1101,6 +1147,7 @@
               set_editor('upd_pre_process_state')
               $('#add_tab_btn').removeAttr('onclick');
               $("#dsid").selectpicker('refresh')
+              $("#curr_db").selectpicker('refresh')
         });
 
    </script>

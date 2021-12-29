@@ -61,15 +61,15 @@ async def get_preprocess_xh(p_bbdm):
     else:
       return rs[0]
 
-async def save_bbgl(bbdm,bbmc,dsid,userid):
+async def save_bbgl(bbdm,bbmc,dsid,db,userid):
     try:
         if (await check_bbdm_exists(bbdm)) == 0:
-            st = "insert into t_bbgl_config(bbdm,bbmc,dsid,creator,create_date,last_update_date) \
-                    values('{}','{}','{}','{}',now(),now())".format(bbdm,bbmc,dsid,userid)
+            st = "insert into t_bbgl_config(bbdm,bbmc,dsid,db,creator,create_date,last_update_date) \
+                    values('{}','{}','{}','{}','{}',now(),now())".format(bbdm,bbmc,dsid,db,userid)
             await async_processer.exec_sql(st)
             return {'code':0,'message':'保存成功!'}
         else:
-            st = """update t_bbgl_config set bbmc='{}',dsid='{}',last_update_date=now() where bbdm='{}'""".format(bbmc, dsid,bbdm)
+            st = """update t_bbgl_config set bbmc='{}',dsid='{}',db='{}',last_update_date=now() where bbdm='{}'""".format(bbmc, dsid,db,bbdm)
             await async_processer.exec_sql(st)
             return {'code': 0, 'message': '更新成功!'}
     except Exception as e:
@@ -163,7 +163,8 @@ async def query_bbgl_data(bbdm,param):
          preProcessTime = get_seconds(start_time)
 
          # 调用查询语句返回数据
-         result = await exe_query_exp(cfg['dsid'],cfg['statement'],'hopsonone_do')
+         print('>>>',cfg['dsid'],cfg['statement'],cfg['db'])
+         result = await exe_query_exp(cfg['dsid'],cfg['statement'],cfg['db'])
          result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime)}
          return  result
 
