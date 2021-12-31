@@ -1110,7 +1110,8 @@
          });
 
          function upd_db(p_val){
-                $.ajax({
+               if ($('#dsid').val() != '') {
+                    $.ajax({
                     url     :"/get_tree",
                     type    :"post",
                     datatype:"json",
@@ -1132,6 +1133,7 @@
                            $("#curr_db").selectpicker('refresh')
                     }
                  })
+               }
           }
 
          $('#dsid').change(function(){
