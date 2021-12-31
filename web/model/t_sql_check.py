@@ -144,7 +144,7 @@ def process_result(v):
         else:
            return 'code:{0},error:{1}'.format(str(v[0]),str(v[1]))
     else:
-        return v
+        return str(v)
 
 def check_idx_name_col(p_sql,rule):
     ob = get_obj_name(p_sql)
@@ -242,10 +242,11 @@ async def get_obj_privs_grammar(p_ds,p_sql):
                return '表:{0} 不存在!'.format(ob)
             else:
                try:
-                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,'dbops_'+ob))
+                   await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob,get_tmp_name(ob)))
                    await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
                    await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                except:
+                   print('>>>>>>', dp.format(get_tmp_name(ob)))
                    await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
                return '0'
     except :
@@ -847,14 +848,13 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                 await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
                 rs = await async_processer.query_list_by_ds(p_ds, st[0:-12].format(get_tmp_name(ob),get_tmp_name(ob)))
                 await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
-                return rs
+                return {'code':0,'msg':rs}
     except Exception as e:
-        traceback.print_exc()
         try:
             await async_processer.exec_sql_by_ds(p_ds, dp.format(get_tmp_name(ob)))
         except:
             pass
-        return process_result(str(e))
+        return {'code':-1,'msg':process_result(e)}
 
 async def get_tab_rows(p_ds,p_sql):
     ob = get_obj_name(p_sql)
@@ -1333,16 +1333,15 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                 print('表必须拥有字段...')
                 if rule['rule_value']!='':
                     v = await get_tab_has_fields(ds, st, rule)
-                    e = rule['error']
-                    try:
-                        for i in v:
+                    if v['code'] == 0:
+                        for i in res['msg']:
                             res = False
-                            rule['error'] = e.format(i[0], i[1])
+                            rule['error'] = rule['error'].format(i[0], i[1])
                             await save_check_results(rule,p_user,st,sxh)
-                    except:
+                    else:
                         res = False
-                        rule['error'] = v
-                        await save_check_results(rule,p_user,st,sxh)
+                        rule['error'] = format_sql(v['msg'])
+                        await save_check_results(rule, p_user, st, sxh)
 
         if rule['rule_code'] == 'switch_tab_tcol_datetime' and rule['rule_value'] == 'true' and tp == 'TABLE':
             if op == 'CREATE_TABLE':
