@@ -144,7 +144,10 @@ class async_processer:
                 async with conn.cursor(DictCursor) as cur:
                     await cur.execute(p_sql)
                     rs = await cur.fetchone()
-        return capital_to_lower(rs)
+        if rs is not None:
+           return capital_to_lower(rs)
+        else:
+           return None
 
     async def query_dict_one_by_ds(p_ds,p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']), user=p_ds['user'], password=p_ds['password'],

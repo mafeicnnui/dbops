@@ -25,7 +25,8 @@ async def save_db(dsid,dres):
           vals = vals +'({}),'.format(val[0:-1])
     await async_processer.exec_sql(desc + vals[0:-1])
 
-async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema):
+async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema,sour_tab):
+      vvv = " and instr(table_name,'{}')>0".format(sour_tab) if sour_tab!='' else ''
       sds = await get_ds_by_dsid_by_cdb(sour_db_server,sour_schema)
       dds = await get_ds_by_dsid_by_cdb(desc_db_server,desc_schema)
       sql  = """SELECT  
@@ -44,9 +45,10 @@ async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema)
                 extra,
                 column_comment
             FROM information_schema.columns 
-            WHERE table_schema='{}' ORDER BY table_name,ordinal_position"""
-      sres = await async_processer.query_dict_list_by_ds(sds,sql.format(sour_schema))
-      dres = await async_processer.query_dict_list_by_ds(dds, sql.format(desc_schema))
+            WHERE table_schema='{}' {} ORDER BY table_name,ordinal_position"""
+
+      sres = await async_processer.query_dict_list_by_ds(sds,sql.format(sour_schema,vvv))
+      dres = await async_processer.query_dict_list_by_ds(dds, sql.format(desc_schema,vvv))
 
       await async_processer.exec_sql('truncate table t_db_compare')
       await save_db(sour_db_server,sres)
@@ -83,22 +85,90 @@ async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema)
       res = await async_processer.query_list(sql.format(sour_db_server,desc_db_server))
       return res
 
-def get_sync_sql(sres,dres):
-    st = """ALTER TABLE `{}`.`{}` CHANGE `{}` `{}` {} {} {} {} {} {};
-         """.format(dres['table_schema'],
-                    dres['table_name'],
-                    sres['column_name'],
+async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_schema, sour_tab):
+    vvv = " and instr(table_name,'{}')>0".format(sour_tab) if sour_tab != '' else ''
+    sds = await get_ds_by_dsid_by_cdb(sour_db_server, sour_schema)
+    dds = await get_ds_by_dsid_by_cdb(desc_db_server, desc_schema)
+    sql = """SELECT  table_schema,table_name
+             FROM information_schema.tables 
+             WHERE table_schema='{}' {} ORDER BY table_name"""
+
+    sres = await async_processer.query_dict_list_by_ds(sds, sql.format(sour_schema, vvv))
+    dres = await async_processer.query_dict_list_by_ds(dds, sql.format(desc_schema, vvv))
+
+    await async_processer.exec_sql('truncate table t_db_compare_idx')
+
+    for s in sres:
+        rs = await async_processer.query_dict_list_by_ds(sds,'show index from {}'.format(s['table_name']))
+        for r in rs:
+            st = """insert into t_db_compare_idx
+                     (dsid,table_schema,`table_name`,is_unique,index_name,seq_in_index,`column_name`,`nullable`,index_type) 
+                     values({},'{}','{}','{}','{}','{}','{}','{}','{}')
+                 """.format(sour_db_server,sour_schema, r['table'], r['non_unique'],r['key_name'],
+                            r['seq_in_index'],r['column_name'],r['null'],r['index_type'])
+            await async_processer.exec_sql(st)
+
+    for s in dres:
+        rs = await async_processer.query_dict_list_by_ds(dds, 'show index from {}'.format(s['table_name']))
+        for r in rs:
+            st = """insert into t_db_compare_idx
+                       (dsid,table_schema,`table_name`,is_unique,index_name,seq_in_index,`column_name`,`nullable`,index_type) 
+                       values({},'{}','{}','{}','{}','{}','{}','{}','{}')
+                   """.format(desc_db_server, desc_schema, r['table'], r['non_unique'], r['key_name'],
+                              r['seq_in_index'], r['column_name'], r['null'], r['index_type'])
+            await async_processer.exec_sql(st)
+
+    sql = """ SELECT   a.table_schema,
+                       a.table_name,
+                       a.index_name,
+                       a.index_type,
+                       a.is_unique,
+                       a.seq_in_index,
+                       a.column_name,
+                       a.nullable 
+                FROM t_db_compare_idx a
+                WHERE dsid=1 AND NOT EXISTS(
+                 SELECT 1 FROM t_db_compare_idx b
+                    WHERE b.dsid=69
+                      AND b.`table_name` = a.`table_name`
+                      AND b.`index_name` = a.`index_name`
+                      AND b.`index_type` = a.`index_type`
+                      AND b.`is_unique`  = a.`is_unique`
+                      AND b.`seq_in_index` = a.`seq_in_index`
+                      AND b.`column_name` = a.`column_name`
+                      AND b.`nullable` = a.`nullable`)"""
+    res = await async_processer.query_list(sql.format(sour_db_server, desc_db_server))
+    return res
+
+def get_sync_sql(sres,dres,desc_schema=''):
+    if dres is None:
+        st = """ALTER TABLE `{}`.`{}` ADD `{}` `{}` {} {} {} {} {};"""\
+            .format(desc_schema,
+                    sres['table_name'],
                     sres['column_name'],
                     sres['column_type'],
-                    'CHARSET ' + sres['character_set_name']
-                                if sres['character_set_name'] is not None and sres['character_set_name'] !='' else '',
-                    'COLLATE ' + sres['collation_name']
-                                if sres['collation_name'] is not None and sres['collation_name'] !='' else '',
-                    'DEFAULT ' + sres['column_default']
-                                if sres['column_default'] is not None and sres['column_default'] !='' else '',
-                    'NOT NULL ' if sres['is_nullable'] == 'YES' is not None else '',
-                    "COMMENT '{}'".format(sres['column_comment'])
-                                if sres['column_comment'] is not None and sres['column_comment'] !=''  else '')
+                    'CHARSET ' + sres['character_set_name']  if sres['character_set_name'] is not None and sres['character_set_name'] != '' else '',
+                    'COLLATE ' + sres['collation_name'] if sres['collation_name'] is not None and sres['collation_name'] != '' else '',
+                    'DEFAULT ' + sres['column_default'] if sres['column_default'] is not None and sres['column_default'] != '' else '',
+                    'NOT NULL '  if sres['is_nullable'] == 'YES' is not None else '',
+                    "COMMENT '"+sres['column_comment']+"'" if sres['column_comment'] is not None and sres['column_comment'] != '' else '')
+
+    else:
+        st = """ALTER TABLE `{}`.`{}` CHANGE `{}` `{}` {} {} {} {} {} {};
+             """.format(dres['table_schema'],
+                        dres['table_name'],
+                        sres['column_name'],
+                        sres['column_name'],
+                        sres['column_type'],
+                        'CHARSET ' + sres['character_set_name']
+                                    if sres['character_set_name'] is not None and sres['character_set_name'] !='' else '',
+                        'COLLATE ' + sres['collation_name']
+                                    if sres['collation_name'] is not None and sres['collation_name'] !='' else '',
+                        'DEFAULT ' + sres['column_default']
+                                    if sres['column_default'] is not None and sres['column_default'] !='' else '',
+                        'NOT NULL ' if sres['is_nullable'] == 'YES' is not None else '',
+                        "COMMENT '{}'".format(sres['column_comment'])
+                                    if sres['column_comment'] is not None and sres['column_comment'] !=''  else '')
     print('st=',st)
     return st
 
@@ -126,7 +196,12 @@ async def db_stru_compare_detail(sour_db_server,sour_schema,desc_db_server,desc_
 
     await async_processer.exec_sql('truncate table t_db_compare_detail')
     for k,v in sres.items():
-        if sres[k] != dres[k]:
+        if dres is None:
+            await async_processer.exec_sql(
+                """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                   values('{}','{}','{}','{}','{}')""".format(k, sres[k], '', '1',
+                                                              format_sql(get_sync_sql(sres, dres))))
+        elif sres[k] != dres[k]:
             await async_processer.exec_sql(
              """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
                 values('{}','{}','{}','{}','{}')""".format(k,sres[k],dres[k],'1',format_sql(get_sync_sql(sres,dres))))
@@ -144,3 +219,95 @@ async def db_stru_compare_detail(sour_db_server,sour_schema,desc_db_server,desc_
                                                      statement,
                                                      status
                                                  from t_db_compare_detail order by id""")
+
+async def db_stru_compare_statement(sour_db_server,sour_schema,desc_db_server,desc_schema,table,column):
+    sql = """SELECT   a.table_schema,
+                      a.table_name,
+                      a.column_name,
+                      a.is_nullable,
+                      a.column_type,
+                      a.column_default,
+                      a.column_key,
+                      a.character_set_name,
+                      a.collation_name,
+                      a.column_comment,
+                      a.extra
+               FROM t_db_compare a
+               WHERE  a.dsid={} 
+                  and a.`table_schema`='{}' 
+                  and a.`table_name`='{}' 
+                  and a.`column_name`='{}'"""
+    sres = await async_processer.query_dict_one(sql.format(sour_db_server,sour_schema,table,column))
+    dres = await async_processer.query_dict_one(sql.format(desc_db_server,desc_schema,table,column))
+
+    await async_processer.exec_sql('truncate table t_db_compare_detail')
+    for k,v in sres.items():
+        if dres is None:
+            await async_processer.exec_sql(
+                """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                   values('{}','{}','{}','{}','{}')""".format(k, sres[k], '', '1',
+                                                              format_sql(get_sync_sql(sres, dres))))
+            break
+        elif sres[k] != dres[k]:
+            await async_processer.exec_sql(
+             """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                values('{}','{}','{}','{}','{}')""".format(k,sres[k],dres[k],'1',format_sql(get_sync_sql(sres,dres))))
+        else:
+            await async_processer.exec_sql(
+                """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                   values('{}','{}','{}','{}','{}')""".format(k, sres[k], dres[k], '0', ''))
+
+    return await  async_processer.query_list(
+                    """select statement from t_db_compare_detail where status='1' order by id""")
+
+async def db_stru_batch_gen_statement(sour_db_server,sour_schema,desc_db_server,desc_schema,table):
+    res = await db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema,table)
+    print('res=',res)
+
+    sql = """SELECT  a.table_schema,
+                     a.table_name,
+                     a.column_name,
+                     a.is_nullable,
+                     a.column_type,
+                     a.column_default,
+                     a.column_key,
+                     a.character_set_name,
+                     a.collation_name,
+                     a.column_comment,
+                     a.extra
+              FROM t_db_compare a
+              WHERE  a.dsid={}
+                 and a.`table_schema`='{}'
+                 and a.`table_name`='{}'
+                 and a.`column_name`='{}'"""
+
+    await async_processer.exec_sql('truncate table t_db_compare_detail')
+    for r in res:
+        sres = await async_processer.query_dict_one(sql.format(sour_db_server,r[0],r[1],r[2]))
+        dres = await async_processer.query_dict_one(sql.format(desc_db_server,r[0],r[1],r[2]))
+        print('sres=',sres)
+        print('dres=',dres)
+        for k,v in sres.items():
+            if dres is None:
+                await async_processer.exec_sql(
+                    """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                       values('{}','{}','{}','{}','{}')""".format(k, sres[k], '', '1',
+                                                                  format_sql(get_sync_sql(sres, dres,desc_schema))))
+                break
+            elif sres.get(k) != dres.get(k):
+                await async_processer.exec_sql(
+                    """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                       values('{}','{}','{}','{}','{}')""".format(k,sres[k],dres[k],'1',format_sql(get_sync_sql(sres,dres))))
+                break
+            else:
+                await async_processer.exec_sql(
+                    """insert into t_db_compare_detail(property_name,sour_property_value,desc_property_value,status,statement)
+                       values('{}','{}','{}','{}','{}')""".format(k, sres[k], dres[k], '0', ''))
+
+    return await  async_processer.query_dict_list("""select
+                                                     property_name,
+                                                     sour_property_value,
+                                                     desc_property_value,
+                                                     statement,
+                                                     status
+                                                   from t_db_compare_detail where status='1' order by id""")

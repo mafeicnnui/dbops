@@ -230,56 +230,23 @@
     </div>
 
     <!--实时同步 -->
-     <div class="row">
-          <div class="panel panel-border panel-primary">
-               <div class="panel-heading">
-                    <h3 id='hst_real_div' class="panel-title">实时同步[合生通]</h3>
-                </div>
-                <div class="panel-body">
-                   <div class="col-md-6">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div>
-                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                 <div id='hst_prod_real_sync_mysql_clickhouse_executer'></div>
-                            </div>
-                        </div>
-                    </div>
-                </dclassiv>
-            </div>
+    <div id='div-real-sync' class="panel panel-default">
+        <div class="panel-body">
+            <ul class="nav nav-pills m-b-30 pull-left">
+                <li class="active">
+                    <a href="#real_sync_mysql_clickhouse" data-toggle="tab" aria-expanded="true">实时同步</a>
+                </li>
+            </ul>
+            <div class="tab-content br-n pn">
+                 <div class="panel-body fixed-panel">
+                    <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div><br>
+                    <div id='hst_prod_real_sync_mysql_clickhouse_executer'></div><br>
+                    <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>
+                    <div id='hft_prod_real_sync_mysql_clickhouse_executer'></div>
+                 </div>
+             </div>
+        </div>
     </div>
-
-     <!--实时同步 -->
-     <div class="row">
-          <div class="panel panel-border panel-primary">
-               <div class="panel-heading">
-                    <h3 id='hft_real_div' class="panel-title">实时同步[会付通]</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-6">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                         <div class="panel panel-border panel-primary">
-                            <div class="panel-body fixed-panel">
-                                 <div id='hft_prod_real_sync_mysql_clickhouse_executer'></div>
-                           </div>
-                        </div>
-                    </div>
-                </dclassiv>
-            </div>
-    </div>
-
-
 
     <!--数据库运行情况 合生通-主库-->
     <div class="row">
@@ -618,9 +585,13 @@
     <script>
 
         let n_hst_max_id  = 0
-        let n_hft_max_id  = 0
         let n_hst2_max_id = 0
+        let n_hft_max_id  = 0
         let n_hft2_max_id = 0
+        let n_hst_data    = []
+        let n_hst2_data   = []
+        let n_hft_data    = []
+        let n_hft2_data   = []
         let n_timerout    = 10000
 
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
@@ -863,188 +834,148 @@
               myChart.setOption(option);
         }
 
-        function get_charts_real_line(p_item,p_title,p_flag,p_color) {
+        function get_charts_real_line(p_item,p_title,p_flag,p_color,p_max_id) {
+             var myChart = echarts.init($('#'+p_item)[0],'light');
+             let res;
+             $.ajax({
+                    url: "/get/db/real/sync",
+                    type: "post",
+                    async:false,
+                    data: {
+                         'sync_tag': p_item,
+                         'max_id'  : p_max_id
+                    },
+                    datatype: "json",
+                    success: function (dataSet) {
+                         res =  dataSet.data
+                         console.log('res=>',res)
+                         option = {
+                              tooltip: {
+                                trigger: 'axis',
+                                formatter: function (params) {
+                                  params = params[0];
+                                  return (
+                                     params.name.split(' ')[1] +
+                                    ' : ' +
+                                    params.value[1]/10+'[e/s]'
+                                  );
+                                },
+                                axisPointer: {
+                                  animation: false
+                                }
+                              },
+                              title:{
+                                 text:p_title,
+                                 left:'center',
+                                 textStyle:{
+                                    color:p_color,
+                                    fontStyle:'italic',
+                                    fontWeight:'bold',
+                                    fontFamily:'宋体',
+                            　　　　 fontSize:14
+                                }
+                              },
+                              grid: {
+                                   top: '25px',
+                                   bottom: '20px',
+                                   right: '25px',
+                                   left:'40px'
+                              },
+                              xAxis: {
+                                type: 'time',
+                                splitLine: {
+                                  show: false
+                                }
+                              },
+                              yAxis: {
+                                type: 'value',
+                                boundaryGap: [0, '100%'],
+                                splitLine: {
+                                  show: false
+                                }
+                              },
+                              series: [
+                                {
+                                  type: 'line',
+                                  areaStyle: {color:p_color},
+                                  itemStyle: {normal:{color:p_color}},
+                                  showSymbol: false,
+                                  data: res
+                                }
+                              ]
+                         };
+                         myChart.setOption(option);
+                         if (p_flag == 'HST') {
+                             n_hst_max_id = dataSet.max_id
+                             n_hst_data  = res
+                            console.log('HST....',n_hst_max_id)
+                         } else if  (p_flag == 'HFT') {
+                             n_hft_max_id = dataSet.max_id
+                             n_hft_data = res
+                            console.log('HFT....',n_hft_max_id)
+                         } else if  (p_flag == 'HST2') {
+                            n_hst2_max_id = res.mid
+                            n_hst2_data = res
+                            console.log('HST2....',n_hst2_max_id)
+                         } else if  (p_flag == 'HFT2') {
+                            n_hft2_max_id = res.mid
+                            n_hft2_data = res
+                            console.log('HFT2....',n_hft2_max_id)
+                         }
+                         //timer1 = setInterval(get_charts_real_line_timer(p_item,'合生通[mysql->ck->logger]','HST','#b7a9ce',n_hst_max_id),n_timerout*10);
+                    }
+              });
+         }
 
-            function getRealData(p_sync_tag,p_max_id) {
-                 let res;
-                 $.ajax({
-                        url: "/get/db/real/sync",
-                        type: "post",
-                        async:false,
-                        data: {
-                             'sync_tag': p_sync_tag,
-                             'max_id'  : p_max_id
-                        },
-                        datatype: "json",
-                        success: function (dataSet) {
-                             res =  dataSet.data
-                             mid =  dataSet.max_id
-                        }
-                  });
-                 return  {
-                      'data':res,
-                      'mid':mid
-                 }
-            }
+          function get_charts_real_line_timer(p_item,p_title,p_flag,p_color,p_max_id) {
+             var myChart = echarts.init($('#'+p_item)[0],'light');
+             let res;
+             $.ajax({
+                    url: "/get/db/real/sync",
+                    type: "post",
+                    async:false,
+                    data: {
+                         'sync_tag': p_item,
+                         'max_id'  : p_max_id
+                    },
+                    datatype: "json",
+                    success: function (dataSet) {
+                         res =  dataSet.data
+                         console.log('res->timer=>',res)
+                         console.log('res->data>>>>>>>>>>>>>>>>>>>=',res.data,res.data.length)
+                         console.log('n_hst_data=',n_hst_data)
+                         if (p_flag == 'HST') {
+                             if (res.data.length > 0 ) {
+                                   n_hst_data.shift();
+                                   n_hst_data.push(res.data[0])
+                                   console.log('n_hst_data2=',n_hst_data)
+                                   n_hst_max_id = dataSet.max_id
+                                   myChart.setOption({
+                                    series: [
+                                      {
+                                        data: res.data
+                                      }
+                                    ]
+                                  });
+                              }
+                             console.log('HST....',n_hst_max_id)
+                         } else if  (p_flag == 'HFT') {
+                             n_hft_max_id = dataSet.max_id
+                             n_hft_data = res
+                             console.log('HFT....',n_hft_max_id)
+                         } else if  (p_flag == 'HST2') {
+                            n_hst2_max_id = res.mid
+                            n_hst2_data = res
+                            console.log('HST2....',n_hst2_max_id)
+                         } else if  (p_flag == 'HFT2') {
+                            n_hft2_max_id = res.mid
+                            n_hft2_data = res
+                            console.log('HFT2....',n_hft2_max_id)
+                         }
+                    }
+              });
+         }
 
-            var myChart = echarts.init($('#'+p_item)[0],'light');
-            let data = [];
-
-            if (p_flag == 'HST') {
-                res  = getRealData(p_item,1)
-                data = res.data
-                mid  = res.mid
-                n_hst_max_id = mid +1
-            } else if  (p_flag == 'HFT') {
-                res  = getRealData(p_item,1)
-                data = res.data
-                mid  = res.mid
-                n_hft_max_id= mid +1
-            } else if  (p_flag == 'HST2') {
-                res  = getRealData(p_item,1)
-                data = res.data
-                mid  = res.mid
-                n_hst2_max_id = mid +1
-            } else if  (p_flag == 'HFT2') {
-                res  = getRealData(p_item,1)
-                data = res.data
-                mid  = res.mid
-                n_hft2_max_id= mid +1
-            }
-
-            option = {
-              tooltip: {
-                trigger: 'axis',
-                formatter: function (params) {
-                  params = params[0];
-                  return (
-                     params.name.split(' ')[1] +
-                    ' : ' +
-                    params.value[1]/10+'[e/s]'
-                  );
-                },
-                axisPointer: {
-                  animation: false
-                }
-              },
-              title:{
-                 text:p_title,
-                 left:'center',
-                 textStyle:{
-                    color:p_color,
-                    fontStyle:'italic',
-                    fontWeight:'bold',
-                    fontFamily:'宋体',
-            　　　　 fontSize:14
-                }
-              },
-              grid: {
-                   top: '25px',
-                   bottom: '20px',
-                   right: '25px',
-                   left:'40px'
-              },
-              xAxis: {
-                type: 'time',
-                splitLine: {
-                  show: false
-                }
-              },
-              yAxis: {
-                type: 'value',
-                boundaryGap: [0, '100%'],
-                splitLine: {
-                  show: false
-                }
-              },
-              series: [
-                {
-                  type: 'line',
-                  areaStyle: {color:p_color},
-                  itemStyle: {normal:{color:p_color}},
-                  showSymbol: false,
-                  data: data
-                }
-              ]
-            };
-
-            if (p_flag == 'HST') {
-               timer = setInterval(function () {
-                  console.log('timer....')
-                  res  = getRealData(p_item,n_hst_max_id)
-                  if (res.data.length > 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hst_max_id)
-                       data.push(res.data[0])
-                       n_hst_max_id = res.mid
-                  }
-                  myChart.setOption({
-                    series: [
-                      {
-                        data: data
-                      }
-                    ]
-                  });
-                }, n_timerout);
-            }  else if  (p_flag == 'HFT') {
-               timer2 = setInterval(function () {
-                  console.log('timer2....')
-                  res  = getRealData(p_item,n_hft_max_id)
-                  if (res.data.length > 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hft_max_id)
-                       data.push(res.data[0])
-                       n_hft_max_id = res.mid
-                  }
-                  myChart.setOption({
-                    series: [
-                      {
-                        data: data
-                      }
-                    ]
-                  });
-                }, n_timerout+5000);
-
-            }  else if (p_flag == 'HST2') {
-               timer3 = setInterval(function () {
-                  console.log('timer3....')
-                  res  = getRealData(p_item,n_hst2_max_id)
-                  if (res.data.length > 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hst2_max_id)
-                       data.push(res.data[0])
-                       n_hst2_max_id = res.mid
-                  }
-                  myChart.setOption({
-                    series: [
-                      {
-                        data: data
-                      }
-                    ]
-                  });
-                }, n_timerout*2);
-            }  else if  (p_flag == 'HFT2') {
-               timer4 = setInterval(function () {
-                  console.log('timer4....')
-                  res  = getRealData(p_item,n_hft2_max_id)
-                  if (data.length > 0 ) {
-                       data.shift();
-                       res  = getRealData(p_item,n_hft2_max_id)
-                       data.push(res.data[0])
-                       n_hft2_max_id = res.mid
-                  }
-                  myChart.setOption({
-                    series: [
-                      {
-                        data: data
-                      }
-                    ]
-                  });
-                }, (n_timerout+5000)*2);
-
-            }
-            myChart.setOption(option);
-        }
 
         function set_sync_task(dataSet,max_syrq,sync_sts) {
             $('#sync_comments').val(dataSet['comments'])
@@ -1109,13 +1040,18 @@
                         }
                     });
                 }  else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
-                    get_charts_real_line(p_render_id,'[mysql->ck->logger]','HST','#b7a9ce')
-                }   else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
-                    get_charts_real_line(p_render_id,'[mysql->ck->execter]','HST2','#d4ab9e')
+                    get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HST','#b7a9ce',1)
+
+                }
+                else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'合生通[mysql->ck->execter]','HST2','#d4ab9e',1)
+                    //timer2 = setInterval(get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HST2','#b7a9ce',n_hst_max_id),n_timerout);
                 }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
-                    get_charts_real_line(p_render_id,'[mysql->ck_>logger]','HFT','#8aa1a1')
+                    get_charts_real_line(p_render_id,'会付通[mysql->ck_>logger]','HFT','#8aa1a1',1)
+                    //timer3 = setInterval(get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HFT','#b7a9ce',n_hst_max_id),n_timerout);
                 }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
-                    get_charts_real_line(p_render_id,'[mysql->ck_>execter]','HFT2','#d08e7d')
+                    get_charts_real_line(p_render_id,'会付通[mysql->ck_>execter]','HFT2','#d08e7d',1)
+                    //timer4 = setInterval(get_charts_real_line(p_render_id,'合生通[mysql->ck->logger]','HFT2','#b7a9ce',n_hst_max_id),n_timerout);
                 }
             }
 

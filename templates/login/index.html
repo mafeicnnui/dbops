@@ -23,8 +23,8 @@
         <link href="{{static_url('plugins/datatables/scroller.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
         <link href="{{static_url('plugins/datatables/dataTables.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
 
-        <link href="{{static_url('plugins/datatables/fixedColumns.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-        <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+<!--        <link href="{{static_url('plugins/datatables/fixedColumns.bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>-->
+<!--        <link href="{{static_url('plugins/datatables/fixedColumns.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>-->
 
         <link href="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.css')}}" rel="stylesheet" type="text/css">
         <link href="{{static_url('plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css')}}" rel="stylesheet" >
@@ -534,6 +534,7 @@
 
         <script>
             var timer ;
+            var timer1;
             var timer2;
             var timer3;
             var timer4;
@@ -734,8 +735,8 @@
                       url=$(this).attr("id").split('^')[1]
 
                       console.log('tabId=',tabId,url)
-
                       clearInterval(timer);
+                      clearInterval(timer1);
                       clearInterval(timer2);
                       clearInterval(timer3);
                       clearInterval(timer4);
