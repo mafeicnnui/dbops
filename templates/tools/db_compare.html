@@ -113,8 +113,7 @@
          </div>
       </div>
       <p></p>
-      <hr>
-
+      <input type="hidden" id='copy_statement'>
 
        <!--比较情况 -->
      <div class="panel panel-default">
@@ -170,30 +169,14 @@
        </div>
      </div>
 
-      <!--查看语句  -->
-      <div id="con-close-modal-statement" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-detail">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">查看语句</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div id='ace-editor' class="col-md-12"></div>
-                    </div>
-                </div>
-            </div>
-      </div>
-   </div>
-
       <!--一键生成  -->
       <div id="con-close-modal-all-statement" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
        <div class="modal-dialog modal-lg-detail-all">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">一键生成</h4>
+                    <h4 class="modal-title">一键生成</h4><br>
+                    <button  class="col-md-1 btn btn-sm text-left"  onclick="copy_all_statement()">复制</button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -204,7 +187,7 @@
       </div>
    </div>
 
-   <script>
+     <script>
 
         function format_sql(sql) {
            var res='';
@@ -289,7 +272,19 @@
 
         }
 
-        function show_statement(p_row) {
+		function copyText(text, callback){
+            var tag = document.createElement('input');
+            tag.setAttribute('id', 'cp_hgz_input');
+            tag.value = text;
+            console.log('text=',text)
+            document.getElementsByTagName('body')[0].appendChild(tag);
+            document.getElementById('cp_hgz_input').select();
+            document.execCommand('copy');
+            document.getElementById('cp_hgz_input').remove();
+            if(callback) {callback(text)}
+		}
+
+        function copy_statement(p_row) {
             db  = p_row.split(',')[0]
             tab = p_row.split(',')[1]
             col = p_row.split(',')[2]
@@ -311,18 +306,19 @@
                      for(i=0;i<dataSet.message.length;i++) {
                           v=v+dataSet.message[i]+'\n'
                      }
-                     $('.modal').on('show.bs.modal', centerModals);
-                     $(window).on('resize', centerModals);
-                     $('#con-close-modal-statement').modal({
-                          keyboard: false,
-                          backdrop:false
-                     })
-                    var editor = ace.edit("ace-editor");
-                    editor.setValue('')
-                    editor.insert(format_sql(v))
-                    editor.setReadOnly(true);
+                     copyText(format_sql(v) , function ()
+                      { showtips('info','','复制成功!');})
                   }
               })
+        }
+
+        function copy_all_statement() {
+            var editor = ace.edit("ace-editor-all");
+             v_sql=editor.session.getValue()
+             console.log('v_sql=',v_sql)
+             copyText(format_sql(v_sql) , function (){
+                 showtips('info','','复制成功!');
+             })
         }
 
         function query_table() {
@@ -368,7 +364,7 @@
                             "width": "25px",
                             "render": function(data,type,row)
                                 {
-                                   return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看语句" onclick="show_statement(\''+row+'\');"/>' +'&nbsp;'+
+                                    return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="复制语句" onclick="copy_statement(\''+row+'\');"/>' +'&nbsp;'+
                                           '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info(\''+row+'\');"/>' +'&nbsp;';
                                 }
                             },
@@ -419,7 +415,7 @@
                             "width": "25px",
                             "render": function(data,type,row)
                                 {
-                                   return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看语句" onclick="show_statement(\''+row+'\');"/>' +'&nbsp;'+
+                                   return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="复制语句" onclick="show_statement(\''+row+'\');"/>' +'&nbsp;'+
                                           '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info(\''+row+'\');"/>' +'&nbsp;';
                                 }
                             },
@@ -430,12 +426,8 @@
               })
         }
 
-        $("#compare_btn").click(function() {
-                query_table()
-         });
-
-        $("#gen_btn").click(function() {
-              $.ajax({
+        function gen_table() {
+            $.ajax({
                   url: "/dbtools/_compare/gen",
                   type: "post",
                   datatype: "json",
@@ -449,7 +441,7 @@
                   success: function (dataSet) {
                       let v=''
                       for(i=0;i<dataSet.message.length;i++) {
-                          v=v+dataSet.message[i].statement+'\n'
+                          v = v+dataSet.message[i].statement+'\n'
                       }
                       $('.modal').on('show.bs.modal', centerModals);
                       $(window).on('resize', centerModals);
@@ -457,13 +449,56 @@
                           keyboard: false,
                           backdrop:false
                      })
-                    var editor2 = ace.edit("ace-editor-all");
-                    editor2.setValue('')
-                    editor2.insert(v)
-                    editor2.setReadOnly(true);
-
+                    var editor = ace.edit("ace-editor-all");
+                    editor.setValue('')
+                    editor.insert(v)
+                    editor.setReadOnly(true);
                   }
               })
+        }
+
+        function gen_index() {
+
+        }
+
+        function check_valid() {
+            if ($('#sour_db_server').val() == '') {
+                swal("提示", "源实例不能为空!", "warning");
+                return false
+            }
+            if ($('#sour_schema').val() == '') {
+                swal("提示", "源库不能为空!", "warning");
+                return false
+            }
+            if ($('#desc_db_server').val() == '') {
+                swal("提示", "目标实例不能为空!", "warning");
+                return false
+            }
+            if ($('#desc_schema').val() == '') {
+                swal("提示", "目标库不能为空!", "warning");
+                return false
+            }
+
+            if ($('#login_name').val() != 'admin' ) {
+                  if ($('#sour_tab').val() == '') {
+                    swal("提示", "源表不能为空!", "warning");
+                    return false
+                  }
+            }
+
+            return true
+        }
+
+        $("#compare_btn").click(function() {
+            if (check_valid()) {
+                 query_table()
+            }
+         });
+
+        $("#gen_btn").click(function() {
+            if (check_valid()) {
+                 gen_table()
+            }
          });
 
         $('#sour_db_server').change(function() {
@@ -554,21 +589,13 @@
         })
 
         $(document).ready(function() {
-            //ace editor
-          var editor = ace.edit("ace-editor");
+          var editor = ace.edit("ace-editor-all");
           editor.setTheme("ace/theme/xcode");
           editor.getSession().setMode("ace/mode/sql");
           editor.setShowPrintMargin(false);
           editor.setFontSize(16);
           editor.getSession().setUseSoftTabs(true);
           editor.setReadOnly(true);
-          var editor2 = ace.edit("ace-editor-all");
-          editor2.setTheme("ace/theme/xcode");
-          editor2.getSession().setMode("ace/mode/sql");
-          editor2.setShowPrintMargin(false);
-          editor2.setFontSize(16);
-          editor2.getSession().setUseSoftTabs(true);
-          editor2.setReadOnly(true);
 
           $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
                 var activeTab = $(e.target).text();
@@ -581,6 +608,7 @@
                     query_index()
                 }
           })
+
 
        });
 

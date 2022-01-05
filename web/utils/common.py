@@ -604,7 +604,7 @@ class create_captcha:
         self.point_chance = 2
 
         self.image = Image.new('RGBA', (self.pic_size[0], self.pic_size[1]), self.bg_color)
-        self.font = ImageFont.truetype(self.font_path, 25)
+        self.font = ImageFont.truetype(self.font_path, 20)
         self.draw = ImageDraw.Draw(self.image)
         self.text = self.gene_text()
 

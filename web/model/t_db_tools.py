@@ -142,12 +142,12 @@ async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_s
 
 def get_sync_sql(sres,dres,desc_schema=''):
     if dres is None:
-        st = """ALTER TABLE `{}`.`{}` ADD `{}` `{}` {} {} {} {} {};"""\
-            .format(desc_schema,
+        st = """ALTER TABLE `{}`.`{}` ADD `{}` `{}` {} {} {} {} {};
+             """.format(desc_schema,
                     sres['table_name'],
                     sres['column_name'],
                     sres['column_type'],
-                    'CHARSET ' + sres['character_set_name']  if sres['character_set_name'] is not None and sres['character_set_name'] != '' else '',
+                    ' CHARSET ' + sres['character_set_name']  if sres['character_set_name'] is not None and sres['character_set_name'] != '' else '',
                     'COLLATE ' + sres['collation_name'] if sres['collation_name'] is not None and sres['collation_name'] != '' else '',
                     'DEFAULT ' + sres['column_default'] if sres['column_default'] is not None and sres['column_default'] != '' else '',
                     'NOT NULL '  if sres['is_nullable'] == 'YES' is not None else '',
@@ -160,7 +160,7 @@ def get_sync_sql(sres,dres,desc_schema=''):
                         sres['column_name'],
                         sres['column_name'],
                         sres['column_type'],
-                        'CHARSET ' + sres['character_set_name']
+                        ' CHARSET ' + sres['character_set_name']
                                     if sres['character_set_name'] is not None and sres['character_set_name'] !='' else '',
                         'COLLATE ' + sres['collation_name']
                                     if sres['collation_name'] is not None and sres['collation_name'] !='' else '',
