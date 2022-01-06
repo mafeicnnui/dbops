@@ -5,7 +5,8 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.dbtools      import dict_gen,redis_migrate,db_compare,_db_compare,_db_compare_detail,_db_compare_statement,_db_compare_gen_statement,_db_compare_idx
+from web.services.dbtools      import dict_gen,redis_migrate,db_compare,_db_compare,_db_compare_detail,_db_compare_statement,\
+        _db_compare_gen_statement,_db_compare_idx,_db_compare_detail_idx,_db_compare_statement_idx
 
 tools = [
 
@@ -17,6 +18,8 @@ tools = [
         (r"/dbtools/_compare/detail", _db_compare_detail),
         (r"/dbtools/_compare/statement", _db_compare_statement),
         (r"/dbtools/_compare/gen", _db_compare_gen_statement),
+        (r"/dbtools/_compare/detail/idx", _db_compare_detail_idx),
+        (r"/dbtools/_compare/statement/idx", _db_compare_statement_idx),
 
 
 
