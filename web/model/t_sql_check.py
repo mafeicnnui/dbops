@@ -1532,12 +1532,12 @@ async def get_dml_rows(p_ds,p_sql):
            return rs[0]
         elif op in('UPDATE'):
            if p_sql.upper().find('WHERE')>=0:
-               st = '''select count(0) from {0} {1}'''.\
-                       format(ob,
-                              p_sql[p_sql.upper().find('WHERE'):])
+               tb = p_sql[6:p_sql.upper().find('SET')-1].strip()
+               vv = p_sql[p_sql.upper().find('WHERE'):]
+               st = """select count(0) from {0} {1}""".format(tb,vv)
            else:
-               st = '''select count(0) from {0} '''. \
-                   format(ob)
+               st = """select count(0) from {0}""". \
+                   format(p_sql[6:p_sql.upper().find('SET')-1].strip())
            rs = await async_processer.query_one_by_ds(p_ds, st)
            if rs[0] == 0:
                return '表:{0}更新0行!'.format(ob)
