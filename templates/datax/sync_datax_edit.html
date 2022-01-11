@@ -812,16 +812,15 @@
         });
 
         $('#sour_tab_name').change(function() {
-            console.log('sour_tab_name=',$('#sour_tab_name').val());
+            $('#hbase_table').val('');
             if ($('#sour_tab_name').val()!=''){
-
-                $('#doris_tab_name').val($('#sour_tab_name').val())
 
                 //更新源数据库列名
                 $.ajax({
                       url: "/get_columns",
                       type: "post",
                       datatype: "json",
+                      async:false,
                       data:{
                           dbid     : $('#sour_db_server').val(),
                           db_name  : $('#sour_db_name').val(),
@@ -831,14 +830,30 @@
                          $("#sour_tab_cols").empty();
                          $("#sele_sour_tab_cols").empty();
                          $("#sour_incr_col").empty();
+
                          for(i=0;i<dataSet['message'].length;i++){
                               var val  = dataSet['message'][i][0];
                               var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
                               $("#sour_tab_cols").append("<option value='"+val+"'>"+text+"</option>");
-                              var db_prefix=$('#sour_db_name').val().split('_')[1]
-                              $('#hbase_table').val('hopsonone:source_'+db_prefix+'_'+$('#sour_tab_name').val());
-                              $('#sync_tag').val('datax_'+$('#sour_db_name').val()+'.'+$('#sour_tab_name').val()+'_v1')
-                              $('#task_desc').val('dataX同步['+db_prefix+'_'+$('#sour_tab_name').val()+'_v1]')
+                         }
+
+                         var db_prefix=$('#sour_db_name').val().split('_')[1]
+                         if ($('#sync_data_type').val() == '5'){
+                             $('#hbase_table').val('hopsonone:doris'+db_prefix+'_'+$('#sour_tab_name').val());
+                         } else if ( $('#sync_data_type').val() =='7') {
+                             $('#doris_tab_name').val($('#sour_tab_name').val())
+                         }
+
+                         $('#sync_tag').val('datax_'+$('#sour_db_name').val()+'.'+$('#sour_tab_name').val()+'_v1')
+
+                         if ($('#sync_data_type').val() == '5') {
+                             $('#task_desc').val('dataX同步[source_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         } else if ($('#sync_data_type').val() == '6') {
+                             $('#task_desc').val('dataX同步[es_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         } else if ($('#sync_data_type').val() == '7') {
+                             $('#task_desc').val('dataX同步[doris_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                         } else if ($('#sync_data_type').val() == '8') {
+                             $('#task_desc').val('dataX同步[ck_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
                          }
                          $('#ion-arrow-down').attr('disabled',false);
                          $('#ion-arrow-up').attr('disabled',false);
@@ -851,6 +866,7 @@
                       url: "/get_incr_col",
                       type: "post",
                       datatype: "json",
+                      async:false,
                       data:{
                           dbid     : $('#sour_db_server').val(),
                           db_name  : $('#sour_db_name').val(),
@@ -858,7 +874,7 @@
                       },
                       success: function (dataSet) {
                          $("#sour_incr_col").empty();
-                         $("#sour_incr_col").append("<option value='' selected = \"selected\">"+'......'+"</option>");
+                         $("#sour_incr_col").append("<option value=''>......</option>");
                          for(i=0;i<dataSet['message'].length;i++){
                               var val  = dataSet['message'][i][0];
                               var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
@@ -868,20 +884,23 @@
                 });
 
                 //更新hbase行键
-                $.ajax({
-                      url: "/get_keys",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          dbid     : $('#sour_db_server').val(),
-                          db_name  : $('#sour_db_name').val(),
-                          tab_name : $('#sour_tab_name').val()
-                      },
-                      success: function (dataSet) {
-                         $("#hbase_rowkey").val(dataSet['message'])
-                         $('#hbase_rowkey').attr("readonly","readonly");
-                      }
-                });
+                if ($('#sync_data_type').val() == '5') {
+                     $.ajax({
+                          url: "/get_keys",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                              dbid     : $('#sour_db_server').val(),
+                              db_name  : $('#sour_db_name').val(),
+                              tab_name : $('#sour_tab_name').val()
+                          },
+                          success: function (dataSet) {
+                             $("#hbase_rowkey").val(dataSet['message'])
+                             $('#hbase_rowkey').attr("readonly","readonly");
+                          }
+                    });
+                }
 
             } else {
                 $("#sour_tab_cols").empty();
@@ -959,31 +978,31 @@
             }
         });
 
-        // $('#doris_db_name').change(function() {
-        //     $("#doris_tab_name").empty();
-        //     if ($('#doris_db_name').val()!=''){
-        //         $.ajax({
-        //               url: "/get_tables",
-        //               type: "post",
-        //               datatype: "json",
-        //               async:false,
-        //               data:{
-        //                   dbid    : $('#db_doris').val(),
-        //                   db_name : $('#doris_db_name').val(),
-        //               },
-        //               success: function (dataSet) {
-        //                  $("#doris_tab_name").append("<option value=''>...</option>");
-        //                  for(i=0;i<dataSet['message'].length;i++){
-        //                       var val  = dataSet['message'][i];
-        //                       var text = dataSet['message'][i];
-        //                       $("#doris_tab_name").append("<option value='"+val+"'>"+text+"</option>");
-        //                  }
-        //               }
-        //         });
-        //     } else {
-        //         $("#doris_tab_name").append("<option value=''>......</option>");
-        //     }
-        // });
+        $('#doris_db_name').change(function() {
+            $("#doris_tab_name").empty();
+            if ($('#doris_db_name').val()!=''){
+                $.ajax({
+                      url: "/get_tables",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid    : $('#db_doris').val(),
+                          db_name : $('#doris_db_name').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#doris_tab_name").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#doris_tab_name").append("<option value='"+val+"'>"+text+"</option>");
+                         }
+                      }
+                });
+            } else {
+                $("#doris_tab_name").append("<option value=''>......</option>");
+            }
+        });
 
         function set_item_status() {
                 //考虑直接隐藏这些元素，最后调试

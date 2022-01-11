@@ -529,14 +529,23 @@ async def save_datax_sync(p_sync):
         status                 = p_sync['status']
         sync_hbase_table       = p_sync['sync_hbase_table']
         sync_hbase_rowkey_sour = p_sync['sync_hbase_rowkey']
-        sync_hbase_rowkey      = get_hbase_rowkey(p_sync)
-        sync_hbase_columns     = await get_hbase_columns(p_sync)
+        if p_sync['sync_data_type'] == '5':
+            sync_hbase_rowkey = get_hbase_rowkey(p_sync)
+            sync_hbase_columns = await get_hbase_columns(p_sync)
+        else:
+            sync_hbase_rowkey = ''
+            sync_hbase_columns = ''
+
         sync_hbase_rowkey_separator = p_sync['sync_hbase_rowkey_separator']
         es_service             = p_sync['es_service']
         es_index_name          = p_sync['es_index_name']
         es_type_name           = p_sync['es_type_name']
         sync_incr_where        = get_sync_incr_where(p_sync)
-        sync_es_columns        = await get_es_columns(p_sync)
+        if p_sync['sync_data_type'] == '6':
+            sync_es_columns    = await get_es_columns(p_sync)
+        else:
+            sync_es_columns    = ''
+
         db_doris               = p_sync['db_doris']
         doris_db_name          = p_sync['doris_db_name']
         doris_tab_name         = p_sync['doris_tab_name']
@@ -607,8 +616,12 @@ async def upd_datax_sync(p_sync):
         api_server             = p_sync['api_server']
         status                 = p_sync['status']
         sync_hbase_table       = p_sync['sync_hbase_table']
-        sync_hbase_rowkey      = get_hbase_rowkey(p_sync)
-        sync_hbase_columns     = await get_hbase_columns(p_sync)
+        if p_sync['sync_data_type'] == '5' :
+            sync_hbase_rowkey  = get_hbase_rowkey(p_sync)
+            sync_hbase_columns = await get_hbase_columns(p_sync)
+        else:
+            sync_hbase_rowkey = ''
+            sync_hbase_columns = ''
         sync_hbase_rowkey_sp   = p_sync['sync_hbase_rowkey_separator']
         sync_hbase_rowkey_sour = p_sync['sync_hbase_rowkey']
         sync_incr_where        = get_sync_incr_where(p_sync)
@@ -616,7 +629,10 @@ async def upd_datax_sync(p_sync):
         es_service             = p_sync['es_service']
         es_index_name          = p_sync['es_index_name']
         es_type_name           = p_sync['es_type_name']
-        sync_es_columns        = await get_es_columns(p_sync)
+        if p_sync['sync_data_type'] == '6':
+           sync_es_columns        = await get_es_columns(p_sync)
+        else:
+           sync_es_columns = ''
         db_doris               = p_sync['db_doris']
         doris_db_name          = p_sync['doris_db_name']
         doris_tab_name         = p_sync['doris_tab_name']
@@ -915,11 +931,13 @@ async def check_datax_sync(p_sync,p_flag):
             result['code'] = '-1'
             result['message'] = 'doris同步类型不能为空!'
             return result
-
-        if (await check_tab_exists_pk(p_sync)) == 0:
-           result['code'] = '-1'
-           result['message'] = '表`{}`无主键!'.format(p_sync['doris_tab_name'])
-           return result
+        try:
+            if (await check_tab_exists_pk(p_sync)) == 0:
+               result['code'] = '-1'
+               result['message'] = '表`{}`无主键!'.format(p_sync['doris_tab_name'])
+               return result
+        except:
+            pass
 
 
     result['code'] = '0'

@@ -241,6 +241,9 @@
                             <div class="panel-body fixed-panel">
                                 <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div>
                              </div>
+                              <div class="panel-footer">
+                                 <span id ='hst-real-process'></span>
+                              </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -250,7 +253,8 @@
                             </div>
                         </div>
                     </div>
-                </dclassiv>
+                </div>
+
             </div>
     </div>
 
@@ -266,6 +270,9 @@
                             <div class="panel-body fixed-panel">
                                 <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>
                             </div>
+                            <div class="panel-footer">
+                                 <span id ='hft-real-process'></span>
+                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -877,8 +884,17 @@
                         },
                         datatype: "json",
                         success: function (dataSet) {
+                             console.log('dataSet=',dataSet)
                              res =  dataSet.data
                              mid =  dataSet.max_id
+                             if (p_sync_tag.indexOf('hst_')>=0 && p_sync_tag.indexOf('logger')>=0) {
+                                 $('#hst-real-process').text(
+                                   'mysql:'+dataSet.c_binlogfile+'/'+dataSet.c_binlogpos+' -  syncer:'+dataSet.binlogfile+'/'+dataSet.binlogpos)
+                             }
+                             if (p_sync_tag.indexOf('hft_')>=0 && p_sync_tag.indexOf('logger')>=0) {
+                                 $('#hft-real-process').text(
+                                   'mysql:'+dataSet.c_binlogfile+'/'+dataSet.c_binlogpos+' -  syncer:'+dataSet.binlogfile+'/'+dataSet.binlogpos)
+                             }
                         }
                   });
                  return  {

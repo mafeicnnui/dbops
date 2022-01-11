@@ -306,7 +306,7 @@
                                });
                           },
                           success: function (dataSet) {
-                              if (dataSet.code=='0') {
+                              if (dataSet['code']== 200 ) {
                                      swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
                                      $("#query_btn").click();
                               } else {
