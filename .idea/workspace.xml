@@ -19,16 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sql check fix">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="datax doris fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_ds.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync_datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync_datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_check.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -585,14 +578,9 @@
       <workItem from="1641429516296" duration="17252000" />
       <workItem from="1641515612402" duration="12088000" />
       <workItem from="1641773107919" duration="2704000" />
-      <workItem from="1641863656643" duration="4340000" />
-    </task>
-    <task id="LOCAL-00094" summary="web page optimize">
-      <created>1632468789812</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1632468789812</updated>
+      <workItem from="1641863656643" duration="4468000" />
+      <workItem from="1641871430891" duration="16000" />
+      <workItem from="1641968094855" duration="1188000" />
     </task>
     <task id="LOCAL-00095" summary="web page optimize">
       <created>1632470811858</created>
@@ -930,7 +918,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641456820665</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="datax doris fix">
+      <created>1641871306271</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1641871306272</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -949,7 +944,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add monitor task" />
     <MESSAGE value="add bbgl" />
     <MESSAGE value="add bbgl module" />
     <MESSAGE value="add doris support" />
@@ -974,7 +968,8 @@
     <MESSAGE value="db compare tools" />
     <MESSAGE value="db compare tools up" />
     <MESSAGE value="sql check fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="sql check fix" />
+    <MESSAGE value="datax doris fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="datax doris fix" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1638178440799">
@@ -985,33 +980,33 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1639101997069" />
-    <state width="1877" height="291" key="GridCell.Tab.0.bottom" timestamp="1641865287756">
+    <state width="1877" height="197" key="GridCell.Tab.0.bottom" timestamp="1641969124771">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="274" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1635217822556" />
     <state width="1877" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635318616486" />
-    <state width="1877" height="291" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641865287756" />
+    <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969124771" />
     <state width="1877" height="148" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1635760757778" />
-    <state width="1877" height="291" key="GridCell.Tab.0.center" timestamp="1641865287756">
+    <state width="1877" height="197" key="GridCell.Tab.0.center" timestamp="1641969124771">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="274" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1635217822555" />
     <state width="1877" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635318616486" />
-    <state width="1877" height="291" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641865287756" />
+    <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969124771" />
     <state width="1877" height="148" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1635760757778" />
-    <state width="1877" height="291" key="GridCell.Tab.0.left" timestamp="1641865287756">
+    <state width="1877" height="197" key="GridCell.Tab.0.left" timestamp="1641969124770">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="274" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1635217822555" />
     <state width="1877" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635318616486" />
-    <state width="1877" height="291" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641865287756" />
+    <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969124770" />
     <state width="1877" height="148" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1635760757777" />
-    <state width="1877" height="291" key="GridCell.Tab.0.right" timestamp="1641865287756">
+    <state width="1877" height="197" key="GridCell.Tab.0.right" timestamp="1641969124771">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="274" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@-1920.-134.1920.1040" timestamp="1635217822555" />
     <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635318616486" />
-    <state width="1877" height="291" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641865287756" />
+    <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969124771" />
     <state width="1877" height="148" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1635760757778" />
     <state width="1877" height="99" key="GridCell.Tab.1.bottom" timestamp="1634550018851">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -1034,16 +1029,16 @@
     </state>
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635304764299" />
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1641456825674">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1641871317097">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635237248381" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641456825674" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641871317097" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1635392009006" />
-    <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1636019276487">
+    <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1636019276487" />
+    <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969282729" />
     <state x="742" y="270" width="1178" height="584" key="find.popup" timestamp="1641864466923">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -1069,7 +1064,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1641865287731" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1641969124756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

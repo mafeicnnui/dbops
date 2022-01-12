@@ -1532,7 +1532,7 @@ async def get_dml_rows(p_ds,p_sql):
            return rs[0]
         elif op in('UPDATE'):
            if p_sql.upper().find('WHERE')>=0:
-               tb = p_sql[6:p_sql.upper().find('SET')-1].strip()
+               tb = re.split(r'\s+', p_sql)[1]
                vv = p_sql[p_sql.upper().find('WHERE'):]
                st = """select count(0) from {0} {1}""".format(tb,vv)
            else:
