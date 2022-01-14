@@ -229,7 +229,8 @@ async def get_ds_by_dsid_by_cdb(p_dsid,p_cdb):
                      service 
                   END AS service,
                   user,password,status,creation_date,creator,last_update_date,updator ,
-                  db_env,inst_type,market_id
+                  db_env,inst_type,market_id,
+                  proxy_status,proxy_server
            from t_db_source where id={1}
         """.format(p_cdb,p_dsid)
     print(sql)

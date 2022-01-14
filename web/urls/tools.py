@@ -6,7 +6,8 @@
 # @Software: PyCharm
 
 from web.services.dbtools      import dict_gen,redis_migrate,db_compare,_db_compare,_db_compare_detail,_db_compare_statement,\
-        _db_compare_gen_statement,_db_compare_idx,_db_compare_detail_idx,_db_compare_statement_idx
+        _db_compare_gen_statement,_db_compare_idx,_db_compare_detail_idx,_db_compare_statement_idx,\
+        db_compare_data,_db_compare_data
 
 tools = [
 
@@ -20,6 +21,8 @@ tools = [
         (r"/dbtools/_compare/gen", _db_compare_gen_statement),
         (r"/dbtools/_compare/detail/idx", _db_compare_detail_idx),
         (r"/dbtools/_compare/statement/idx", _db_compare_statement_idx),
+        (r"/dbtools/compare/data", db_compare_data),
+        (r"/dbtools/_compare/data", _db_compare_data),
 
 
 

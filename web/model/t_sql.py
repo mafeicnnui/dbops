@@ -569,7 +569,7 @@ async def exe_query(p_dbid,p_sql,curdb):
     p_ds  = await get_ds_by_dsid(p_dbid)
 
     # 查询 MySQL 数据源
-    if p_ds['db_type']=='0':
+    if p_ds['db_type'] in('0','8'):
         if p_ds['proxy_status'] == '1':
            result = get_mysql_proxy_result(p_ds,p_sql,curdb)
         else:

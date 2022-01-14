@@ -6,6 +6,7 @@
 # @Software: PyCharm
 
 from web.model.t_ds import get_ds_by_dsid_by_cdb
+from web.model.t_sql import get_ck_proxy_result, get_ck_result
 from web.utils.common import format_sql
 from web.utils.mysql_async import async_processer
 
@@ -453,3 +454,100 @@ async def db_stru_compare_detail_idx(sour_db_server,sour_schema,desc_db_server,d
                                                      statement,
                                                      status
                                                  from t_db_compare_detail order by id""")
+
+
+async def get_ck_query_result(ds,sql,curdb):
+    print('ds=',ds)
+    if ds['proxy_status'] == '1':
+       res = get_ck_proxy_result(ds, sql, curdb)
+    else:
+       res = await get_ck_result(ds, sql, curdb)
+    return res
+
+
+async def db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc_schema):
+    sds = await get_ds_by_dsid_by_cdb(sour_db_server, sour_schema)
+    dds = await get_ds_by_dsid_by_cdb(desc_db_server, desc_schema)
+    sql = """select  lower(database) as db_name,
+                     lower(name) as table_name
+             from system.tables  
+             where database='{}' order by 2 """
+
+    if dds['db_type'] == '9':
+        dres = await get_ck_query_result(dds,sql.format(desc_schema),desc_schema)
+        await async_processer.exec_sql('truncate table t_db_compare_data')
+        for d in dres['data']:
+            rs2 = await get_ck_query_result(dds,'select count(0) as rec from `{}`.`{}`'.format(desc_schema, d[1]),desc_schema)
+            try:
+                rs1 = await async_processer.query_dict_one_by_ds(sds,
+                        'select count(0) as rec from `{}`.`{}`'.format(sour_schema, d[1]))
+            except:
+                rs1 = {'rec': 0}
+
+            print('rs2=',rs2)
+            print('rs1=',rs1)
+
+            st = """insert into t_db_compare_data
+                              (sour_dsid,dest_dsid,sour_schema,dest_schema,dest_table,sour_rows,dest_rows) 
+                             values('{}','{}','{}','{}','{}','{}','{}')
+                            """.format(sour_db_server, desc_db_server,
+                                       sour_schema, desc_schema,
+                                       d[1], rs1['rec'], rs2['data'][0][0])
+            await async_processer.exec_sql(st)
+
+        sql = """ SELECT   
+                           (select db_desc from t_db_source where id=a.sour_dsid) as sour_desc,
+                           sour_schema,
+                           (select db_desc from t_db_source where id=a.dest_dsid) as dest_desc,
+                           dest_schema,
+                           dest_table,
+                           dest_rows,
+                           sour_rows,
+                           case when dest_rows!=sour_rows then '<span style="color:red">×</span>' 
+                           else '<span style="color:green">√</span>' end result
+                       FROM t_db_compare_data a order by id"""
+        res = await async_processer.query_list(sql)
+        return res
+
+
+async def db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_schema):
+    sds = await get_ds_by_dsid_by_cdb(sour_db_server, sour_schema)
+    dds = await get_ds_by_dsid_by_cdb(desc_db_server, desc_schema)
+
+    if dds['db_type'] == '9':
+        return await db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc_schema)
+    else:
+        sql = """SELECT  table_schema,table_name
+                     FROM information_schema.tables 
+                     WHERE table_schema='{}' ORDER BY table_name"""
+
+        dres = await async_processer.query_dict_list_by_ds(dds, sql.format(desc_schema))
+        await async_processer.exec_sql('truncate table t_db_compare_data')
+
+        for d in dres:
+            rs1 = await async_processer.query_dict_one_by_ds(dds, 'select count(0) as rec from `{}`.`{}`'.format(sour_schema,d['table_name']))
+            try:
+              rs2 = await async_processer.query_dict_one_by_ds(sds, 'select count(0) as rec from `{}`.`{}`'.format(desc_schema, d['table_name']))
+            except:
+              rs2 = { 'rec' :0 }
+            st = """insert into t_db_compare_data
+                       (sour_dsid,dest_dsid,sour_schema,dest_schema,dest_table,sour_rows,dest_rows) 
+                      values('{}','{}','{}','{}','{}','{}','{}')
+                     """.format(sour_db_server, desc_db_server,
+                                sour_schema, desc_schema,
+                                d['table_name'], rs2['rec'],rs1['rec'])
+            await async_processer.exec_sql(st)
+
+        sql = """ SELECT   
+                    (select db_desc from t_db_source where id=a.sour_dsid) as sour_desc,
+                    sour_schema,
+                    (select db_desc from t_db_source where id=a.dest_dsid) as dest_desc,
+                    dest_schema,
+                    dest_table,
+                    dest_rows,
+                    sour_rows,
+                    case when dest_rows!=sour_rows then '<span style="color:red">×</span>' 
+                    else '<span style="color:green">√</span>' end result
+                FROM t_db_compare_data a order by id"""
+        res = await async_processer.query_list(sql)
+        return res

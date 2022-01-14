@@ -170,7 +170,7 @@ class get_tree_by_sql(base_handler.TokenHandler):
         msg    = self.get_argument("msg")
         p_ds   = await get_ds_by_dsid(dbid)
         result = {}
-        if p_ds['db_type'] == '0':
+        if p_ds['db_type'] in('0','8'):
             if p_ds['proxy_status'] == '1':
                 result = await get_tree_by_dbid_proxy(dbid)
             else:

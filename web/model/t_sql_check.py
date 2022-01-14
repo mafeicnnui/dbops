@@ -1334,7 +1334,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
                 if rule['rule_value']!='':
                     v = await get_tab_has_fields(ds, st, rule)
                     if v['code'] == 0:
-                        for i in res['msg']:
+                        for i in v['msg']:
                             res = False
                             rule['error'] = rule['error'].format(i[0], i[1])
                             await save_check_results(rule,p_user,st,sxh)
