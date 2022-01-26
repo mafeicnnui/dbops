@@ -19,24 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="add db record compare tools">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sync fix">
+      <change afterPath="$PROJECT_DIR$/templates/main/main_0126.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_add_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_add_real.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_clone_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_clone_real.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_db_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_dmmx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_dmmx.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_check.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync_datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync_datax.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,26 +74,26 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/tools" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/main" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\templates\tools" />
-      <recent name="D:\work\dbops\static\plugins\clipboard" />
-      <recent name="D:\work\dbops\templates\main" />
-      <recent name="D:\work\dbops\templates\ds" />
-      <recent name="D:\work\dbops\templates\sync" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\templates\bbgl" />
       <recent name="D:\work\dbops\templates\login" />
       <recent name="D:\work\dbops\templates\main" />
       <recent name="D:\work\dbops\templates\sys" />
       <recent name="D:\work\dbops\templates\order" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\templates\main" />
+      <recent name="D:\work\dbops\templates\tools" />
+      <recent name="D:\work\dbops\static\plugins\clipboard" />
+      <recent name="D:\work\dbops\templates\ds" />
+      <recent name="D:\work\dbops\templates\sync" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -605,14 +591,7 @@
       <workItem from="1642754990746" duration="833000" />
       <workItem from="1642983970912" duration="5142000" />
       <workItem from="1643075205931" duration="16715000" />
-      <workItem from="1643156683063" duration="6222000" />
-    </task>
-    <task id="LOCAL-00097" summary="add jwt support">
-      <created>1632735709766</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1632735709767</updated>
+      <workItem from="1643156683063" duration="12816000" />
     </task>
     <task id="LOCAL-00098" summary="add jwt support">
       <created>1632820504282</created>
@@ -950,7 +929,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642151147256</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="sync fix">
+      <created>1643165910339</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1643165910339</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -969,7 +955,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add bbgl module" />
     <MESSAGE value="add doris support" />
     <MESSAGE value="timed order fix" />
     <MESSAGE value="add doris sync support" />
@@ -994,7 +979,8 @@
     <MESSAGE value="datax doris fix" />
     <MESSAGE value="sql check fix" />
     <MESSAGE value="add db record compare tools" />
-    <option name="LAST_COMMIT_MESSAGE" value="add db record compare tools" />
+    <MESSAGE value="sync fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="sync fix" />
   </component>
   <component name="WindowStateProjectService">
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1638178440799">
@@ -1063,12 +1049,12 @@
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635304764299" />
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1642409444882" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1642151314068">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1643165988911">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1635237248381" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969310496" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1642151314068" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1643165988911" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1635392009006" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -1082,11 +1068,12 @@
     <state x="742" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1643162477350" />
     <state x="2662" y="245" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1642128004516" />
     <state x="527" y="407" width="1178" height="584" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1635678804966" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1641461609299">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1643169419516">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.-134.1920.1040@0.0.1920.1040" timestamp="1634605930441" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641461609299" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1643169419516" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

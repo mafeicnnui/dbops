@@ -628,11 +628,7 @@
         let n_hft_max_id  = 0
         let n_hst2_max_id = 0
         let n_hft2_max_id = 0
-        let n_timerout    = 30000
-        let n_hst_data    = [];
-        let n_hft_data    = [];
-        let n_hst_data2   = [];
-        let n_hft_data2   = [];
+        let n_timerout    = 10000
 
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
               var myChart = echarts.init($('#'+p_item)[0]);
@@ -877,256 +873,20 @@
         function get_charts_real_line(p_item,p_title,p_flag,p_color) {
 
             function getRealData(p_sync_tag,p_max_id) {
-                 var myChart = echarts.init($('#'+p_item)[0],'light');
+                 let res;
                  $.ajax({
                         url: "/get/db/real/sync",
                         type: "post",
-                        async:true,
+                        async:false,
                         data: {
                              'sync_tag': p_sync_tag,
                              'max_id'  : p_max_id
                         },
                         datatype: "json",
                         success: function (dataSet) {
-                             if (p_flag == 'HST') {
-                                 n_hst_data =  dataSet.data
-                                 n_hst_max_id = dataSet.max_id +1
-                                 option = {
-                                  tooltip: {
-                                    trigger: 'axis',
-                                    formatter: function (params) {
-                                      params = params[0];
-                                      return (
-                                         params.name.split(' ')[1] +
-                                        ' : ' +
-                                        params.value[1]/10+'[e/s]'
-                                      );
-                                    },
-                                    axisPointer: {
-                                      animation: false
-                                    }
-                                  },
-                                  title:{
-                                     text:p_title,
-                                     left:'center',
-                                     textStyle:{
-                                        color:p_color,
-                                        fontStyle:'italic',
-                                        fontWeight:'bold',
-                                        fontFamily:'宋体',
-                                　　　　 fontSize:14
-                                    }
-                                  },
-                                  grid: {
-                                       top: '25px',
-                                       bottom: '20px',
-                                       right: '25px',
-                                       left:'40px'
-                                  },
-                                  xAxis: {
-                                    type: 'time',
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  yAxis: {
-                                    type: 'value',
-                                    boundaryGap: [0, '100%'],
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  series: [
-                                    {
-                                      type: 'line',
-                                      areaStyle: {color:p_color},
-                                      itemStyle: {normal:{color:p_color}},
-                                      showSymbol: false,
-                                      data: n_hst_data
-                                    }
-                                  ]
-                                };
-                                 myChart.setOption(option);
-                             } else if  (p_flag == 'HFT') {
-                                n_hft_data =  dataSet.data
-                                n_hft_max_id= dataSet.max_id +1
-                                option = {
-                                  tooltip: {
-                                    trigger: 'axis',
-                                    formatter: function (params) {
-                                      params = params[0];
-                                      return (
-                                         params.name.split(' ')[1] +
-                                        ' : ' +
-                                        params.value[1]/10+'[e/s]'
-                                      );
-                                    },
-                                    axisPointer: {
-                                      animation: false
-                                    }
-                                  },
-                                  title:{
-                                     text:p_title,
-                                     left:'center',
-                                     textStyle:{
-                                        color:p_color,
-                                        fontStyle:'italic',
-                                        fontWeight:'bold',
-                                        fontFamily:'宋体',
-                                　　　　 fontSize:14
-                                    }
-                                  },
-                                  grid: {
-                                       top: '25px',
-                                       bottom: '20px',
-                                       right: '25px',
-                                       left:'40px'
-                                  },
-                                  xAxis: {
-                                    type: 'time',
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  yAxis: {
-                                    type: 'value',
-                                    boundaryGap: [0, '100%'],
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  series: [
-                                    {
-                                      type: 'line',
-                                      areaStyle: {color:p_color},
-                                      itemStyle: {normal:{color:p_color}},
-                                      showSymbol: false,
-                                      data: n_hft_data
-                                    }
-                                  ]
-                                };
-                                myChart.setOption(option);
-                             } else if  (p_flag == 'HST2') {
-                                n_hst_data2 =  dataSet.data
-                                n_hst2_max_id = dataSet.max_id +1
-                                option = {
-                                  tooltip: {
-                                    trigger: 'axis',
-                                    formatter: function (params) {
-                                      params = params[0];
-                                      return (
-                                         params.name.split(' ')[1] +
-                                        ' : ' +
-                                        params.value[1]/10+'[e/s]'
-                                      );
-                                    },
-                                    axisPointer: {
-                                      animation: false
-                                    }
-                                  },
-                                  title:{
-                                     text:p_title,
-                                     left:'center',
-                                     textStyle:{
-                                        color:p_color,
-                                        fontStyle:'italic',
-                                        fontWeight:'bold',
-                                        fontFamily:'宋体',
-                                　　　　 fontSize:14
-                                    }
-                                  },
-                                  grid: {
-                                       top: '25px',
-                                       bottom: '20px',
-                                       right: '25px',
-                                       left:'40px'
-                                  },
-                                  xAxis: {
-                                    type: 'time',
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  yAxis: {
-                                    type: 'value',
-                                    boundaryGap: [0, '100%'],
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  series: [
-                                    {
-                                      type: 'line',
-                                      areaStyle: {color:p_color},
-                                      itemStyle: {normal:{color:p_color}},
-                                      showSymbol: false,
-                                      data: n_hst_data2
-                                    }
-                                  ]
-                                };
-                                myChart.setOption(option);
-                             } else if  (p_flag == 'HFT2') {
-                                n_hft_data2 =  dataSet.data
-                                n_hft2_max_id= dataSet.max_id +1
-                                option = {
-                                  tooltip: {
-                                    trigger: 'axis',
-                                    formatter: function (params) {
-                                      params = params[0];
-                                      return (
-                                         params.name.split(' ')[1] +
-                                        ' : ' +
-                                        params.value[1]/10+'[e/s]'
-                                      );
-                                    },
-                                    axisPointer: {
-                                      animation: false
-                                    }
-                                  },
-                                  title:{
-                                     text:p_title,
-                                     left:'center',
-                                     textStyle:{
-                                        color:p_color,
-                                        fontStyle:'italic',
-                                        fontWeight:'bold',
-                                        fontFamily:'宋体',
-                                　　　　 fontSize:14
-                                    }
-                                  },
-                                  grid: {
-                                       top: '25px',
-                                       bottom: '20px',
-                                       right: '25px',
-                                       left:'40px'
-                                  },
-                                  xAxis: {
-                                    type: 'time',
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  yAxis: {
-                                    type: 'value',
-                                    boundaryGap: [0, '100%'],
-                                    splitLine: {
-                                      show: false
-                                    }
-                                  },
-                                  series: [
-                                    {
-                                      type: 'line',
-                                      areaStyle: {color:p_color},
-                                      itemStyle: {normal:{color:p_color}},
-                                      showSymbol: false,
-                                      data: n_hft_data2
-                                    }
-                                  ]
-                                };
-                                myChart.setOption(option);
-
-                             }
-
+                             console.log('dataSet=',dataSet)
+                             res =  dataSet.data
+                             mid =  dataSet.max_id
                              if (p_sync_tag.indexOf('hst_')>=0 && p_sync_tag.indexOf('logger')>=0) {
                                  $('#hst-real-process').text(
                                    'mysql:'+dataSet.c_binlogfile+'/'+dataSet.c_binlogpos+' -  syncer:'+dataSet.binlogfile+'/'+dataSet.binlogpos)
@@ -1137,107 +897,170 @@
                              }
                         }
                   });
+                 return  {
+                      'data':res,
+                      'mid':mid
+                 }
             }
 
-            function getRealData_timer(p_sync_tag,p_max_id) {
-                 var myChart = echarts.init($('#'+p_item)[0],'light');
-                 $.ajax({
-                        url: "/get/db/real/sync",
-                        type: "post",
-                        async:true,
-                        data: {
-                             'sync_tag': p_sync_tag,
-                             'max_id'  : p_max_id
-                        },
-                        datatype: "json",
-                        success: function (res) {
-                             if (p_flag == 'HST') {
-                                 if (n_hst_data.length > 0 ) {
-                                     n_hst_data.shift();
-                                     n_hst_data.push(res.data[0])
-                                     n_hst_max_id = res.max_id
-                                     myChart.setOption({
-                                        series: [
-                                          {
-                                            data: n_hst_data
-                                          }
-                                        ]
-                                      });
-                                 }
-                             } else if  (p_flag == 'HFT') {
-                                if (n_hft_data.length > 0 ) {
-                                     n_hft_data.shift();
-                                     n_hft_data.push(res.data[0])
-                                     n_hft_max_id = res.max_id
-                                     myChart.setOption({
-                                        series: [
-                                          {
-                                            data: n_hft_data
-                                          }
-                                        ]
-                                      });
-                                 }
-                             } else if  (p_flag == 'HST2') {
-                                if (n_hst_data2.length > 0 ) {
-                                     n_hst_data2.shift();
-                                     n_hst_data2.push(res.data[0])
-                                     n_hst2_max_id = res.max_id
-                                     myChart.setOption({
-                                        series: [
-                                          {
-                                            data: n_hst_data2
-                                          }
-                                        ]
-                                      });
-                                 }
-                             } else if  (p_flag == 'HFT2') {
-                                if (n_hft_data2.length > 0 ) {
-                                     n_hft_data2.shift();
-                                     n_hft_data2.push(res.data[0])
-                                     n_hft2_max_id = res.max_id
-                                     myChart.setOption({
-                                        series: [
-                                          {
-                                            data: n_hft_data2
-                                          }
-                                        ]
-                                      });
-                                 }
-                             }
+            var myChart = echarts.init($('#'+p_item)[0],'light');
+            let data = [];
 
-                             if (p_sync_tag.indexOf('hst_')>=0 && p_sync_tag.indexOf('logger')>=0) {
-                                 $('#hst-real-process').text(
-                                   'mysql:'+res.c_binlogfile+'/'+res.c_binlogpos+' -  syncer:'+res.binlogfile+'/'+res.binlogpos)
-                             }
-                             if (p_sync_tag.indexOf('hft_')>=0 && p_sync_tag.indexOf('logger')>=0) {
-                                 $('#hft-real-process').text(
-                                   'mysql:'+res.c_binlogfile+'/'+res.c_binlogpos+' -  syncer:'+res.binlogfile+'/'+res.binlogpos)
-                             }
-                        }
-                  });
+            if (p_flag == 'HST') {
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_hst_max_id = mid +1
+            } else if  (p_flag == 'HFT') {
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_hft_max_id= mid +1
+            } else if  (p_flag == 'HST2') {
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_hst2_max_id = mid +1
+            } else if  (p_flag == 'HFT2') {
+                res  = getRealData(p_item,1)
+                data = res.data
+                mid  = res.mid
+                n_hft2_max_id= mid +1
             }
 
-            getRealData(p_item,1)
+            option = {
+              tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                  params = params[0];
+                  return (
+                     params.name.split(' ')[1] +
+                    ' : ' +
+                    params.value[1]/10+'[e/s]'
+                  );
+                },
+                axisPointer: {
+                  animation: false
+                }
+              },
+              title:{
+                 text:p_title,
+                 left:'center',
+                 textStyle:{
+                    color:p_color,
+                    fontStyle:'italic',
+                    fontWeight:'bold',
+                    fontFamily:'宋体',
+            　　　　 fontSize:14
+                }
+              },
+              grid: {
+                   top: '25px',
+                   bottom: '20px',
+                   right: '25px',
+                   left:'40px'
+              },
+              xAxis: {
+                type: 'time',
+                splitLine: {
+                  show: false
+                }
+              },
+              yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                splitLine: {
+                  show: false
+                }
+              },
+              series: [
+                {
+                  type: 'line',
+                  areaStyle: {color:p_color},
+                  itemStyle: {normal:{color:p_color}},
+                  showSymbol: false,
+                  data: data
+                }
+              ]
+            };
+            myChart.setOption(option);main.html
 
             if (p_flag == 'HST') {
                timer = setInterval(function () {
-                  getRealData_timer(p_item,n_hst_max_id)
+                  console.log('timer....')
+                  res  = getRealData(p_item,n_hst_max_id)
+                  if (res.data.length > 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_hst_max_id)
+                       data.push(res.data[0])
+                       n_hst_max_id = res.mid
+                  }
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
                 }, n_timerout);
-            }
-            else if  (p_flag == 'HFT') {
+            }  else if  (p_flag == 'HFT') {
                timer2 = setInterval(function () {
-                  getRealData_timer(p_item,n_hft_max_id)
+                  console.log('timer2....')
+                  res  = getRealData(p_item,n_hft_max_id)
+                  if (res.data.length > 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_hft_max_id)
+                       data.push(res.data[0])
+                       n_hft_max_id = res.mid
+                  }
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
                 }, n_timerout+5000);
 
             }  else if (p_flag == 'HST2') {
                timer3 = setInterval(function () {
-                  getRealData_timer(p_item,n_hst2_max_id)
+                  console.log('timer3....')
+                  res  = getRealData(p_item,n_hst2_max_id)
+                  if (res.data.length > 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_hst2_max_id)
+                       data.push(res.data[0])
+                       n_hst2_max_id = res.mid
+                  }
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
                 }, n_timerout*2);
             }  else if  (p_flag == 'HFT2') {
                timer4 = setInterval(function () {
-                  getRealData_timer(p_item,n_hft2_max_id)
+                  console.log('timer4....')
+                  res  = getRealData(p_item,n_hft2_max_id)
+                  if (data.length > 0 ) {
+                       data.shift();
+                       res  = getRealData(p_item,n_hft2_max_id)
+                       data.push(res.data[0])
+                       n_hft2_max_id = res.mid
+                  }
+                  myChart.setOption({
+                    series: [
+                      {
+                        data: data
+                      }
+                    ]
+                  });
                 }, (n_timerout+5000)*2);
+
             }
+
         }
 
         function set_sync_task(dataSet,max_syrq,sync_sts) {
