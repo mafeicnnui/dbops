@@ -289,7 +289,6 @@ class bbgl_export(base_handler.TokenHandler):
         self.render("./bbgl/bbgl_export.html",
                     dm_bbdm = await get_bbgl_bbdm())
 
-
 class bbgl_export_data(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -298,10 +297,7 @@ class bbgl_export_data(base_handler.TokenHandler):
        param  = json.loads(param)
        path   = self.get_template_path().replace("templates", "static")
        res = await export_bbgl_data(bbdm, param,self.userid,path)
-       v_json = json.dumps(res)
-       print(v_json)
-       self.write(v_json)
-
+       self.write(json.dumps(res))
 
 class bbgl_download(base_handler.TokenHandler):
    async def post(self):

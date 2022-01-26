@@ -9,6 +9,7 @@ import json
 import datetime
 import traceback
 import xlwt
+import openpyxl
 import os,zipfile
 from web.utils.mysql_async import async_processer
 from web.utils.common  import format_sql as fmt_sql,get_seconds
@@ -377,7 +378,7 @@ async def exp_data(static_path,p_bbdm,p_data,p_id):
         header_styles = set_header_styles(45,1)
         file_path = static_path + '/downloads/bbtj'
         os.system('cd {0}'.format(file_path))
-        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xlsx'.format(p_bbdm,current_rq())
+        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
         file_name_s = 'exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
 
         # write header
@@ -425,22 +426,68 @@ async def exp_data(static_path,p_bbdm,p_data,p_id):
         await update_export(p_id, '34', '0%', '' ,'','',traceback.print_exc())
         return ''
 
+async def exp_data_xlsx(static_path,p_bbdm,p_data,p_id):
+    try:
+        row_data  = 1
+        wb = openpyxl.Workbook()
+        ws = wb.create_sheet(index=0,title=p_bbdm)
+        file_path = static_path + '/downloads/bbtj'
+        os.system('cd {0}'.format(file_path))
+        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xlsx'.format(p_bbdm,current_rq())
+        file_name_s = 'exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
+
+        # write header
+        for k in range(len(p_data['column'])):
+            ws.cell(column = k+1,row=row_data,value = p_data['column'][k]['title'])
+        await update_export(p_id, '3', '25%')
+
+        # write body
+        n_batch_size = 500
+        n_total_rows = len(p_data['data'])
+        row_data = row_data + 1
+        for i in p_data['data']:
+            for j in range(len(i)):
+                if i[j] is None:
+                   ws.cell(row=row_data, column=j+1,value='')
+                else:
+                   ws.cell(row=row_data, column=j+1,value = str(i[j]))
+            row_data = row_data + 1
+            if row_data % n_batch_size == 0:
+               await update_export(p_id, '3', str(round(row_data/75,2)*100)+'%')
+
+        await update_export(p_id, '3', '98%')
+
+        wb.save(file_name)
+        print("{0} export complete!".format(file_name))
+
+        zip_file = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,current_rq())
+        rzip_file = '/static/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,current_rq())
+
+        if os.path.exists(zip_file):
+            os.system('rm -f {0}'.format(zip_file))
+
+        z = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+        z.write(file_name, arcname=file_name_s)
+        z.close()
+
+        file_size = os.path.getsize(file_name)
+        os.system('rm -f {0}'.format(file_name))
+
+        #update path,file,size
+        await update_export(p_id, '3', '100%',rzip_file,zip_file,file_size)
+        return rzip_file
+    except:
+        await update_export(p_id, '34', '0%', '' ,'','',traceback.print_exc())
+
 async def export_bbgl_data(bbdm, param,userid,path):
     try:
         id  = await export_insert(bbdm,param,userid)
-
         res = await query_bbgl_data(bbdm,param)
-
         if res['status'] == '1':
-           print('res=',res)
            return {"code": -1, "message":res['msg']}
-
         await update_export(id,'2','20%')
-
-        zip_file = await exp_data(path,bbdm,res,id)
-
+        zip_file = await exp_data_xlsx(path,bbdm,res,id)
         return {"code": 0, "message": zip_file}
-
     except:
         return {"code": -1, "message": traceback.print_exc()}
 

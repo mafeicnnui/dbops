@@ -131,7 +131,7 @@ class sql_run(base_handler.TokenHandler):
        dbid    = self.get_argument("dbid")
        db_name = self.get_argument("db_name")
        sql_id  = self.get_argument("sql_id")
-       result = await upd_sql_run_status(sql_id)
+       result = await upd_sql_run_status(sql_id,self.username)
        self.write({"code": result['code'], "message": result['message']})
 
 

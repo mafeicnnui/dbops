@@ -82,6 +82,16 @@ async def query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env):
         v_where = v_where + " and a.zk_hosts='10.2.39.84:2181,10.2.39.89:2181,10.2.39.67:2181'\n"
     else:
         pass
+
+    if sync_env == 'doris_prod':
+        v_where = v_where + """  and doris_id in (SELECT doris_id FROM t_datax_sync_config 
+                                                 where doris_id in(select id FROM t_db_source
+                                                                   where db_type='8' AND  db_env='1'))"""
+    if sync_env == "doris_dev_test":
+        v_where = v_where + """  and doris_id in (SELECT doris_id FROM t_datax_sync_config 
+                                                 where doris_id in(select id FROM t_db_source 
+                                                                    where db_type='8' AND  db_env in('2','3')))"""
+
     sql = """SELECT  a.id,
                      concat(substr(sync_tag,1,40),'...') as sync_tag1,
                      sync_tag,
@@ -756,6 +766,18 @@ async def query_sync_log_analyze(sync_env,tagname,begin_date,end_date):
         v_where = v_where + """  and exists(SELECT 1 FROM t_datax_sync_config 
                                         where zk_hosts='10.2.39.84:2181,10.2.39.89:2181,10.2.39.67:2181'
                                          and  sync_tag='{0}')""".format(tagname)
+
+    if sync_env == 'doris_prod':
+        v_where = v_where + """  and exists(SELECT 1 FROM t_datax_sync_config 
+                                           where doris_id in(select id FROM t_db_source
+                                                             where db_type='8' AND  db_env='1'))
+                            """
+    if sync_env == "doris_dev_test":
+        v_where = v_where + """  and exists(SELECT 1 FROM t_datax_sync_config 
+                                           where doris_id in(select id FROM t_db_source 
+                                                              where db_type='8' AND  db_env in('2','3')))"""
+
+
     if tagname != '':
         v_where = v_where + " and a.sync_tag='{0}'\n".format(tagname)
     if begin_date != '':
@@ -764,6 +786,10 @@ async def query_sync_log_analyze(sync_env,tagname,begin_date,end_date):
         v_where = v_where + " and a.create_date<='{0}'\n".format(end_date+' 23:59:59')
     sql1 = """SELECT cast(a.create_date as char) as create_date,a.duration FROM t_datax_sync_log a {0} ORDER BY a.create_date""".format(v_where)
     sql2 = """SELECT cast(a.create_date as char) as create_date,a.amount  FROM t_datax_sync_log a {0} ORDER BY a.create_date""".format(v_where)
+
+    print('sql1=',sql1)
+    print('sql2=',sql2)
+
     return await async_processer.query_list(sql1),await async_processer.query_list(sql2)
 
 async def get_datax_sync_tags_by_env(p_env):
@@ -774,10 +800,22 @@ async def get_datax_sync_tags_by_env(p_env):
         v_where = v_where + " and a.zk_hosts='10.2.39.165:2181,10.2.39.166:2181,10.2.39.182:2181'\n"
     if p_env == "uat":
         v_where = v_where + " and a.zk_hosts='10.2.39.84:2181,10.2.39.89:2181,10.2.39.67:2181'\n"
+
+    if p_env == 'doris_prod':
+        v_where = v_where + """  and doris_id in (SELECT doris_id FROM t_datax_sync_config 
+                                              where doris_id in(select id FROM t_db_source
+                                                                where db_type='8' AND  db_env='1'))"""
+    if p_env == "doris_dev_test":
+        v_where = v_where + """  and doris_id in (SELECT doris_id FROM t_datax_sync_config 
+                                              where doris_id in(select id FROM t_db_source 
+                                                                 where db_type='8' AND  db_env in('2','3')))"""
+
     if p_env=='':
         sql = """SELECT a.sync_tag,a.comments FROM t_datax_sync_config a  WHERE STATUS=1   ORDER BY comments"""
     else:
         sql = """SELECT a.sync_tag,a.comments FROM t_datax_sync_config a  WHERE STATUS=1 {0}  ORDER BY comments""".format(v_where)
+
+    print('sql=',sql)
     return await async_processer.query_list(sql)
 
 async def check_sync_tag(p_sync):

@@ -528,7 +528,9 @@
         function init_tab_config(){
            $("#mysql_db_name").val('');
            $("#sync_tab_name").val('');
-           $("#desc_db_name").val('');
+           $("#desc_db_part_col").val('auto')
+           $("#desc_db_name").val('auto');
+           $("#tab_config_status").val('1');
         }
 
         function get_ds() {
@@ -597,6 +599,7 @@
                           var val  = dataSet['msg'][i][0]
                           $("#mysql_db_name").append("<option value='"+val+"'>"+val+"</option>");
                      }
+                     console.log('set_mysql_database...')
                   },
              })
         }
@@ -672,7 +675,7 @@
         }
 
         function syn_tab_edit(row){
-           v =unescape(row).split(',')
+           v =  unescape(row).split(',')
            console.log('v=',v)
            $('#sync_tab_id').val(v[0]);
            $("#mysql_db_name").val(v[1]);
@@ -684,8 +687,9 @@
            }
            set_sync_tabs();
            $("#sync_tab_name").val(v[2]);
-           $("#desc_db_name").val(v[3]);
-           $("#tab_config_status").val(v[4]);
+           $("#desc_db_part_col").val(v[3])
+           $("#desc_db_name").val(v[4]);
+           $("#tab_config_status").val(v[5]);
 
         }
 
@@ -867,7 +871,7 @@
                       'tab_name'     : $('#sync_tab_name').val(),
                       'tab_status'   : $("#tab_config_status").val(),
                       'sync_cols'    : '',
-                      'sync_incr_col': '',
+                      'sync_incr_col': $('#desc_db_part_col').val(),
                       'sync_time'    : '',
               },
               success: function (dataSet) {
@@ -896,8 +900,6 @@
                 $('#mdi-view-list').attr('disabled',false);
             }
         });
-
-
 
         $('.modal').on('hidden.bs.modal', function () {
                $.ajax({

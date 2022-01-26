@@ -72,6 +72,35 @@
               </div>
           </div>
           <div class="row">
+          <div class="col-md-6">
+                <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>日志数据库</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="sour_db_log_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in db_mysql_server %}
+                              <option value={{var[0]}} >{{var[1]}}</option>
+                            {% end %}
+                        </select>
+                   </div>
+                </div>
+              </div>
+           </div>
+           <div class="row">
+              <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>日志库名称</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="log_db_name"  type="text" class="form-control" placeholder="请输入日志库名称" value="">
+                    </div>
+               </div>
+             </div>
+          </div>
+          <div class="row">
               <div class="col-md-6">
                    <div class="form-group">
                         <div>
@@ -373,12 +402,39 @@
                                 <div class="row">
                                    <div class="form-group">
                                         <div>
+                                            <label class="col-md-3 control-label"><span>*</span>分区列</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="form-control select" id="desc_db_part_col" >
+                                                <option value='auto' selected = "selected">auto</option>
+                                            </select>
+                                       </div>
+                                   </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
                                             <label class="col-md-3 control-label"><span>*</span>目标库</label>
                                         </div>
                                         <div class="col-md-9">
                                             <select class="form-control select" id="desc_db_name" >
-                                                <option value='' selected = "selected">......</option>
+                                                <option value='auto' selected = "selected">auto</option>
                                             </select>
+                                       </div>
+                                   </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-3 control-label"><span>*</span>状态</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="form-control select" id="tab_config_status">
+                                                 <option value="1" selected = "selected">启用</option>
+                                                 <option value="0">禁用</option>
+                                           </select>
                                        </div>
                                    </div>
                                 </div>
@@ -386,6 +442,7 @@
                                 <br>
                                 <div class="col-sm-offset-5 col-sm-5">
                                      <input  id='save_sync_tab_config' class="btn btn-custom waves-effect waves-light btn-md" type='button' value="保存"/>
+                                     <input  id='upd_sync_tab_config' class="btn btn-custom waves-effect waves-light btn-md" type='button' value="变更"/>
                                 </div>
                             </div>
                         </div>
@@ -435,6 +492,14 @@
              set_sync_tabs();
              set_desc_database();
              query_tab_sync();
+        }
+
+        function init_tab_config(){
+           $("#mysql_db_name").val('');
+           $("#sync_tab_name").val('');
+           $("#desc_db_part_col").val('auto')
+           $("#desc_db_name").val('auto');
+           $("#tab_config_status").val('1');
         }
 
         function get_ds() {
@@ -518,6 +583,7 @@
                   url: "get_mysql_tables",
                   type: "post",
                   datatype: "json",
+                  async:false,
                   data:{
                       db_ip       : sour_ds['ip'],
                       db_port     : sour_ds['port'],
@@ -528,7 +594,7 @@
                   },
                   success: function (dataSet) {
                      $("#sync_tab_name").empty();
-                     $("#sync_tab_name").append("<option value=''>...</option>");
+                     $("#sync_tab_name").append("<option value='*'>*</option>");
                      for(i=0;i<dataSet['msg'].length;i++){
                           var val  = dataSet['msg'][i][2]
                           $("#sync_tab_name").append("<option value='"+val+"'>"+val+"</option>");
@@ -537,9 +603,30 @@
              })
         }
 
+        function set_sync_tab_part_col() {
+                 $.ajax({
+                      url: "/get_incr_col",
+                      type: "post",
+                      datatype: "json",
+                      data:{
+                          dbid     : $('#sour_db_server').val(),
+                          db_name  : $('#mysql_db_name').val(),
+                          tab_name : $('#sync_tab_name').val()
+                      },
+                      success: function (dataSet) {
+                          $("#desc_db_part_col").empty();
+                          $("#desc_db_part_col").append("<option value='auto'>auto</option>");
+                          for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i][0]
+                              $("#desc_db_part_col").append("<option value='"+val+"'>"+val+"</option>");
+                          }
+                      },
+                 })
+         }
+
         function set_desc_database() {
            $.ajax({
-                  url: "get_mysql_databases",
+                  url: "get_ck_databases",
                   type: "post",
                   datatype: "json",
                   data:{
@@ -552,7 +639,7 @@
                   },
                   success: function (dataSet) {
                      $("#desc_db_name").empty();
-                     $("#desc_db_name").append("<option value=''>...</option>");
+                     $("#desc_db_name").append("<option value='auto'>auto</option>");
                      for(i=0;i<dataSet['msg'].length;i++){
                           var val  = dataSet['msg'][i][0]
                           $("#desc_db_name").append("<option value='"+val+"'>"+val+"</option>");
@@ -561,13 +648,22 @@
              })
         }
 
-
         function syn_tab_edit(row){
            v =unescape(row).split(',')
+           console.log('v=',v)
            $('#sync_tab_id').val(v[0]);
            $("#mysql_db_name").val(v[1]);
+           if (!get_ds()) {
+                 return;
+           }
+           if (!get_doris_ds()) {
+                 return;
+           }
+           set_sync_tabs();
            $("#sync_tab_name").val(v[2]);
-           $("#desc_db_name").val(v[3]);
+           $("#desc_db_part_col").val(v[3])
+           $("#desc_db_name").val(v[4]);
+           $("#tab_config_status").val(v[5]);
         }
 
         function syn_tab_del(row){
@@ -636,7 +732,9 @@
                                    { "title": "标识","width":"5%" },
                                    { "title": "源库名","width":"10%" },
                                    { "title": "表名称","width":"15%" },
+                                   { "title": "分区列","width":"15%" },
                                    { "title": "目标库","width":"15%" },
+                                   { "title": "状态","width":"15%" },
                                    {
                                         "title":"操作",
                                         "width":"10%",
@@ -647,6 +745,20 @@
                                         }
                                    },
                               ],
+                             columnDefs: [
+                             {
+                                targets: 5,
+                                render: function(data, type, row, meta){
+                                    if (row[5]=='1') {
+                                         msg ='&nbsp;启用&nbsp;'
+                                         return msg
+                                    } else {
+                                         msg ='&nbsp;禁用&nbsp;'
+                                         return msg
+                                    }
+                                }
+                             }
+                         ],
                               "language": get_languages()
                      });
                   },
@@ -654,6 +766,56 @@
         }
 
         $('#save_sync_tab_config').click(function(){
+
+            if ($('#mysql_db_name').val()=='') {
+                  swal("源库名不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#sync_tab_name').val()=='') {
+                  swal("同步表不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#desc_db_part_col').val()=='') {
+                  swal("分区列不能为空!", "", "error")
+                  return;
+            }
+
+            if ($('#desc_db_name').val()=='') {
+                  swal("目标库不能为空!", "", "error")
+                  return;
+            }
+
+            $.ajax({
+                  url: "/sync/add/save/tab",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      'sync_id'      : '-1',
+                      'sync_tag'     : $('#sync_tag').val(),
+                      'db_name'      : $('#mysql_db_name').val(),
+                      'schema_name'  : $('#desc_db_name').val(),
+                      'tab_name'     : $('#sync_tab_name').val(),
+                      'tab_status'   : $("#tab_config_status").val(),
+                      'sync_cols'    : '',
+                      'sync_incr_col': $('#desc_db_part_col').val(),
+                      'sync_time'    : '',
+              },
+              success: function (dataSet) {
+                if (dataSet.code==0) {
+                   swal("保存成功", "", "success")
+                   query_tab_sync();
+                   init_tab_config();
+                } else {
+                   swal(dataSet.message, "", "error")
+                }
+              },
+           })
+
+        });
+
+        $('#upd_sync_tab_config').click(function(){
 
             if ($('#mysql_db_name').val()=='') {
                   swal("源库名不能为空!", "", "error")
@@ -675,18 +837,19 @@
                   type: "post",
                   datatype: "json",
                   data:{
-                      'sync_id'      : '-1',
+                      'sync_id'      : $('#sync_tab_id').val(),
                       'sync_tag'     : $('#sync_tag').val(),
                       'db_name'      : $('#mysql_db_name').val(),
                       'schema_name'  : $('#desc_db_name').val(),
                       'tab_name'     : $('#sync_tab_name').val(),
+                      'tab_status'   : $("#tab_config_status").val(),
                       'sync_cols'    : '',
-                      'sync_incr_col': '',
+                      'sync_incr_col': $('#desc_db_part_col').val(),
                       'sync_time'    : '',
               },
               success: function (dataSet) {
                 if (dataSet.code==0) {
-                   swal("保存成功", "", "success")
+                   swal("更新成功", "", "success")
                    query_tab_sync();
                    init_tab_config();
                 } else {
@@ -738,6 +901,12 @@
             }
         });
 
+        $('#sync_tab_name').change(function() {
+            if ($("#sync_tab_name").val()!='') {
+                 set_sync_tab_part_col()
+            }
+        });
+
         $(document).ready(function() {
            set_selected();
            $("#div-add-panal").css("height",$("#div-tab-panal").height());
@@ -750,6 +919,8 @@
                     sync_server          : $('#sync_server').val(),
                     sour_db_server       : $('#sour_db_server').val(),
                     desc_db_server       : $('#desc_db_server').val(),
+                    sour_db_log_server   : $('#sour_db_log_server').val(),
+                    log_db_name          : $('#log_db_name').val(),
                     sync_tag             : $('#sync_tag').val(),
                     sync_ywlx            : $('#sync_ywlx').val(),
                     sync_data_type       : $('#sync_data_type').val(),

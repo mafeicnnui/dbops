@@ -470,8 +470,7 @@ async def db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc
     dds = await get_ds_by_dsid_by_cdb(desc_db_server, desc_schema)
     sql = """select  lower(database) as db_name,
                      lower(name) as table_name
-             from system.tables  
-             where database='{}' order by 2 """
+             from system.tables  where database='{}' order by 2 """
 
     if dds['db_type'] == '9':
         dres = await get_ck_query_result(dds,sql.format(desc_schema),desc_schema)
@@ -483,9 +482,6 @@ async def db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc
                         'select count(0) as rec from `{}`.`{}`'.format(sour_schema, d[1]))
             except:
                 rs1 = {'rec': 0}
-
-            print('rs2=',rs2)
-            print('rs1=',rs1)
 
             st = """insert into t_db_compare_data
                               (sour_dsid,dest_dsid,sour_schema,dest_schema,dest_table,sour_rows,dest_rows) 

@@ -430,6 +430,19 @@
                                        </div>
                                    </div>
                                 </div>
+                               <br>
+                                <div class="row">
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-3 control-label"><span>*</span>分区列</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="form-control select" id="desc_db_part_col" >
+                                                <option value='auto' selected = "selected">auto</option>
+                                            </select>
+                                       </div>
+                                   </div>
+                                </div>
                                 <br>
                                 <div class="row">
                                    <div class="form-group">
@@ -611,6 +624,27 @@
                           var val  = dataSet['msg'][i][2]
                           $("#sync_tab_name").append("<option value='"+val+"'>"+val+"</option>");
                      }
+                  },
+             })
+        }
+
+        function set_sync_tab_part_col() {
+             $.ajax({
+                  url: "/get_incr_col",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      dbid     : $('#sour_db_server').val(),
+                      db_name  : $('#mysql_db_name').val(),
+                      tab_name : $('#sync_tab_name').val()
+                  },
+                  success: function (dataSet) {
+                      $("#desc_db_part_col").empty();
+                      $("#desc_db_part_col").append("<option value='auto'>auto</option>");
+                      for(i=0;i<dataSet['message'].length;i++){
+                          var val  = dataSet['message'][i][0]
+                          $("#desc_db_part_col").append("<option value='"+val+"'>"+val+"</option>");
+                      }
                   },
              })
         }
@@ -936,6 +970,12 @@
                 set_sync_tabs()
             }
         })
+
+         $('#sync_tab_name').change(function() {
+            if ($("#sync_tab_name").val()!='') {
+                 set_sync_tab_part_col()
+            }
+        });
 
         $(document).ready(function() {
            set_selected();

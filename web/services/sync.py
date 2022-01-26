@@ -7,7 +7,8 @@
 
 import json
 from web.model.t_sync import query_sync, query_sync_tab, query_sync_tab_cfg, save_sync, save_sync_tab, del_sync_tab, \
-    get_sync_by_syncid, upd_sync, del_sync, query_sync_log, query_sync_log_detail, query_db_real_sync
+    get_sync_by_syncid, upd_sync, del_sync, query_sync_log, query_sync_log_detail, query_db_real_sync, \
+    save_sync_clone_real
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log,query_sync_tab_cfg_real
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_sync import get_mssql_tables_list,get_mysql_tables_list,get_mssql_columns_list,get_mysql_columns_list,get_mssql_incr_columns_list,get_mysql_incr_columns_list
@@ -54,7 +55,7 @@ class sync_query_tab_real(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         sync_tag = self.get_argument("sync_tag")
         sync_tab = self.get_argument("sync_tab")
-        v_list = await query_sync_tab_real(sync_tag, sync_tab)
+        v_list   = await query_sync_tab_real(sync_tag, sync_tab)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -266,7 +267,7 @@ class syncclone(base_handler.TokenHandler):
                         desc_db_server       = d_sync['desc_db_server'],
                         sour_db_log_server   = d_sync['log_db_id'],
                         log_db_name          = d_sync['log_db_name'],
-                        sync_tag             = d_sync['sync_tag'],
+                        sync_tag             = d_sync['sync_tag']+'_clone',
                         sync_ywlx            = d_sync['sync_ywlx'],
                         sync_data_type       = d_sync['sync_data_type'],
                         script_base          = d_sync['script_base'],
@@ -280,12 +281,11 @@ class syncclone(base_handler.TokenHandler):
                         sync_batch_size      = d_sync['sync_batch_size'],
                         sync_batch_size_incr = d_sync['sync_batch_size_incr'],
                         sync_gap             = d_sync['sync_gap'],
-                        batch_timeout        = d_sync['batch_timeout'],
-                        batch_row_event      = d_sync['batch_row_event'],
                         apply_timeout        = d_sync['apply_timeout'],
                         api_server           = d_sync['api_server'],
                         status               = d_sync['status'],
                         desc_db_prefix       = d_sync['desc_db_prefix'],
+                        process_num          = d_sync['process_num'],
                         )
         else:
             self.render("./sync/sync_clone.html",
@@ -350,7 +350,6 @@ class syncclone_save(base_handler.TokenHandler):
         result = await save_sync(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
-
 class syncedit_del(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -379,7 +378,6 @@ class sync_log_query(base_handler.TokenHandler):
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
-
 class sync_log_query_detail(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -389,7 +387,6 @@ class sync_log_query_detail(base_handler.TokenHandler):
         v_list   = await query_sync_log_detail(sync_tag,sync_rqq,sync_rqz)
         v_json = json.dumps(v_list)
         self.write(v_json)
-
 
 class syncloganalyze(base_handler.TokenHandler):
     async def get(self):
@@ -454,7 +451,6 @@ class get_sync(base_handler.TokenHandler):
         v_list  = await get_sync_by_sync_tag(sync_tag)
         v_json  = json.dumps(v_list,cls=DateEncoder)
         self.write(v_json)
-
 
 class syncedit_push(base_handler.TokenHandler):
     def post(self):
@@ -566,7 +562,6 @@ class db_real_sync(base_handler.BaseHandler):
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
-
 class db_order_num(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -641,7 +636,6 @@ class get_mysql_databases(base_handler.TokenHandler):
         v_json = json.dumps(v_list)
         self.write(v_list)
 
-
 class get_ck_databases(base_handler.TokenHandler):
     def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -654,7 +648,6 @@ class get_ck_databases(base_handler.TokenHandler):
         v_list = get_ck_databases_list(db_ip, db_port, db_service, db_user, db_pass, proxy_server)
         v_json = json.dumps(v_list)
         self.write(v_list)
-
 
 class get_mssql_columns(base_handler.TokenHandler):
     def post(self):
@@ -713,7 +706,6 @@ class get_mysql_incr_columns(base_handler.TokenHandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
-
 class sync_real(base_handler.TokenHandler):
     async def get(self):
         self.render("./sync/sync_add_real.html",
@@ -727,13 +719,14 @@ class sync_real(base_handler.TokenHandler):
                     dm_sync_time_type = await get_dmm_from_dm('10')
                     )
 
-
 class sync_real_save(base_handler.TokenHandler):
     async def post(self):
         d_sync = {}
         d_sync['sync_server']          = self.get_argument("sync_server")
         d_sync['sour_db_server']       = self.get_argument("sour_db_server")
         d_sync['desc_db_server']       = self.get_argument("desc_db_server")
+        d_sync['sour_db_log_server']   = self.get_argument("sour_db_log_server")
+        d_sync['log_db_name']          = self.get_argument("log_db_name")
         d_sync['sync_tag']             = self.get_argument("sync_tag")
         d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
         d_sync['sync_data_type']       = self.get_argument("sync_data_type")
@@ -754,7 +747,6 @@ class sync_real_save(base_handler.TokenHandler):
 
         result = await save_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
-
 
 class sync_real_edit_save(base_handler.TokenHandler):
     async def post(self):
@@ -786,7 +778,6 @@ class sync_real_edit_save(base_handler.TokenHandler):
         result = await upd_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
-
 class sync_real_clone_save(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -794,6 +785,8 @@ class sync_real_clone_save(base_handler.TokenHandler):
         d_sync['sync_server']          = self.get_argument("sync_server")
         d_sync['sour_db_server']       = self.get_argument("sour_db_server")
         d_sync['desc_db_server']       = self.get_argument("desc_db_server")
+        d_sync['sour_db_log_server']   = self.get_argument("sour_db_log_server")
+        d_sync['log_db_name']          = self.get_argument("log_db_name")
         d_sync['sync_tag']             = self.get_argument("sync_tag")
         d_sync['sync_ywlx']            = self.get_argument("sync_ywlx")
         d_sync['sync_data_type']       = self.get_argument("sync_data_type")
@@ -812,5 +805,5 @@ class sync_real_clone_save(base_handler.TokenHandler):
         d_sync['status']               = self.get_argument("status")
         d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
         d_sync['sync_id']              = self.get_argument("sync_id")
-        result = await save_sync_real(d_sync)
+        result = await save_sync_clone_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})

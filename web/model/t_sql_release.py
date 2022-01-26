@@ -622,7 +622,7 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message,p_host):
         result['message'] = '审核异常!'
         return result
 
-async def upd_sql_run_status(p_sqlid):
+async def upd_sql_run_status(p_sqlid,p_username):
     result={}
     try:
         sql="""update t_sql_release  set  status ='7' ,last_update_date =now() where id='{}'""".format(p_sqlid)

@@ -78,6 +78,7 @@ async def query_sync_tab_real(sync_tag,sync_tab):
              and  instr(a.tab_name,'{}')>0
             order by 1
               """.format(sync_tag,sync_tab)
+    print('query_sync_tab_real=',sql)
     return await async_processer.query_list(sql)
 
 
@@ -120,6 +121,7 @@ async def query_sync_tab_cfg_real(sync_tag):
             WHERE a.sync_tag='{}'  and a.status='1'
             order by 1
           """.format(sync_tag)
+    print('query_sync_tab_cfg_real=',sql)
     rs = await async_processer.query_list(sql)
     v=''
     for r in rs:
@@ -296,10 +298,11 @@ async def save_sync_real(p_backup):
         return val
     try:
         result               = {}
-        sync_id              = p_backup['sync_id']
         sync_server          = p_backup['sync_server']
         sour_db_server       = p_backup['sour_db_server']
         desc_db_server       = p_backup['desc_db_server']
+        sour_db_log_server   = p_backup['sour_db_log_server']
+        log_db_name          = p_backup['log_db_name']
         sync_tag             = p_backup['sync_tag']
         sync_ywlx            = p_backup['sync_ywlx']
         sync_type            = p_backup['sync_data_type']
@@ -322,23 +325,23 @@ async def save_sync_real(p_backup):
                           sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
                           comments,run_time,sync_table,batch_size,batch_size_incr,script_path,
                           script_file,python3_home,api_server,status,
-                          sync_gap,batch_timeout,process_num,desc_db_prefix)
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,log_db_id,log_db_name)
                   values('{0}','{1}','{2}','{3}','{4}','{5}',
                          '{6}','{7}','{8}','{9}','{10}','{11}',
                          '{12}','{13}','{14}','{15}',
-                         '{16}','{17}','{18}','{19}')
+                         '{16}','{17}','{18}','{19}','{20}','{21}')
                """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
                           task_desc, run_time, sync_tables,sync_batch_size, sync_batch_size_incr,script_base,
                           script_name, python3_home, api_server, status,
-                          sync_gap,process_num,apply_timeout,desc_db_prefix)
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,sour_db_log_server,log_db_name)
         await async_processer.exec_sql(st)
 
-        st = """insert into t_db_sync_tab_config(sync_tag,db_name,schema_name,tab_name,STATUS)
-                select '{}',db_name,schema_name,tab_name,status 
-                from t_db_sync_tab_config 
-                where sync_tag=(select sync_tag from t_db_sync_config where id={})
-             """.format(sync_tag,sync_id)
-        await async_processer.exec_sql(st)
+        # st = """insert into t_db_sync_tab_config(sync_tag,db_name,schema_name,tab_name,STATUS)
+        #         select sync_tag,db_name,schema_name,tab_name,status
+        #         from t_db_sync_tab_config
+        #         where sync_tag='{}')
+        #      """.format(sync_tag,sync_tag)
+        # await async_processer.exec_sql(st)
 
         result['code']='0'
         result['message']='保存成功！'
@@ -350,6 +353,72 @@ async def save_sync_real(p_backup):
         result['message'] = '保存失败！'
         return result
 
+async def save_sync_clone_real(p_backup):
+    val = await check_sync_real(p_backup,'clone')
+    if val['code']=='-1':
+        return val
+    try:
+        result               = {}
+        sync_id              = p_backup['sync_id']
+        sync_server          = p_backup['sync_server']
+        sour_db_server       = p_backup['sour_db_server']
+        desc_db_server       = p_backup['desc_db_server']
+        sour_db_log_server   = p_backup['sour_db_log_server']
+        log_db_name          = p_backup['log_db_name']
+        sync_tag             = p_backup['sync_tag']
+        sync_ywlx            = p_backup['sync_ywlx']
+        sync_type            = p_backup['sync_data_type']
+        script_base          = p_backup['script_base']
+        script_name          = p_backup['script_name']
+        run_time             = p_backup['run_time']
+        task_desc            = p_backup['task_desc']
+        python3_home         = p_backup['python3_home']
+        sync_tables          = p_backup['sync_tables']
+        sync_batch_size      = p_backup['sync_batch_size']
+        sync_batch_size_incr = p_backup['sync_batch_size_incr']
+        sync_gap             = p_backup['sync_gap']
+        process_num          = p_backup['process_num']
+        apply_timeout        = p_backup['apply_timeout']
+        api_server           = p_backup['api_server']
+        status               = p_backup['status']
+        desc_db_prefix       = p_backup['desc_db_prefix']
+
+        st = """insert into t_db_sync_config(
+                          sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
+                          comments,run_time,sync_table,batch_size,batch_size_incr,script_path,
+                          script_file,python3_home,api_server,status,
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,log_db_id,log_db_name)
+                  values('{0}','{1}','{2}','{3}','{4}','{5}',
+                         '{6}','{7}','{8}','{9}','{10}','{11}',
+                         '{12}','{13}','{14}','{15}',
+                         '{16}','{17}','{18}','{19}','{20}','{21}')
+               """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
+                          task_desc, run_time, sync_tables,sync_batch_size, sync_batch_size_incr,script_base,
+                          script_name, python3_home, api_server, status,
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,sour_db_log_server,log_db_name)
+        await async_processer.exec_sql(st)
+
+        st = """delete from t_db_sync_tab_config where sync_tag='{}'""".format(sync_tag)
+        print('st=', st)
+        await async_processer.exec_sql(st)
+
+        st = """insert into t_db_sync_tab_config(sync_tag,db_name,schema_name,tab_name,sync_incr_col,STATUS)
+                select '{}',db_name,schema_name,tab_name,sync_incr_col,status
+                from t_db_sync_tab_config
+                where sync_tag=(select sync_tag from t_db_sync_config where id='{}')
+             """.format(sync_tag,sync_id)
+        print('st=',st)
+        await async_processer.exec_sql(st)
+
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except:
+        result = {}
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
 
 
 async def check_sync_tab(p_sync_id):
@@ -388,6 +457,8 @@ async def save_sync_tab(p_sync):
                            update_date   = now(),
                            status        = '{}'
                        where id = '{}'""".format(sync_tag,db_name, schema_name, tab_name, sync_cols, sync_incr_col, sync_time,tab_status,sync_id)
+
+            print('sql=',sql)
             result['code']    = '0'
             result['message'] = '更新成功!'
         print('save_sync_tab=',sql)
@@ -1225,15 +1296,19 @@ async def query_db_active_num(p_db_id,p_begin_date,p_end_date):
     return res
 
 async def query_db_real_sync(p_sync_tag,p_max_id):
-    print('p_sync=',p_sync_tag,'p_max_id=',p_max_id)
     res = []
     if p_max_id == 1:
         sql = """SELECT MAX(id) AS max_id FROM t_db_sync_real_log WHERE sync_tag='{}'""".format(p_sync_tag)
         mid = (await async_processer.query_dict_one(sql))['max_id']
+
+        if mid == '':
+           return {'max_id': p_max_id, 'data': [],'binlogfile': '', 'binlogpos': '', 'c_binlogfile': '', 'c_binlogpos': ''}
+
         sql = """SELECT DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s') AS create_date,cast(avg(event_amount) as SIGNED)
                  FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={} AND id<={} 
                  Group by DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s')
                  ORDER BY 1""".format(p_sync_tag, mid-1500, mid)
+
         for r in await async_processer.query_list(sql):
             res.append({
                 'name':r[0],
@@ -1244,8 +1319,8 @@ async def query_db_real_sync(p_sync_tag,p_max_id):
                         max(binlogpos)   AS binlogpos,
                         max(c_binlogfile) AS c_binlogfile,
                         max(c_binlogpos)  AS c_binlogpos
-                  FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={} AND id<={} 
-              """.format(p_sync_tag, mid - 1500, mid)
+                  FROM t_db_sync_real_log WHERE sync_tag='{}' 
+              """.format(p_sync_tag)
         bin = await async_processer.query_dict_one(sql)
         return {  'max_id': mid, 'data': res,
                   'binlogfile':bin['binlogfile'],'binlogpos':bin['binlogpos'],
@@ -1253,8 +1328,6 @@ async def query_db_real_sync(p_sync_tag,p_max_id):
     else:
         sql = """SELECT count(0) AS rec FROM t_db_sync_real_log WHERE sync_tag='{}' and id >={} limit 1""".format(p_sync_tag,p_max_id)
         rec = (await async_processer.query_dict_one(sql))['rec']
-        print('>>>>',sql)
-        print('>>>',rec)
         if rec == 0:
             return {'max_id': p_max_id, 'data': [],'binlogfile':'','binlogpos':''}
         else:
@@ -1273,8 +1346,8 @@ async def query_db_real_sync(p_sync_tag,p_max_id):
                             max(binlogpos)  AS binlogpos,
                             max(c_binlogfile) AS c_binlogfile,
                             max(c_binlogpos)  AS c_binlogpos
-                      FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={}  limit 1
-                  """.format(p_sync_tag, mid - 1500, mid)
+                      FROM t_db_sync_real_log WHERE sync_tag='{}'
+                  """.format(p_sync_tag)
             bin = await async_processer.query_dict_one(sql)
             return {
                      'max_id':mid,
