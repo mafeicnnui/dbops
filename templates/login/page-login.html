@@ -131,10 +131,8 @@
         <script src="{{static_url('assets/js/waves.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.slimscroll.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.scrollTo.min.js')}}"></script>
-
         <script src="{{static_url('plugins/bootstrap-sweetalert/sweet-alert.min.js')}}"></script>
         <script src="{{static_url('assets/js/utils.js')}}"></script>
-
         <!-- App js -->
         <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
@@ -189,7 +187,7 @@
                       });
                   });
 
-                   $("#btlogin").click(function () {
+                  $("#btlogin").click(function () {
                        $.ajax({
                             url: "/logon_check",
                             type: "post",
@@ -207,6 +205,15 @@
                                 } else {
                                     //将token这写入localStorage
                                     window.localStorage['token'] = dataSet.token
+
+                                    //如何记住登陆选中，则将用户、密码写入本地库
+                                    if ($('#checkbox-signup').attr('checked') == 'checked') {
+                                          if ($('#username').val()!='' && $('#password')!='') {
+                                              window.localStorage['easebase_user'] = $('#username').val()
+                                              window.localStorage['easebase_pass'] = $('#password').val()
+                                          }
+                                     }
+
                                     // $.ajax({
                                     //      url: "/",
                                     //      type: "get",
@@ -218,13 +225,38 @@
                                     //       },
                                     // });
                                     window.location.href='/?token='+window.localStorage.getItem("token")
+
                                 }
                             },
                         });
                     });
 
                   $("#verify-img").click();
+
+                  $('#checkbox-signup').click(function(){
+                      if ($('#checkbox-signup').attr('checked')) {
+                          $('#checkbox-signup').attr('checked',false);
+                          //处理未选中情况
+                          window.localStorage.removeItem('easebase_user')
+                          window.localStorage.removeItem('easebase_pass')
+                      } else {
+                          $('#checkbox-signup').attr('checked',true);
+                         //处理选中情况
+                          if ($('#username').val()!='' && $('#password')!='') {
+                              window.localStorage['easebase_user'] = $('#username').val()
+                              window.localStorage['easebase_pass'] = $('#password').val()
+                          }
+                      }
+                  })
+
+                  if ( window.localStorage['easebase_user'] != undefined)  {
+                       $('#username').val(window.localStorage['easebase_user'])
+                       $('#password').val(window.localStorage['easebase_pass'])
+                       $('#checkbox-signup').attr('checked',true);
+                  }
+
             });
+
         </script>
     </body>
 </html>
