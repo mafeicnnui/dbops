@@ -1307,7 +1307,7 @@ async def query_db_real_sync(p_sync_tag,p_max_id):
         sql = """SELECT DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s') AS create_date,cast(avg(event_amount) as SIGNED)
                  FROM t_db_sync_real_log WHERE sync_tag='{}' AND id >={} AND id<={} 
                  Group by DATE_FORMAT(create_date,'%Y-%m-%d %H:%i:%s')
-                 ORDER BY 1""".format(p_sync_tag, mid-1500, mid)
+                 ORDER BY 1""".format(p_sync_tag, mid-1000, mid)
 
         for r in await async_processer.query_list(sql):
             res.append({

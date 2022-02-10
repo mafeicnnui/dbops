@@ -1124,7 +1124,6 @@
                                   ]
                                 };
                                 myChart.setOption(option);
-
                              }
 
                              if (p_sync_tag.indexOf('hst_')>=0 && p_sync_tag.indexOf('logger')>=0) {
@@ -1155,7 +1154,7 @@
                                  if (n_hst_data.length > 0 ) {
                                      n_hst_data.shift();
                                      n_hst_data.push(res.data[0])
-                                     n_hst_max_id = res.max_id
+                                     n_hst_max_id = res.max_id+1
                                      myChart.setOption({
                                         series: [
                                           {
@@ -1168,7 +1167,7 @@
                                 if (n_hft_data.length > 0 ) {
                                      n_hft_data.shift();
                                      n_hft_data.push(res.data[0])
-                                     n_hft_max_id = res.max_id
+                                     n_hft_max_id = res.max_id+1
                                      myChart.setOption({
                                         series: [
                                           {
@@ -1181,7 +1180,7 @@
                                 if (n_hst_data2.length > 0 ) {
                                      n_hst_data2.shift();
                                      n_hst_data2.push(res.data[0])
-                                     n_hst2_max_id = res.max_id
+                                     n_hst2_max_id = res.max_id+1
                                      myChart.setOption({
                                         series: [
                                           {
@@ -1194,7 +1193,7 @@
                                 if (n_hft_data2.length > 0 ) {
                                      n_hft_data2.shift();
                                      n_hft_data2.push(res.data[0])
-                                     n_hft2_max_id = res.max_id
+                                     n_hft2_max_id = res.max_id+1
                                      myChart.setOption({
                                         series: [
                                           {
