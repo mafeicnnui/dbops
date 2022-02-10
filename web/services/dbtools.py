@@ -10,7 +10,7 @@ import tornado.web
 from   web.model.t_archive import query_archive_detail
 from web.model.t_db_tools import db_stru_compare, db_stru_compare_detail, db_stru_compare_statement, \
     db_stru_batch_gen_statement, db_stru_compare_idx, db_stru_compare_detail_idx, db_stru_compare_statement_idx, \
-    db_stru_compare_data
+    db_stru_compare_data, db_gen_dict, exp_dict
 from web.model.t_dmmx import get_sync_db_mysql_server, get_datax_sync_db_server_doris, get_compare_db_server
 from web.utils import base_handler
 
@@ -138,4 +138,28 @@ class _db_compare_data(base_handler.TokenHandler):
         desc_db_server  = self.get_argument("desc_db_server")
         desc_schema     = self.get_argument("desc_schema")
         v_list          = await db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_schema)
+        self.write({"code": 0, "message": v_list})
+
+class db_dict(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./tools/db_dict.html",
+                    db_server=await get_sync_db_mysql_server(),
+                    )
+
+class _db_dict(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_server  = self.get_argument("db_server")
+        db_schema  = self.get_argument("db_schema")
+        v_list     = await db_gen_dict(db_server,db_schema)
+        self.write({"code": 0, "message": v_list})
+
+
+class _db_dict_exp(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_server = self.get_argument("db_server")
+        db_schema = self.get_argument("db_schema")
+        static_path = self.get_template_path().replace("templates", "static")
+        v_list = await exp_dict(static_path,db_server, db_schema)
         self.write({"code": 0, "message": v_list})

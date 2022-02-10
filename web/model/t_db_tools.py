@@ -7,8 +7,10 @@
 
 from web.model.t_ds import get_ds_by_dsid_by_cdb
 from web.model.t_sql import get_ck_proxy_result, get_ck_result
-from web.utils.common import format_sql
+from web.utils.common import format_sql, current_rq
 from web.utils.mysql_async import async_processer
+import xlwt
+import os,zipfile
 
 
 async def save_db(dsid,dres):
@@ -455,7 +457,6 @@ async def db_stru_compare_detail_idx(sour_db_server,sour_schema,desc_db_server,d
                                                      status
                                                  from t_db_compare_detail order by id""")
 
-
 async def get_ck_query_result(ds,sql,curdb):
     print('ds=',ds)
     if ds['proxy_status'] == '1':
@@ -463,7 +464,6 @@ async def get_ck_query_result(ds,sql,curdb):
     else:
        res = await get_ck_result(ds, sql, curdb)
     return res
-
 
 async def db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc_schema):
     sds = await get_ds_by_dsid_by_cdb(sour_db_server, sour_schema)
@@ -504,7 +504,6 @@ async def db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc
                        FROM t_db_compare_data a order by id"""
         res = await async_processer.query_list(sql)
         return res
-
 
 async def db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_schema):
     sds = await get_ds_by_dsid_by_cdb(sour_db_server, sour_schema)
@@ -547,3 +546,146 @@ async def db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_sc
                 FROM t_db_compare_data a order by id"""
         res = await async_processer.query_list(sql)
         return res
+
+async def db_gen_dict(db_server,db_schema):
+    ds = await get_ds_by_dsid_by_cdb(db_server, db_schema)
+    st = """SELECT      
+                table_name,
+                column_name,
+                column_type,
+                is_nullable,
+                column_default,
+                character_set_name,
+                collation_name,
+                column_key,
+                extra,
+                CASE WHEN LENGTH(column_comment)>20 THEN
+                   CONCAT(SUBSTR(column_comment,1,20),'...') 
+                ELSE
+                   column_comment
+                    END AS column_comment
+                FROM information_schema.columns 
+                WHERE table_schema='{}'  ORDER BY table_name,ordinal_position""".format(db_schema)
+    rs = await async_processer.query_list_by_ds(ds,st)
+    return rs
+
+def set_header_styles(p_fontsize,p_color):
+    header_borders = xlwt.Borders()
+    header_styles  = xlwt.XFStyle()
+    # add table header style
+    header_borders.left   = xlwt.Borders.THIN
+    header_borders.right  = xlwt.Borders.THIN
+    header_borders.top    = xlwt.Borders.THIN
+    header_borders.bottom = xlwt.Borders.THIN
+    header_styles.borders = header_borders
+    header_pattern = xlwt.Pattern()
+    header_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    header_pattern.pattern_fore_colour = p_color
+    # add font
+    font = xlwt.Font()
+    font.name = u'微软雅黑'
+    font.bold = True
+    font.size = p_fontsize
+    header_styles.font = font
+    #add alignment
+    header_alignment = xlwt.Alignment()
+    header_alignment.horz = xlwt.Alignment.HORZ_CENTER
+    header_alignment.vert = xlwt.Alignment.VERT_CENTER
+    header_styles.alignment = header_alignment
+    header_styles.borders = header_borders
+    header_styles.pattern = header_pattern
+    return header_styles
+
+def set_row_styles(p_fontsize,p_color):
+    cell_borders   = xlwt.Borders()
+    cell_styles    = xlwt.XFStyle()
+
+    # add font
+    font = xlwt.Font()
+    font.name = u'微软雅黑'
+    font.bold = True
+    font.size = p_fontsize
+    cell_styles.font = font
+
+    #add col style
+    cell_borders.left     = xlwt.Borders.THIN
+    cell_borders.right    = xlwt.Borders.THIN
+    cell_borders.top      = xlwt.Borders.THIN
+    cell_borders.bottom   = xlwt.Borders.THIN
+
+    row_pattern           = xlwt.Pattern()
+    row_pattern.pattern   = xlwt.Pattern.SOLID_PATTERN
+    row_pattern.pattern_fore_colour = p_color
+
+    # add alignment
+    cell_alignment        = xlwt.Alignment()
+    cell_alignment.horz   = xlwt.Alignment.HORZ_LEFT
+    cell_alignment.vert   = xlwt.Alignment.VERT_CENTER
+
+    cell_styles.alignment = cell_alignment
+    cell_styles.borders   = cell_borders
+    cell_styles.pattern   = row_pattern
+    cell_styles.font      = font
+    return cell_styles
+
+async def exp_dict(static_path,db_server, db_schema):
+    row_data  = 0
+    workbook  = xlwt.Workbook(encoding='utf8')
+    worksheet = workbook.add_sheet('dict')
+    header_styles = set_header_styles(45,1)
+    os.system('cd {0}'.format(static_path + '/downloads/dict'))
+    file_name   = static_path + '/downloads/dict/exp_dict_{0}.xls'.format(db_schema)
+    file_name_s = 'exp_dict_{0}.xls'.format(db_schema)
+    ds          = await get_ds_by_dsid_by_cdb(db_server, db_schema)
+    st          = """SELECT      
+                        table_name as '表名',
+                        column_name as '列名',
+                        column_type  as '列类型',
+                        is_nullable as '是否可空',
+                        column_default as '默认值',
+                        character_set_name as '字符集',
+                        collation_name as '校对规则',
+                        column_key as '主键',
+                        extra  as '附加',
+                        CASE WHEN LENGTH(column_comment)>20 THEN
+                           CONCAT(SUBSTR(column_comment,1,20),'...') 
+                        ELSE
+                           column_comment
+                            END AS '注释'
+                        FROM information_schema.columns 
+                    WHERE table_schema='{}'  ORDER BY table_name,ordinal_position""".format(db_schema)
+
+    # 写表头
+    desc = await async_processer.query_one_desc_by_ds(ds,st)
+    for k in range(len(desc)):
+        worksheet.write(row_data, k, desc[k][0], header_styles)
+
+    # 写单元格
+    row_data = row_data + 1
+    rs3 = await async_processer.query_list_by_ds(ds,st)
+    for i in rs3:
+        for j in range(len(i)):
+            if i[j] is None:
+                worksheet.write(row_data, j, '')
+            else:
+                worksheet.write(row_data, j, str(i[j]))
+        row_data = row_data + 1
+
+    workbook.save(file_name)
+    print("{0} export complete!".format(file_name))
+
+    # 生成压缩文件
+    zip_file = static_path + '/downloads/dict/exp_dict_{0}.zip'.format(current_rq())
+    rzip_file = '/static/downloads/dict/exp_dict_{0}.zip'.format(current_rq())
+
+    # 若文件存在则删除
+    if os.path.exists(zip_file):
+        os.system('rm -f {0}'.format(zip_file))
+
+    z = zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+    z.write(file_name, arcname=file_name_s)
+    z.close()
+
+    # 删除json文件
+    os.system('rm -f {0}'.format(file_name))
+    return rzip_file
