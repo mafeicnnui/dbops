@@ -11,6 +11,7 @@ from web.utils.common import format_sql, current_rq
 from web.utils.mysql_async import async_processer
 import xlwt
 import os,zipfile
+import traceback
 
 
 async def save_db(dsid,dres):
@@ -524,7 +525,9 @@ async def db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_sc
             try:
               rs2 = await async_processer.query_dict_one_by_ds(sds, 'select count(0) as rec from `{}`.`{}`'.format(desc_schema, d['table_name']))
             except:
-              rs2 = { 'rec' :0 }
+              print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+              traceback.print_exc()
+              rs2 = { 'rec' :-1 }
             st = """insert into t_db_compare_data
                        (sour_dsid,dest_dsid,sour_schema,dest_schema,dest_table,sour_rows,dest_rows) 
                       values('{}','{}','{}','{}','{}','{}','{}')
@@ -539,8 +542,8 @@ async def db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_sc
                     (select db_desc from t_db_source where id=a.dest_dsid) as dest_desc,
                     dest_schema,
                     dest_table,
-                    dest_rows,
                     sour_rows,
+                    dest_rows,
                     case when dest_rows!=sour_rows then '<span style="color:red">×</span>' 
                     else '<span style="color:green">√</span>' end result
                 FROM t_db_compare_data a order by id"""
