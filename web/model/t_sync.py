@@ -75,9 +75,9 @@ async def query_sync_tab_real(sync_tag,sync_tab):
                     a.status
              FROM t_db_sync_tab_config a
             WHERE a.sync_tag='{}' 
-             and  instr(a.tab_name,'{}')>0
+             and  (instr(a.tab_name,'{}')>0 or instr(a.db_name,'{}')>0  or instr(a.sync_incr_col,'{}')>0 )
             order by 1
-              """.format(sync_tag,sync_tab)
+              """.format(sync_tag,sync_tab,sync_tab,sync_tab)
     print('query_sync_tab_real=',sql)
     return await async_processer.query_list(sql)
 
@@ -1315,11 +1315,11 @@ async def query_db_real_sync(p_sync_tag,p_max_id):
                 'value':[r[0],r[1]]
             })
 
-        sql = """SELECT max(binlogfile)  AS binlogfile,
-                        max(binlogpos)   AS binlogpos,
-                        max(c_binlogfile) AS c_binlogfile,
-                        max(c_binlogpos)  AS c_binlogpos
-                  FROM t_db_sync_real_log WHERE sync_tag='{}' 
+        sql = """SELECT binlogfile,
+                        binlogpos,
+                        c_binlogfile,
+                        c_binlogpos
+                  FROM t_db_sync_real_log WHERE sync_tag='{}'   ORDER BY create_date DESC LIMIT 1
               """.format(p_sync_tag)
         bin = await async_processer.query_dict_one(sql)
         return {  'max_id': mid, 'data': res,
@@ -1342,11 +1342,11 @@ async def query_db_real_sync(p_sync_tag,p_max_id):
                     'name': r[0],
                     'value': [r[0], r[1]]
                 })
-            sql = """SELECT max(binlogfile) AS binlogfile,
-                            max(binlogpos)  AS binlogpos,
-                            max(c_binlogfile) AS c_binlogfile,
-                            max(c_binlogpos)  AS c_binlogpos
-                      FROM t_db_sync_real_log WHERE sync_tag='{}'
+            sql = """SELECT binlogfile,
+                            binlogpos,
+                            c_binlogfile,
+                            c_binlogpos
+                      FROM t_db_sync_real_log WHERE sync_tag='{}'  ORDER BY create_date DESC LIMIT 1
                   """.format(p_sync_tag)
             bin = await async_processer.query_dict_one(sql)
             return {
@@ -1496,7 +1496,7 @@ def get_mssql_tables_list(db_ip, db_port, db_service, db_user, db_pass,proxy_ser
         'db_pass': db_pass,
     }
     url = 'http://{}/get_mssql_tables'.format(proxy_server)
-    res = requests.post(url, data=data)
+    res = requests.post(url, data=data,timeout=300)
     res = json.loads(res.text)
     return res
 

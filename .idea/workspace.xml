@@ -19,9 +19,27 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="main panal optimize">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="doris compare fix">
+      <change afterPath="$PROJECT_DIR$/sql/all/cre_proc.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sql/all/cre_tab.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sql/all/cre_view.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sql/all/init_data.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_db_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start.sh" beforeDir="false" afterPath="$PROJECT_DIR$/start.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start_env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/start_env.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start_schedule-yum.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/start_schedule.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/start_schedule_multi.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stop.sh" beforeDir="false" afterPath="$PROJECT_DIR$/stop.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/run_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_db_task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_timer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/schedule_multi.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_rollback.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_rollback.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_sync.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,26 +91,26 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/tools" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sql/all" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\templates\bbgl" />
-      <recent name="D:\work\dbops\templates\login" />
-      <recent name="D:\work\dbops\templates\main" />
-      <recent name="D:\work\dbops\templates\sys" />
-      <recent name="D:\work\dbops\templates\order" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\sql\all" />
       <recent name="D:\work\dbops\templates\tools" />
       <recent name="D:\work\dbops\templates\main" />
       <recent name="D:\work\dbops\static\plugins\clipboard" />
       <recent name="D:\work\dbops\templates\ds" />
-      <recent name="D:\work\dbops\templates\sync" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\web\task" />
+      <recent name="D:\work\dbops\templates\bbgl" />
+      <recent name="D:\work\dbops\templates\login" />
+      <recent name="D:\work\dbops\templates\main" />
+      <recent name="D:\work\dbops\templates\sys" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -147,29 +165,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="run_task" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/task" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/task/run_task.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="schedule" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="run_sql_timer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="dbops" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -189,7 +185,29 @@
           </list>
         </option>
       </PathMappingSettings>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/task/schedule.py" />
+      <option name="SCRIPT_NAME" value="D:\work\dbops\web\task\run_sql_timer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_task" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="dbops" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/task" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="D:\work\dbops\web\task\run_db_task.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -251,7 +269,7 @@
     </configuration>
     <configuration name="start_schedule.sh" type="ShConfigurationType" temporary="true">
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/start_schedule.sh" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/web/task/run_sql_timer.sh" />
       <option name="SCRIPT_OPTIONS" value="" />
       <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
       <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -266,12 +284,12 @@
       <item itemvalue="Python.mysql_async_process" />
       <item itemvalue="Python.run_task" />
       <item itemvalue="Python.t_user" />
-      <item itemvalue="Python.schedule" />
       <item itemvalue="Shell Script.start_schedule.sh" />
+      <item itemvalue="Python.run_sql_timer" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.schedule" />
+        <item itemvalue="Python.run_sql_timer" />
         <item itemvalue="Shell Script.start_schedule.sh" />
         <item itemvalue="Python.mysql_async_process" />
         <item itemvalue="Python.t_user" />
@@ -601,14 +619,12 @@
       <workItem from="1644368139293" duration="3937000" />
       <workItem from="1644452113048" duration="671000" />
       <workItem from="1644458825165" duration="9476000" />
-      <workItem from="1644540799989" duration="2937000" />
-    </task>
-    <task id="LOCAL-00102" summary="edit ds fix">
-      <created>1633922099356</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1633922099356</updated>
+      <workItem from="1644540799989" duration="4088000" />
+      <workItem from="1644559576938" duration="551000" />
+      <workItem from="1644563281635" duration="5116000" />
+      <workItem from="1644800428314" duration="1223000" />
+      <workItem from="1644805402643" duration="12000" />
+      <workItem from="1644887755501" duration="14116000" />
     </task>
     <task id="LOCAL-00103" summary="add monitor task">
       <created>1633922125967</created>
@@ -946,7 +962,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644482810828</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary="doris compare fix">
+      <created>1644548644562</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1644548644563</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -965,7 +988,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="sql query bug fix" />
     <MESSAGE value="datax doris sync update" />
     <MESSAGE value="add ck sync support" />
     <MESSAGE value="add forget password fix" />
@@ -990,9 +1012,14 @@
     <MESSAGE value="real sync graph" />
     <MESSAGE value="add gen dict tools" />
     <MESSAGE value="main panal optimize" />
-    <option name="LAST_COMMIT_MESSAGE" value="main panal optimize" />
+    <MESSAGE value="doris compare fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="doris compare fix" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="2965" y="256" key="#Deployment" timestamp="1644891900336">
+      <screen x="1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="2965" y="256" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644891900336" />
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1638178440799">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -1001,51 +1028,52 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1639101997069" />
-    <state width="1877" height="279" key="GridCell.Tab.0.bottom" timestamp="1644548470415">
+    <state width="1877" height="294" key="GridCell.Tab.0.bottom" timestamp="1644570280611">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324595" />
-    <state width="1877" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548470415" />
-    <state width="1877" height="180" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644486526117" />
-    <state width="1877" height="279" key="GridCell.Tab.0.center" timestamp="1644548470414">
+    <state width="1877" height="294" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644570280611" />
+    <state width="1877" height="358" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644567375957" />
+    <state width="1877" height="294" key="GridCell.Tab.0.center" timestamp="1644570280611">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324594" />
-    <state width="1877" height="279" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548470414" />
-    <state width="1877" height="180" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644486526117" />
-    <state width="1877" height="279" key="GridCell.Tab.0.left" timestamp="1644548470413">
+    <state width="1877" height="294" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644570280611" />
+    <state width="1877" height="358" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644567375957" />
+    <state width="1877" height="294" key="GridCell.Tab.0.left" timestamp="1644570280611">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324594" />
-    <state width="1877" height="279" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548470413" />
-    <state width="1877" height="180" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644486526117" />
-    <state width="1877" height="279" key="GridCell.Tab.0.right" timestamp="1644548470415">
+    <state width="1877" height="294" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644570280611" />
+    <state width="1877" height="358" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644567375957" />
+    <state width="1877" height="294" key="GridCell.Tab.0.right" timestamp="1644570280611">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324595" />
-    <state width="1877" height="279" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548470415" />
-    <state width="1877" height="180" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644486526117" />
-    <state x="490" y="246" key="SettingsEditor" timestamp="1642409444882">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="294" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644570280611" />
+    <state width="1877" height="358" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644567375957" />
+    <state x="2410" y="249" key="SettingsEditor" timestamp="1644565281397">
+      <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1642409444882" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1644482826862">
-      <screen x="1920" y="3" width="1920" height="1040" />
+    <state x="2410" y="249" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644565281397" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1644548657213">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969310496" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1643182819131" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548657213" />
     <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644482826862" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969282729" />
-    <state x="742" y="242" width="1178" height="798" key="find.popup" timestamp="1644548423132">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2336" y="193" width="1178" height="798" key="find.popup" timestamp="1644911473458">
+      <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="742" y="270" width="1178" height="584" key="find.popup/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641864466923" />
-    <state x="742" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548423132" />
-    <state x="2662" y="245" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1642128004516" />
+    <state x="742" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644550988341" />
+    <state x="2336" y="193" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644911473458" />
     <state x="2543" y="228" width="672" height="678" key="search.everywhere.popup" timestamp="1644376071730">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
@@ -1066,7 +1094,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1644548539302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1644567375942" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

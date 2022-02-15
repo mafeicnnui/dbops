@@ -8,6 +8,9 @@
 import pymysql
 import json
 
+from web.utils.mysql_async import reReplace
+
+
 def read_json(file):
     with open(file, 'r') as f:
          cfg = json.loads(f.read())
@@ -30,13 +33,14 @@ class mysqlManager:
                                   passwd=db['db_pass'],
                                   db=db['db_service'],
                                   charset=db['db_charset'],
-                                  autocommit=True)
+                                  autocommit=False)
         self.cursor = self.conn.cursor()
 
     def __enter__(self):
         return self.cursor
 
     def __exit__(self,exe_type,exe_val,exe_tb):
+        self.conn.commit()
         self.cursor.close()
         self.conn.close()
 
@@ -48,13 +52,14 @@ class mysqlDsManager:
                                   passwd=db['password'],
                                   db=db['service'],
                                   charset='utf8',
-                                  autocommit=True)
+                                  autocommit=False)
         self.cursor = self.conn.cursor()
 
     def __enter__(self):
         return self.cursor
 
     def __exit__(self,exe_type,exe_val,exe_tb):
+        self.conn.commit()
         self.cursor.close()
         self.conn.close()
 
@@ -66,7 +71,7 @@ class mysqlDictManager:
                                   passwd=db['db_pass'],
                                   db=db['db_service'],
                                   charset=db['db_charset'],
-                                  autocommit=True,
+                                  autocommit=False,
                                   cursorclass = pymysql.cursors.DictCursor)
         self.cursor = self.conn.cursor()
 
@@ -74,6 +79,7 @@ class mysqlDictManager:
         return self.cursor
 
     def __exit__(self,exe_type,exe_val,exe_tb):
+        self.conn.commit()
         self.cursor.close()
         self.conn.close()
 
@@ -88,6 +94,11 @@ class sync_processer:
     def exec_sql_by_ds(p_ds,p_sql):
         with mysqlDsManager(p_ds) as cur:
             cur.execute(p_sql)
+
+    def exec_sql_by_ds_multi(p_ds,p_sql):
+        with mysqlDsManager(p_ds) as cur:
+            for st in reReplace(p_sql):
+                cur.execute(st)
 
     def query_one(p_sql):
          with mysqlManager(db) as cur:

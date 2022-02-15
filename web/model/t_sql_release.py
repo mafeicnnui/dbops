@@ -408,7 +408,7 @@ async def query_audit_sql(id):
     res = {}
     st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid from t_sql_release a where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(st)
-    st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={}""".format(id)
+    st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(id)
     rs['rollback'] = await async_processer.query_dict_list(st)
     ds = await get_ds_by_dsid(rs['dbid'])
     ds['service'] = rs['db']
@@ -419,7 +419,7 @@ async def query_audit_sql(id):
 
 async def query_rollback(release_id):
     st = """select rollback_statement
-                FROM `t_sql_backup` WHERE release_id={} order by id """.format(release_id)
+                FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(release_id)
     rs = await async_processer.query_dict_list(st)
     return rs
 
@@ -448,8 +448,6 @@ async def exp_rollback(static_path,release_id):
     # 删除json文件
     os.system('rm -f {0}'.format(file_name))
     return rzip_file
-
-
 
 async def save_sql(p_dbid,p_sql,desc,logon_user):
     result = {}
@@ -591,9 +589,9 @@ async def upd_sql(p_sqlid,p_username,p_status,p_message,p_host):
         print('creater=',creator)
         creater_mail =  (await get_user_by_loginame(wkno['creator']))['email']
         print('creater_mail=', creater_mail)
-        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
-        otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
-        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+        auditor   = (await get_user_by_loginame(wkno['auditor']))['name']
+        otype     = (await get_dmmc_from_dm('13', wkno['type']))[0]
+        status    = (await get_dmmc_from_dm('41', wkno['status']))[0]
         v_content = get_html_contents()
         v_content = v_content.replace('$$TIME$$', nowTime)
         v_content = v_content.replace('$$DBINFO$$',p_ds['url'] + p_ds['service']
@@ -827,8 +825,8 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         else:
             p_host = p_host + ':81'
         v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,
-                        v_content)
+        send_mail_param(settings.get('send_server'), settings.get('sender'),
+                        settings.get('sendpass'), email,settings.get('CC'), v_title,v_content)
 
         return res
 
@@ -851,16 +849,17 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username):
 
         logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
         if check_statement_count(sql) == 1:
-            sync_processer.exec_sql_by_ds(p_ds, sql)
-        elif check_statement_count(sql) > 1:
-            for st in reReplace(sql):
-                sync_processer.exec_sql_by_ds(p_ds, st)
-        else:
-            pass
+           sync_processer.exec_sql_by_ds(p_ds, sql)
+
+        if check_statement_count(sql) > 1:
+            # for st in reReplace(sql):
+            #     sync_processer.exec_sql_by_ds(p_ds, st)
+           sync_processer.exec_sql_by_ds_multi(p_ds, sql)
 
         # get stop_position
         rs2 = sync_processer.query_one_by_ds(p_ds, 'show master status')
         stop_position=rs2[1]
+        sync_processer.exec_sql_by_ds(p_ds, 'UNLOCK TABLES')
         logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
         upd_run_status_sync(p_sql_id, p_username, 'after',None,binlog_file,start_position,stop_position)
 
@@ -888,7 +887,6 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username):
         send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,settings.get('CC'), v_title,v_content)
         res['code'] = '0'
         res['message'] = '工单:{}执行成功!'.format(wkno['message'])
-        #return json.dumps(res)
         return res
     except Exception as e:
         error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'

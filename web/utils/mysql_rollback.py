@@ -88,10 +88,11 @@ def gen_ddl_sql(p_ddl):
        return rsql
     return p_ddl
 
-def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
-
+def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
+    db = get_connection()
+    cr = db.cursor()
     if p_start_pos == p_end_pos :
-       return []
+       return
 
     MYSQL_SETTINGS = {
         "host": p_ds['ip'],
@@ -102,7 +103,7 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
     }
     logging.info("MYSQL_SETTINGS=",MYSQL_SETTINGS)
 
-    rollback_statments = []
+    #rollback_statments = []
     try:
         stream = BinLogStreamReader(connection_settings=MYSQL_SETTINGS,
                                     only_events=(QueryEvent, DeleteRowsEvent, UpdateRowsEvent, WriteRowsEvent),
@@ -118,7 +119,10 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
                 event = {"schema": bytes.decode(binlogevent.schema), "query": binlogevent.query.lower()}
                 if 'create' in event['query'] or 'drop' in event['query']  or 'alter' in event['query'] or 'truncate' in event['query']:
                     if event['schema'] == schema:
-                        rollback_statments.append(gen_ddl_sql(binlogevent.query.lower()+';'))
+                        #rollback_statments.append(gen_ddl_sql(binlogevent.query.lower()+';'))
+                        cr.execute(
+                            """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(
+                                p_sql_id, format_sql(gen_ddl_sql(binlogevent.query.lower()+';'))))
 
             if isinstance(binlogevent, DeleteRowsEvent) or \
                     isinstance(binlogevent, UpdateRowsEvent) or \
@@ -131,26 +135,30 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos):
                             event["action"] = "delete"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
-                            rollback_statments.append(rsql)
+                            #rollback_statments.append(rsql)
+                            cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
 
                         elif isinstance(binlogevent, UpdateRowsEvent):
                             event["action"] = "update"
                             event["after_values"] = row["after_values"]
                             event["before_values"] = row["before_values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
-                            rollback_statments.append(rsql)
+                            #rollback_statments.append(rsql)
+                            cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
 
                         elif isinstance(binlogevent, WriteRowsEvent):
                             event["action"] = "insert"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
-                            rollback_statments.append(rsql)
+                            #rollback_statments.append(rsql)
+                            cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
 
             if stream.log_pos + 31 == p_end_pos or stream.log_pos >=p_end_pos:
+                db.commit()
                 stream.close()
                 break
 
-        return rollback_statments[::-1]
+        #return rollback_statments[::-1]
 
     except Exception as e:
         traceback.print_exc()
@@ -196,7 +204,7 @@ def write_rollback_old(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
       traceback.print_exc()
       return None
 
-def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
+def write_rollback_old0215(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
     try:
         db = get_connection()
         cr = db.cursor()
@@ -208,7 +216,20 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
     except:
       logging.error('write_rollback error:',traceback.format_exc())
       traceback.print_exc()
-      return None
+
+def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
+    try:
+        db = get_connection()
+        cr = db.cursor()
+        cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
+        db.commit()
+        print('write rollback log for sqlid:{},please wait!'.format(p_sql_id))
+        get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id)
+        print('write rollback log for sqlid:{} end!'.format(p_sql_id))
+    except:
+      logging.error('write_rollback error:',traceback.format_exc())
+      traceback.print_exc()
+
 
 def delete_rollback(p_sql_id):
     try:
