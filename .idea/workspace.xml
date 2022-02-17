@@ -20,8 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="issue fix">
+      <change afterPath="$PROJECT_DIR$/static/assets/js/logon.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/page-login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,9 +43,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="JavaScript File" />
         <option value="HTML File" />
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -608,14 +609,7 @@
       <workItem from="1644805402643" duration="12000" />
       <workItem from="1644887755501" duration="15759000" />
       <workItem from="1644972585196" duration="24852000" />
-      <workItem from="1645057470796" duration="9534000" />
-    </task>
-    <task id="LOCAL-00105" summary="sql check fix">
-      <created>1634140947048</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1634140947048</updated>
+      <workItem from="1645057470796" duration="11315000" />
     </task>
     <task id="LOCAL-00106" summary="sql check fix">
       <created>1634141459794</created>
@@ -953,7 +947,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645068553794</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="issue fix">
+      <created>1645078487020</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1645078487020</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1046,12 +1047,12 @@
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1642409444882" />
     <state x="2410" y="249" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644565281397" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1645068557139">
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1645078489988">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969310496" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548657213" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645068557139" />
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645078489988" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
