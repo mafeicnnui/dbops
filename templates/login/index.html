@@ -852,7 +852,7 @@
                 } else if (request.status==503) {
                     swal("用户已下线!", "", "error")
                 } else if (request.status==504) {
-                    swal("用户被强踢!", "", "error")
+                    swal("用户通过其它客户端登陆，本会话已注销!", "", "error")
                 } else {
                     swal("系统不可用,请联系管理员!", "", "error")
                 }
