@@ -6,12 +6,13 @@
 # @Software: PyCharm
 
 from web.services.logon  import index,main,platform,easylife,logon,logout,logon_check,get_tree,get_time,get_verify,error
-from web.services.logon  import forget_password,forget_password_check_user,forget_password_check_auth,forget_password_check_pass,update_token
+from web.services.logon  import forget_password,forget_password_check_user,forget_password_check_auth,forget_password_check_pass,update_token,logout_page
 
 # 功能：主页面
 logon = [
         (r"/login",                          logon),
         (r"/logout",                         logout),
+        (r"/logout_page",                    logout_page),
         (r"/error",                          error),
         (r"/",                               index),
         (r"/main",                           main),
@@ -25,7 +26,7 @@ logon = [
         (r"/forget_password/check_user",     forget_password_check_user),
         (r"/forget_password/check_auth",     forget_password_check_auth),
         (r"/forget_password/check_pass",     forget_password_check_pass),
-        (r"/refresh_token", update_token),
+        (r"/refresh_token",                  update_token),
 
 
 ]

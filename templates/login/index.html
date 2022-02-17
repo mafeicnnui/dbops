@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <link rel="shortcut icon" href="{{static_url('assets/images/favicon.ico')}}">
-        <title>数据库自动化运维平台</title>
+        <title>EaseBase1.0</title>
         <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('assets/css/core.css')}}" rel="stylesheet" type="text/css" />
         <link href="{{static_url('assets/css/components.css')}}" rel="stylesheet" type="text/css" />
@@ -538,7 +538,6 @@
             var timer2;
             var timer3;
             var timer4;
-
             var tabStatus = new Array;
 
             $.fn.serializeObject = function()
@@ -567,10 +566,26 @@
                });
              }
 
-             function logout() {
-                window.localStorage['token'] = ''
-                window.location.href = '/logout'
-             }
+            function logout() {
+                  $.ajax({
+                          url: "/logout",
+                          type: "post",
+                          datatype: "json",
+                          async:false,
+                          data:{
+                             'token': window.localStorage.getItem("token")
+                          },
+                          success: function (dataSet) {
+                              if (dataSet.code == 0 ) {
+                                   window.localStorage['token'] = ''
+                                   window.location.href = '/logout_page'
+                              } else {
+                                   swal("注销失败", "", "warning")
+                              }
+
+                         }
+                  })
+            }
 
             function set_user_image(){
                  $('#account-img-id').attr('src',$('#image_path').val()+'/'+$('#image_file').val())
@@ -635,7 +650,8 @@
                                '/get/sys/stats/idx',
                                '/backup_case',
                                '/get/sync',
-                               '/refresh_token'
+                               '/refresh_token',
+                               '/get/db/real/sync'
                 ]
                 if (whilte_list.indexOf(url)>=0) {
                      return true
@@ -820,6 +836,7 @@
             }).ajaxStop(function() {
                 end_Loader('main-container-div')
             }).ajaxError(function( event, request,options ) {
+                console.log('request.status>',request.status)
                 if (request.status==401){
                     swal("用户认证已过期!", "", "error")
                 } else if (request.status==402) {
@@ -832,6 +849,10 @@
                     swal("用户认证算法错误!", "", "error")
                 } else if (request.status==502) {
                     swal("用户无权访问此功能!("+options.url+")", "", "error")
+                } else if (request.status==503) {
+                    swal("用户已下线!", "", "error")
+                } else if (request.status==504) {
+                    swal("用户被强踢!", "", "error")
                 } else {
                     swal("系统不可用,请联系管理员!", "", "error")
                 }

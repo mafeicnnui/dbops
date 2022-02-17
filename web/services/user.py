@@ -8,7 +8,7 @@
 import json
 import uuid
 from web.model.t_role  import get_roles
-from web.model.t_user  import save_user,get_user_by_userid,upd_user,del_user
+from web.model.t_user import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session
 from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_proj_privs
 from web.model.t_dmmx  import get_dmm_from_dm
 from web.model.t_ds    import query_project
@@ -169,3 +169,23 @@ class projectprivs_save(base_handler.TokenHandler):
         self.write({"code": result['code'], "message": result['message']})
 
 
+class sessionquery(base_handler.TokenHandler):
+    def get(self):
+        self.render("./user/sess_query.html")
+
+
+class session_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname = self.get_argument("qname")
+        v_list = await query_session(qname)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class session_kill(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        session_id = self.get_argument("session_id")
+        v_list = await kill_session(session_id)
+        v_json = json.dumps(v_list)
+        self.write(v_json)

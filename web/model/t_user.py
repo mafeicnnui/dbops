@@ -11,6 +11,7 @@ from web.utils.common      import current_rq,aes_encrypt,aes_decrypt,aes_decrypt
 from web.model.t_user_role import del_user_roles,save_user_role,upd_user_role
 from web.utils.common      import now,exception_info
 from web.model.t_dmmx      import get_dmmc_from_dm,get_dmmc_from_dm_sync
+from web.utils.jwt_auth import kill_session_log
 from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync  import sync_processer
 
@@ -63,7 +64,6 @@ async def logon_user_check(login_name,password,verify_code,verify_img):
         result['message'] = '验证码不正确！'
         return result
 
-
     if await check_user_exist(login_name)==0:
         result['code'] = '-1'
         result['message'] = '用户名不存在！'
@@ -85,6 +85,19 @@ async def logon_user_check(login_name,password,verify_code,verify_img):
         result['code'] = '-1'
         result['message'] = '该用户已过期，请联系管理员！'
         return result
+
+    if (await async_processer.query_one("""select count(0) 
+                                           from t_session 
+                                           where username='{}' 
+                                             and TIMESTAMPDIFF(SECOND,last_update_time,NOW())<60 
+                                             order by last_update_time desc limit 1""".format(login_name)))[0]>0:
+        sec = (await async_processer.query_one("""select 60-TIMESTAMPDIFF(SECOND,last_update_time,NOW())  
+                                                 from t_session 
+                                                 where username='{}' order by last_update_time desc limit 1""".format(login_name)))[0]
+        result['code'] = '-1'
+        result['message'] = '用户已登陆,请{}秒后重试!'.format(sec)
+        return result
+
 
     result['code'] = '0'
     result['message'] ='验证成功！'
@@ -629,3 +642,34 @@ async def get_user_roles(p_userid):
               and id  in(select role_id from t_user_role where user_id='{0}')    
         """.format(p_userid)
     return await async_processer.query_list(sql)
+
+
+async def query_session(p_name):
+    v_where = ''
+    if p_name != "":
+       v_where =  " where binary username like '%{0}%'  ".format(p_name)
+
+    sql = """select 
+                a.session_id,
+                a.userid,
+                a.username,
+                a.name,
+                date_format(a.logon_time,'%Y-%m-%d')  as  logon_time,
+                a.login_ip,
+                case a.state when '1' then '活动' when '2' then '未活动' when '3' then '已杀死' when '4' then '已注销'
+                end  state,
+                TIMESTAMPDIFF(SECOND,logon_time,NOW()) as online_time,
+                date_format(a.last_update_time,'%Y-%m-%d %H:%i:%s') as last_update_time
+             from t_session a  {}
+             order by session_id""".format(v_where)
+    v_list = await async_processer.query_list(sql)
+    return v_list
+
+
+async def kill_session(p_session_id):
+     try:
+       await kill_session_log(p_session_id)
+       return {'code':0,'message':'success'}
+     except:
+       traceback.print_exc()
+       return {'code': -1, 'message': 'failure'}

@@ -13,70 +13,74 @@ from web.model.t_user      import upd_password,get_user_by_userid,get_user_by_lo
 from web.model.t_xtqx      import get_tree_by_userid
 from web.model.t_dmmx      import get_dmm_from_dm
 from web.utils.common      import send_mail_param,get_sys_settings,get_rand_str,current_time,china_rq,china_week,welcome,china_time,create_captcha
-from web.utils.jwt_auth    import create_token,refresh_token
+from web.utils.jwt_auth import create_token, refresh_token, insert_session_log, update_session_log, delete_session_log, \
+    check_sess_exists
 from web.utils             import base_handler
-
+from tornado.web import HTTPError
 class logon(tornado.web.RequestHandler):
      def get(self):
         self.render("./login/page-login.html")
 
-
 class logon_check(base_handler.BaseHandler):
     async def post(self):
-        username = self.get_argument("username")
-        password = self.get_argument("password")
+        username    = self.get_argument("username")
+        password    = self.get_argument("password")
         verify_code = self.get_argument("verify_code")
-        verify_img = str(self.get_secure_cookie("verify_img"), encoding="utf-8")
-        result = await logon_user_check(username, password, verify_code, verify_img)
+        verify_img  = str(self.get_secure_cookie("verify_img"), encoding="utf-8")
+        #remote_ip   = self.request.remote_ip
+        remote_ip   = self.request.headers.get("X-Real-Ip", "")
+        result      = await logon_user_check(username, password, verify_code, verify_img)
         if result['code'] == '0':
-            d_user = await get_user_by_loginame(username)
-            token = create_token({"username": username, "userid": d_user['userid']})
-            self.write({"code": result['code'], "message": result['message'], "token": token})
+           d_user = await get_user_by_loginame(username)
+           token = await create_token({"username": username, "userid": d_user['userid'],"name":d_user['name'],"remote_ip":remote_ip})
+           self.write({"code": result['code'], "message": result['message'], "token": token})
         else:
-            self.write({"code": result['code'], "message": result['message']})
+           self.write({"code": result['code'], "message": result['message']})
 
 
 class update_token(base_handler.TokenHandler):
     async def post(self):
         print('update_token=>url=',self.request.uri)
-        token=refresh_token(self.get_argument("token"))
+        token= await refresh_token(self.get_argument("token"),self.session_id)
         self.token = token
         self.write({"token": token})
 
 class index(base_handler.TokenHandlerLogin):
     async def get(self):
         if self.token_passed:
-            d_user      = await get_user_by_loginame(self.username)
-            genders     = await get_dmm_from_dm('04')
-            depts       = await get_dmm_from_dm('01')
-            proj_groups = await get_dmm_from_dm('18')
-            self.render("./login/index.html",
-                        china_rq=china_rq(),
-                        china_week=china_week(),
-                        china_time=china_time(),
-                        welcome=welcome(d_user['username']),
-                        userid=d_user['userid'],
-                        loginname=d_user['login_name'],
-                        wkno=d_user['wkno'],
-                        username=d_user['username'],
-                        password=d_user['password'],
-                        gender=d_user['gender'],
-                        email=d_user['email'],
-                        phone=d_user['phone'],
-                        proj_group=d_user['project_group'],
-                        dept=d_user['dept'],
-                        expire_date=d_user['expire_date'],
-                        status=d_user['status'],
-                        file_path=d_user['file_path'],
-                        file_name=d_user['file_name'],
-                        user_image=d_user['file_path'] + '/' + d_user['file_name'],
-                        user_roles=await get_user_roles(self.userid),
-                        genders=genders,
-                        depts=depts,
-                        d_user=d_user,
-                        proj_groups=proj_groups,
-                       )
-
+            if (await check_sess_exists(self.session_id)) == 0:
+                self.render('./login/page-404.html')
+            else:
+                d_user      = await get_user_by_loginame(self.username)
+                genders     = await get_dmm_from_dm('04')
+                depts       = await get_dmm_from_dm('01')
+                proj_groups = await get_dmm_from_dm('18')
+                self.render("./login/index.html",
+                            china_rq     =  china_rq(),
+                            china_week   =  china_week(),
+                            china_time   =  china_time(),
+                            welcome      =  welcome(d_user['username']),
+                            userid       =  d_user['userid'],
+                            loginname    =  d_user['login_name'],
+                            wkno         =  d_user['wkno'],
+                            username     =  d_user['username'],
+                            password     =  d_user['password'],
+                            gender       =  d_user['gender'],
+                            email        =  d_user['email'],
+                            phone        =  d_user['phone'],
+                            proj_group   =  d_user['project_group'],
+                            dept         =  d_user['dept'],
+                            expire_date  =  d_user['expire_date'],
+                            status       =  d_user['status'],
+                            file_path    =  d_user['file_path'],
+                            file_name    =  d_user['file_name'],
+                            user_image   =  d_user['file_path'] + '/' + d_user['file_name'],
+                            user_roles   =  await get_user_roles(self.userid),
+                            genders      =  genders,
+                            depts        =  depts,
+                            d_user       =  d_user,
+                            proj_groups  = proj_groups,
+                           )
         else:
             self.redirect('/login')
 
@@ -136,9 +140,17 @@ class get_time(base_handler.TokenHandler):
     def post(self):
         self.write(china_time())
 
-class logout(base_handler.BaseHandler):
+class logout_page(base_handler.BaseHandler):
     def get(self):
         self.render("./login/page-logout.html")
+
+class logout(base_handler.TokenHandler):
+    async def post(self):
+        try:
+           await delete_session_log(self.session_id)
+           self.write({"code": 0, "message": 'success'})
+        except:
+           self.write({"code": -1, "message": 'failure'})
 
 class error(base_handler.TokenHandler):
     def get(self):

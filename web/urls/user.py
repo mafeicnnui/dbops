@@ -5,7 +5,9 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.user  import userquery,useradd,useradd_save,useradd_save_uploadImage,userchange,useredit,useredit_save,useredit_del,user_query,projectquery,project_query,projectprivs_save
+from web.services.user import userquery, useradd, useradd_save, useradd_save_uploadImage, userchange, useredit, \
+        useredit_save, useredit_del, user_query, projectquery, project_query, projectprivs_save, sessionquery, \
+        session_query,session_kill
 
 # 功能：用户管理API
 user = [
@@ -21,4 +23,7 @@ user = [
         (r"/project/query", projectquery),
         (r"/project/_query", project_query),
         (r"/project/privs/save", projectprivs_save),
+        (r"/user/session", sessionquery),
+        (r"/user/_session", session_query),
+        (r"/user/_session/kill", session_kill),
 ]

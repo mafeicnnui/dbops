@@ -10,6 +10,8 @@ import tornado.web
 from web.utils import jwt_auth
 from tornado.web import HTTPError
 from web.model.t_xtqx  import check_url
+from web.utils.jwt_auth import get_sessoin_state, delete_session_log, check_sess_exists
+
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -34,15 +36,23 @@ class TokenHandler(BaseHandler):
         if not result["status"]:
            raise HTTPError(result['code'], json.dumps(result, ensure_ascii=False))
 
-        userid = result['data']['userid']
+        userid   = result['data']['userid']
         username = result['data']['username']
         flag = await check_url(userid, self.request.uri.split('?')[0])
         if not flag:
            raise HTTPError(502, "用户`{}`无权访问(`{}`)!".format(username, self.request.uri))
 
+        state = await get_sessoin_state(result['data']['session_id'])
+        if state == '3' :
+           raise HTTPError(503, "用户`{}`已下线!".format(username))
+
+        if (await check_sess_exists(result['data']['session_id'])) == 0:
+           raise HTTPError(504, "用户`{}`被强踢!".format(username))
+
         self.token_passed = True
         self.username = result['data']['username']
         self.userid = result['data']['userid']
+        self.session_id = result['data']['session_id']
         self.token = token
 
 
@@ -60,12 +70,14 @@ class TokenHandlerLogin(BaseHandler):
                self.token_passed = False
                self.username = ''
                self.userid = ''
+               self.session_id = ''
             else:
                self.token_passed = True
                self.username = result['data']['username']
                self.userid = result['data']['userid']
-
+               self.session_id = result['data']['session_id']
         except:
             self.token_passed = False
             self.username = ''
             self.userid = ''
+            self.session_id = ''
