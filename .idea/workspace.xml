@@ -20,18 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="issue fix">
-      <change afterPath="$PROJECT_DIR$/static/assets/images/animat-search-color.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/user/sess_query.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/page-404.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-404.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/logon.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/logon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/logon.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/logon.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/base_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/base_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/jwt_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/jwt_auth.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +73,7 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/assets/images" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sql/all" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -91,9 +81,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\sql\all" />
       <recent name="D:\work\dbops\static\assets\images" />
       <recent name="D:\work\dbops\templates\user" />
-      <recent name="D:\work\dbops\sql\all" />
       <recent name="D:\work\dbops\templates\tools" />
       <recent name="D:\work\dbops\templates\main" />
     </key>
@@ -618,14 +608,7 @@
       <workItem from="1644805402643" duration="12000" />
       <workItem from="1644887755501" duration="15759000" />
       <workItem from="1644972585196" duration="24852000" />
-      <workItem from="1645057470796" duration="7491000" />
-    </task>
-    <task id="LOCAL-00104" summary="add bbgl">
-      <created>1634140935655</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1634140935656</updated>
+      <workItem from="1645057470796" duration="9534000" />
     </task>
     <task id="LOCAL-00105" summary="sql check fix">
       <created>1634140947048</created>
@@ -963,7 +946,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644912066364</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary="issue fix">
+      <created>1645068553793</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1645068553794</updated>
+    </task>
+    <option name="localTasksCounter" value="154" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1056,12 +1046,12 @@
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1642409444882" />
     <state x="2410" y="249" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644565281397" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1644912073484">
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1645068557139">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969310496" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548657213" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644912073484" />
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645068557139" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
