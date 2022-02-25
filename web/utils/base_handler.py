@@ -42,11 +42,11 @@ class TokenHandler(BaseHandler):
         if not flag:
            raise HTTPError(502, "用户`{}`无权访问(`{}`)!".format(username, self.request.uri))
 
-        state = await get_sessoin_state(result['data']['session_id'])
+        state = await jwt_auth.get_sessoin_state(result['data']['session_id'])
         if state == '3' :
            raise HTTPError(503, "用户`{}`已下线!".format(username))
 
-        if (await check_sess_exists(result['data']['session_id'])) == 0:
+        if (await jwt_auth.check_sess_exists(result['data']['session_id'])) == 0:
            raise HTTPError(504, "用户`{}`被强踢!".format(username))
 
         self.token_passed = True

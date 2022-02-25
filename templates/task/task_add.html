@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增任务</title>
+</head>
+<body>
+   <p></p>
+   <form class="form-horizontal" role="form">
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>任务标识</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="task_tag"  type="text" class="form-control"  placeholder="请输入任务标识">
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>任务描述</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述">
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+             <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>部署服务器</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="task_server" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_task_server %}
+                             <option value={{var[0]}} >{{var[1]}}</option>
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+             </div>
+       </div>
+       <div class="row">
+          <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label">PYTHON3目录</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3目录">
+                    </div>
+               </div>
+           </div>
+       </div>
+
+       <div class="row">
+          <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>脚本目录</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="script_base"  type="text" class="form-control" placeholder="请输入脚本主目录">
+                    </div>
+               </div>
+           </div>
+       </div>
+       <div class="row">
+          <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>脚本名称</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_name"  type="text" class="form-control" placeholder="请输入备份脚本名">
+                </div>
+           </div>
+           </div>
+       </div>
+       <div class="row">
+          <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
+                    </div>
+               </div>
+           </div>
+       </div>
+
+       <div class="row">
+          <div class="col-md-6">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                </div>
+           </div>
+           </div>
+       </div>
+       <div class="row">
+          <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="status" name="status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                </div>
+           </div>
+       </div>
+       <br>
+       <div class="form-group m-b-0">
+            <div class="col-sm-offset-3 col-sm-3">
+              <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+            </div>
+       </div>
+   </form>
+
+    <script>
+        $('#task_server').change(function() {
+            if ($('#task_server').val()!=''){
+                var options=$('#task_server option:selected');
+                $("#task_desc").val('任务['+$(options[0]).text()+']');
+                $("#task_tag").val('task_'+$(options[0]).val());
+            } else {
+                $("#task_desc").val('');
+                $("#task_tag").val('');
+            }
+        });
+
+        $(document).ready(function() {
+           set_selected();
+
+          $("#add").click(function () {
+            $.ajax({
+                url: "/task/add/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    task_tag         : $('#task_tag').val(),
+                    task_desc        : $('#task_desc').val(),
+                    task_server      : $('#task_server').val(),
+                    python3_home     : $('#python3_home').val(),
+                    script_base      : $('#script_base').val(),
+                    script_name      : $('#script_name').val(),
+                    run_time         : $('#run_time').val(),
+                    api_server       : $('#api_server').val(),
+                    status           : $('#status').val(),
+                },
+                success: function (dataSet) {
+                    if (dataSet.code==0) {
+                       swal("保存成功", "", "success")
+                    } else {
+                       swal(dataSet.message, "", "error")
+                    }
+                },
+             });
+          });
+
+        });
+
+   </script>
+</body>
+
+</html>

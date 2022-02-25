@@ -153,13 +153,11 @@ async def kickout_session_log(p_username,p_session_id):
     print('>>>>3', st)
     await async_processer.exec_sql(st)
 
-
 async def get_sessoin_state(p_session_id):
       return  (await async_processer.query_dict_one("""select state from t_session where session_id={}
                                                        union all
                                                        select state from t_session_history where session_id={} 
                                                     """.format(p_session_id,p_session_id)))['state']
-
 
 async def check_sess_exists(p_session_id):
     return (await async_processer.query_one("select count(0) "

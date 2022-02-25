@@ -30,7 +30,7 @@ from web.urls.slow     import slow
 from web.urls.minio    import minio
 from web.urls.bbtj     import bbtj
 from web.urls.bbgl     import bbgl
-
+from web.urls.task     import task
 
 urls = []
 urls.extend(logon)
@@ -58,3 +58,4 @@ urls.extend(slow)
 urls.extend(minio)
 urls.extend(bbtj)
 urls.extend(bbgl)
+urls.extend(task)

@@ -20,9 +20,9 @@ class minioquery(base_handler.TokenHandler):
 class minio_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        tagname     = self.get_argument("tagname")
-        v_list      = await query_minio(tagname)
-        v_json      = json.dumps(v_list)
+        tagname  = self.get_argument("tagname")
+        v_list   = await query_minio(tagname)
+        v_json   = json.dumps(v_list)
         self.write(v_json)
 
 class minio_case(base_handler.TokenHandler):

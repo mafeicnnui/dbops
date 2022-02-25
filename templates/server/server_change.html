@@ -14,6 +14,7 @@
        <div class="col-md-3 input-group">
             <span class="input-group-addon"><i class="fa fa-user"></i></span>
             <input type="text" id="servername"  class="form-control" placeholder="请输入地址、端口、项目编码">
+            <input type="hidden" id="webssh_url"   value="{{webssh_url}}">
             <span class="input-group-btn">
                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
             </span>
@@ -25,6 +26,7 @@
       <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
            <input  id='serverupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
            <input  id='serverdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
+           <input  id='serverconsole' type='button' class="btn waves-effect waves-light btn-primary" value="控制台"/>
       </div>
     </div>
 
@@ -38,6 +40,7 @@
         $("#username").bind("input propertychange",function(){
            $('#serverupd').attr("disabled",true);
            $('#serverdel').attr("disabled",true);
+           $('#serverconsole').attr("disabled",true);
            $("#query_btn").click();
         });
 
@@ -49,9 +52,12 @@
            if ( rec==1 ){
               $('#serverupd').attr("disabled",false);
               $('#serverdel').attr("disabled",false);
+              $('#serverconsole').attr("disabled",false);
            } else {
               $('#serverupd').attr("disabled",true);
-              $('#serverdel').attr("disabled",true); }
+              $('#serverdel').attr("disabled",true);
+              $('#serverconsole').attr("disabled",true);
+           }
         }
 
         $("#query_btn").click(function() {
@@ -72,7 +78,7 @@
                           scrollX    :true,
                           scrollCollapse: true,
                           paging:     true,
-                          iDisplayLength: 15,
+                          iDisplayLength: 14,
                           data: dataSet,
                           columns: [
                             { "title": "标识符" ,"visible":true},
@@ -99,6 +105,7 @@
                          });
                       $('#serverupd').attr("disabled",true);
                       $('#serverdel').attr("disabled",true);
+                      $('#serverconsole').attr("disabled",true);
                   },
              });
             });
@@ -164,6 +171,16 @@
                     swal("已取消", "服务器["+servername+"]未删除！", "error");
                 }
             });
+        });
+
+        $('#serverconsole').on('click', function() {
+             var serverid='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  serverid=row[0].innerHTML;
+                  console.log("serverid=",serverid)
+             });
+             window.open($('#webssh_url').val()+"/?server_id="+serverid+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
         });
 
         $(document).ready(function() {

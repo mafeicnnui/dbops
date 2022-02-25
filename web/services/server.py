@@ -9,6 +9,7 @@ import json
 from web.model.t_server  import get_server_by_serverid,query_server,save_server,upd_server,del_server,check_server_valid
 from web.model.t_dmmx    import get_dmm_from_dm
 from web.utils           import base_handler
+from web.utils.common import get_sys_settings
 
 
 class serverquery(base_handler.TokenHandler):
@@ -47,8 +48,8 @@ class serveradd_save(base_handler.TokenHandler):
         self.write({"code": result['code'], "message": result['message']})
 
 class serverchange(base_handler.TokenHandler):
-    def get(self):
-        self.render("./server/server_change.html")
+    async def get(self):
+        self.render("./server/server_change.html",webssh_url=(await get_sys_settings())['WEBSSH_URL'])
 
 class serveredit(base_handler.TokenHandler):
     async def get(self):
@@ -114,3 +115,4 @@ class server_by_serverid(base_handler.TokenHandler):
         v_list   = await get_server_by_serverid(id)
         v_json   = json.dumps(v_list)
         self.write(v_json)
+

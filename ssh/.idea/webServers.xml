@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="4fbf1496-34dc-4437-ad1f-5be41f343179" name="hopson@10.2.39.18:65508_webssh">
+        <fileTransfer rootFolder="/home/hopson/apps/usr/webserver" accessType="SFTP" host="10.2.39.18" port="65508" sshConfigId="03afa40c-a6c2-4da9-93f7-ddda0254468d" sshConfig="hopson@10.2.39.18:65508 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

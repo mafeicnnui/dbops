@@ -20,8 +20,110 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="issue fix">
+      <change afterPath="$PROJECT_DIR$/ssh/.coveragerc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.github/FUNDING.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/$CACHE_FILE$" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/sshConfigs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/webServers.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.idea/webssh.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/MANIFEST.in" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/README.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/preview/login.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/preview/terminal.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/run.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/setup.cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/cert.crt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/cert.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/fonts/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/fonts/fake-font" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/known_hosts_example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/known_hosts_example2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/known_hosts_example3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_ed25519.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_ed25519_password.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_known_hosts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_new_dsa.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_new_rsa_password.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_rsa.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/test_rsa_password.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/data/user_rsa_key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/sshserver.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/test_app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/test_handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/test_main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/test_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/test_settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/test_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/tests/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/_version.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/jwt_auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/mysql_sync.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/components.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/core.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/fonts/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/fullscreen.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/icons.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/icons/icomoon/fonts/icomoon.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/icons/icomoon/fonts/icomoon.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/icons/icomoon/fonts/icomoon.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/icons/icomoon/fonts/icomoon.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/icons/icomoon/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/css/xterm.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/img/animat-search-color.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/img/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/main_bak.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/popper.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/xterm-addon-fit.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/static/js/xterm.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/templates/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/templates/index_bak.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/templates/page-404.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssh/webssh/worker.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/task/task_add.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/task/task_change.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/task/task_edit.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/task/task_log_query.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/model/t_task.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/services/task.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/urls/task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dbops.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbops.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/minio.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/minio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/base_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/base_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/jwt_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/jwt_auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +175,7 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sql/all" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -81,11 +183,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\sql\all" />
+      <recent name="D:\work\dbops" />
+      <recent name="D:\work\dbops\web\utils" />
+      <recent name="D:\work\dbops\templates\server" />
+      <recent name="D:\work\dbops\static\assets\js" />
       <recent name="D:\work\dbops\static\assets\images" />
-      <recent name="D:\work\dbops\templates\user" />
-      <recent name="D:\work\dbops\templates\tools" />
-      <recent name="D:\work\dbops\templates\main" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\web\task" />
@@ -205,9 +307,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="sftp://hopson@10.2.39.17:65508/home/hopson/apps/usr/webserver/dba/python3.6.0/bin/python3" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -609,14 +711,17 @@
       <workItem from="1644887755501" duration="15759000" />
       <workItem from="1644972585196" duration="24852000" />
       <workItem from="1645057470796" duration="13108000" />
-      <workItem from="1645090030629" duration="106000" />
-    </task>
-    <task id="LOCAL-00107" summary="add bbgl module">
-      <created>1634549029440</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1634549029441</updated>
+      <workItem from="1645090030629" duration="417000" />
+      <workItem from="1645146538563" duration="10129000" />
+      <workItem from="1645164986107" duration="680000" />
+      <workItem from="1645405440087" duration="600000" />
+      <workItem from="1645430793364" duration="97000" />
+      <workItem from="1645433394845" duration="5916000" />
+      <workItem from="1645495041880" duration="2968000" />
+      <workItem from="1645500407876" duration="4774000" />
+      <workItem from="1645683621054" duration="1048000" />
+      <workItem from="1645702183131" duration="2494000" />
+      <workItem from="1645747725197" duration="9064000" />
     </task>
     <task id="LOCAL-00108" summary="add bbgl module">
       <created>1634626721317</created>
@@ -954,7 +1059,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645080644641</updated>
     </task>
-    <option name="localTasksCounter" value="156" />
+    <task id="LOCAL-00156" summary="issue fix">
+      <created>1645090443669</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1645090443669</updated>
+    </task>
+    <option name="localTasksCounter" value="157" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1001,68 +1113,89 @@
     <option name="LAST_COMMIT_MESSAGE" value="issue fix" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2965" y="256" key="#Deployment" timestamp="1644891900336">
+    <state x="859" y="275" width="816" height="662" key="#Deployment" timestamp="1645751945857">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="859" y="275" width="816" height="662" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645751945857" />
+    <state x="2081" y="271" width="1091" height="683" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645703293097" />
+    <state x="2525" y="212" key="#Options" timestamp="1645165066633">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
-    <state x="2965" y="256" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644891900336" />
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1638178440799">
+    <state x="2525" y="212" key="#Options/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645165066633" />
+    <state x="2300" y="221" key="#SSH_Configurations" timestamp="1645703239982">
+      <screen x="1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="380" y="218" key="#SSH_Configurations/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645702330839" />
+    <state x="2300" y="221" key="#SSH_Configurations/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645703239982" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1645751711199">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638178440799" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645751711199" />
+    <state x="2334" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645703144364" />
+    <state x="2576" y="110" key="#server" timestamp="1645703218744">
+      <screen x="1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="2576" y="110" key="#server/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645703218744" />
     <state x="739" y="261" key="FileChooserDialogImpl" timestamp="1639101997069">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1639101997069" />
-    <state width="1877" height="2" key="GridCell.Tab.0.bottom" timestamp="1645084846027">
+    <state width="1877" height="2" key="GridCell.Tab.0.bottom" timestamp="1645759371898">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324595" />
     <state width="1877" height="295" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645084846027" />
+    <state width="1877" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645759371898" />
     <state width="1877" height="107" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state width="1877" height="2" key="GridCell.Tab.0.center" timestamp="1645084846027">
+    <state width="1877" height="2" key="GridCell.Tab.0.center" timestamp="1645759371898">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324594" />
     <state width="1877" height="295" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645084846027" />
+    <state width="1877" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645759371898" />
     <state width="1877" height="107" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state width="1877" height="2" key="GridCell.Tab.0.left" timestamp="1645084846027">
+    <state width="1877" height="2" key="GridCell.Tab.0.left" timestamp="1645759371898">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324594" />
     <state width="1877" height="295" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645084846027" />
+    <state width="1877" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645759371898" />
     <state width="1877" height="107" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state width="1877" height="2" key="GridCell.Tab.0.right" timestamp="1645084846027">
+    <state width="1877" height="2" key="GridCell.Tab.0.right" timestamp="1645759371898">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324595" />
     <state width="1877" height="295" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645084846027" />
+    <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645759371898" />
     <state width="1877" height="107" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state x="2410" y="249" key="SettingsEditor" timestamp="1644565281397">
+    <state x="2410" y="249" key="SettingsEditor" timestamp="1645759012695">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
-    <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1642409444882" />
-    <state x="2410" y="249" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644565281397" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1645080647496">
+    <state x="849" y="217" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645752019437" />
+    <state x="2410" y="249" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645759012695" />
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1645090444687">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969310496" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548657213" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645080647496" />
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645090444687" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969282729" />
-    <state x="2336" y="193" width="1178" height="798" key="find.popup" timestamp="1644912086977">
+    <state x="2336" y="193" width="1178" height="798" key="find.popup" timestamp="1645501183991">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="742" y="270" width="1178" height="584" key="find.popup/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641864466923" />
     <state x="742" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644550988341" />
-    <state x="2336" y="193" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1644912086977" />
+    <state x="2336" y="193" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645501183991" />
+    <state x="2684" y="428" key="publish.login" timestamp="1645753706157">
+      <screen x="1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="764" y="425" key="publish.login/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645751941236" />
+    <state x="2684" y="428" key="publish.login/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645753706157" />
     <state x="2543" y="228" width="672" height="678" key="search.everywhere.popup" timestamp="1644376071730">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
@@ -1083,7 +1216,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1645065742365" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1645759371662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>
