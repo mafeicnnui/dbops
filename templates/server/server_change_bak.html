@@ -23,6 +23,11 @@
       <div id="div-tab">
            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
       </div>
+      <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+           <input  id='serverupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
+           <input  id='serverdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
+           <input  id='serverconsole' type='button' class="btn waves-effect waves-light btn-primary" value="控制台"/>
+      </div>
     </div>
 
     <script>
@@ -33,8 +38,27 @@
          });
 
         $("#username").bind("input propertychange",function(){
+           $('#serverupd').attr("disabled",true);
+           $('#serverdel').attr("disabled",true);
+           $('#serverconsole').attr("disabled",true);
            $("#query_btn").click();
         });
+
+        function isSelect() {
+           var rec=0;
+           $("#example tbody tr td input:checked").each( function() {
+              rec=rec+1;
+           });
+           if ( rec==1 ){
+              $('#serverupd').attr("disabled",false);
+              $('#serverdel').attr("disabled",false);
+              $('#serverconsole').attr("disabled",false);
+           } else {
+              $('#serverupd').attr("disabled",true);
+              $('#serverdel').attr("disabled",true);
+              $('#serverconsole').attr("disabled",true);
+           }
+        }
 
         $("#query_btn").click(function() {
               $.ajax({
@@ -57,31 +81,28 @@
                           iDisplayLength: 14,
                           data: dataSet,
                           columns: [
-                            { "title": "标识" },
+                            { "title": "标识符" ,"visible":true},
                             { "title": "类型" },
                             { "title": "描述" },
                             { "title": "项目编码" },
                             { "title": "项目名称" },
                             { "title": "地址" },
                             { "title": "端口" },
+                            { "title": "用户" },
+                            { "title": "系统" },
+                            { "title": "CPU"},
+                            { "title": "内存"},
                             { "title": "状态" },
-                            { "title": "操作" },
+                            {
+                                "title":"操作",
+                                "width": "25px",
+                                "render": function(data,type,row){
+                                     console.log('row[0]=',row[0],row[1])
+                                     return '<input type="radio" name="userid" onclick="isSelect();" >'; }
+                            },
                           ],
-                          columnDefs: [
-                          {
-                            targets: 8,
-                            render: function(data, type, row, meta){
-                                var alt   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更"    onclick="alt_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var del   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除"    onclick="del_svr(\''+escape(row)+'\');"/>' +'&nbsp;'
-                                var det   = '<input class="btn btn-xs btn-primary"  type="button"  value="详情"    onclick="det_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var log   = '<input class="btn btn-xs btn-primary"  type="button"  value="日志"    onclick="log_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var con   = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台"  onclick="con_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                return '&nbsp;'+alt+del+det+log+con
-                            }
-                         }
-                      ],
                           "language": get_languages()
-                       });
+                         });
                       $('#serverupd').attr("disabled",true);
                       $('#serverdel').attr("disabled",true);
                       $('#serverconsole').attr("disabled",true);
@@ -89,24 +110,38 @@
              });
             });
 
-        function alt_svr(p_svr_id) {
-            $.ajax({
+        $('#serverupd').on('click', function() {
+             var serverid='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  serverid=row[0].innerHTML;
+                  console.log("serverid=",serverid)
+             });
+
+             $.ajax({
                 url: "/server/edit",
                 type: "get",
                 datatype: "html",
                 data: {
-                    serverid:p_svr_id
+                    serverid:serverid
                 },
                 success: function () {
-                   $('#main-container-div').load("/server/edit?serverid="+p_svr_id);
+                   $('#main-container-div').load("/server/edit?serverid="+serverid);
                 },
              })
-        }
 
-        function del_svr(p_row) {
-             serverid=unescape(p_row).split(',')[0]
-             servername=unescape(p_row).split(',')[2]
-             swal({
+        });
+
+        $('#serverdel').on('click', function() {
+             var serverid='';
+             var servername='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  serverid=row[0].innerHTML;
+                  servername=row[2].innerHTML;
+                  console.log("serverid=",serverid,"servername=",servername)
+             });
+            swal({
                 title: "确认要删除吗?",
                 text: "服务器["+servername+"]不能使用了！",
                 type: "warning",
@@ -136,39 +171,17 @@
                     swal("已取消", "服务器["+servername+"]未删除！", "error");
                 }
             });
-        }
+        });
 
-        function det_svr(p_svr_id) {
-            $.ajax({
-                url: "/server/edit",
-                type: "get",
-                datatype: "html",
-                data: {
-                    serverid:p_svr_id
-                },
-                success: function () {
-                   $('#main-container-div').load("/server/edit?serverid="+p_svr_id);
-                },
-             })
-        }
-
-        function log_svr(p_svr_id) {
-            $.ajax({
-                url: "/server/edit",
-                type: "get",
-                datatype: "html",
-                data: {
-                    serverid:serverid
-                },
-                success: function () {
-                   $('#main-container-div').load("/server/edit?serverid="+p_svr_id);
-                },
-             })
-        }
-
-        function con_svr(p_svr_id) {
-             window.open($('#webssh_url').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
-        }
+        $('#serverconsole').on('click', function() {
+             var serverid='';
+             $("#example tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  serverid=row[0].innerHTML;
+                  console.log("serverid=",serverid)
+             });
+             window.open($('#webssh_url').val()+"/?server_id="+serverid+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+        });
 
         $(document).ready(function() {
             $("#query_btn").click();
