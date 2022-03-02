@@ -616,6 +616,23 @@ def push_monitor_task(p_tag,p_api):
     else:
         return jres
 
+def push_alert_task(p_tag,p_api):
+    url  = 'http://{}/push_script_remote_alert'.format(p_api)
+    res  = requests.post(url, data={'tag': p_tag})
+    jres = res.json()
+    if jres['code'] == 200:
+        v = ''
+        for c in jres['msg']:
+            if c.count(p_tag) > 0:
+                v = v + "<span class='warning'>" + c + "</span>"
+            else:
+                v = v + c
+            v = v + '<br>'
+        jres['msg'] = v
+        return jres
+    else:
+        return jres
+
 def run_monitor_task(p_tag,p_api):
     url = 'http://{}/run_script_remote_archive'.format(p_api)
     res = requests.post(url, data={'tag': p_tag})
@@ -681,3 +698,85 @@ def check_index(p_index):
     result['code'] = '0'
     result['message'] = '验证通过'
     return result
+
+
+async def query_alert(p_task_tag):
+    v_where=' '
+    if p_task_tag != '':
+       v_where = " and ( a.task_tag like '%{0}%' or a.comments like '%{1}%' or b.server_ip like '%{2}%')".format(p_task_tag,p_task_tag,p_task_tag)
+    sql = """SELECT  
+                 task_tag,comments,
+                 CONCAT(b.server_ip,':',b.server_port) AS sync_server,             
+                 templete_id,run_time,api_server,
+                 CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
+            FROM t_alert_task a,t_server b
+            where a.server_id=b.id {0}""".format(v_where)
+    v_list = []
+    for r in await async_processer.query_list(sql):
+        v_temp = list(r)
+        v_temp.insert(4,await get_templetes_by_templete_id(v_temp[3]))
+        v_list.append(v_temp)
+    return v_list
+
+
+async def save_alert_task(p_task):
+    val=check_task(p_task)
+    if val['code']=='-1':
+        return val
+    try:
+        sql ="""insert into t_alert_task (task_tag,comments,server_id,templete_id,run_time,script_path,script_file,python3_home,api_server,status)
+                      values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')
+             """.format(p_task['add_alert_task_tag'],
+                        p_task['add_alert_task_desc'],
+                        p_task['add_alert_server'],
+                        p_task['add_alert_task_templete_name'],
+                        p_task['add_alert_task_run_time'],
+                        format_sql(p_task['add_alert_task_script_base']),
+                        format_sql(p_task['add_alert_task_script_name']),
+                        format_sql(p_task['add_alert_task_python3_home']),
+                        p_task['add_alert_task_api_server'],
+                        p_task['add_alert_task_status'])
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '保存成功!'}
+    except:
+        traceback.print_exc()
+        return {'code': '-1', 'message': '保存失败!'}
+
+async def upd_alert_task(p_task):
+    val = check_task(p_task)
+    if val['code']=='-1':
+        return val
+    try:
+        sql ="""update t_alert_task
+                  set  run_time='{}',
+                       script_path='{}',
+                       script_file='{}',
+                       python3_home='{}',
+                       api_server='{}',
+                       status='{}'
+                 where task_tag='{}'
+             """.format(p_task['upd_alert_task_run_time'],
+                        format_sql(p_task['upd_alert_task_script_base']),
+                        format_sql(p_task['upd_alert_task_script_name']),
+                        format_sql(p_task['upd_alert_task_python3_home']),
+                        p_task['upd_alert_task_api_server'],
+                        p_task['upd_alert_task_status'],
+                        p_task['upd_alert_task_tag'])
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '保存成功!'}
+    except:
+        traceback.print_exc()
+        return {'code': '-1', 'message': '保存失败!'}
+
+async def get_alert_task_by_tag(p_tag):
+    sql = """SELECT  * FROM t_alert_task where task_tag='{0}'""".format(p_tag)
+    return (await async_processer.query_dict_one(sql))
+
+async def del_alert(p_task_tag):
+    try:
+        sql="delete from t_alert_task  where task_tag='{0}'".format(p_task_tag)
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '删除成功!'}
+    except :
+        traceback.print_exc()
+        return {'code': '-1', 'message': '删除失败!'}

@@ -1,0 +1,676 @@
+<html>
+<head>
+    <title>告警任务</title>
+    <style>
+        .modal-lg-order {
+            width:40%;
+            height:45%;
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+         #sys_templete_name,#task_templete_name {
+            height: 60px;
+            max-height: 60px;
+        }
+        .modal-lg-detail {
+            width:65%;
+            height:80%;
+        }
+        #ace-editor {
+            color: #59aed5;
+            overflow:auto;
+            height: 400px;
+        }
+        .warning {
+            color: #d54c15;
+        }
+
+    </style>
+</head>
+
+<body>
+    <p></p>
+    <!--查询条件 -->
+    <div class="row">
+        <div class="col-md-12">
+           <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+               </div>
+            </div>
+             <div class="col-md-1">
+               <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+               </div>
+            </div>
+
+        </div>
+    </div>
+    <p></p>
+    <!--指标情况 -->
+    <div class="row">
+         <div class="col-md-12">
+              <div id="div-tab">
+                   <table id="monitor_task_table" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+              </div>
+         </div>
+    </div>
+     <!--功能按钮 -->
+    <div class="row">
+          <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
+               <input  id='task_add_win'   type='button' class="btn waves-effect waves-light btn-primary"  value="新增"/>
+               <input  id='task_upd_win'   type='button' class="btn waves-effect waves-light btn-primary"  value="变更"/>
+               <input  id='task_del_btn'   type='button' class="btn waves-effect waves-light btn-primary"  value="删除"/>
+               <input  id='task_push_btn'  type='button' class="btn waves-effect waves-light btn-primary"  value="推送"/>
+         </div>
+    </div>
+
+    <!--新增任务窗口 -->
+    <div id="con-close-modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">新增任务</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="nav nav-pills m-b-30 pull-left">
+                            <li class="active">
+                                <a href="#add_alert_task" data-toggle="tab" aria-expanded="true">告警任务</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content br-n pn">
+                            <div id="add_alert_task-task" class="tab-pane active">
+                                 <form class="form-horizontal" role="form">
+                                   <div class="form-group">
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>任务标识</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_tag"  type="text" readonly class="form-control" placeholder="请输入任务标识">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>任务描述</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_desc"  type="text" readonly class="form-control"  placeholder="请输入任务描述">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>告警服务器</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select class="form-control select" id="add_alert_server" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in alert_servers %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_alert_task_templete_name">*</span>任务模板</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select  class="form-control select" id="add_alert_task_templete_name" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in templete_names %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>运行时间</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>PYTHON目录</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3目录">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>脚本目录</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_script_base"  type="text" class="form-control" placeholder="请输入脚本目录">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>脚本名称</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_script_name"  type="text" class="form-control" placeholder="请输入脚本名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span>*</span>API服务器</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_alert_task_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div >
+                                            <label class="col-md-2 control-label"><span>*</span>任务状态</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select class="form-control select" id="add_alert_task_status">
+                                                 <option value="1">启用</option>
+                                                 <option value="0">禁用</option>
+                                            </select>
+                                       </div>
+                                    </div>
+                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="task_save_btn" >保存</button>
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+    <!--任务变更窗口 -->
+    <div id="con-close-modal-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">任务变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                  <form class="form-horizontal" role="form">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                          <div class="panel-body">
+                              <ul class="nav nav-pills m-b-30 pull-left">
+                                <li id='upd_alert_task_tab' class="active">
+                                    <a href="#upd_alert_task" data-toggle="tab" aria-expanded="true">告警任务</a>
+                                </li>
+                             </ul>
+                             <div class="tab-content br-n pn">
+                                <div id="upd_alert_task" class="tab-pane active">
+                                     <form class="form-horizontal" role="form">
+                                       <div class="form-group">
+                                       </div>
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>任务标识</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_tag"  type="text" readonly class="form-control" placeholder="请输入任务标识">
+                                            </div>
+                                       </div>
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>任务描述</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_desc"  type="text" readonly class="form-control"  placeholder="请输入任务描述">
+                                            </div>
+                                       </div>
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>告警服务器</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <select class="form-control select" id="upd_alert_server" >
+                                                    <option value='' selected = "selected">......</option>
+                                                    {% for var in alert_servers %}
+                                                     <option value={{var[0]}} >{{var[1]}}</option>
+                                                    {% end %}
+                                                </select>
+                                           </div>
+                                       </div>
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>任务模板</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <select  class="form-control select" id="upd_alert_task_templete_name" >
+                                                    <option value='' selected = "selected">......</option>
+                                                    {% for var in templete_names %}
+                                                     <option value={{var[0]}} >{{var[1]}}</option>
+                                                    {% end %}
+                                                </select>
+                                            </div>
+                                       </div>
+                                       <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>运行时间</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>PYTHON目录</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3目录">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>脚本目录</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_script_base"  type="text" class="form-control" placeholder="请输入脚本目录">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>脚本名称</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_script_name"  type="text" class="form-control" placeholder="请输入脚本名称">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="col-md-2 control-label"><span>*</span>API服务器</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input id="upd_alert_task_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                                            </div>
+                                       </div>
+                                       <div class="form-group">
+                                            <div >
+                                                <label class="col-md-2 control-label"><span>*</span>任务状态</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <select class="form-control select" id="upd_alert_task_status">
+                                                     <option value="1">启用</option>
+                                                     <option value="0">禁用</option>
+                                                </select>
+                                           </div>
+                                        </div>
+                                     </form>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="task_upd_btn" >变更</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+    <input type='hidden' id='upd_task_tag_hidden'>
+
+</body>
+
+<script>
+
+      function isSelect(row) {
+          $('#upd_task_tag_hidden').val(row)
+          $('#task_upd_win').attr("disabled",false);
+          $('#task_del_btn').attr("disabled",false);
+          $('#task_push_btn').attr("disabled",false);
+      }
+
+     $(document).ready(function() {
+
+        function query_task(){
+           $.ajax({
+                  url: "/monitor/alert/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      task_tag : $("#name").val(),
+                  },
+                  success: function (dataSet) {
+                      $('#monitor_task_table').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :false,
+                          scrollX    :false,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 12,
+                          data: dataSet,
+                          columns: [
+                             { "title": "任务标识" },
+                             { "title": "任务描述" },
+                             { "title": "采集服务器" },
+                             { "title": "任务模板ID","visible":false},
+                             { "title": "任务模板" },
+                             { "title": "运行时间" },
+                             { "title": "接口服务" },
+                             { "title": "任务状态" },
+                             {
+                                  "title": "选择",
+                                  "width": "25px",
+                                  "render": function (data, type, row) {
+                                      return '<input type="radio"  onclick=isSelect("'+row[0]+'")>'
+                                  }
+                              },
+                           ],
+                          "language": get_languages()
+                         });
+                      $('#task_upd_win').attr("disabled",true);
+                      $('#task_del_btn').attr("disabled",true);
+                      $('#task_clone_btn').attr("disabled",true);
+                      $('#task_push_btn').attr("disabled",true);
+                   }
+             })
+        }
+
+        function set_alert_title(){
+            if($('#add_alert_server').val()!='' ){
+                var options=$('#add_alert_server option:selected');
+                $("#add_alert_task_tag").val('alert_task_server_'+$(options[0]).val());
+                $("#add_alert_task_desc").val('告警任务['+$(options[0]).text()+']');
+            } else {
+                $("#add_alert_task_tag").val('');
+                $("#add_alert_task_desc").val('');
+            }
+        }
+
+        $('#add_alert_server').change(function() {
+           set_alert_title()
+        });
+
+        $('#add_alert_server').change(function() {
+            if ($('#add_alert_server').val()!=''){
+                var options=$('#add_alert_server option:selected');
+                $("#add_alert_task_tag").val('alert_task_'+$(options[0]).val());
+                $("#add_alert_task_desc").val('告警任务['+$(options[0]).text()+']');
+            } else {
+                $("#add_alert_task_tag").val('');
+                $("#add_alert_task_desc").val('');
+            }
+        });
+
+        $('#upd_alert_server').change(function() {
+            if ($('#upd_alert_server').val()!=''){
+                var options=$('#upd_alert_server option:selected');
+                $("#upd_alert_task_tag").val($("#add_alert_server").val()+'_'+$(options[0]).val());
+                $("#upd_alter_task_desc").val('告警任务['+$(options[0]).text()+']');
+            } else {
+                $("#upd_alert_task_tag").val('');
+                $("#upd_alert_task_desc").val('');
+            }
+        });
+
+        $("#add_alert_task_templete_name").change(function () {
+            if ($('#add_alert_server').val()!=''){
+                var options=$('#add_alert_server option:selected');
+                var options2=$('#add_alert_task_templete_name option:selected');
+                $("#add_alert_task_tag").val('alert_task_'+$(options[0]).val()+'_'+$(options2[0]).val());
+                $("#add_alert_task_desc").val('告警任务['+$(options[0]).text()+'-'+$(options2[0]).text()+']');
+            } else {
+                $("#add_alert_task_tag").val('');
+                $("#add_alert_task_desc").val('');
+            }
+        });
+
+        $("#upd_alert_task_templete_name").change(function () {
+            if ($('#upd_alert_server').val()!=''){
+                var options=$('#upd_alert_server option:selected');
+                var options2=$('#upd_alert_task_templete_name option:selected');
+                $("#upd_alert_task_tag").val('alert_task_'+$(options[0]).val()+'_'+$(options2[0]).val());
+                $("#upd_alert_task_desc").val('告警任务['+$(options[0]).text()+'-'+$(options2[0]).text()+']');
+            } else {
+                $("#upd_alert_task_tag").val('');
+                $("#upd_alert_task_desc").val('');
+            }
+         });
+
+        $('#task_add_win').click(function(){
+            $('#add_alert_task_tag').val('')
+            $('#add_alert_task_desc').val('')
+            $('#add_alert_server').val('')
+            $('#add_alert_task_templete_name').val('')
+            $('#add_alert_task_run_time').val('')
+            $('#add_alert_task_python3_home').val('')
+            $('#add_alert_task_script_base').val('')
+            $('#add_alert_task_script_name').val('')
+            $('#add_alert_task_api_server').val('')
+            $('#add_alert_task_status').val('1')
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal-add').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+        })
+
+        $('#task_upd_win').click(function(){
+            var task_tag = $('#upd_task_tag_hidden').val()
+            $.ajax({
+                  url: "/get/alert/task",
+                  type: "post",
+                  data:{
+                      task_tag : task_tag,
+                  },
+                  datatype: "json",
+                  async:false,
+                  success: function (dataSet) {
+                      $('#upd_alert_task_tag').val(dataSet['task_tag'])
+                      $('#upd_alert_task_desc').val(dataSet['comments'])
+                      $('#upd_alert_server').val(dataSet['server_id'])
+                      $('#upd_alert_task_db_server').val(dataSet['db_id'])
+                      $('#upd_alert_task_templete_name').val(dataSet['templete_id'])
+                      $('#upd_alert_task_run_time').val(dataSet['run_time'])
+                      $('#upd_alert_task_python3_home').val(dataSet['python3_home'])
+                      $('#upd_alert_task_script_base').val(dataSet['script_path'])
+                      $('#upd_alert_task_script_name').val(dataSet['script_file'])
+                      $('#upd_alert_task_api_server').val(dataSet['api_server'])
+                      $('#upd_alert_task_status').val(dataSet['status'])
+                  }
+            });
+
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal-upd').modal({
+                   keyboard: false,
+                   backdrop:false
+            });
+        })
+
+        $('#task_save_btn').click(function() {
+            $.ajax({
+                url: "/monitor/alert/add/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    add_alert_task_tag           : $('#add_alert_task_tag').val(),
+                    add_alert_task_desc          : $('#add_alert_task_desc').val(),
+                    add_alert_server             : $('#add_alert_server').val(),
+                    add_alert_task_db_server     : $('#add_alert_task_db_server').val(),
+                    add_alert_task_templete_name : $('#add_alert_task_templete_name').val(),
+                    add_alert_task_run_time      : $('#add_alert_task_run_time').val(),
+                    add_alert_task_python3_home  : $('#add_alert_task_python3_home').val(),
+                    add_alert_task_script_base   : $('#add_alert_task_script_base').val(),
+                    add_alert_task_script_name   : $('#add_alert_task_script_name').val(),
+                    add_alert_task_api_server    : $('#add_alert_task_api_server').val(),
+                    add_alert_task_status        : $('#add_alert_task_status').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
+                        query_task()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                },
+            })
+        });
+
+        $('#task_upd_btn').click(function(){
+            $.ajax({
+                url: "/monitor/alert/edit/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    upd_alert_task_tag           : $('#upd_alert_task_tag').val(),
+                    upd_alert_task_desc          : $('#upd_alert_task_desc').val(),
+                    upd_alert_server             : $('#upd_alert_server').val(),
+                    upd_alert_task_templete_name : $('#upd_alert_task_templete_name').val(),
+                    upd_alert_task_run_time      : $('#upd_alert_task_run_time').val(),
+                    upd_alert_task_python3_home  : $('#upd_alert_task_python3_home').val(),
+                    upd_alert_task_script_base   : $('#upd_alert_task_script_base').val(),
+                    upd_alert_task_script_name   : $('#upd_alert_task_script_name').val(),
+                    upd_alert_task_api_server    : $('#upd_alert_task_api_server').val(),
+                    upd_alert_task_status        : $('#upd_alert_task_status').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("更新成功", "", "success")
+                        query_task()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                },
+            })
+        })
+
+        $('#task_del_btn').click(function(){
+             var task_tag ='';
+             var task_desc='';
+             $("#monitor_task_table tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  task_tag=row[0].innerHTML;
+                  task_desc=row[1].innerHTML;
+             });
+
+            swal({
+                    title: "确认要删除吗?",
+                    text: "指标["+task_desc+"]将被删除！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "是, 删除!",
+                    cancelButtonText:  "否, 取消!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                   }, function (isConfirm) {
+                       if (isConfirm) {
+                             $.ajax({
+                                    url: "/monitor/alert/edit/del",
+                                    type: "post",
+                                    datatype: "json",
+                                    data:{task_tag: task_tag},
+                                    success: function (dataSet) {
+                                        if (dataSet.code=='0') {
+                                             swal("已删除!", "指标["+task_desc+"]已删除!", "success");
+                                             query_task()
+                                        } else {
+                                             swal("已取消!", "指标["+task_desc+"]"+dataSet.message+"!", "error");
+                                        }
+                                    }
+                                });
+
+                      } else {
+                          swal("已取消", "问题单[" + task_desc + "]已取消删除！", "error");
+                      }
+              })
+        })
+
+        $("#task_push_btn").click(function() {
+              var v_tag='';
+              var v_desc='';
+              $("#monitor_task_table tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  v_tag  = row[0].innerHTML;
+                  v_desc = row[1].innerHTML.replace(/&gt;/g,'>');
+                  v_api  = row[5].innerHTML;
+                  console.log("v_tag=",v_tag,"v_api=",v_api)
+                  $.ajax({
+                          url: "/monitor/alert/push",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              tag: v_tag,
+                              api: v_api
+                          },
+                          beforeSend: function () {
+                              swal({
+                                    title: "正在推送中...",
+                                    text: "任务["+v_desc+"]正在推送中...",
+                                    type: "info",
+                                    showConfirmButton: false
+                               });
+                          },
+                          success: function (dataSet) {
+                              if (dataSet['code']== 200) {
+                                  swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
+                                  $('#ace-editor').html(dataSet['msg'])
+                                  $('.modal').on('show.bs.modal', centerModals);
+                                  $(window).on('resize', centerModals);
+                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+                                  $("#query_btn").click();
+                              } else {
+                                  swal("推送失败!", "任务["+v_desc+"]推送失败("+dataSet['msg']+")!", "error");
+                              }
+                              $('#task_upd_win').attr("disabled",true);
+                              $('#task_clone_win').attr("disabled",true);
+                              $('#task_del_btn').attr("disabled",true);
+                              $('#task_push_btn').attr("disabled",true);
+                          },
+                  });
+              });
+
+        });
+
+        $("#query_btn").click(function() {
+             query_task()
+        });
+
+        $("#query_btn").click()
+
+        set_selected()
+
+       $("#name").bind("input propertychange",function(){
+          query_task()
+       });
+    });
+
+
+</script>
+
+</html>

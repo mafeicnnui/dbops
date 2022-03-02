@@ -7,6 +7,8 @@
     <link href="static/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/xterm.min.css" rel="stylesheet" type="text/css"/>
     <link href="static/css/fullscreen.min.css" rel="stylesheet" type="text/css"/>
+    <link href="static/css/sweet-alert.css" rel="stylesheet" type="text/css">
+
     <style>
       .row {
         margin-top: 15px;
@@ -96,10 +98,15 @@
     <script src="static/js/jquery.min.js"></script>
     <script src="static/js/popper.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/sweet-alert.min.js"></script>
     <script src="static/js/xterm.min.js"></script>
     <script src="static/js/xterm-addon-fit.min.js"></script>
     <script src="static/js/main.js"></script>
     <script>
+         function show_msg(msg){
+             swal(msg, "", "warning")
+         }
+
          $(document).ready(function() {
               //$('.form-container').show();
               $('#ssh').click()

@@ -116,15 +116,16 @@ class Worker(object):
             logging.debug('commands:{}'.format(self.commands))
             #check token
             result = jwt_auth.parse_payload(self.token)
+            print('result=',result)
             if not result["status"]:
-               self.close(reason='The token authentication failed,chan close!')
+               self.close(reason='用户认证失败!')
 
             state = jwt_auth.get_sessoin_state(result['data']['session_id'])
             if state == '3':
-               self.close(reason='The user:{} been offline!'.format(result['data']['username']))
+               self.close(reason='用户`{}`已离线!'.format(result['data']['username']))
 
             if (jwt_auth.check_sess_exists(result['data']['session_id'])) == 0:
-                self.close(reason='The user:{} been logout!'.format(result['data']['username']))
+                self.close(reason='用户`{}`已注销!'.format(result['data']['username']))
 
 
         try:

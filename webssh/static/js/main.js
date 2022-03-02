@@ -316,7 +316,7 @@ jQuery(function($){
 
   function log_status(text, to_populate) {
     console.log('log_status>>>>',text);
-    status.html(text.split('\n').join('<br/>'));
+    //status.html(text.split('\n').join('<br/>'));
 
     if (to_populate && validated_form_data) {
       populate_form(validated_form_data);
@@ -550,7 +550,8 @@ jQuery(function($){
       state = DISCONNECTED;
       default_title = 'WebSSH';
       title_element.text = default_title;
-      window.close()
+      show_msg(e.reason)
+      setInterval("window.close();",3000);
     };
 
     $(window).resize(function(){

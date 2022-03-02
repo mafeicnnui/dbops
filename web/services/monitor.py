@@ -7,7 +7,9 @@
 
 import json
 import tornado.web
-from   web.model.t_monitor   import query_monitor_index,save_index,upd_index,del_index,query_monitor_log_analyze,query_monitor_templete_type
+from web.model.t_monitor import query_monitor_index, save_index, upd_index, del_index, query_monitor_log_analyze, \
+    query_monitor_templete_type, query_alert, save_alert_task, get_alert_task_by_tag, upd_alert_task, del_alert, \
+    push_alert_task
 from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get_monitor_indexes_by_type,get_monitor_task_by_tag,query_monitor_sys
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
@@ -371,5 +373,81 @@ class get_monitor_task(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_tag  = self.get_argument("task_tag")
         v_list = await get_monitor_task_by_tag(v_tag)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+
+'''告警管理'''
+class monitoralertquery(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./monitor/monitor_alert.html",
+                    alert_servers       = await get_gather_server(),
+                    templete_names       = await get_templete_names(),
+                    db_monitor_templates = await get_db_moitor_templates(),
+                    gather_tasks         = await get_gather_tasks(),
+                    monitor_servers      = await get_gather_server()
+                    )
+
+class monitoralert_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        task_tag     = self.get_argument("task_tag")
+        v_list       = await query_alert(task_tag)
+        v_json       = json.dumps(v_list)
+        self.write(v_json)
+
+class monitoralertadd_save(base_handler.TokenHandler):
+    async def post(self):
+        d_task = {}
+        d_task['add_alert_task_tag']           = self.get_argument("add_alert_task_tag")
+        d_task['add_alert_task_desc']          = self.get_argument("add_alert_task_desc")
+        d_task['add_alert_server']             = self.get_argument("add_alert_server")
+        d_task['add_alert_task_templete_name'] = self.get_argument("add_alert_task_templete_name")
+        d_task['add_alert_task_run_time']      = self.get_argument("add_alert_task_run_time")
+        d_task['add_alert_task_python3_home']  = self.get_argument("add_alert_task_python3_home")
+        d_task['add_alert_task_script_base']   = self.get_argument("add_alert_task_script_base")
+        d_task['add_alert_task_script_name']   = self.get_argument("add_alert_task_script_name")
+        d_task['add_alert_task_api_server']    = self.get_argument("add_alert_task_api_server")
+        d_task['add_alert_task_status']        = self.get_argument("add_alert_task_status")
+        result = await save_alert_task(d_task)
+        self.write({"code": result['code'], "message": result['message']})
+
+class monitoralertupd_save(base_handler.TokenHandler):
+    async def post(self):
+        d_task = {}
+        d_task['upd_alert_task_tag']           = self.get_argument("upd_alert_task_tag")
+        d_task['upd_alert_task_desc']          = self.get_argument("upd_alert_task_desc")
+        d_task['upd_alert_server']             = self.get_argument("upd_alert_server")
+        d_task['upd_alert_task_templete_name'] = self.get_argument("upd_alert_task_templete_name")
+        d_task['upd_alert_task_run_time']      = self.get_argument("upd_alert_task_run_time")
+        d_task['upd_alert_task_python3_home']  = self.get_argument("upd_alert_task_python3_home")
+        d_task['upd_alert_task_script_base']   = self.get_argument("upd_alert_task_script_base")
+        d_task['upd_alert_task_script_name']   = self.get_argument("upd_alert_task_script_name")
+        d_task['upd_alert_task_api_server']    = self.get_argument("upd_alert_task_api_server")
+        d_task['upd_alert_task_status']        = self.get_argument("upd_alert_task_status")
+        result = await upd_alert_task(d_task)
+        self.write({"code": result['code'], "message": result['message']})
+
+class get_alert_task(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_tag  = self.get_argument("task_tag")
+        v_list = await get_alert_task_by_tag(v_tag)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class monitoralertedit_del(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        task_tag  = self.get_argument("task_tag")
+        result    = await del_alert(task_tag)
+        self.write({"code": result['code'], "message": result['message']})
+
+class monitoralert_push(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        tag    = self.get_argument("tag")
+        api    = self.get_argument("api")
+        v_list = push_alert_task(tag, api)
         v_json = json.dumps(v_list)
         self.write(v_json)

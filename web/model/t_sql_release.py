@@ -86,9 +86,9 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username):
                      b.db_desc,
                      a.db,
                      (SELECT NAME FROM t_user d WHERE d.login_name=a.creator) creator,
-                     DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
+                     DATE_FORMAT(a.creation_date,'%Y-%m-%d %H:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
-                     DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date   
+                     DATE_FORMAT(a.audit_date,'%Y-%m-%d %H:%i:%s')   audit_date   
             FROM t_sql_release a,t_db_source b,t_dmmx c
             WHERE a.dbid=b.id
               AND c.dm='13'
@@ -134,9 +134,9 @@ async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
                      b.db_desc,
                      a.db,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
-                     DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
+                     DATE_FORMAT(a.creation_date,'%Y-%m-%d %H:%i:%s')  creation_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
-                     DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
+                     DATE_FORMAT(a.audit_date,'%Y-%m-%d %H:%i:%s')   audit_date,
                      IFNULL(error,'')  as error   
             FROM t_sql_release a,t_db_source b,t_dmmx c
             WHERE a.dbid=b.id

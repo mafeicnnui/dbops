@@ -37,3 +37,12 @@ then
 else
    echo run_sql_timer already running...
 fi
+
+
+if [ `ps -ef |grep webssh | grep -v grep | wc -l` == '0' ]
+then
+  echo "Starting webssh Server...success"
+  ${PYTHON3_HOME}/bin/python3 -u ${WORKDIR}/webssh/main.py &>/dev/null &
+else
+  echo webssh already running...
+fi

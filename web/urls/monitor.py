@@ -5,7 +5,10 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.monitor      import monitorindexquery,monitorindex_query,monitorindexadd_save,monitorindexedit_save,monitorindexedit_del,monitortaskupd_save_gather,monitortaskupd_save_monitor
+from web.services.monitor import monitorindexquery, monitorindex_query, monitorindexadd_save, monitorindexedit_save, \
+        monitorindexedit_del, monitortaskupd_save_gather, monitortaskupd_save_monitor, monitoralertquery, \
+        monitoralert_query, monitoralertadd_save, monitoralertupd_save, get_alert_task, monitoralertedit_del, \
+        monitoralert_push
 from web.services.monitor      import monitortempletequery,monitortemplete_query,monitortempleteadd_save,monitortempleteedit_save,monitortempleteedit_del,monitor_sys_indexes,monitor_templete_indexes
 from web.services.monitor      import monitortaskquery,monitortask_query,monitortaskadd_save_gather,monitortaskadd_save_monitor,monitortaskedit_del,monitortask_push,monitortask_run,monitortask_stop
 from web.services.monitor      import monitorgraphquery,monitorgraph_query,get_monitor_templete_type,get_monitor_db,get_monitor_index,get_monitor_task,get_monitor_view,get_monitor_view_sys,get_monitor_view_svr,get_monitor_view_proj,get_monitor_view_proj_log
@@ -51,4 +54,13 @@ monitor = [
         (r"/monitor/view/svr", get_monitor_view_svr),
         (r"/monitor/view/proj", get_monitor_view_proj),
         (r"/monitor/view/proj/log", get_monitor_view_proj_log),
+
+        # 功能：数据库监控-告警管理API
+        (r"/monitor/alert/query", monitoralertquery),
+        (r"/monitor/alert/_query", monitoralert_query),
+        (r"/monitor/alert/add/save", monitoralertadd_save),
+        (r"/monitor/alert/edit/save", monitoralertupd_save),
+        (r"/get/alert/task", get_alert_task),
+        (r"/monitor/alert/edit/del", monitoralertedit_del),
+        (r"/monitor/alert/push", monitoralert_push),
 ]
