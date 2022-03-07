@@ -11,10 +11,11 @@ from web.model.t_sql_release import exe_sql_sync
 from web.utils.mysql_sync import sync_processer
 from concurrent.futures import ProcessPoolExecutor,wait,as_completed
 
+host = "ops.zhitbar.cn"
 
 def get_tasks():
     st = """SELECT dbid AS db_id, db AS db_name,
-                id AS sql_id,'admin' AS user_name,run_time,message
+                id AS sql_id,executor AS user_name,run_time,message
                  FROM t_sql_release  WHERE status in('7') """
     return  sync_processer.query_dict_list(st)
 
@@ -25,7 +26,7 @@ def main():
             tasks = get_tasks()
             if tasks!=[]:
                 print('tasks=',tasks)
-                all_task = [executor.submit(exe_sql_sync,t['db_id'], t['db_name'], t['sql_id'], t['user_name']) for t in tasks]
+                all_task = [executor.submit(exe_sql_sync,t['db_id'], t['db_name'], t['sql_id'], t['user_name'],host) for t in tasks]
                 for future in as_completed(all_task):
                     res = future.result()
                     print("res=",res)

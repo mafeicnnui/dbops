@@ -115,7 +115,8 @@ class sql_audit(base_handler.TokenHandler):
        sqlid    = self.get_argument("sqlid")
        status   = self.get_argument("status")
        message  = self.get_argument("message")
-       result   = await upd_sql(sqlid,self.username,status,message,self.request.host)
+       user     = await get_user_by_loginame(self.username)
+       result   = await upd_sql(sqlid,user,status,message,self.request.host)
        self.write({"code": result['code'], "message": result['message']})
 
 class sqlrun(base_handler.TokenHandler):

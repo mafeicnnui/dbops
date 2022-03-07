@@ -18,6 +18,7 @@ import socket
 import string
 import sqlparse
 import re
+import requests
 
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
@@ -503,6 +504,61 @@ def send_mail_param(p_sendserver,p_from_user, p_from_pass, p_to_user, p_to_cc,p_
     except :
         print("send_mail_param exception:")
         traceback.print_exc()
+
+'''
+  功能：调用接口发送消息
+'''
+async def send_message(toUser,title,message,detail_url):
+    WX_URL = (await get_sys_settings())['WX_URL']
+    msg = {
+        "title":title,
+        "toUser":toUser,
+        "description":message,
+        "url":detail_url,
+        "msgType":"textcard",
+        "agentId":1000093
+    }
+    headers = {
+        "User-Agent":"PostmanRuntime/7.26.8",
+        "Accept":"*/*",
+        "Accept-Encoding":"gzip, deflate, br",
+        "Connection":"keep-alive",
+        "Content-Type": "application/json"
+    }
+    try:
+        print('send_message>>:',msg)
+        r = requests.post(WX_URL, data=json.dumps(msg,cls=DateEncoder),headers=headers)
+        print(r.text)
+    except:
+        print(traceback.print_exc())
+
+
+'''
+  功能：调用接口发送消息
+'''
+def send_message_sync(toUser,title,message,detail_url):
+    WX_URL = get_sys_settings_sync()['WX_URL']
+    msg = {
+        "title":title,
+        "toUser":toUser,
+        "description":message,
+        "url":detail_url,
+        "msgType":"textcard",
+        "agentId":1000093
+    }
+    headers = {
+        "User-Agent":"PostmanRuntime/7.26.8",
+        "Accept":"*/*",
+        "Accept-Encoding":"gzip, deflate, br",
+        "Connection":"keep-alive",
+        "Content-Type": "application/json"
+    }
+    try:
+        print('send_message_sync>>:',msg)
+        r = requests.post(WX_URL, data=json.dumps(msg,cls=DateEncoder),headers=headers)
+        print(r.text)
+    except:
+        print(traceback.print_exc())
 
 async def get_sys_settings():
     st = "SELECT `key`,`value`,`desc` FROM  t_sys_settings"

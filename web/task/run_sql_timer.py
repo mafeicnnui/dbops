@@ -15,10 +15,10 @@ from web.utils.common import current_time
 
 logging.basicConfig(filename='/tmp/schedule.log',format='[%(asctime)s-%(levelname)s:%(message)s]', level = logging.INFO,filemode='a',datefmt='%Y-%m-%d %I:%M:%S')
 
-host = "ops.zhitbar.cn:65482"
+host = "ops.zhitbar.cn"
 
 async def get_tasks():
-    st = """SELECT dbid AS db_id, db AS db_name,id AS sql_id,'admin' AS user_name,run_time
+    st = """SELECT dbid AS db_id, db AS db_name,id AS sql_id, executor AS user_name,run_time
                 FROM t_sql_release  WHERE STATUS in('1','5') AND run_time IS NOT NULL"""
     return await async_processer.query_dict_list(st)
 

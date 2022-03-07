@@ -114,7 +114,7 @@
                    {% if key == 'exec_end' %}
                       <tr>
                           <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>回滚语句</label></td>
-                          <td> <div id='ace-editor-roll'>{% raw roll['message']['rollback_statement'] %}</div></td>
+                          <td> <div id='ace-editor-roll'>{% raw roll['message']['rollback'] %}</div></td>
                       </tr>
                    {% end %}
                    {% if key == 'binlog_file' %}
