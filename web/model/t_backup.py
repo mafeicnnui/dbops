@@ -45,7 +45,7 @@ async def query_backup_case(p_db_env):
                AND a.db_type=c.dmm AND c.dm='02'
                AND d.db_tag=e.db_tag AND e.db_id=a.id
                and e.status='1'
-               AND create_date=(SELECT MAX(create_date) FROM t_db_backup_total X WHERE x.db_tag=d.db_tag) 
+               AND create_date=(SELECT MAX(create_date) FROM t_db_backup_total d2 WHERE d2.db_tag=d.db_tag) 
              ORDER BY a.market_id,a.db_env,a.db_type""".format(p_db_env)
 
     st2 = """SELECT 
@@ -57,7 +57,7 @@ async def query_backup_case(p_db_env):
                 AND a.db_type=c.dmm AND c.dm='02'
                 AND d.db_tag=e.db_tag AND e.db_id=a.id
                 and e.status='1'
-                AND create_date=(SELECT MAX(create_date) FROM t_db_backup_total X WHERE x.db_tag=d.db_tag) 
+                AND create_date=(SELECT MAX(create_date) FROM t_db_backup_total d2 WHERE d2.db_tag=d.db_tag) 
               ORDER BY a.market_id,a.db_env,a.db_type""".format(p_db_env)
 
     rs = await async_processer.query_one(st2)
