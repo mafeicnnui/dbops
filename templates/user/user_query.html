@@ -46,11 +46,6 @@
                       qname: $('#username').val()
                   },
                   success: function (dataSet) {
-                      $.extend( $.fn.dataTable.defaults, {
-                            searching: false,
-                            ordering:  false
-                      } );
-
                       $('#example').DataTable( {
                           "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
                           "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -59,6 +54,7 @@
                           ordering   :false,
                           scrollY    :true,
                           scrollX    :true,
+                          // "sScrollX": "500px",
                           scrollCollapse: true,
                           paging     : true,
                           bAutoWidth : true,

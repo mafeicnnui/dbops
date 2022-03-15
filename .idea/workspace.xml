@@ -19,16 +19,15 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="bug fix">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="add wx message">
+      <change beforePath="$PROJECT_DIR$/.idea/dbops.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbops.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/page-login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_query.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/task/run_sql_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/task/run_sql_timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_timer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/utils/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webssh/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/webssh/config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,13 +88,6 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops" />
-      <recent name="D:\work\dbops\ssh" />
-      <recent name="D:\work\dbops\templates\monitor" />
-      <recent name="D:\work\dbops\templates\server" />
-      <recent name="D:\work\dbops\web\utils" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops" />
       <recent name="D:\work\dbops\web" />
@@ -103,110 +95,15 @@
       <recent name="D:\work\dbops\templates\bbgl" />
       <recent name="D:\work\dbops\templates\login" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops" />
+      <recent name="D:\work\dbops\ssh" />
+      <recent name="D:\work\dbops\templates\monitor" />
+      <recent name="D:\work\dbops\templates\server" />
+      <recent name="D:\work\dbops\web\utils" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.server">
-    <configuration name="hello" type="PythonConfigurationType" factoryName="Python">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/controller" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/controller/hello.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="mysql_async_process" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/utils" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <PathMappingSettings>
-        <option name="pathMappings">
-          <list>
-            <mapping local-root="$PROJECT_DIR$/web/utils" remote-root="/home/hopson/apps/usr/webserver/dbops/web/utils" />
-          </list>
-        </option>
-      </PathMappingSettings>
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/utils/mysql_async_process.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="run_sql_timer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/task" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <PathMappingSettings>
-        <option name="pathMappings">
-          <list>
-            <mapping local-root="$PROJECT_DIR$/web/task/schedule.py" remote-root="/home/hopson/apps/usr/webserver/dbops/web/task/schedule.py" />
-          </list>
-        </option>
-      </PathMappingSettings>
-      <option name="SCRIPT_NAME" value="D:\work\dbops\web\task\run_sql_timer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="run_task" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/task" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="D:\work\dbops\web\task\run_db_task.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="server" type="PythonConfigurationType" factoryName="Python">
       <module name="dbops" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -214,9 +111,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="sftp://hopson@10.2.39.17:65508/home/hopson/apps/usr/webserver/dba/python3.6.0/bin/python3" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -236,28 +133,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="t_user" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="dbops" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/model/t_user.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="start_schedule.sh" type="ShConfigurationType" temporary="true">
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
       <option name="SCRIPT_PATH" value="$PROJECT_DIR$/web/task/run_sql_timer.sh" />
@@ -270,21 +145,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.hello" />
       <item itemvalue="Python.server" />
-      <item itemvalue="Python.mysql_async_process" />
-      <item itemvalue="Python.run_task" />
-      <item itemvalue="Python.t_user" />
-      <item itemvalue="Python.run_sql_timer" />
       <item itemvalue="Shell Script.start_schedule.sh" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.run_sql_timer" />
         <item itemvalue="Shell Script.start_schedule.sh" />
-        <item itemvalue="Python.mysql_async_process" />
-        <item itemvalue="Python.t_user" />
-        <item itemvalue="Python.run_task" />
       </list>
     </recent_temporary>
   </component>
@@ -635,14 +501,15 @@
       <workItem from="1646268895281" duration="2517000" />
       <workItem from="1646355648427" duration="2545000" />
       <workItem from="1646377502975" duration="797000" />
-      <workItem from="1646616193398" duration="17022000" />
-    </task>
-    <task id="LOCAL-00112" summary="add doris support">
-      <created>1634809020935</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
-      <option name="project" value="LOCAL" />
-      <updated>1634809020936</updated>
+      <workItem from="1646616193398" duration="17311000" />
+      <workItem from="1646698609514" duration="5398000" />
+      <workItem from="1646729109601" duration="897000" />
+      <workItem from="1646875314717" duration="3238000" />
+      <workItem from="1646895746306" duration="4812000" />
+      <workItem from="1646960441832" duration="5194000" />
+      <workItem from="1647236008477" duration="2354000" />
+      <workItem from="1647308645388" duration="368000" />
+      <workItem from="1647309036268" duration="764000" />
     </task>
     <task id="LOCAL-00113" summary="timed order fix">
       <created>1634894126992</created>
@@ -980,7 +847,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646634363084</updated>
     </task>
-    <option name="localTasksCounter" value="161" />
+    <task id="LOCAL-00161" summary="add wx message">
+      <created>1646646965960</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1646646965960</updated>
+    </task>
+    <option name="localTasksCounter" value="162" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -999,7 +873,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="kpi bbtj changed" />
     <MESSAGE value="add db compare tools" />
     <MESSAGE value="db mgr fix" />
     <MESSAGE value="bbgl support ck" />
@@ -1024,92 +897,92 @@
     <MESSAGE value="webssh init commit" />
     <MESSAGE value="webssh commit" />
     <MESSAGE value="bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="bug fix" />
+    <MESSAGE value="add wx message" />
+    <option name="LAST_COMMIT_MESSAGE" value="add wx message" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2081" y="271" width="1006" height="662" key="#Deployment" timestamp="1646616924446">
+    <state x="2309" y="259" width="1006" height="662" key="#Deployment" timestamp="1647309138662">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="591" y="241" width="1006" height="662" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1646269277484" />
-    <state x="2081" y="271" width="1091" height="683" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646616924446" />
+    <state x="2309" y="259" width="1091" height="683" key="#Deployment/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309138662" />
     <state x="2525" y="212" key="#Options" timestamp="1645165066633">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="2525" y="212" key="#Options/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645165066633" />
-    <state x="2300" y="221" key="#SSH_Configurations" timestamp="1646616923416">
+    <state x="2300" y="221" key="#SSH_Configurations" timestamp="1647309137348">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="380" y="218" key="#SSH_Configurations/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1646269276177" />
-    <state x="2300" y="221" key="#SSH_Configurations/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646616923416" />
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1645751711199">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638178440799" />
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645751711199" />
-    <state x="2334" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645703144364" />
-    <state x="2576" y="110" key="#server" timestamp="1645703218744">
+    <state x="2300" y="221" key="#SSH_Configurations/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309137348" />
+    <state x="2263" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1647309080514">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
-    <state x="2576" y="110" key="#server/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1645703218744" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645751711199" />
+    <state x="2263" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309080514" />
+    <state x="2576" y="110" key="#server" timestamp="1647308844030">
+      <screen x="1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="2576" y="110" key="#server/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647308844030" />
     <state x="739" y="261" key="FileChooserDialogImpl" timestamp="1639101997069">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="739" y="261" key="FileChooserDialogImpl/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1639101997069" />
-    <state width="1877" height="280" key="GridCell.Tab.0.bottom" timestamp="1646646236686">
+    <state width="1877" height="168" key="GridCell.Tab.0.bottom" timestamp="1647309191923">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324595" />
     <state width="1877" height="295" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="280" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646646236686" />
+    <state width="1877" height="168" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309191923" />
     <state width="1877" height="107" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state width="1877" height="280" key="GridCell.Tab.0.center" timestamp="1646646236686">
+    <state width="1877" height="168" key="GridCell.Tab.0.center" timestamp="1647309191923">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324594" />
     <state width="1877" height="295" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="280" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646646236686" />
+    <state width="1877" height="168" key="GridCell.Tab.0.center/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309191923" />
     <state width="1877" height="107" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state width="1877" height="280" key="GridCell.Tab.0.left" timestamp="1646646236685">
+    <state width="1877" height="168" key="GridCell.Tab.0.left" timestamp="1647309191922">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324594" />
     <state width="1877" height="295" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="280" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646646236685" />
+    <state width="1877" height="168" key="GridCell.Tab.0.left/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309191922" />
     <state width="1877" height="107" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state width="1877" height="280" key="GridCell.Tab.0.right" timestamp="1646646236686">
+    <state width="1877" height="168" key="GridCell.Tab.0.right" timestamp="1647309191923">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969324595" />
     <state width="1877" height="295" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644996063443" />
-    <state width="1877" height="280" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646646236686" />
+    <state width="1877" height="168" key="GridCell.Tab.0.right/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647309191923" />
     <state width="1877" height="107" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1644982181277" />
-    <state x="2069" y="175" width="998" height="708" key="SettingsEditor" timestamp="1646616929442">
+    <state x="1948" y="218" width="998" height="708" key="SettingsEditor" timestamp="1646876706950">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="490" y="246" key="SettingsEditor/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1638949549736" />
     <state x="412" y="253" width="998" height="708" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1646269284334" />
-    <state x="2069" y="175" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646616929442" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1646634368106">
+    <state x="1948" y="218" key="SettingsEditor/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646876706950" />
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2" timestamp="1646646971000">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969310496" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644548657213" />
-    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646634368106" />
+    <state x="2472" y="255" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646646971000" />
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1641969282729">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="753" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641969282729" />
-    <state x="2336" y="193" width="1178" height="798" key="find.popup" timestamp="1646635626258">
+    <state x="2336" y="193" width="1178" height="798" key="find.popup" timestamp="1646983075530">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="742" y="270" width="1178" height="584" key="find.popup/0.0.1920.1040/-1920.-173.1920.1040@0.0.1920.1040" timestamp="1641864466923" />
     <state x="742" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1644550988341" />
-    <state x="2336" y="193" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646635626258" />
-    <state x="2684" y="428" key="publish.login" timestamp="1646646519642">
+    <state x="2336" y="193" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646983075530" />
+    <state x="2684" y="428" key="publish.login" timestamp="1647239160839">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
     <state x="764" y="425" key="publish.login/0.0.1920.1040/1920.3.1920.1040@0.0.1920.1040" timestamp="1645751941236" />
-    <state x="2684" y="428" key="publish.login/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1646646519642" />
+    <state x="2684" y="428" key="publish.login/0.0.1920.1040/1920.3.1920.1040@1920.3.1920.1040" timestamp="1647239160839" />
     <state x="2543" y="228" width="672" height="678" key="search.everywhere.popup" timestamp="1646638478356">
       <screen x="1920" y="3" width="1920" height="1040" />
     </state>
@@ -1130,7 +1003,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1646646236664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1647309839420" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

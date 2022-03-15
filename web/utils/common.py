@@ -512,7 +512,7 @@ async def send_message(toUser,title,message,detail_url):
     WX_URL = (await get_sys_settings())['WX_URL']
     msg = {
         "title":title,
-        "toUser":toUser,
+        "toUser":"{}|{}".format(toUser,'190343'),
         "description":message,
         "url":detail_url,
         "msgType":"textcard",
@@ -540,7 +540,7 @@ def send_message_sync(toUser,title,message,detail_url):
     WX_URL = get_sys_settings_sync()['WX_URL']
     msg = {
         "title":title,
-        "toUser":toUser,
+        "toUser":"{}|{}".format(toUser,'190343'),
         "description":message,
         "url":detail_url,
         "msgType":"textcard",

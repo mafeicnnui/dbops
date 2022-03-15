@@ -154,11 +154,11 @@
         <script src="{{static_url('assets/js/logon.js')}}"></script>
         <script>
 
-            // $(document).keydown(function(event){
-            //     if (event.keyCode == 13) { //判断为Enter键
-            //         $("#btlogin").click();
-            //     }
-            // });
+            $('#verify_code').keydown(function(event){
+                if (event.keyCode == 13) { //判断为Enter键
+                   $("#btlogin").click();
+                }
+            });
 
             $(document).ajaxError(function( event, request,options ) {
                if (request.status==403){
