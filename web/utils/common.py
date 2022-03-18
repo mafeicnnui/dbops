@@ -91,7 +91,7 @@ def get_connection_ds_read_limit(p_ds,p_timeout):
     service  = p_ds['service']
     user     = p_ds['user']
     password = p_ds['password']
-    conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password, db=service, charset='utf8',read_timeout=p_timeout)
+    conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password, db=service, charset='utf8',read_timeout=p_timeout,connect_timeout=p_timeout)
     return conn
 
 def get_connection_ds_read_limit_ck(p_ds,p_timeout):
@@ -111,7 +111,7 @@ def get_connection_ds_write_limit(p_ds,p_timeout):
     user     = p_ds['user']
     password = p_ds['password']
     conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password,
-                               db=service, charset='utf8',read_timeout=p_timeout,write_timeout=p_timeout)
+                               db=service, charset='utf8',read_timeout=p_timeout,write_timeout=p_timeout,connect_timeout=p_timeout)
     return conn
 
 def get_connection_ds_mongo(p_ds):

@@ -50,8 +50,12 @@ def get_where(MYSQL_SETTINGS,event,p_where):
     v_where = ' where '
     for key in p_where:
         if check_tab_exists_pk(db,MYSQL_SETTINGS['db'], event['table']) > 0:
-            if key in cols:
-                v_where = v_where + key + ' = \'' + str(p_where[key]) + '\' and '
+           if key in cols:
+              v_where = v_where + key + ' = \'' + str(p_where[key]) + '\' and '
+        elif p_where[key] is None:
+           print('p_key=',key)
+           print('p_where[{}]={}',key,p_where[key])
+           v_where = v_where + key + ' is NULL and '
         else:
            v_where = v_where+ key+' = \''+str(p_where[key]) + '\' and '
     return v_where[0:-5]

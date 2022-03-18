@@ -409,11 +409,14 @@ async def query_audit_sql(id):
     st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid from t_sql_release a where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(st)
     st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(id)
-    v =''
-    for i in await async_processer.query_dict_list(st):
-        v=v+i['rollback_statement']+'<br>'
+    # v =''
+    # for i in await async_processer.query_dict_list(st):
+    #     v=v+i['rollback_statement']+'<br>'
+    #
+    # rs['rollback'] = v #await async_processer.query_dict_list(st)
 
-    rs['rollback'] = v #await async_processer.query_dict_list(st)
+    rs['rollback'] =  await async_processer.query_dict_list(st)
+
     ds = await get_ds_by_dsid(rs['dbid'])
     ds['service'] = rs['db']
     rs['ds'] = ds
