@@ -164,6 +164,19 @@
                     </select>
                </div>
            </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">相关数据源</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="related_id" >
+                        <option value='' selected = "selected">......</option>
+                        {% for var in db_related %}
+                          <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
+               </div>
+           </div>
            <br>
            <div class="form-group m-b-0">
                 <div class="col-sm-offset-6 col-sm-9">
@@ -232,7 +245,8 @@
                         proxy_status  :$('#proxy_status').val(),
                         proxy_server  :$('#proxy_server').val(),
                         read_db       :$('#read_db').val(),
-                        stream_load   :$('#stream_load').val()
+                        stream_load   :$('#stream_load').val(),
+                        related_id    :$('#related_id').val(),
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {

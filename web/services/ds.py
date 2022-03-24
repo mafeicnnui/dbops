@@ -8,7 +8,7 @@
 import json
 from web.model.t_ds import get_ds_by_dsid, query_ds, save_ds, upd_ds, del_ds, check_ds_valid, get_dss_sql_query, \
     exe_query, query_ds_opt_log
-from   web.model.t_dmmx  import get_dmm_from_dm,get_sync_db_server_by_type,get_sync_db_server
+from web.model.t_dmmx import get_dmm_from_dm, get_sync_db_server_by_type, get_sync_db_server,get_db_server
 from web.utils           import base_handler
 
 class dsquery(base_handler.TokenHandler):
@@ -56,7 +56,8 @@ class dsadd(base_handler.TokenHandler):
                     dm_inst_type = await get_dmm_from_dm('07'),
                     dm_env_type  = await get_dmm_from_dm('03'),
                     dm_ds_proxy  = await get_dmm_from_dm('26'),
-                    db_server    = await get_sync_db_server(),
+                    db_server    = await get_db_server(),
+                    db_related   = await get_db_server()
                     )
 
 class dsadd_save(base_handler.TokenHandler):
@@ -77,6 +78,7 @@ class dsadd_save(base_handler.TokenHandler):
         d_ds['proxy_server'] = self.get_argument("proxy_server")
         d_ds['read_db']      = self.get_argument("read_db")
         d_ds['stream_load']  = self.get_argument("stream_load")
+        d_ds['related_id']   = self.get_argument("related_id")
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -109,6 +111,7 @@ class dsedit(base_handler.TokenHandler):
                      dm_proj_type = await get_dmm_from_dm('05'),
                      dm_ds_proxy  = await get_dmm_from_dm('26'),
                      db_server    = await get_sync_db_server(),
+                     db_related   = await get_db_server(),
                      db_desc      = d_ds['db_desc'],
                      ip           = d_ds['ip'],
                      port         = d_ds['port'],
@@ -120,7 +123,8 @@ class dsedit(base_handler.TokenHandler):
                      proxy_server = d_ds['proxy_server'],
                      read_db      = d_ds['id_ro'],
                      stream_load  = d_ds['stream_load'],
-                    )
+                     related_id   = d_ds['related_id']
+                 )
 
 class dsedit_save(base_handler.TokenHandler):
     async def post(self):
@@ -142,6 +146,7 @@ class dsedit_save(base_handler.TokenHandler):
         d_ds['proxy_server'] = self.get_argument("proxy_server")
         d_ds['read_db']      = self.get_argument("read_db")
         d_ds['stream_load']  = self.get_argument("stream_load")
+        d_ds['related_id']   = self.get_argument("related_id")
         result = await upd_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 

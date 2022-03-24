@@ -301,6 +301,39 @@
               </div>
            </div>
         </div>
+
+        <div class="row">
+           <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label">相关数据源</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="related_id" >
+                            {% if related_id!='' %}
+                               {% for var in db_related %}
+                                   {% if var[0] == int(related_id) %}
+                                      <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                   {% else %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                   {% end %}
+                               {% end %}
+                                <option value=''>......</option>
+                            {% end %}
+
+                            {% if related_id=='' %}
+                                  <option value='' selected = "selected">......</option>
+                                  {% for var in db_related %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                   {% end %}
+                            {% end %}
+
+                        </select>
+                   </div>
+               </div>
+            </div>
+       </div>
+
        <br>
        <div class="row">
            <div class="col-md-6">
@@ -376,7 +409,8 @@
                     proxy_status  :$('#proxy_status').val(),
                     proxy_server  :$('#proxy_server').val(),
                     read_db       :$('#read_db').val(),
-                    stream_load   :$('#stream_load').val()
+                    stream_load   :$('#stream_load').val(),
+                    related_id    :$('#related_id').val(),
             },
             success: function (dataSet) {
                 console.log(dataSet.code, dataSet.message);
