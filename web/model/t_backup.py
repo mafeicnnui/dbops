@@ -41,7 +41,7 @@ async def query_backup_case(p_db_env):
                    CASE WHEN d.status='0' THEN '√' ELSE '×' END flag                   
              FROM t_db_source a,t_dmmx b,t_dmmx c,t_db_backup_total d,t_db_config e
              WHERE a.db_env=b.dmm AND b.dm='03'
-               and a.db_env='{0}' AND a.db_type not in(4,5) 
+               and instr('{0}',a.db_env)>0 AND a.db_type not in(4,5) 
                AND a.db_type=c.dmm AND c.dm='02'
                AND d.db_tag=e.db_tag AND e.db_id=a.id
                and e.status='1'
@@ -53,7 +53,7 @@ async def query_backup_case(p_db_env):
                CAST(SUM(CASE WHEN d.status='1' THEN 1 ELSE 0 END) AS CHAR) AS  failure
             FROM t_db_source a,t_dmmx b,t_dmmx c,t_db_backup_total d,t_db_config e
              WHERE a.db_env=b.dmm AND b.dm='03'
-                AND a.db_env='{0}' AND a.db_type not in(4,5)
+                AND instr('{0}',a.db_env)>0 AND a.db_type not in(4,5)
                 AND a.db_type=c.dmm AND c.dm='02'
                 AND d.db_tag=e.db_tag AND e.db_id=a.id
                 and e.status='1'
@@ -154,13 +154,13 @@ async def save_backup(p_backup):
             return res
 
         st="""insert into t_db_config
-                (server_id,db_id,db_type,db_tag,expire,bk_base,script_path,script_file,bk_cmd,run_time,comments,python3_home,backup_databases,api_server,status) 
-               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}')
+                (server_id,db_id,db_type,db_tag,expire,bk_base,script_path,script_file,bk_cmd,run_time,comments,python3_home,backup_databases,api_server,status,binlog_status) 
+               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}')
            """.format(p_backup['backup_server'],p_backup['db_server'],p_backup['db_type'],
                        p_backup['backup_tag'], p_backup['backup_expire'],format_sql(p_backup['backup_base']),
                        format_sql(p_backup['script_base']),p_backup['script_name'],p_backup['cmd_name'],
                        p_backup['run_time'],p_backup['task_desc'],format_sql(p_backup['python3_home']),
-                       p_backup['backup_databases'],p_backup['api_server'], p_backup['status'])
+                       p_backup['backup_databases'],p_backup['api_server'], p_backup['status'],p_backup['binlog_status'])
         await async_processer.exec_sql(st)
         return {'code': '0', 'message': '保存成功!'}
     except:
@@ -185,6 +185,7 @@ async def upd_backup(p_backup):
         backup_databases = p_backup['backup_databases']
         api_server       = p_backup['api_server']
         status           = p_backup['status']
+        binlog_status    = p_backup['binlog_status']
 
         res = check_backup(p_backup)
         if res['code'] == '-1':
@@ -205,10 +206,11 @@ async def upd_backup(p_backup):
                        python3_home      ='{11}',
                        backup_databases  ='{12}',
                        api_server        ='{13}',
-                       STATUS            ='{14}'
-                where id='{15}'""".format(backup_server,db_server,db_type,backup_tag,backup_expire,backup_base,
+                       STATUS            ='{14}',
+                       binlog_status     ='{15}'
+                where id='{16}'""".format(backup_server,db_server,db_type,backup_tag,backup_expire,backup_base,
                                           script_base,script_name,cmd_name,run_time,task_desc,python3_home,
-                                          backup_databases,api_server,status,backupid)
+                                          backup_databases,api_server,status,binlog_status,backupid)
         await async_processer.exec_sql(st)
         return {'code':'0','message':'更新成功!'}
     except:
@@ -238,6 +240,7 @@ async def get_backup_by_backupid(p_backupid):
                     backup_databases,
                     api_server,
                     status,
+                    binlog_status,
                     id  as backup_id
              from t_db_config where id={0}""".format(p_backupid)
     return await async_processer.query_dict_one(sql)
