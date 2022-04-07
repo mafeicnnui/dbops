@@ -49,7 +49,10 @@ class serveradd_save(base_handler.TokenHandler):
 
 class serverchange(base_handler.TokenHandler):
     async def get(self):
-        self.render("./server/server_change.html",webssh_url=(await get_sys_settings())['WEBSSH_URL'])
+        self.render("./server/server_change.html",
+                    webssh_url=(await get_sys_settings())['WEBSSH_URL'],
+                    webrdp_url=(await get_sys_settings())['WEBRDP_URL']
+                    )
 
 class serveredit(base_handler.TokenHandler):
     async def get(self):
@@ -114,5 +117,15 @@ class server_by_serverid(base_handler.TokenHandler):
         id       = self.get_argument("server_id")
         v_list   = await get_server_by_serverid(id)
         v_json   = json.dumps(v_list)
+        self.write(v_json)
+
+    async def get(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        self.set_header("Access-Control-Allow-Origin", '*')
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        id = self.get_argument("server_id")
+        v_list = await get_server_by_serverid(id)
+        v_json = json.dumps(v_list)
         self.write(v_json)
 

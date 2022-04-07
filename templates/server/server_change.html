@@ -15,6 +15,7 @@
             <span class="input-group-addon"><i class="fa fa-user"></i></span>
             <input type="text" id="servername"  class="form-control" placeholder="请输入地址、端口、项目编码">
             <input type="hidden" id="webssh_url"   value="{{webssh_url}}">
+            <input type="hidden" id="webrdp_url"   value="{{webrdp_url}}">
             <span class="input-group-btn">
                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
             </span>
@@ -64,19 +65,26 @@
                             { "title": "项目名称" },
                             { "title": "地址" },
                             { "title": "端口" },
+                            { "title": "系统" },
                             { "title": "状态" },
                             { "title": "操作" },
                           ],
                           columnDefs: [
                           {
-                            targets: 8,
+                            targets: 9,
                             render: function(data, type, row, meta){
                                 var alt   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更"    onclick="alt_svr(\''+row[0]+'\');"/>' +'&nbsp;'
                                 var del   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除"    onclick="del_svr(\''+escape(row)+'\');"/>' +'&nbsp;'
                                 var det   = '<input class="btn btn-xs btn-primary"  type="button"  value="详情"    onclick="det_svr(\''+row[0]+'\');"/>' +'&nbsp;'
                                 var log   = '<input class="btn btn-xs btn-primary"  type="button"  value="日志"    onclick="log_svr(\''+row[0]+'\');"/>' +'&nbsp;'
                                 var con   = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台"  onclick="con_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                return '&nbsp;'+alt+del+det+log+con
+                                var rdp   = '<input class="btn btn-xs btn-primary"  type="button"  value="远程桌面"  onclick="rdp_svr(\''+row[0]+'\');"/>' +'&nbsp;'
+                                if (row[7] == 'CentOS') {
+                                    return '&nbsp;'+alt+del+det+log+con
+                                } else {
+                                    return '&nbsp;'+alt+del+det+log+rdp
+                                }
+
                             }
                          }
                       ],
@@ -168,6 +176,10 @@
 
         function con_svr(p_svr_id) {
              window.open($('#webssh_url').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+        }
+
+        function rdp_svr(p_svr_id) {
+             window.open($('#webrdp_url').val()+"/?id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
         }
 
         $(document).ready(function() {

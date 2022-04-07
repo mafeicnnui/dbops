@@ -762,7 +762,7 @@ async def check_sync(p_server,p_flag):
         return result
 
 
-    if  p_server["sync_data_type"] not in('7','8','9'):
+    if  p_server["sync_ywlx"] not in('21'):
         if p_server["sync_schema"] == "":
             result['code'] = '-1'
             result['message'] = '同步数据库名不能为空！'
@@ -788,7 +788,7 @@ async def check_sync(p_server,p_flag):
         result['message'] = '同步间隔不能为空！'
         return result
 
-    if p_server["sync_data_type"] not in ('7', '8', '9'):
+    if p_server["sync_ywlx"] not in ('21'):
 
         if p_server["sync_col_name"] == "":
             result['code'] = '-1'

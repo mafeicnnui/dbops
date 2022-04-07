@@ -164,6 +164,7 @@ class dsclone(base_handler.TokenHandler):
                      dm_inst_type = await get_dmm_from_dm('07'),
                      dm_proj_type = await get_dmm_from_dm('05'),
                      dm_ds_proxy  = await get_dmm_from_dm('26'),
+                     db_related   = await get_db_server(),
                      db_desc      = d_ds['db_desc'],
                      ip           = d_ds['ip'],
                      port         = d_ds['port'],
@@ -174,6 +175,7 @@ class dsclone(base_handler.TokenHandler):
                      proxy_status = d_ds['proxy_status'],
                      proxy_server = d_ds['proxy_server'],
                      stream_load  = d_ds['stream_load'],
+                     related_id   = d_ds['related_id'],
                     )
 
 
@@ -195,6 +197,7 @@ class dsclone_save(base_handler.TokenHandler):
         d_ds['proxy_status'] = self.get_argument("proxy_status")
         d_ds['proxy_server'] = self.get_argument("proxy_server")
         d_ds['stream_load']  = self.get_argument("stream_load")
+        d_ds['related_id']   = self.get_argument("related_id")
         result = await save_ds(d_ds)
         self.write({"code": result['code'], "message": result['message']})
 

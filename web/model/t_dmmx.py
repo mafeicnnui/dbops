@@ -81,7 +81,7 @@ async def get_slow_inst_names(p_env):
     return await async_processer.query_list(sql)
 
 async def get_db_server():
-    sql = "SELECT id,db_desc FROM t_db_source WHERE  db_type in(0,4,5,6) AND STATUS=1 ORDER BY id"
+    sql = "SELECT id,db_desc FROM t_db_source WHERE  db_type in(0,1,2,3,4,5,6) AND STATUS=1 ORDER BY id"
     return await async_processer.query_list(sql)
 
 async def get_db_backup_server():
@@ -198,8 +198,8 @@ async def get_datax_sync_db_server_doris():
     return await async_processer.query_list(sql)
 
 async def get_datax_real_sync_db_server():
-    sql = """select id,db_desc from t_db_source  where  db_type in(8,9) and db_env in(1,2,3,4) 
-                and STATUS=1 and user!='puppet' order by db_desc,db_type"""
+    sql = """select id,db_desc from t_db_source  where  db_type in(0,8,9) and db_env in(1,2,3,4) 
+                and STATUS=1  order by db_desc,db_type"""
     return await async_processer.query_list(sql)
 
 

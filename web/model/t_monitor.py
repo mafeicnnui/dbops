@@ -483,7 +483,7 @@ async def query_monitor_sys(env,search_text):
                     CONCAT(ROUND(a.net_in/1000,0),'/',ROUND(a.net_out/1000,0),' kb/s')  AS net_io,
                     DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i:%s')     AS cjrq,
                     CASE WHEN TIMESTAMPDIFF(MINUTE, a.create_date, NOW())>10 THEN '0' ELSE '100' END  AS STATUS
-            FROM t_monitor_task_server_log a  LEFT JOIN t_server b ON a.server_id=b.id 
+            FROM t_monitor_task_server_log a  LEFT JOIN t_server b ON a.server_id=b.id and b.status='1'
             WHERE (a.server_id,a.create_date) IN(SELECT server_id,MAX(create_date) FROM `t_monitor_task_server_log` GROUP BY server_id) {}  ORDER BY STATUS, b.server_desc
           """.format(vw)
    

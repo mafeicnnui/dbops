@@ -20,6 +20,7 @@ async def query_server(p_name):
                         b.dmmc as market_name,
                         a.server_ip,
                         a.server_port,
+                        a.server_os,
                         CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  STATUS
                     FROM t_server a,t_dmmx b,t_dmmx c
                     WHERE a.market_id=b.dmm AND b.dm='05'
@@ -33,10 +34,7 @@ async def query_server(p_name):
                         b.dmmc as market_name,
                         a.server_ip,
                         a.server_port,
-                        a.server_user,
                         a.server_os,
-                        a.server_cpu,
-                        a.server_mem,
                         CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  STATUS
                     FROM t_server a,t_dmmx b,t_dmmx c
                     WHERE a.market_id=b.dmm AND b.dm='05'

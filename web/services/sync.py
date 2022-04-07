@@ -147,7 +147,7 @@ class syncedit(base_handler.TokenHandler):
     async def get(self):
         sync_id   = self.get_argument("sync_id")
         d_sync    = await get_sync_by_syncid(sync_id)
-        if d_sync['sync_data_type']  in ('7','8','9'):
+        if d_sync['sync_ywlx']  in ('21'):
             self.render("./sync/sync_edit_real.html",
                         sync_id                  =  sync_id,
                         sync_server              =  await get_sync_server(),
@@ -252,7 +252,7 @@ class syncclone(base_handler.TokenHandler):
         sync_id = self.get_argument("sync_id")
         d_sync  = await get_sync_by_syncid(sync_id)
         print('d_sync=',d_sync)
-        if d_sync['sync_data_type'] in ('7', '8', '9'):
+        if d_sync['sync_ywlx'] in ('21'):
             self.render("./sync/sync_clone_real.html",
                         sync_id              =  sync_id,
                         sync_server          = await get_sync_server(),
@@ -715,7 +715,7 @@ class sync_real(base_handler.TokenHandler):
                     db_server         = await get_sync_db_server(),
                     dm_db_type        = await get_dmm_from_dm('02'),
                     dm_sync_ywlx      = await get_dmm_from_dm('08'),
-                    dm_sync_data_type = await get_dmm_from_dm2('09','7,8'),
+                    dm_sync_data_type = await get_dmm_from_dm2('09','2,7,8'),
                     dm_sync_time_type = await get_dmm_from_dm('10')
                     )
 

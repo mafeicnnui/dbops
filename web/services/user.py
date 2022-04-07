@@ -7,8 +7,9 @@
 
 import json
 import uuid
+import tornado.gen
 from web.model.t_role  import get_roles
-from web.model.t_user import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session
+from web.model.t_user  import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session
 from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_proj_privs
 from web.model.t_dmmx  import get_dmm_from_dm
 from web.model.t_ds    import query_project
@@ -25,6 +26,7 @@ class user_query(base_handler.TokenHandler):
         v_list = await query_user(qname)
         v_json = json.dumps(v_list)
         self.write(v_json)
+
 
 class useradd(base_handler.TokenHandler):
     async def get(self):
