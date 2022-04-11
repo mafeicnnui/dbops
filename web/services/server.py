@@ -51,7 +51,9 @@ class serverchange(base_handler.TokenHandler):
     async def get(self):
         self.render("./server/server_change.html",
                     webssh_url=(await get_sys_settings())['WEBSSH_URL'],
-                    webrdp_url=(await get_sys_settings())['WEBRDP_URL']
+                    webssh_url2=(await get_sys_settings())['WEBSSH_URL2'],
+                    webrdp_url=(await get_sys_settings())['WEBRDP_URL'],
+                    webrdp_url2=(await get_sys_settings())['WEBRDP_URL2'],
                     )
 
 class serveredit(base_handler.TokenHandler):

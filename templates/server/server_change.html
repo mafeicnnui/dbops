@@ -15,7 +15,9 @@
             <span class="input-group-addon"><i class="fa fa-user"></i></span>
             <input type="text" id="servername"  class="form-control" placeholder="请输入地址、端口、项目编码">
             <input type="hidden" id="webssh_url"   value="{{webssh_url}}">
+            <input type="hidden" id="webssh_url2"   value="{{webssh_url2}}">
             <input type="hidden" id="webrdp_url"   value="{{webrdp_url}}">
+            <input type="hidden" id="webrdp_url2"   value="{{webrdp_url2}}">
             <span class="input-group-btn">
                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
             </span>
@@ -27,76 +29,6 @@
     </div>
 
     <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        $("#username").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
-
-        $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/server/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname: $('#servername').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging:     true,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                            { "title": "标识" },
-                            { "title": "类型" },
-                            { "title": "描述" },
-                            { "title": "项目编码" },
-                            { "title": "项目名称" },
-                            { "title": "地址" },
-                            { "title": "端口" },
-                            { "title": "系统" },
-                            { "title": "状态" },
-                            { "title": "操作" },
-                          ],
-                          columnDefs: [
-                          {
-                            targets: 9,
-                            render: function(data, type, row, meta){
-                                var alt   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更"    onclick="alt_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var del   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除"    onclick="del_svr(\''+escape(row)+'\');"/>' +'&nbsp;'
-                                var det   = '<input class="btn btn-xs btn-primary"  type="button"  value="详情"    onclick="det_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var log   = '<input class="btn btn-xs btn-primary"  type="button"  value="日志"    onclick="log_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var con   = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台"  onclick="con_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                var rdp   = '<input class="btn btn-xs btn-primary"  type="button"  value="远程桌面"  onclick="rdp_svr(\''+row[0]+'\');"/>' +'&nbsp;'
-                                if (row[7] == 'CentOS') {
-                                    return '&nbsp;'+alt+del+det+log+con
-                                } else {
-                                    return '&nbsp;'+alt+del+det+log+rdp
-                                }
-
-                            }
-                         }
-                      ],
-                          "language": get_languages()
-                       });
-                      $('#serverupd').attr("disabled",true);
-                      $('#serverdel').attr("disabled",true);
-                      $('#serverconsole').attr("disabled",true);
-                  },
-             });
-            });
-
         function alt_svr(p_svr_id) {
             $.ajax({
                 url: "/server/edit",
@@ -175,12 +107,90 @@
         }
 
         function con_svr(p_svr_id) {
-             window.open($('#webssh_url').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+            if (window.location.host=='ops.zhitbar.cn') {
+                 window.open($('#webssh_url').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+             } else {
+                 window.open($('#webssh_url2').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+             }
         }
 
         function rdp_svr(p_svr_id) {
-             window.open($('#webrdp_url').val()+"/?id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+             if (window.location.host=='ops.zhitbar.cn') {
+                 window.open($('#webrdp_url').val()+"/?id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+             } else {
+                 window.open($('#webrdp_url2').val()+"/?id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
+             }
         }
+
+        $("#username").bind("input propertychange",function(){
+           $("#query_btn").click();
+        });
+
+        $("#query_btn").click(function() {
+              $.ajax({
+                  url: "/server/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      qname: $('#servername').val()
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          scrollY    :true,
+                          scrollX    :true,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 14,
+                          data: dataSet,
+                          columns: [
+                            { "title": "标识" },
+                            { "title": "类型" },
+                            { "title": "描述" },
+                            { "title": "项目编码" },
+                            { "title": "项目名称" },
+                            { "title": "地址" },
+                            { "title": "端口" },
+                            { "title": "系统" },
+                            { "title": "状态" },
+                            { "title": "操作" },
+                          ],
+                          columnDefs: [
+                          {
+                            targets: 9,
+                            render: function(data, type, row, meta){
+                                var alt   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更"    onclick="alt_svr(\''+row[0]+'\');"/>' +'&nbsp;'
+                                var del   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除"    onclick="del_svr(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                var det   = '<input class="btn btn-xs btn-primary"  type="button"  value="详情"    onclick="det_svr(\''+row[0]+'\');"/>' +'&nbsp;'
+                                var log   = '<input class="btn btn-xs btn-primary"  type="button"  value="日志"    onclick="log_svr(\''+row[0]+'\');"/>' +'&nbsp;'
+                                var con   = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台"  onclick="con_svr(\''+row[0]+'\');"/>' +'&nbsp;'
+                                var rdp   = '<input class="btn btn-xs btn-primary"  type="button"  value="远程桌面"  onclick="rdp_svr(\''+row[0]+'\');"/>' +'&nbsp;'
+                                if (row[7] == 'CentOS') {
+                                    return '&nbsp;'+alt+del+det+log+con
+                                } else {
+                                    return '&nbsp;'+alt+del+det+log+rdp
+                                }
+
+                            }
+                         }
+                      ],
+                          "language": get_languages()
+                       });
+                      $('#serverupd').attr("disabled",true);
+                      $('#serverdel').attr("disabled",true);
+                      $('#serverconsole').attr("disabled",true);
+                  },
+             });
+            });
+
+        $(document).keydown(function(event){
+            if (event.keyCode == 13) { //判断为Enter键
+                $("#query_btn").click();
+            }
+         });
 
         $(document).ready(function() {
             $("#query_btn").click();
