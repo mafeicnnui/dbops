@@ -209,7 +209,7 @@
                                               '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
                                      } else if (status=='执行失败' || status == '已审核') {
                                         msg ='&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\''+id+'\');"/>' +'&nbsp;'+
+                                              '<input id="btn_run_'+id+'" class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\''+id+'\');"/>' +'&nbsp;'+
                                               '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
                                      } else {
                                         msg ='&nbsp;'+
@@ -286,6 +286,7 @@
     }
 
      function runSql(id){
+         $('#btn_run_'+id).attr("disabled","disabled");
          $.ajax({
             url     : "/get/sql/release",
             type    : "post",

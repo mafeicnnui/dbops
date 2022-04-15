@@ -274,6 +274,7 @@
     }
 
     $('#auditSql').click(function(){
+         $('#auditSql').attr("disabled","disabled");
          $.ajax({
                 url: "/sql/_audit",
                 type: "post",
@@ -285,6 +286,9 @@
                 },
                 success: function (dataSet) {
                     console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == '-1') {
+                       $('#auditSql').removeAttr("disabled");
+                    }
                     swal(dataSet.message);
                     $("#query_btn").click();
                 },
