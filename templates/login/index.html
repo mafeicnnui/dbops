@@ -44,6 +44,13 @@
                 margin-top:5%;
             }
 
+            .modal-lg2 {
+                width:80%;
+                height:500px;
+                margin-left:15%;
+                margin-top:10%;
+            }
+
             .logo {
                 color: #ffffff !important;
                 font-size: 25px !important;
@@ -162,6 +169,7 @@
                                        <input type="hidden" id="login_name" value="{{loginname}}">
                                     </li>
                                     <li><a href="javascript:void(0)" onclick="userinfo()"><i class="ti-user m-r-5"></i>用户详情</a></li>
+                                    <li><a href="javascript:void(0)" onclick="conninfo()"><i class="ti-loop m-r-5"></i>连接详情</a></li>
                                     <li><a href="javascript:void(0)" onclick="logout()" ><i class="ti-power-off m-r-5"></i>系统注销</a></li>
                                 </ul>
                             </li>
@@ -427,6 +435,148 @@
             </div>
         </div>
 
+        <div id="con-conninfo-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg2">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">数据库连接详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="panel panel-default panel-border">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">开发环境</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table m-0  table-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th>类型</th>
+                                                        <th>地址</th>
+                                                        <th>用户</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>mysql</td>
+                                                        <td>10.2.39.40/3306<br>10.2.39.46/3306</td>
+                                                        <td>hopsonone/hopsonone123<br>mall/mall123</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>mongo</td>
+                                                        <td>10.2.39.41/27016<br>10.2.39.42/27016<br>10.2.39.43/27016</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>redis</td>
+                                                        <td>10.2.39.40/7000</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ElasticSearch</td>
+                                                        <td>10.2.39.41/9200<br>10.2.39.42/9200<br>10.2.39.43/9200</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+									</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="panel panel-border panel-primary">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">测试环境</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                         <div class="table-responsive">
+                                            <table class="table m-0  table-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th>类型</th>
+                                                        <th>地址</th>
+                                                        <th>用户</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>mysql</td>
+                                                        <td>10.2.39.80/3306<br>10.2.39.76/3306</td>
+                                                        <td>hopsonone/hopsonone123<br>mall/mall123</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>mongo</td>
+                                                        <td>10.2.39.71/27016<br>10.2.39.72/27016<br>10.2.39.73/27016</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>redis</td>
+                                                        <td>10.2.39.70/6379</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ElasticSearch</td>
+                                                        <td>10.2.39.71/9200<br>10.2.39.72/9200<br>10.2.39.73/9200</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="panel panel-border panel-success">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">预生产环境</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                         <div class="table-responsive">
+                                            <table class="table m-0  table-info">
+                                                <thead>
+                                                    <tr>
+                                                        <th>类型</th>
+                                                        <th>地址</th>
+                                                        <th>用户</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>mysql</td>
+                                                        <td>39.107.70.55/3306<br>47.94.208.172/3306</td>
+                                                        <td>hopsonone/hopsonone123456<br>mall/mall123</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>mongo</td>
+                                                        <td>39.107.236.63/27016<br>39.107.70.55/27016<br>47.94.208.172/27016</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>redis</td>
+                                                        <td>39.107.236.63/6379</td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ElasticSearch</td>
+                                                        <td>39.107.236.63/9200<br>39.107.70.55/9200<br>47.94.208.172/9200</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <div id="custom-modal" class="modal-demo">
             <div class="custom-modal-text">
                 <div class="row">
@@ -565,6 +715,13 @@
 
             function userinfo() {
                $('#con-userinfo-modal').modal({
+                  keyboard: false,
+                  backdrop:false
+               });
+             }
+
+             function conninfo() {
+               $('#con-conninfo-modal').modal({
                   keyboard: false,
                   backdrop:false
                });
