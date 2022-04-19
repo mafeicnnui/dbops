@@ -624,9 +624,35 @@
                  })
          }
 
+        // function set_desc_database() {
+        //    $.ajax({
+        //           url: "get_ck_databases",
+        //           type: "post",
+        //           datatype: "json",
+        //           data:{
+        //               db_ip       : desc_ds['ip'],
+        //               db_port     : desc_ds['port'],
+        //               db_service  : desc_ds['service'],
+        //               db_user     : desc_ds['user'],
+        //               db_pass     : desc_ds['password'],
+        //               proxy_server: desc_ds['proxy_server']
+        //           },
+        //           success: function (dataSet) {
+        //              $("#desc_db_name").empty();
+        //              $("#desc_db_name").append("<option value='auto'>auto</option>");
+        //              for(i=0;i<dataSet['msg'].length;i++){
+        //                   var val  = dataSet['msg'][i][0]
+        //                   $("#desc_db_name").append("<option value='"+val+"'>"+val+"</option>");
+        //              }
+        //           },
+        //      })
+        // }
+
         function set_desc_database() {
-           $.ajax({
-                  url: "get_ck_databases",
+           console.log('set_desc_database->ds=',desc_ds)
+           if (desc_ds['db_type'] == '9') {
+              $.ajax({
+                  url: "/get_ck_databases",
                   type: "post",
                   datatype: "json",
                   data:{
@@ -646,6 +672,32 @@
                      }
                   },
              })
+           }
+
+          if (desc_ds['db_type'] == '0') {
+              $.ajax({
+                  url: "/get_mysql_databases",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      db_ip       : desc_ds['ip'],
+                      db_port     : desc_ds['port'],
+                      db_service  : desc_ds['service'],
+                      db_user     : desc_ds['user'],
+                      db_pass     : desc_ds['password'],
+                      proxy_server: desc_ds['proxy_server']
+                  },
+                  success: function (dataSet) {
+                     $("#desc_db_name").empty();
+                     $("#desc_db_name").append("<option value='auto'>auto</option>");
+                     for(i=0;i<dataSet['msg'].length;i++){
+                          var val  = dataSet['msg'][i][0]
+                          $("#desc_db_name").append("<option value='"+val+"'>"+val+"</option>");
+                     }
+                  },
+             })
+           }
+
         }
 
         function syn_tab_edit(row){
