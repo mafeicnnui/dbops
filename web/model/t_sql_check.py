@@ -74,9 +74,9 @@ def get_obj_name(p_sql):
                            or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0:
 
        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
-           obj = re.split(r'\s+', p_sql)[3]
+           obj = re.split(r'\s+', p_sql)[3].replace('`', '')
        else:
-           obj=re.split(r'\s+', p_sql)[2]
+           obj=re.split(r'\s+', p_sql)[2].replace('`', '')
 
        if ('(') in obj:
            if obj.find('.')<0:
@@ -833,15 +833,15 @@ async def get_tab_has_fields(p_ds,p_sql,p_rule):
                                                       AND b.column_name='{}')  union all \n'''.format(col,get_tmp_name(ob), col)
         if op == 'CREATE_TABLE':
             if (await check_mysql_tab_exists(p_ds, ob)) > 0:
-                return  '表:{0}已存在!'.format(ob)
+                return {'code': -1, 'msg': '表:{0}已存在!'.format(ob)}
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
                 col = await async_processer.query_list_by_ds(p_ds, st[0:-12])
                 await async_processer.exec_sql_by_ds(p_ds, dp.format(ob))
-                return col
+                return {'code': 0, 'msg': col}
         elif op == 'ALTER_TABLE_ADD':
             if await (check_mysql_tab_exists(p_ds, ob)) == 0:
-                return '表:{0}不存在!'.format(get_obj_name(p_sql))
+                return {'code': -1, 'msg': '表:{0}不存在!'.format(get_obj_name(p_sql))}
             else:
                 tb = await f_get_table_ddl(p_ds, ob)
                 await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
@@ -1330,7 +1330,7 @@ async def process_single_ddl(p_dbid,p_cdb,p_sql,p_user):
 
         if rule['rule_code'] == 'switch_tab_has_time_fields' and tp == 'TABLE':
             if op in('CREATE_TABLE','ALTER_TABLE_ADD'):
-                print('表必须拥有字段...')
+                print('表必须拥有字段...'+rule['rule_value'])
                 if rule['rule_value']!='':
                     v = await get_tab_has_fields(ds, st, rule)
                     if v['code'] == 0:

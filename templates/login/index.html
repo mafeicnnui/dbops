@@ -909,8 +909,9 @@
             });
 
             $(".file").click(function() {
-                      tabId =$(this).attr("id").split('^')[0]
-                      url=$(this).attr("id").split('^')[1]
+                      console.log('file>',$(this).attr("id"))
+                      let tabId =$(this).attr("id").split('^')[0]
+                      let url=$(this).attr("id").split('^')[1]
 
                       console.log('tabId=',tabId,url)
                       clearInterval(timer);

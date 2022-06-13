@@ -521,9 +521,9 @@ async def db_stru_compare_data(sour_db_server,sour_schema,desc_db_server,desc_sc
         await async_processer.exec_sql('truncate table t_db_compare_data')
 
         for d in dres:
-            rs1 = await async_processer.query_dict_one_by_ds(dds, 'select count(0) as rec from `{}`.`{}`'.format(sour_schema,d['table_name']))
+            rs1 = await async_processer.query_dict_one_by_ds(dds, 'select count(0) as rec from `{}`.`{}`'.format(desc_schema,d['table_name']))
             try:
-              rs2 = await async_processer.query_dict_one_by_ds(sds, 'select count(0) as rec from `{}`.`{}`'.format(desc_schema, d['table_name']))
+              rs2 = await async_processer.query_dict_one_by_ds(sds, 'select count(0) as rec from `{}`.`{}`'.format(sour_schema, d['table_name']))
             except:
               print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
               traceback.print_exc()
