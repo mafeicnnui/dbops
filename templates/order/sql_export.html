@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SQL导出</title>
+    <style>
+        #example{
+            width: 100% !important;
+        }
+        .modal-lg-detail {
+            width:45%;
+            height:60%;
+            margin-left:500px;
+            margin-top:50px;
+        }
+        .modal-log {
+            width:85%;
+            height:80%;
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+
+        #add_sql{
+            height:300px;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+      <div class="row">
+           <div class="col-md-3">
+                 <div class="input-group">
+                     <span class="input-group-addon">数据源</span>
+                     <select class="form-control select" id="db_source">
+                        <option value='' selected = "selected">...</option>
+                        {% for var in dss %}
+                          <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                     </select>
+                 </div>
+            </div>
+           <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon">发布人</span>
+                    <select class="form-control select" id="sql_creater">
+                        <option value='' selected = "selected">...</option>
+                        {% for var in creater %}
+                          <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                 </div>
+           </div>
+           <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="keyword"  class="form-control" placeholder="请输入关键字">
+               </div>
+            </div>
+           <div class="col-md-1">
+               <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+               </div>
+            </div>
+     </div>
+      <p></p>
+      <div id="div-tab">
+           <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+      </div>
+      <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+           <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+      </div>
+    </div>
+
+    <!--新增导出窗口 -->
+    <div id="con-modal-inst-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">导出发布</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span>*</span>数据源：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <select class="form-control select" id="add_source" >
+                                      <option value='' selected = "selected">...</option>
+                                      {% for var in dss %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                      {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label"><span>*</span>数据库：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_db">
+                                  <option value=''  selected = "selected">...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>工单状态：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="add_audit">
+                                    <option value='0' selected = "selected">已发布</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>SQL脚本：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <div id='add_sql'></div>
+                           </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="exp_save_btn" >保存</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+
+   <script>
+
+       function init_inst(){
+             // $('#add_inst_server').val('')
+             // $('#add_inst_ip').val('');
+             // $('#add_inst_ver').val('')
+             // $('#add_inst_cfg').val('')
+             // $('#add_inst_name').val('')
+             // $('#add_inst_port').val('')
+             // $('#add_inst_type').val('')
+             // $('#add_inst_env').val('')
+             // $('#add_mgr_user').val('')
+             // $('#add_mgr_pass').val('')
+             // $('#add_inst_mapping_port').val('')
+             // $('#add_inst_server').attr("disabled",false);
+             // $('#add_inst_ip').attr('disabled',true);
+
+        }
+
+       $('#add_source').change(function() {
+            if ($('#add_source').val()!=''){
+                $.ajax({
+                      url: "/get_database",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#add_source').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#add_db").empty();
+                         $("#add_db").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#add_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#add_db").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#add_db").empty();
+                $("#add_db").append("<option value=''>...</option>");
+            }
+        });
+
+       $('#add-btn').click(function(){
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-modal-inst-add').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+            init_inst()
+        })
+
+       $('#exp_save_btn').click(function(){
+             var editor = ace.edit("add_sql");
+             var v_sql  = editor.getValue()
+             $.ajax({
+                url: "/sql/exp/_save",
+                type: "post",
+                datatype: "json",
+                data:{
+                    dbid : $('#add_source').val(),
+                    cdb  : $('#add_db').val(),
+                    sql  : v_sql,
+                    flag : $('#add_audit').val(),
+                },
+                success: function (dataSet) {
+                    swal(dataSet.message, "", "info")
+                },
+            });
+       })
+
+       $("#query_btn").click(function() {
+            $.ajax({
+                url: "/sql/exp/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    dbid    : $('#db_source').val(),
+                    creater : $('#sql_creater').val(),
+                    key     : $('#keyword').val(),
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      ordering   :false,
+                      scrollY    :false,
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging:     true,
+                      iDisplayLength: 13,
+                      data: dataSet,
+                      columns: [
+                         { "title": "工单编号" },
+                         { "title": "实例名" },
+                         { "title": "数据库" },
+                         { "title": "发布人" },
+                         { "title": "发布时间" },
+                         { "title": "审核人"},
+                         { "title": "审核时间"},
+                         { "title": "工单状态" },
+                         { "title": "操作"},
+                       ],
+                      columnDefs: [
+                        {
+                            targets: 8,
+                            render: function(data, type, row, meta){
+                                 var id=row[0]
+                                 $('#cur_release_num').val(id)
+                                 msg ='&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
+                                 return msg;
+                            }
+                         }
+                       ],
+                      "language": get_languages()
+                     });
+                 }
+            });
+       });
+
+       $(document).ready(function() {
+            var editor = ace.edit("add_sql");
+            editor.setTheme("ace/theme/xcode");
+            editor.getSession().setMode("ace/mode/mysql");
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(16);
+            editor.getSession().setUseSoftTabs(true);
+            editor.setReadOnly(false);
+            $("#add_db").selectpicker('sql_creater')
+            $("#query_btn").click()
+        });
+
+   </script>
+
+ </body>
+
+</html>
