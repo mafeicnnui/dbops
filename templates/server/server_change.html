@@ -115,7 +115,7 @@
         }
 
         function rdp_svr(p_svr_id) {
-             if (window.location.host=='ops.zhitbar.cn') {
+             if (window.location.host=='ops.zhitbar.cn:59521') {
                  window.open($('#webrdp_url').val()+"/?id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
              } else {
                  window.open($('#webrdp_url2').val()+"/?id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
