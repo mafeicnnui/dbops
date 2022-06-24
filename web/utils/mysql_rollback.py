@@ -9,6 +9,7 @@ import re
 import pymysql
 import traceback
 import logging
+import json
 from pymysqlreplication import BinLogStreamReader
 from pymysqlreplication.event import *
 from pymysqlreplication.row_event import (DeleteRowsEvent,UpdateRowsEvent,WriteRowsEvent,)
@@ -107,7 +108,10 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
     }
     logging.info("MYSQL_SETTINGS=",MYSQL_SETTINGS)
 
-    #rollback_statments = []
+    insEvent = 0
+    updEvent = 0
+    delEvent = 0
+    message = {}
     try:
         stream = BinLogStreamReader(connection_settings=MYSQL_SETTINGS,
                                     only_events=(QueryEvent, DeleteRowsEvent, UpdateRowsEvent, WriteRowsEvent),
@@ -141,6 +145,7 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
                             #rollback_statments.append(rsql)
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
+                            delEvent = delEvent + 1
 
                         elif isinstance(binlogevent, UpdateRowsEvent):
                             event["action"] = "update"
@@ -149,6 +154,7 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
                             #rollback_statments.append(rsql)
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
+                            updEvent = updEvent + 1
 
                         elif isinstance(binlogevent, WriteRowsEvent):
                             event["action"] = "insert"
@@ -156,13 +162,21 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
                             #rollback_statments.append(rsql)
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
+                            insEvent = insEvent + 1
+
+                    message[event['schema']+'.'+event['table']] = {
+                        'insert':insEvent,
+                        'update':updEvent,
+                        'delete':delEvent
+                    }
+
 
             if stream.log_pos + 31 == p_end_pos or stream.log_pos >=p_end_pos:
                 db.commit()
                 stream.close()
                 break
 
-        #return rollback_statments[::-1]
+        return message
 
     except Exception as e:
         traceback.print_exc()
@@ -221,6 +235,7 @@ def write_rollback_old0215(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
       logging.error('write_rollback error:',traceback.format_exc())
       traceback.print_exc()
 
+
 def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
     try:
         db = get_connection()
@@ -228,11 +243,14 @@ def write_rollback(p_sql_id,p_ds,p_file,p_start_pos,p_end_pos):
         cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
         db.commit()
         print('write rollback log for sqlid:{},please wait!'.format(p_sql_id))
-        get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id)
+        res = get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id)
         print('write rollback log for sqlid:{} end!'.format(p_sql_id))
+        cr.execute("update t_sql_release set run_result ='{}' where id={}".format(json.dumps(res),p_sql_id))
+        print("update t_sql_release set run_result ='{}' where id={}".format(json.dumps(res),p_sql_id))
+        db.commit()
     except:
-      logging.error('write_rollback error:',traceback.format_exc())
-      traceback.print_exc()
+        logging.error('write_rollback error:',traceback.format_exc())
+        traceback.print_exc()
 
 
 def delete_rollback(p_sql_id):
@@ -242,5 +260,5 @@ def delete_rollback(p_sql_id):
         cr.execute("delete from t_sql_backup where release_id={}".format(p_sql_id))
         db.commit()
     except:
-      print('delete_rollback error!!!')
-      traceback.print_exc()
+        print('delete_rollback error!!!')
+        traceback.print_exc()

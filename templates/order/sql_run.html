@@ -14,9 +14,10 @@
         #ace-editor-rollback{
            height:200px;
         }
-        #ace-editor-error{
+        #ace-editor-error,#ace-editor-result{
            height:80px;
         }
+
         .table th{
             text-align: center;
             vertical-align: middle!important;
@@ -117,6 +118,11 @@
                 <div class="row">
                   <label id="error-label">运行错误&nbsp;</label><span id="span-error"><i class="ion-arrow-down-b"></i></span>
                   <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
+                </div>
+                <br>
+                <div class="row">
+                  <label id="result-label">运行结果&nbsp;</label><span id="span-result"><i class="ion-arrow-down-b"></i></span>
+                  <div id='ace-editor-result' class="col-md-12" style="display:none"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -243,6 +249,8 @@
                     id: id
                 },
                 success: function (dataSet) {
+                    console.log('dataSet=',dataSet)
+                    console.log('result=',dataSet.message.run_result)
                     sql = format_sql(dataSet.message.sqltext)
                     if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
@@ -275,6 +283,18 @@
                     editor2.insert(dataSet.message.error);
                     editor2.setReadOnly(true);
 
+                    var editor4 = ace.edit("ace-editor-result");
+                    editor4.setValue('')
+                    let result = ''
+                    for(var attr in dataSet.message.run_result){
+                        log = ''
+                        for(var i in dataSet.message.run_result[attr]){
+                            log = log +i+':'+dataSet.message.run_result[attr][i]+','
+                        }
+                        result = result + attr + ' = ' + log + '\n'
+                    }
+                    editor4.insert(result);
+                    editor4.setReadOnly(true);
                     $('#con-close-modal').modal({
                         keyboard: false,
                         backdrop:false
@@ -346,15 +366,25 @@
             $('#ace-editor-rollback').css("display","none");
             $('#span-rollback').html('<i class="ion-arrow-down-b"></i>');
         }
-    })
+     })
 
-    $('#error-label').click(function(){
+     $('#error-label').click(function(){
         if ($('#ace-editor-error').css('display') == 'none') {
             $('#ace-editor-error').css("display","block");
             $('#span-error').html('<i class="ion-arrow-up-b"></i>');
         } else {
             $('#ace-editor-error').css("display","none");
             $('#span-error').html('<i class="ion-arrow-down-b"></i>');
+        }
+    })
+
+     $('#result-label').click(function(){
+        if ($('#ace-editor-result').css('display') == 'none') {
+            $('#ace-editor-result').css("display","block");
+            $('#span-result').html('<i class="ion-arrow-up-b"></i>');
+        } else {
+            $('#ace-editor-result').css("display","none");
+            $('#span-result').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 

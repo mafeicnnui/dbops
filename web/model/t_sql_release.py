@@ -13,7 +13,7 @@ import json
 import xlrd,xlwt
 import os,zipfile
 
-from web.utils.common import current_time, send_message, send_message_sync
+from web.utils.common import current_time, send_message, send_message_sync, current_rq
 from web.model.t_user           import get_user_by_loginame
 from web.model.t_ds             import get_ds_by_dsid,get_ds_by_dsid_sync
 from web.model.t_dmmx           import get_dmmc_from_dm,get_dmmc_from_dm_sync
@@ -406,7 +406,7 @@ async def check_order_xh(p_message):
 
 async def query_audit_sql(id):
     res = {}
-    st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid from t_sql_release a where a.id={0}""".format(id)
+    st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid,a.run_result from t_sql_release a where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(st)
     st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(id)
     # v =''
@@ -414,14 +414,17 @@ async def query_audit_sql(id):
     #     v=v+i['rollback_statement']+'<br>'
     #
     # rs['rollback'] = v #await async_processer.query_dict_list(st)
-
     rs['rollback'] =  await async_processer.query_dict_list(st)
-
+    if rs['run_result'] is not None and rs['run_result'] !='' :
+       rs['run_result'] = json.loads(rs.get('run_result'))
+    else:
+       rs['run_result'] = {}
     ds = await get_ds_by_dsid(rs['dbid'])
     ds['service'] = rs['db']
     rs['ds'] = ds
     res['code'] = '0'
     res['message'] = rs
+    print('query_audit_sql=',rs)
     return res
 
 async def query_rollback(release_id):
@@ -1328,3 +1331,53 @@ async def exp_sql_pdf(static_path,p_month,p_market_id):
     # 删除json文件
     os.system('rm -f {0}'.format(file_name))
     return rzip_file
+
+
+async def save_exp_sql(p_dbid,p_cdb,p_sql,p_flag,p_user):
+    result = {}
+    try:
+        p_ds = await get_ds_by_dsid(p_dbid)
+
+        sql="""insert into t_sql_export(dbid,db,sqltext,status,creation_date,creator,last_update_date,updator) 
+                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}')
+            """.format(p_dbid,p_cdb,fmt_sql(p_sql),p_flag,current_time(),p_user['login_name'],current_time(),p_user['login_name'])
+
+        await async_processer.exec_sql(sql)
+        result['code']='0'
+        result['message']='发布成功！'
+        return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '发布失败!'
+        return result
+
+async def export_query(p_dbid,p_creator,p_key,p_username):
+    v_where=''
+    if p_creator != '':
+        v_where = v_where + " and a.creator='{}'\n".format(p_creator)
+
+    if p_dbid != '':
+        v_where = v_where + " and a.dbid='{}'\n".format(p_dbid)
+
+    if p_username != 'admin':
+        v_where = v_where + "  and  a.creator='{0}'".format(p_username)
+
+    if p_key != '':
+        v_where = v_where + " and a.sqltext like '%{}%'\n".format(p_key)
+
+    sql = """SELECT  a.id, 
+                     b.db_desc,
+                     a.db,
+                     (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
+                     DATE_FORMAT(a.creation_date,'%Y-%m-%d %h:%i:%s')  creation_date,
+                     (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
+                     DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
+                     c.dmmc as status      
+                FROM t_sql_export a,t_db_source b,t_dmmx c
+                WHERE a.dbid=b.id
+                AND c.dm='41'
+                AND a.status=c.dmm
+                {} ORDER BY a.creation_date desc""".format(v_where)
+    print(sql)
+    return await async_processer.query_list(sql)

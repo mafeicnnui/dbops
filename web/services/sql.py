@@ -11,7 +11,7 @@ from web.model.t_sql           import exe_query
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
     query_audit_sql, check_sql, format_sql, get_sql_release, get_order_xh, check_order_xh, update_order, query_rollback, \
-    exp_rollback
+    exp_rollback, save_exp_sql, export_query
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds            import get_dss_sql_query,get_dss_sql_run,get_dss_order,get_dss_sql_release,get_dss_sql_audit
 from web.model.t_user          import get_user_by_loginame
@@ -490,4 +490,75 @@ class sql_rollback_exp(base_handler.TokenHandler):
         static_path = self.get_template_path().replace("templates", "static");
         zipfile = await exp_rollback(static_path, release_id)
         self.write({"code": 0, "message": zipfile})
+
+'''
+  SQL导出API
+'''
+
+class sql_exp_query(base_handler.TokenHandler):
+   async def get(self):
+       self.render("./order/sql_export.html",
+                   dss= await get_dss_sql_query(self.username),
+                   creater = await get_users(self.username))
+
+class _sql_exp_query(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       creater= self.get_argument("creater")
+       key    = self.get_argument("key")
+       v_list = await export_query(dbid,creater,key,self.username)
+       v_json = json.dumps(v_list)
+       self.write(v_json)
+
+class _sql_exp_save(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       user       = await get_user_by_loginame(self.username)
+       dbid       = self.get_argument("dbid")
+       cdb        = self.get_argument("cdb")
+       sql        = self.get_argument("sql")
+       flag       = self.get_argument("flag")
+       result     = await save_exp_sql(dbid,cdb,sql,flag,user)
+       self.write({"code": result['code'], "message": result['message']})
+
+class _sql_exp_update(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       sqlid    = self.get_argument("sqlid")
+       status   = self.get_argument("status")
+       message  = self.get_argument("message")
+       user     = await get_user_by_loginame(self.username)
+       result   = await upd_sql(sqlid,user,status,message,self.request.host)
+       self.write({"code": result['code'], "message": result['message']})
+
+class _sql_exp_delete(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       sqlid    = self.get_argument("sqlid")
+       status   = self.get_argument("status")
+       message  = self.get_argument("message")
+       user     = await get_user_by_loginame(self.username)
+       result   = await upd_sql(sqlid,user,status,message,self.request.host)
+       self.write({"code": result['code'], "message": result['message']})
+
+class _sql_exp_audit(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       sqlid    = self.get_argument("sqlid")
+       status   = self.get_argument("status")
+       message  = self.get_argument("message")
+       user     = await get_user_by_loginame(self.username)
+       result   = await upd_sql(sqlid,user,status,message,self.request.host)
+       self.write({"code": result['code'], "message": result['message']})
+
+class _sql_exp_export(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       sqlid    = self.get_argument("sqlid")
+       status   = self.get_argument("status")
+       message  = self.get_argument("message")
+       user     = await get_user_by_loginame(self.username)
+       result   = await upd_sql(sqlid,user,status,message,self.request.host)
+       self.write({"code": result['code'], "message": result['message']})
 
