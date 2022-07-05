@@ -28,7 +28,7 @@
     </style>
 </head>
 <body>
-    <p></p>
+      <p></p>
       <div class="row">
            <div class="col-md-3">
                  <div class="input-group">
@@ -75,8 +75,35 @@
       </div>
     </div>
 
-    <!--新增导出窗口 -->
-    <div id="con-modal-inst-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+     <!--发布语句详情 -->
+     <div id="con-close-modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title"><span id='modal_title'>工单详情</span></h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div id="release_template" class="tab-pane active">
+                         <div class="row">
+                            <h5>执行语句：</h5>
+                            <div id='ace-editor-exp-info' class="col-md-12"></div>
+                         </div>
+                    </div>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+       </div>
+     </div>
+
+     <!--新增导出窗口 -->
+     <div id="con-modal-inst-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
        <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
@@ -91,10 +118,10 @@
                                 <label class="col-md-3 control-label" ><span>*</span>数据源：</label>
                             </div>
                             <div class="col-md-9" >
-                                <select class="form-control select" id="add_source" >
-                                      <option value='' selected = "selected">...</option>
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_source" >
+                                      <option value=''>...</option>
                                       {% for var in dss %}
-                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        <option value='{{var[0]}}' title='{{var[1]}}'>{{var[1]}}</option>
                                       {% end %}
                                 </select>
                            </div>
@@ -141,24 +168,74 @@
       </div>
     </div>
 
+      <!--导出变更窗口 -->
+     <div id="con-modal-inst-alt" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id='exp_edit_title'>工单变更</span></h4>
+                <input type='hidden' id='exp_edit_id'>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span>*</span>数据源：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="alt_source" >
+                                       <option value=''>...</option>
+                                      {% for var in dss %}
+                                        <option value='{{var[0]}}' title='{{var[1]}}'>{{var[1]}}</option>
+                                      {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label"><span>*</span>数据库：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="alt_db">
+                                    <option value=''  selected = "selected">...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>工单状态：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="alt_audit">
+                                    <option value='0' selected = "selected">已发布</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>SQL脚本：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <div id='alt_sql'></div>
+                           </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="exp_alt_btn" >更新</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+
    <script>
-
-       function init_inst(){
-             // $('#add_inst_server').val('')
-             // $('#add_inst_ip').val('');
-             // $('#add_inst_ver').val('')
-             // $('#add_inst_cfg').val('')
-             // $('#add_inst_name').val('')
-             // $('#add_inst_port').val('')
-             // $('#add_inst_type').val('')
-             // $('#add_inst_env').val('')
-             // $('#add_mgr_user').val('')
-             // $('#add_mgr_pass').val('')
-             // $('#add_inst_mapping_port').val('')
-             // $('#add_inst_server').attr("disabled",false);
-             // $('#add_inst_ip').attr('disabled',true);
-
-        }
 
        $('#add_source').change(function() {
             if ($('#add_source').val()!=''){
@@ -179,6 +256,33 @@
                               $("#add_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                          }
                          $("#add_db").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#add_db").empty();
+                $("#add_db").append("<option value=''>...</option>");
+            }
+        });
+
+       $('#alt_source').change(function() {
+            if ($('#alt_source').val()!=''){
+                $.ajax({
+                      url: "/get_database",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#alt_source').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#alt_db").empty();
+                         $("#alt_db").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#alt_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#alt_db").selectpicker('refresh')
                       }
                 });
             } else {
@@ -212,9 +316,31 @@
                 },
                 success: function (dataSet) {
                     swal(dataSet.message, "", "info")
+                    $("#query_btn").click()
                 },
             });
-       })
+       });
+
+       $('#exp_alt_btn').click(function(){
+             var editor = ace.edit("alt_sql");
+             var v_sql  = editor.getValue()
+             $.ajax({
+                url: "/sql/exp/_update",
+                type: "post",
+                datatype: "json",
+                data:{
+                    dbid : $('#alt_source').val(),
+                    cdb  : $('#alt_db').val(),
+                    sql  : v_sql,
+                    flag : $('#alt_audit').val(),
+                    id   : $('#exp_edit_id').val()
+                },
+                success: function (dataSet) {
+                    swal(dataSet.message, "", "info")
+                    $("#query_btn").click()
+                },
+            });
+       });
 
        $("#query_btn").click(function() {
             $.ajax({
@@ -240,7 +366,7 @@
                       iDisplayLength: 13,
                       data: dataSet,
                       columns: [
-                         { "title": "工单编号" },
+                         { "title": "编号" },
                          { "title": "实例名" },
                          { "title": "数据库" },
                          { "title": "发布人" },
@@ -259,10 +385,8 @@
                                  msg ='&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="expXls(\''+id+'\');"/>' +'&nbsp;'
                                  return msg;
                             }
                          }
@@ -273,15 +397,102 @@
             });
        });
 
+       function setEditor(p_item,p_value,p_ro) {
+             var editor = ace.edit(p_item);
+             editor.setValue('')
+             editor.insert(p_value);
+             editor.setTheme("ace/theme/xcode");
+             editor.getSession().setMode("ace/mode/mysql");
+             editor.setShowPrintMargin(false);
+             editor.setFontSize(16);
+             editor.getSession().setUseSoftTabs(true);
+             editor.setReadOnly(p_ro);
+        }
+
+       function showSql(id){
+             $('#modal_title').text('工单详情[编号:'+id+']')
+             $.ajax({
+                    url: "/sql/exp/detail",
+                    type: "post",
+                    datatype: "json",
+                    data:{id: id},
+                    success: function (dataSet) {
+                        setEditor('ace-editor-exp-info',format_sql(dataSet.sqltext),true)
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-close-modal-detail').modal({
+                           keyboard: false,
+                           backdrop:false
+                        });
+                    }
+              });
+       }
+
+       function editSql(id){
+         $('#exp_edit_id').val(id)
+         $('#exp_edit_title').text('工单变更['+id+']')
+         $.ajax({
+                url: "/sql/exp/detail",
+                type: "post",
+                datatype: "json",
+                data:{id: id},
+                success: function (dataSet) {
+                    $('#alt_source').val(dataSet.dbid)
+                    $('#alt_source').change()
+                    $('#alt_db').selectpicker('val',dataSet.db)
+                    setEditor('alt_sql',format_sql(dataSet.sqltext),false)
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-modal-inst-alt').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
+                }
+          });
+    }
+
+       function delExp(id) {
+         swal({
+                title: "确认要删除吗?",
+                text: "工单["+id+"]将被删除!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+            if (isConfirm) {
+                  $.ajax({
+                        url: "/sql/exp/_delete",
+                        type: "post",
+                        datatype: "json",
+                        data:{
+                            id: row
+                        },
+                        success: function (dataSet) {
+                            if (dataSet.code=='0') {
+                               swal("已删除!", "工单["+row+"]已删除!", "success");
+                               $("#query_btn").click();
+                           } else {
+                               swal("删除失败!", "工单["+row+"]:"+dataSet.message+"!", "error");
+                           }
+                        }
+                   });
+            } else {
+                 swal("已取消", "工单["+id+"]未删除!", "error");
+            }
+         });
+
+     }
+
        $(document).ready(function() {
-            var editor = ace.edit("add_sql");
-            editor.setTheme("ace/theme/xcode");
-            editor.getSession().setMode("ace/mode/mysql");
-            editor.setShowPrintMargin(false);
-            editor.setFontSize(16);
-            editor.getSession().setUseSoftTabs(true);
-            editor.setReadOnly(false);
-            $("#add_db").selectpicker('sql_creater')
+            $("#add_source").selectpicker('refresh')
+            $("#alt_source").selectpicker('refresh')
+            $("#add_db").selectpicker('...')
+            $("#alt_db").selectpicker('...')
+            setEditor('add_sql','',false)
             $("#query_btn").click()
         });
 

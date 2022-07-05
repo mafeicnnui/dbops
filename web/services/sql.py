@@ -11,9 +11,10 @@ from web.model.t_sql           import exe_query
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
     query_audit_sql, check_sql, format_sql, get_sql_release, get_order_xh, check_order_xh, update_order, query_rollback, \
-    exp_rollback, save_exp_sql, export_query
+    exp_rollback
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
-from web.model.t_ds            import get_dss_sql_query,get_dss_sql_run,get_dss_order,get_dss_sql_release,get_dss_sql_audit
+from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
+    get_ds_by_dsid_by_cdb
 from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
     get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck
@@ -23,6 +24,7 @@ from web.model.t_dmmx          import get_dmm_from_dm,get_users_from_proj,get_us
 from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common          import DateEncoder,get_server
 from web.utils                 import base_handler
+from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql
 
 
 class sqlquery(base_handler.TokenHandler):
@@ -525,40 +527,37 @@ class _sql_exp_save(base_handler.TokenHandler):
 class _sql_exp_update(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       sqlid    = self.get_argument("sqlid")
-       status   = self.get_argument("status")
-       message  = self.get_argument("message")
-       user     = await get_user_by_loginame(self.username)
-       result   = await upd_sql(sqlid,user,status,message,self.request.host)
-       self.write({"code": result['code'], "message": result['message']})
+       user = await get_user_by_loginame(self.username)
+       dbid = self.get_argument("dbid")
+       cdb  = self.get_argument("cdb")
+       sql  = self.get_argument("sql")
+       flag = self.get_argument("flag")
+       id   = self.get_argument("id")
+       res = await update_exp_sql(dbid,cdb,sql,flag,user,id)
+       self.write({"code": res['code'], "message": res['message']})
 
 class _sql_exp_delete(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       sqlid    = self.get_argument("sqlid")
-       status   = self.get_argument("status")
-       message  = self.get_argument("message")
-       user     = await get_user_by_loginame(self.username)
-       result   = await upd_sql(sqlid,user,status,message,self.request.host)
-       self.write({"code": result['code'], "message": result['message']})
-
-class _sql_exp_audit(base_handler.TokenHandler):
-   async def post(self):
-       self.set_header("Content-Type", "application/json; charset=UTF-8")
-       sqlid    = self.get_argument("sqlid")
-       status   = self.get_argument("status")
-       message  = self.get_argument("message")
-       user     = await get_user_by_loginame(self.username)
-       result   = await upd_sql(sqlid,user,status,message,self.request.host)
-       self.write({"code": result['code'], "message": result['message']})
+       id    = self.get_argument("id")
+       res   = await delete_export(id)
+       self.write({"code": res['code'], "message": res['message']})
 
 class _sql_exp_export(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       sqlid    = self.get_argument("sqlid")
-       status   = self.get_argument("status")
-       message  = self.get_argument("message")
-       user     = await get_user_by_loginame(self.username)
-       result   = await upd_sql(sqlid,user,status,message,self.request.host)
-       self.write({"code": result['code'], "message": result['message']})
+       id    = self.get_argument("id")
+       exp   = await query_export(id)
+       path  = self.get_template_path().replace("templates", "static")
+       ds    = await get_ds_by_dsid_by_cdb(exp['dbid'],exp['db'])
+       res   = await exp_data(path,ds,exp['sqltext'])
+       self.write({"code": res['code'], "message": res['message']})
 
+class _sql_exp_detail(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id     = self.get_argument("id")
+        v_list = await query_export(id)
+        v_json = json.dumps(v_list)
+        print('v_json=',v_json)
+        self.write(v_json)
