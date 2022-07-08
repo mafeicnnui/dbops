@@ -623,10 +623,12 @@
                       type: "post",
                       datatype: "json",
                       async:false,
-                      data:{},
-                      headers: {
-                        'token': window.localStorage.getItem("token")
+                      data:{
+                           'token': window.localStorage.getItem("token")
                       },
+                      // headers: {
+                      //   'token': window.localStorage.getItem("token")
+                      // },
                       success: function (dataSet) {
                          $("#ul-menu").append(dataSet.message);
                          $('#main-container-div').load("/main");
@@ -989,7 +991,10 @@
 
             $.ajaxSetup({
                  timeout:6000000,
-                 headers: {
+                 // headers: {
+                 //  'token': window.localStorage.getItem("token"),
+                 // },
+                 data: {
                   'token': window.localStorage.getItem("token"),
                  }
             });
@@ -998,6 +1003,7 @@
                 start_Loader('main-container-div')
             }).ajaxComplete(function( event, request, settings ) {
                 if (! is_white_list(settings['url'])) {
+                     console.log('flush token!')
                      refresh_token()
                 }
             }).ajaxStop(function() {

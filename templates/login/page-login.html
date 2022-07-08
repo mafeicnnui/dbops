@@ -173,6 +173,16 @@
                }
             });
 
+            $.ajaxSetup({
+                 timeout:6000000,
+                 // headers: {
+                 //  'token': window.localStorage.getItem("token"),
+                 // },
+                 data: {
+                  'token': window.localStorage.getItem("token"),
+                 }
+            });
+
             $(document).ready(function() {
                    //设置ajax超时时间为3s
                    $.ajaxSetup({

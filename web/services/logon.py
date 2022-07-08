@@ -21,7 +21,7 @@ class logon(tornado.web.RequestHandler):
      def get(self):
         self.render("./login/page-login.html")
 
-class logon_check(base_handler.BaseHandler):
+class logon_check(base_handler.TokenHandlerLogin):
     async def post(self):
         username    = self.get_argument("username")
         password    = self.get_argument("password")

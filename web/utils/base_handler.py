@@ -27,11 +27,14 @@ class BaseHandler(tornado.web.RequestHandler):
 class TokenHandler(BaseHandler):
 
     async def prepare(self):
-        head = self.request.headers
-        token = head.get("token","")
-        if token == '':
-           token = self.get_argument("token")
+        # head = self.request.headers
+        # token = head.get("token","")
+        # if token == '':
+        #    token = self.get_argument("token")
 
+        token = self.get_argument("token")
+
+        print('TokenHandler taken:', token)
         result = jwt_auth.parse_payload(token)
         if not result["status"]:
            raise HTTPError(result['code'], json.dumps(result, ensure_ascii=False))
@@ -65,6 +68,7 @@ class TokenHandlerLogin(BaseHandler):
             if token == '':
                token = self.get_argument("token")
 
+            print('TokenHandlerLogin taken:',token)
             result = jwt_auth.parse_payload(token)
             if not result["status"]:
                self.token_passed = False
