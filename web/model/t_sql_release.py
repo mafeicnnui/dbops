@@ -1326,5 +1326,3 @@ async def exp_sql_pdf(static_path,p_month,p_market_id):
     # 删除json文件
     os.system('rm -f {0}'.format(file_name))
     return rzip_file
-
-

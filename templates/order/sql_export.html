@@ -381,12 +381,31 @@
                             targets: 8,
                             render: function(data, type, row, meta){
                                  var id=row[0]
+                                 var status = row[7]
+                                 console.log('Status=',status)
                                  $('#cur_release_num').val(id)
-                                 msg ='&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="expXls(\''+id+'\');"/>' +'&nbsp;'
+                                 if (status == '审核成功') {
+                                      msg ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" disabled onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" disabled onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="expXls(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloadXls(\''+id+'\');"/>' +'&nbsp;'
+                                 } else if (status == '已导出' || status == '审核失败') {
+                                     msg ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" disabled onclick="expXls(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" disabled onclick="downloadXls(\''+id+'\');"/>' +'&nbsp;'
+                                 } else {
+                                      msg ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" disabled onclick="expXls(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" disabled onclick="downloadXls(\''+id+'\');"/>' +'&nbsp;'
+                                 }
                                  return msg;
                             }
                          }
@@ -412,7 +431,7 @@
        function showSql(id){
              $('#modal_title').text('工单详情[编号:'+id+']')
              $.ajax({
-                    url: "/sql/exp/detail",
+                    url: "/sql/exp/_detail",
                     type: "post",
                     datatype: "json",
                     data:{id: id},
@@ -432,7 +451,7 @@
          $('#exp_edit_id').val(id)
          $('#exp_edit_title').text('工单变更['+id+']')
          $.ajax({
-                url: "/sql/exp/detail",
+                url: "/sql/exp/_detail",
                 type: "post",
                 datatype: "json",
                 data:{id: id},
@@ -449,7 +468,7 @@
                     });
                 }
           });
-    }
+       }
 
        function delExp(id) {
          swal({
@@ -486,6 +505,14 @@
          });
 
      }
+
+       function expXls(id){
+
+       }
+
+       function downloadXls(id){
+
+       }
 
        $(document).ready(function() {
             $("#add_source").selectpicker('refresh')

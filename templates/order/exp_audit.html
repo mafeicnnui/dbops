@@ -1,0 +1,326 @@
+<html>
+<head>
+    <title>导出审核</title>
+    <style>
+       #example{
+            width: 100% !important;
+        }
+        .modal-lg-detail {
+            width:45%;
+            height:60%;
+            margin-left:500px;
+            margin-top:50px;
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <p></p>
+    <div class="row">
+        <div class="col-md-12">
+           <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+               </div>
+            </div>
+            <div class="col-md-3">
+                 <div class="input-group">
+                     <span class="input-group-addon">数据库环境</span>
+                       <select class="form-control select" id="db_audit_source">
+                            <option value='' selected = "selected">...</option>
+                            {% for var in audit_dss %}
+                              <option value={{var[0]}}>{{var[1]}}</option>
+                            {% end %}
+                       </select>
+                 </div>
+            </div>
+            <div class="col-md-3">
+                 <div class="input-group">
+                    <span class="input-group-addon">发布人</span>
+                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
+                            <option value='' selected = "selected">...</option>
+                            {% for var in creater %}
+                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                            {% end %}
+                       </select>
+                 </div>
+             </div>
+
+             <div class="col-md-1">
+               <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+               </div>
+            </div>
+
+        </div>
+     </div>
+    <p></p>
+    <div class="row">
+         <div class="col-md-12">
+              <div id="div-tab">
+                   <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%"  height="100%" ></table>
+              </div>
+         </div>
+     </div>
+
+     <!--工单审核 -->
+     <div id="con-modal-inst-alt" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id='exp_edit_title'>导出审核</span></h4>
+                <input type='hidden' id='exp_edit_id'>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span>*</span>数据源：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="alt_source" >
+                                       <option value=''>...</option>
+                                      {% for var in audit_dss %}
+                                        <option value='{{var[0]}}' title='{{var[1]}}'>{{var[1]}}</option>
+                                      {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label"><span>*</span>数据库：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="alt_db">
+                                    <option value=''  selected = "selected">...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>审核结果：</label>
+                            </div>
+                            <div class="col-md-9">
+                                <select class="form-control select" id="audit_result">
+                                      <option value='1' selected = "selected">审核成功</option>
+                                      <option value='2' >审核失改</option>
+                                </select>
+                           </div>
+                        </div>
+                       <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label">失败原因：</label>
+                            </div>
+                            <div class="col-md-9">
+<!--                                <textarea class="form-control" rows="2" style="min-width: 90%" id="audit_message"></textarea>-->
+                                 <input id="audit_message" type="text" class="form-control" placeholder="请输入失败原因">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>SQL脚本：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <div id='alt_sql'></div>
+                           </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="exp_alt_btn" >审核</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+
+
+</body>
+
+<script type="text/javascript">
+
+    function setEditor(p_item,p_value,p_ro) {
+             var editor = ace.edit(p_item);
+             editor.setValue('')
+             editor.insert(p_value);
+             editor.setTheme("ace/theme/xcode");
+             editor.getSession().setMode("ace/mode/mysql");
+             editor.setShowPrintMargin(false);
+             editor.setFontSize(16);
+             editor.getSession().setUseSoftTabs(true);
+             editor.setReadOnly(p_ro);
+        }
+
+    function editSql(id){
+         console.log('editSql id=',id)
+         $('#exp_edit_id').val(id)
+         $('#exp_edit_title').text('工单变更['+id+']')
+         $.ajax({
+                url: "/sql/exp/_detail",
+                type: "post",
+                datatype: "json",
+                data:{id: id},
+                success: function (dataSet) {
+                    console.log('editsql2=',dataSet)
+                    $('#alt_source').val(dataSet.dbid)
+                    $('#alt_source').change()
+                    $('#alt_db').selectpicker('val',dataSet.db)
+                    setEditor('alt_sql',format_sql(dataSet.sqltext),false)
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-modal-inst-alt').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
+                }
+          });
+       }
+    function set_audit_btn(){
+       if ($('#audit_result').val()=='1') {
+           $('#audit_message').val('');
+           $('#audit_message').attr("disabled","disabled");
+           $('#audit_message').attr('placeholder',"");
+       } else {
+           $('#audit_message').val('');
+           $('#audit_message').removeAttr("disabled");
+           $('#audit_message').attr('placeholder',"请输入失败原因!");
+       }
+    }
+
+    $('#alt_source').change(function() {
+            if ($('#alt_source').val()!=''){
+                $.ajax({
+                      url: "/get_database",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#alt_source').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#alt_db").empty();
+                         $("#alt_db").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#alt_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#alt_db").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#add_db").empty();
+                $("#add_db").append("<option value=''>...</option>");
+            }
+        });
+
+    $("#query_btn").click(function() {
+                var name = $("#name").val();
+                var dsid = $("#db_audit_source").val();
+                var creater  = $("#sql_creater").val();
+
+                $.ajax({
+                  url: "/exp/audit/query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      qname:name,
+                      dsid:dsid,
+                      creater:creater
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      ordering   :false,
+                      scrollY    :false,
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging:     true,
+                      iDisplayLength: 16,
+                      data: dataSet,
+                      columns: [
+                         { "title": "编号" },
+                         { "title": "实例名" },
+                         { "title": "数据库" },
+                         { "title": "发布人" },
+                         { "title": "发布时间" },
+                         { "title": "审核人"},
+                         { "title": "审核时间"},
+                         { "title": "工单状态" },
+                         { "title": "操作"},
+                       ],
+                        columnDefs: [
+                        {
+                            targets: 8,
+                            render: function(data, type, row, meta){
+                                 var id=row[0]
+                                 var status=row[7]
+                                 if (status=='已发布') {
+                                    msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'
+                                    return msg;
+                                 } else {
+                                    msg ='&nbsp;'+'<input class="btn btn-xs btn-primary disabled"  type="button"  value="审核" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'
+                                    return msg;
+                                 }
+                            }
+                         }
+                        ],
+                      "language": get_languages()
+                    });
+                  },
+              })
+          });
+
+    $('#exp_alt_btn').click(function(){
+             var editor = ace.edit("alt_sql");
+             var v_sql  = editor.getValue()
+             $.ajax({
+                url: "/sql/exp/_audit",
+                type: "post",
+                datatype: "json",
+                data:{
+                    id   : $('#exp_edit_id').val(),
+                    status : $('#audit_result').val(),
+                    message: $('#audit_message').val()
+                },
+                success: function (dataSet) {
+                    if (dataSet.code='0') {
+                        swal(dataSet.message, "", "info")
+                        $("#query_btn").click()
+                    }
+
+                },
+            });
+       });
+
+    $('#audit_result').change(function(){
+       set_audit_btn();
+    });
+
+    $(document).ready(function() {
+        set_audit_btn();
+        $("#alt_source").selectpicker('refresh');
+        $("#alt_db").selectpicker('...')
+        $('#audit').attr("disabled",true);
+        $("#query_btn").click();
+    });
+
+ </script>
+
+</html>

@@ -24,7 +24,8 @@ from web.model.t_dmmx          import get_dmm_from_dm,get_users_from_proj,get_us
 from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common          import DateEncoder,get_server
 from web.utils                 import base_handler
-from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql
+from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql, \
+    upd_exp_sql, query_exp_audit,export_bbgl_data,del_export,get_download
 
 
 class sqlquery(base_handler.TokenHandler):
@@ -561,3 +562,71 @@ class _sql_exp_detail(base_handler.TokenHandler):
         v_json = json.dumps(v_list)
         print('v_json=',v_json)
         self.write(v_json)
+
+
+class expaudit(base_handler.TokenHandler):
+   async def get(self):
+       self.render("./order/exp_audit.html",
+                   audit_dss = await get_dss_sql_audit(self.username),
+                   creater = await get_users(self.username)
+                   )
+
+class exp_audit(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id    = self.get_argument("id")
+       status   = self.get_argument("status")
+       message  = self.get_argument("message")
+       user     = await get_user_by_loginame(self.username)
+       result   = await upd_exp_sql(id,user,status,message,self.request.host)
+       self.write({"code": result['code'], "message": result['message']})
+
+class exp_detail(base_handler.BaseHandler):
+   async def get(self):
+       release_id = self.get_argument("release_id")
+       wkno = await get_sql_release(release_id)
+       roll = await query_audit_sql(release_id)
+       ds  =  await get_ds_by_dsid(wkno['dbid'])
+       ds['service'] = wkno['db']
+       self.render("./order/exp_detail.html",
+                   wkno= json.loads(json.dumps(wkno,cls=DateEncoder)),
+                   roll = json.loads(json.dumps(roll,cls=DateEncoder)),
+                   dbinfo= ds['db_desc']+' ('+(ds['url']+ds['service'] if ds['url'].find(ds['service'])<0 else ds['url'])+')'
+       )
+
+class exp_audit_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname   = self.get_argument("qname")
+        dsid    = self.get_argument("dsid")
+        creater = self.get_argument("creater")
+        v_list  = await query_exp_audit(qname,dsid,creater,self.userid,self.username)
+        v_json  = json.dumps(v_list)
+        self.write(v_json)
+
+
+class exp_export_data(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id = self.get_argument("id")
+       path  = self.get_template_path().replace("templates", "static")
+       res = await export_bbgl_data(id,self.userid,path)
+       self.write(json.dumps(res))
+
+class exp_download(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id   = self.get_argument("id")
+       res = await get_download(id)
+       v_json = json.dumps(res,cls=DateEncoder)
+       print(v_json)
+       self.write(v_json)
+
+class exp_export_data_delete(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id = self.get_argument("id")
+       res = await del_export(id)
+       v_json = json.dumps(res, cls=DateEncoder)
+       print(v_json)
+       self.write(v_json)

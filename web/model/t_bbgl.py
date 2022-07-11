@@ -77,7 +77,6 @@ async def save_bbgl(bbdm,bbmc,dsid,db,userid):
         traceback.print_exc()
         return {'code': -1, 'message': '保存失败!'}
 
-
 async def save_bbgl_header(bbdm,name,width):
     try:
         st = "insert into t_bbgl_header(bbdm,xh,header_name,header_width) \
@@ -87,7 +86,6 @@ async def save_bbgl_header(bbdm,name,width):
     except Exception as e:
         traceback.print_exc()
         return {'code': -1, 'message': '保存失败!'}
-
 
 async def save_bbgl_filter(bbdm, filter_name, filter_code,filter_type):
     try:
@@ -309,7 +307,6 @@ async def update_export(p_id,p_status,p_process,p_file='',p_real_file='',p_size=
             " set a.status='{}',a.process='{}',a.file='{}',a.real_file='{}',a.size='{}',a.error='{}' where id={}"\
         .format(p_status,p_process,p_file,p_real_file,p_size,p_error,p_id)
     await async_processer.exec_sql(st)
-
 
 def set_header_styles(p_fontsize,p_color):
     header_borders = xlwt.Borders()
