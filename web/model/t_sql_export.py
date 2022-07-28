@@ -5,6 +5,7 @@
 # @File : t_sql_export.py
 # @Software: PyCharm
 
+import re
 import xlwt
 import json
 import traceback
@@ -303,9 +304,9 @@ async def update_export(p_id,p_status,p_process,p_file='',p_real_file='',p_size=
         .format(p_status,p_process,p_file,p_real_file,p_size,p_error,p_id)
     await async_processer.exec_sql(st)
 
-async def export_insert(p_userid):
-    st = """insert into t_sql_export_task(status,process,creator,create_date)
-                values('1','0%','{}',now())""".format(p_userid)
+async def export_insert(p_user,p_bbid):
+    st = """insert into t_sql_export_task(release_id,status,process,creator,create_date)
+                values({},'1','0%','{}',now())""".format(p_bbid,p_user['login_name'])
     id = await async_processer.exec_ins_sql(st)
     return id
 
@@ -325,6 +326,7 @@ async def exp_data_xlsx(static_path,p_bbid,p_data,p_id):
 
         # write body
         n_batch_size = 500
+        ILLEGAL_CHARACTERS_RE = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
         n_total_rows = len(p_data['data'])
         row_data = row_data + 1
         for i in p_data['data']:
@@ -332,7 +334,8 @@ async def exp_data_xlsx(static_path,p_bbid,p_data,p_id):
                 if i[j] is None:
                    ws.cell(row=row_data, column=j+1,value='')
                 else:
-                   ws.cell(row=row_data, column=j+1,value = str(i[j]))
+                   v = ILLEGAL_CHARACTERS_RE.sub(r'',str(i[j]))
+                   ws.cell(row=row_data, column=j+1,value = v)
             row_data = row_data + 1
             if row_data % n_batch_size == 0:
                await update_export(p_id, '3', str(round(row_data/75,2)*100)+'%')
@@ -370,14 +373,14 @@ async def query_bbgl_data(p_bbid):
         result = {"data": '', "column": '', "status": '1', "msg": traceback.print_exc()}
         return result
 
-async def export_bbgl_data(p_exp_id,userid,path):
+async def export_data(p_bbid,p_user,path):
     try:
-        id  = await export_insert(p_exp_id,userid)
-        res = await query_bbgl_data(p_exp_id)
+        id  = await export_insert(p_user,p_bbid)
+        res = await query_bbgl_data(p_bbid)
         if res['status'] == '1':
            return {"code": -1, "message":res['msg']}
         await update_export(id,'2','20%')
-        zip_file = await exp_data_xlsx(path,p_exp_id,res,id)
+        zip_file = await exp_data_xlsx(path,p_bbid,res,id)
         return {"code": 0, "message": zip_file}
     except:
         return {"code": -1, "message": traceback.print_exc()}
@@ -389,6 +392,7 @@ async def get_download(p_id):
 async def del_export(p_id):
     try:
         res = await get_download(p_id)
+        print('res=',res)
         os.system('rm -f {0}'.format(res.get('real_file')))
         st = "delete from t_sql_export_task where id={}".format(p_id)
         await async_processer.exec_sql(st)
@@ -396,3 +400,31 @@ async def del_export(p_id):
     except Exception as e:
         traceback.print_exc()
         return {'code': -1, 'message': '删除失败!'}
+
+async def query_exp_task(p_dsid, p_creater,p_key):
+    vv=''
+    if p_key != '':
+        vv = vv + " and a.sqltext like '%{0}%'\n".format(p_key)
+
+    if p_dsid != '':
+        vv = vv + " and a.dbid='{0}'\n".format(p_dsid)
+
+    if p_creater != '':
+        vv = vv + " and a.creator='{0}'\n".format(p_creater)
+
+    st = """SELECT 
+                 a.id AS task_id,
+                 b.id AS expid,	 
+                 SUBSTR(d.dmmc,1,20) AS flag,
+                 a.process,
+                 a.size,
+                 c.name,
+                 DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i:%s')  AS  create_date
+            FROM t_sql_export_task a,t_sql_export b,t_user c,t_dmmx d 
+            WHERE a.release_id=b.id
+              AND a.creator=c.login_name
+              AND a.status=d.dmm
+              AND d.dm='43'
+             {}""".format(vv)
+    print('st=',st)
+    return  await async_processer.query_list(st)

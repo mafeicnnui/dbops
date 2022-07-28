@@ -386,25 +386,22 @@
                                  $('#cur_release_num').val(id)
                                  if (status == '审核成功') {
                                       msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" disabled onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="删除" disabled onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="expXls(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloadXls(\''+id+'\');"/>' +'&nbsp;'
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" onclick="expXls(\''+id+'\');"/>' +'&nbsp;'
                                  } else if (status == '已导出' || status == '审核失败') {
                                      msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" disabled onclick="expXls(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" disabled onclick="downloadXls(\''+id+'\');"/>' +'&nbsp;'
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" disabled onclick="expXls(\''+id+'\');"/>' +'&nbsp;';
                                  } else {
                                       msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
                                           '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delExp(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" disabled onclick="expXls(\''+id+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" disabled onclick="downloadXls(\''+id+'\');"/>' +'&nbsp;'
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="导出" disabled onclick="expXls(\''+id+'\');"/>' +'&nbsp;'
                                  }
                                  return msg;
                             }
@@ -488,14 +485,14 @@
                         type: "post",
                         datatype: "json",
                         data:{
-                            id: row
+                            id: id
                         },
                         success: function (dataSet) {
                             if (dataSet.code=='0') {
-                               swal("已删除!", "工单["+row+"]已删除!", "success");
+                               swal("已删除!", "工单["+id+"]已删除!", "success");
                                $("#query_btn").click();
                            } else {
-                               swal("删除失败!", "工单["+row+"]:"+dataSet.message+"!", "error");
+                               swal("删除失败!", "工单["+id+"]:"+dataSet.message+"!", "error");
                            }
                         }
                    });
@@ -506,12 +503,24 @@
 
      }
 
-       function expXls(id){
-
-       }
-
-       function downloadXls(id){
-
+       function expXls(p_id){
+           $.ajax({
+                url: "/sql/exp/data",
+                type: "post",
+                datatype: "json",
+                data: {
+                    id  : p_id,
+                },
+                success: function (dataSet) {
+                    console.log('export=',dataSet)
+                    if (dataSet.code == 0) {
+                        swal("导出成功", "", "success")
+                         $("#query_btn").click();
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                },
+            })
        }
 
        $(document).ready(function() {

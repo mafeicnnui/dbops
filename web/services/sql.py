@@ -25,7 +25,7 @@ from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common          import DateEncoder,get_server
 from web.utils                 import base_handler
 from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql, \
-    upd_exp_sql, query_exp_audit,export_bbgl_data,del_export,get_download
+    upd_exp_sql, query_exp_audit, del_export, get_download, export_data, query_exp_task
 
 
 class sqlquery(base_handler.TokenHandler):
@@ -605,12 +605,29 @@ class exp_audit_query(base_handler.TokenHandler):
         self.write(v_json)
 
 
+class sql_exp_task(base_handler.TokenHandler):
+   async def get(self):
+        self.render("./order/exp_task.html",
+                    dss = await get_dss_sql_audit(self.username),
+                    creater = await get_users(self.username))
+
+class _sql_exp_task(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid    = self.get_argument("dbid")
+       creater = self.get_argument("creater")
+       key     = self.get_argument("key")
+       res = await query_exp_task(dbid, creater,key)
+       self.write(json.dumps(res))
+
+
 class exp_export_data(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
-       id = self.get_argument("id")
+       user  = await get_user_by_loginame(self.username)
+       id    = self.get_argument("id")
        path  = self.get_template_path().replace("templates", "static")
-       res = await export_bbgl_data(id,self.userid,path)
+       res   = await export_data(id,user,path)
        self.write(json.dumps(res))
 
 class exp_download(base_handler.TokenHandler):

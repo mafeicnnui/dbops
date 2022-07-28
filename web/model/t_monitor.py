@@ -240,7 +240,8 @@ async def del_templete(p_templete_code):
         return {'code': '-1', 'message': '删除失败!'}
 
 async def get_templetes_by_templete_id(p_templeteid):
-    sql = """SELECT  name FROM t_monitor_templete where status='1' and instr('{0}',id)>0""".format(p_templeteid)
+    #sql = """SELECT  name FROM t_monitor_templete where status='1' and instr('{0}',id)>0""".format(p_templeteid)
+    sql = """SELECT  name FROM t_monitor_templete where status='1' and id={}""".format(p_templeteid)
     rs = await async_processer.query_list(sql)
     t=''
     for i in range(len(rs)):

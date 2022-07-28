@@ -59,7 +59,10 @@ class mysqlDsManager:
         return self.cursor
 
     def __exit__(self,exe_type,exe_val,exe_tb):
-        self.conn.commit()
+        if exe_type is None and exe_val is None and exe_tb is None:
+           self.conn.commit()
+        else:
+           self.conn.rollback()
         self.cursor.close()
         self.conn.close()
 
@@ -98,7 +101,7 @@ class sync_processer:
     def exec_sql_by_ds_multi(p_ds,p_sql):
         with mysqlDsManager(p_ds) as cur:
             for st in reReplace(p_sql):
-                cur.execute(st)
+               cur.execute(st)
 
     def query_one(p_sql):
          with mysqlManager(db) as cur:
