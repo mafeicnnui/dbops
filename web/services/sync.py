@@ -405,9 +405,10 @@ class sync_log_analyze(base_handler.TokenHandler):
         begin_date = self.get_argument("begin_date")
         end_date   = self.get_argument("end_date")
         d_list     = {}
-        v_list1,v_list2 = await query_sync_log_analyze(market_id,tagname,begin_date,end_date)
+        v_list1,v_list2,v_list3 = await query_sync_log_analyze(market_id,tagname,begin_date,end_date)
         d_list['data1'] = v_list1
         d_list['data2'] = v_list2
+        d_list['data3'] = v_list3
         v_json = json.dumps(d_list)
         self.write(v_json)
 

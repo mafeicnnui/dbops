@@ -172,9 +172,15 @@ async def query_sync_log_analyze(market_id,tagname,begin_date,end_date):
         v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date+' 0:0:0')
     if end_date != '':
         v_where = v_where + " and a.create_date<='{0}'\n".format(end_date+' 23:59:59')
-    sql1 = """SELECT  cast(a.create_date as char) as create_date,a.duration  FROM t_db_sync_tasks_log a  {0}  ORDER BY a.create_date """.format(v_where)
-    sql2 = """SELECT  cast(a.create_date as char) as create_date,a.amount FROM t_db_sync_tasks_log a {0}  ORDER BY a.create_date""".format(v_where)
-    return await async_processer.query_list(sql1),await async_processer.query_list(sql2)
+    if  tagname.count('real')== 0:
+        sql1 = """SELECT  cast(a.create_date as char) as create_date,a.duration  FROM t_db_sync_tasks_log a  {0}  ORDER BY a.create_date """.format(v_where)
+        sql2 = """SELECT  cast(a.create_date as char) as create_date,a.amount FROM t_db_sync_tasks_log a {0}  ORDER BY a.create_date""".format(v_where)
+        return await async_processer.query_list(sql1),await async_processer.query_list(sql2),[]
+    else:
+        sql1 = """SELECT  cast(a.create_date as char) as create_date,a.event_amount  FROM t_db_sync_real_log a  {0}  ORDER BY a.create_date """.format(v_where)
+        return [],[],await async_processer.query_list(sql1)
+
+
 
 async def query_sync_log_analyze2(market_id,sync_type,begin_date,end_date):
     v_where = ' where 1=1 '

@@ -50,9 +50,9 @@
      <p></p>
 
     <!-- db-backup-time row -->
-    <div id='backup-container' class="container">
+    <div id='sync-container' class="container">
         <div class="row">
-             <div class="col-lg-12">
+             <div class="col-lg-12" id='sync-container-time'>
                 <div class="card-box">
                     <h6 class="header-title m-t-0"><small>同步时长[秒]</small></h6>
                     <div id="db-sync-time" style="height: 280px;"></div>
@@ -60,7 +60,7 @@
             </div><!-- end col -->
         </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" id='sync-container-amount'>
                 <div class="card-box">
                     <h6 class="header-title m-t-0"><small>同步记录[条]</small></h6>
                     <div id="db-sync-amount" style="height: 280px;"></div>
@@ -68,6 +68,16 @@
             </div><!-- end col -->
         </div>
         <!-- end row -->
+        <div class="row">
+            <div class="col-lg-12" id='sync-container-event'>
+                <div class="card-box">
+                    <h6 class="header-title m-t-0"><small>同步事件[条]</small></h6>
+                    <div id="db-sync-event" style="height: 280px;"></div>
+                </div>
+            </div><!-- end col -->
+        </div>
+        <!-- end row -->
+
     </div>
 
     <script src="{{static_url('plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
@@ -119,21 +129,34 @@
                       success: function (dataSet) {
                          $('#db-sync-time').html('')
                          $('#db-sync-amount').html('')
-                         $('#backup-container').show()
-
+                         $('#db-sync-event').html('')
+                         $('#sync-container').show()
                          var $barData_db_sync_time = new Array(dataSet['data1'].length);
                          var $barData_db_sync_amount = new Array(dataSet['data2'].length);
+                         var $barData_db_sync_event = new Array(dataSet['data3'].length);
 
-                         for (i=0;i<dataSet['data1'].length;i++){
-                             $barData_db_sync_time[i]={'y':dataSet['data1'][i][0],'a':dataSet['data1'][i][1]}
+                         if ($('#tagname').val().indexOf('real') == -1 ) {
+                             $('#sync-container-time').show()
+                             $('#sync-container-amount').show()
+                             $('#sync-container-event').hide()
+                             for (i=0;i<dataSet['data1'].length;i++){
+                                 $barData_db_sync_time[i]={'y':dataSet['data1'][i][0],'a':dataSet['data1'][i][1]}
+                             }
+                             for (i=0;i<dataSet['data2'].length;i++){
+                                 $barData_db_sync_amount[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1]}
+                             }
+                             createLineChart('db-sync-time', $barData_db_sync_time, 'y', ['a'], ['同步时长'],['0.9'],['#ffbeba'],['#999999'], ['#ffbeba'],'s');
+                             createLineChart('db-sync-amount', $barData_db_sync_amount, 'y', ['a'], ['同步记录'],['0.9'],['#ffc353'],['#999999'], ['#FFBD33'],'');
+                         } else {
+                             $('#sync-container-time').hide()
+                             $('#sync-container-amount').hide()
+                             $('#sync-container-event').show()
+                             for (i=0;i<dataSet['data3'].length;i++){
+                                 $barData_db_sync_event[i]={'y':dataSet['data3'][i][0],'a':dataSet['data3'][i][1]}
+                             }
+                             createLineChart('db-sync-event', $barData_db_sync_event, 'y', ['a'], ['同步事件'],['0.9'],['#ffc353'],['#999999'], ['#FFBD33'],'');
                          }
-
-                         for (i=0;i<dataSet['data2'].length;i++){
-                             $barData_db_sync_amount[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1]}
-                         }
-                         createLineChart('db-sync-time', $barData_db_sync_time, 'y', ['a'], ['同步时长'],['0.9'],['#ffbeba'],['#999999'], ['#ffbeba'],'s');
-                         createLineChart('db-sync-amount', $barData_db_sync_amount, 'y', ['a'], ['同步记录'],['0.9'],['#ffc353'],['#999999'], ['#FFBD33'],'');
-                      },
+                      }
                  });
 
               });
