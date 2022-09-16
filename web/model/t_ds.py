@@ -190,6 +190,7 @@ async def get_ds_by_dsid(p_dsid):
                   stream_load,
                   related_id
            from t_db_source where id={0}""".format(p_dsid)
+    print(sql)
     ds = await async_processer.query_dict_one(sql)
     ds['password'] = '' if ds['password']=='' else await aes_decrypt(ds['password'],ds['user'])
     ds['url'] = 'MySQL://{0}:{1}/{2}'.format(ds['ip'], ds['port'], ds['service'])
