@@ -172,7 +172,7 @@ async def query_sync_log_analyze(market_id,tagname,begin_date,end_date):
         v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date+' 0:0:0')
     if end_date != '':
         v_where = v_where + " and a.create_date<='{0}'\n".format(end_date+' 23:59:59')
-    if  tagname.count('real')== 0:
+    if  tagname.count('logger')== 0 and tagname.count('executer')== 0:
         sql1 = """SELECT  cast(a.create_date as char) as create_date,a.duration  FROM t_db_sync_tasks_log a  {0}  ORDER BY a.create_date """.format(v_where)
         sql2 = """SELECT  cast(a.create_date as char) as create_date,a.amount FROM t_db_sync_tasks_log a {0}  ORDER BY a.create_date""".format(v_where)
         return await async_processer.query_list(sql1),await async_processer.query_list(sql2),[]
@@ -326,20 +326,21 @@ async def save_sync_real(p_backup):
         api_server           = p_backup['api_server']
         status               = p_backup['status']
         desc_db_prefix       = p_backup['desc_db_prefix']
+        ch_cluster_name      = p_backup['ch_cluster_name']
 
         st = """insert into t_db_sync_config(
                           sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
                           comments,run_time,sync_table,batch_size,batch_size_incr,script_path,
                           script_file,python3_home,api_server,status,
-                          sync_gap,process_num,desc_db_prefix,apply_timeout,log_db_id,log_db_name)
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,log_db_id,log_db_name,ch_cluster_name)
                   values('{0}','{1}','{2}','{3}','{4}','{5}',
                          '{6}','{7}','{8}','{9}','{10}','{11}',
                          '{12}','{13}','{14}','{15}',
-                         '{16}','{17}','{18}','{19}','{20}','{21}')
+                         '{16}','{17}','{18}','{19}','{20}','{21}','{13}')
                """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
                           task_desc, run_time, sync_tables,sync_batch_size, sync_batch_size_incr,script_base,
                           script_name, python3_home, api_server, status,
-                          sync_gap,process_num,desc_db_prefix,apply_timeout,sour_db_log_server,log_db_name)
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,sour_db_log_server,log_db_name,ch_cluster_name)
         await async_processer.exec_sql(st)
 
         # st = """insert into t_db_sync_tab_config(sync_tag,db_name,schema_name,tab_name,STATUS)
@@ -388,20 +389,21 @@ async def save_sync_clone_real(p_backup):
         api_server           = p_backup['api_server']
         status               = p_backup['status']
         desc_db_prefix       = p_backup['desc_db_prefix']
+        ch_cluster_name      = p_backup['ch_cluster_name']
 
         st = """insert into t_db_sync_config(
                           sour_db_id,desc_db_id,server_id,sync_tag,sync_ywlx,sync_type,
                           comments,run_time,sync_table,batch_size,batch_size_incr,script_path,
                           script_file,python3_home,api_server,status,
-                          sync_gap,process_num,desc_db_prefix,apply_timeout,log_db_id,log_db_name)
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,log_db_id,log_db_name,ch_cluster_name)
                   values('{0}','{1}','{2}','{3}','{4}','{5}',
                          '{6}','{7}','{8}','{9}','{10}','{11}',
                          '{12}','{13}','{14}','{15}',
-                         '{16}','{17}','{18}','{19}','{20}','{21}')
+                         '{16}','{17}','{18}','{19}','{20}','{21}','{22}')
                """.format(sour_db_server, desc_db_server, sync_server,sync_tag, sync_ywlx, sync_type,
                           task_desc, run_time, sync_tables,sync_batch_size, sync_batch_size_incr,script_base,
                           script_name, python3_home, api_server, status,
-                          sync_gap,process_num,desc_db_prefix,apply_timeout,sour_db_log_server,log_db_name)
+                          sync_gap,process_num,desc_db_prefix,apply_timeout,sour_db_log_server,log_db_name,ch_cluster_name)
         await async_processer.exec_sql(st)
 
         st = """delete from t_db_sync_tab_config where sync_tag='{}'""".format(sync_tag)
@@ -635,6 +637,7 @@ async def upd_sync_real(p_sync):
         status               = p_sync['status']
         sync_id              = p_sync['sync_id']
         desc_db_prefix       = p_sync['desc_db_prefix']
+        ch_cluster_name      = p_sync['ch_cluster_name']
 
         sql = """update t_db_sync_config 
                      set server_id         ='{0}',
@@ -658,15 +661,16 @@ async def upd_sync_real(p_sync):
                          apply_timeout     ='{18}',
                          desc_db_prefix    ='{19}',
                          log_db_id         ='{20}',
-                         log_db_name       ='{21}'                         
-                   where id={22}""".format(sync_server, sour_db_server, desc_db_server,
+                         log_db_name       ='{21}',
+                         ch_cluster_name   ='{22}'                                   
+                   where id={23}""".format(sync_server, sour_db_server, desc_db_server,
                                            sync_tag, sync_ywlx, sync_type,
                                            task_desc, run_time, sync_tables,
                                            sync_batch_size, sync_batch_size_incr, sync_gap,
                                            script_base, script_name,python3_home,
                                            api_server, status,process_num,
                                            apply_timeout,desc_db_prefix,sour_db_log_server,log_db_name,
-                                           sync_id)
+                                           ch_cluster_name,sync_id)
         print(sql)
         await async_processer.exec_sql(sql)
         result={}
@@ -952,7 +956,8 @@ async def get_sync_by_syncid(p_syncid):
                     process_num,
                     desc_db_prefix,
                     log_db_id,
-                    log_db_name
+                    log_db_name,
+                    ch_cluster_name
              from t_db_sync_config where id={0}""".format(p_syncid)
     return await async_processer.query_dict_one(sql)
 
