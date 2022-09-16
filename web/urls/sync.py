@@ -46,15 +46,10 @@ sync = [
         (r"/get_mysql_columns", get_mysql_columns),
         (r"/get_mssql_incr_columns", get_mssql_incr_columns),
         (r"/get_mysql_incr_columns", get_mysql_incr_columns),
-
         (r"/get_ck_databases", get_ck_databases),
-
         (r"/sync/real", sync_real),
         (r"/sync/real/add/save", sync_real_save),
         (r"/sync/real/edit/save", sync_real_edit_save),
         (r"/sync/real/clone/save", sync_real_clone_save),
-
-
-
 
 ]

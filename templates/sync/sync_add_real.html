@@ -58,7 +58,7 @@
              <div class="col-md-6">
                    <div class="form-group">
                         <div>
-                            <label class="col-md-2 control-label"><span id="s_desc_db_server">*</span>目标数据库</label>
+                            <label class="col-md-2 control-label"><span>*</span>目标数据库</label>
                         </div>
                        <div class="col-md-10">
                             <select class="form-control select" id="desc_db_server" >
@@ -71,8 +71,23 @@
                    </div>
               </div>
           </div>
+
           <div class="row">
-          <div class="col-md-6">
+              <div class="col-md-6">
+                <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>CH集群名称</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="ch_cluster_name"  type="text" class="form-control" placeholder="请输入集群名称" value="">
+                    </div>
+
+               </div>
+             </div>
+          </div>
+
+          <div class="row">
+             <div class="col-md-6">
                 <div class="form-group">
                     <div>
                         <label class="col-md-2 control-label"><span>*</span>日志数据库</label>
@@ -88,6 +103,7 @@
                 </div>
               </div>
            </div>
+
            <div class="row">
               <div class="col-md-6">
                <div class="form-group">
@@ -541,7 +557,7 @@
              });
 
             if (desc_ds['proxy_status'] == '0') {
-                swal("doris数据库代理未启用!", "", "error")
+                swal("数据库代理未启用!", "", "error")
                 return false;
             } else {
                 return true;
@@ -962,7 +978,24 @@
         $(document).ready(function() {
            set_selected();
            $("#div-add-panal").css("height",$("#div-tab-panal").height());
+
            $("#add").click(function () {
+
+              if ($('#desc_db_server').val() != '') {
+                    if (!get_doris_ds()) {
+                       return;
+                    }
+                    if (desc_ds['db_type'] == '10') {
+                        if ($('#ch_cluster_name').val()=='') {
+                             swal("CH集群名称不能为空!", "", "error")
+                             return false;
+                        }
+                    }
+              } else {
+                  swal("目标数据库不能为空!", "", "error")
+                  return false;
+              }
+
               $.ajax({
                 url: "/sync/real/add/save",
                 type: "post",
@@ -990,6 +1023,7 @@
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val(),
                     desc_db_prefix       : $('#desc_db_prefix').val(),
+                    ch_cluster_name      : $('#ch_cluster_name').val()
                 },
                 success: function (dataSet) {
                     if (dataSet.code==0) {

@@ -24,17 +24,17 @@
                 </select>
              </div>
          </div>
-         <div class="col-md-2">
+         <div class="col-md-3">
              <div class="input-group">
               <span class="input-group-addon">同步日期起</span>
-              <input  id="begin_date"  type="text" class="form-control datepicker" placeholder="同步日期起" value="{{begin_date}}">
+              <input  id="begin_date"  type="text" class="form-control datetimepicker" placeholder="同步日期起" value="{{begin_date}}">
               <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
             </div>
          </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
              <div class="input-group">
               <span class="input-group-addon">同步日期止</span>
-              <input  id="end_date"  type="text" class="form-control datepicker" placeholder="同步日期止" value="{{end_date}}" >
+              <input  id="end_date"  type="text" class="form-control datetimepicker" placeholder="同步日期止" value="{{end_date}}" >
               <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
             </div>
         </div>
@@ -86,6 +86,9 @@
     <!--Morris Chart-->
 	<script src="{{static_url('plugins/morris/morris.min.js')}}"></script>
 
+    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+
+
     <script>
          $(document).ready(function() {
               $('#backup-container').hide();
@@ -127,15 +130,19 @@
                           swal({title: "正在加载中...",type: "info",timer: 1000,showConfirmButton: false});
                       },
                       success: function (dataSet) {
+                         console.log('dataSet=',dataSet)
                          $('#db-sync-time').html('')
                          $('#db-sync-amount').html('')
                          $('#db-sync-event').html('')
                          $('#sync-container').show()
-                         var $barData_db_sync_time = new Array(dataSet['data1'].length);
-                         var $barData_db_sync_amount = new Array(dataSet['data2'].length);
-                         var $barData_db_sync_event = new Array(dataSet['data3'].length);
-
-                         if ($('#tagname').val().indexOf('real') == -1 ) {
+                         console.log($('#tagname').val())
+                         console.log($('#tagname').val().indexOf('logger'))
+                         console.log($('#tagname').val().indexOf('executer'))
+                         if ($('#tagname').val().indexOf('logger') == -1 && $('#tagname').val().indexOf('executer') == -1 ) {
+                             var $barData_db_sync_time = new Array(dataSet['data1'].length);
+                             var $barData_db_sync_amount = new Array(dataSet['data2'].length);
+                             console.log($barData_db_sync_time)
+                             console.log($barData_db_sync_amount)
                              $('#sync-container-time').show()
                              $('#sync-container-amount').show()
                              $('#sync-container-event').hide()
@@ -148,6 +155,7 @@
                              createLineChart('db-sync-time', $barData_db_sync_time, 'y', ['a'], ['同步时长'],['0.9'],['#ffbeba'],['#999999'], ['#ffbeba'],'s');
                              createLineChart('db-sync-amount', $barData_db_sync_amount, 'y', ['a'], ['同步记录'],['0.9'],['#ffc353'],['#999999'], ['#FFBD33'],'');
                          } else {
+                             var $barData_db_sync_event = new Array(dataSet['data3'].length);
                              $('#sync-container-time').hide()
                              $('#sync-container-amount').hide()
                              $('#sync-container-event').show()

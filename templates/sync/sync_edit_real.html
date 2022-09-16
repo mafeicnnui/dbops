@@ -80,6 +80,21 @@
            </div>
          </div>
        </div>
+
+       <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>集群名称</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="ch_cluster_name"  type="text" class="form-control" placeholder="请输入集群名称" value="{{ch_cluster_name}}">
+                </div>
+
+           </div>
+         </div>
+       </div>
+
        <div class="row">
           <div class="col-md-6">
             <div class="form-group">
@@ -959,7 +974,15 @@
         });
 
         $("#save").click(function () {
-          console.log(" status:",$('#status').val())
+          if (!get_doris_ds()) {
+                 return;
+            }
+            if (desc_ds['db_type'] == '10') {
+                if ($('#ch_cluster_name').val()=='') {
+                     swal("CH集群名称不能为空!", "", "error")
+                     return false;
+                }
+          }
           $.ajax({
             url: "/sync/real/edit/save",
             type: "post",
@@ -988,6 +1011,7 @@
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val(),
                     desc_db_prefix       : $('#desc_db_prefix').val(),
+                    ch_cluster_name      : $('#ch_cluster_name').val()
             },
             success: function (dataSet) {
                 console.log(dataSet.code, dataSet.message);
