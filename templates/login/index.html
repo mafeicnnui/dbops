@@ -803,6 +803,7 @@
                             console.log('token updated!')
                             console.log('taken=',dataSet.token)
                             window.localStorage['token'] = dataSet.token
+                            window.history.replaceState('','EaseBase1.0','http://10.2.39.18:81'+'/?token='+window.localStorage.getItem("token"))
                          }
                   });
             }
@@ -1005,6 +1006,7 @@
                 if (! is_white_list(settings['url'])) {
                      console.log('flush token!')
                      refresh_token()
+
                 }
             }).ajaxStop(function() {
                 end_Loader('main-container-div')
