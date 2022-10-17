@@ -128,10 +128,13 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         p_ds['port'] = p_ds['proxy_server'].split(':')[1]
         db = get_connection_ds_read_limit(p_ds, read_timeout)
 
+    # handle the trailing semicolon
+    p_sql = p_sql[0:-1] if p_sql[-1] == ';' else p_sql
     try:
         # check sql rwos
         cr = db.cursor()
         st = """select count(0) from ({}) AS x""".format(p_sql)
+        print('st1=',st)
         cr.execute(st)
         rs = cr.fetchone()
         rule = await get_audit_rule('switch_query_rows')
@@ -143,6 +146,7 @@ async def get_mysql_result(p_ds,p_sql,curdb):
             return result
 
         # execute query
+        print('st2=',p_sql)
         cr.execute(p_sql)
         rs = cr.fetchall()
         # get sensitive column

@@ -361,7 +361,7 @@ async def exp_data_xlsx(static_path,p_bbid,p_data,p_id):
         await update_export(p_id, '3', '100%',rzip_file,zip_file,file_size)
         return rzip_file
     except:
-        await update_export(p_id, '34', '0%', '' ,'','',traceback.print_exc())
+        await update_export(p_id, '4', '0%', '' ,'','',traceback.print_exc())
 
 async def query_bbgl_data(p_bbid):
     try:

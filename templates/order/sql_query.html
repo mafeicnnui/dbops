@@ -84,7 +84,7 @@
 
            <div  class="col-md-3">
                 <div class="form-group">
-                      <button type="button" id='query_btn'    class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
+                      <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
                       <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="美化" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
                       &nbsp;&nbsp;<span id="query_time"></span>
                  </div>
@@ -450,6 +450,7 @@
 
               var lock = false;
               var table;
+              var query_error = false;
               var db_type;
               set_editor("ace-editor")
               set_editor("ace-editor-tab-defi")
@@ -656,7 +657,8 @@
                              }
                          });
                   } else if (key=='query_tab_100'){
-                      if (db_type == '2'){
+
+                        if (db_type == '2'){
                              sql = 'select top 100 * from '+curNode;
                         } else if (db_type == '0') {
                              sql = 'select * from '+curNode+ ' limit 100';
@@ -664,8 +666,11 @@
                              sql = 'select * from '+curNode+ ' limit 100';
                         }
                         var editor = ace.edit("ace-editor");
-                        if (table!=undefined ){
-                            table.destroy();
+
+                        if (table!=undefined){
+                            if (query_error == false) {
+                                table.destroy();
+                            }
                             $('#example').empty();
                         } else {
                             $('#example').empty();
@@ -688,7 +693,9 @@
                     success: function (dataSet) {
                         if (dataSet.status=="1") {
                             showtips('error',dataSet.msg);
+                            query_error = true
                         } else {
+                            query_error = false
                             table=$('#example').DataTable( {
                                "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                 destroy       : true,
@@ -704,7 +711,7 @@
                                 "language"    : get_languages()
                              });
 
-                              if (dataSet.msg!='' ){
+                             if (dataSet.msg!='' ){
                                     $('#query_time').css('color','red')
                                     $('#query_time').text('查询用时:'+dataSet.msg+'秒')
                              } else {
@@ -781,21 +788,20 @@
               $("#query_btn").click(function() {
                     $('#query_time').text('');
                     var editor = ace.edit("ace-editor");
-                    v_sql=editor.session.getValue()
+                    v_sql=editor.session.getTextRange(editor.getSelectionRange())
 
                     if($('#db_source').val()=='') {
                        showtips('info','请选择数据源!');
                        return false;
                     }
-
                     if(v_sql=='') {
-                      showtips('info','请选中查询语句!');
-                      return false;
+                      v_sql=editor.session.getValue()
                     }
 
-                    var editor = ace.edit("ace-editor");
                     if (table!=undefined ){
-                        table.destroy();
+                        if (query_error == false) {
+                            table.destroy();
+                        }
                         $('#example').empty();
                     } else {
                         $('#example').empty();
