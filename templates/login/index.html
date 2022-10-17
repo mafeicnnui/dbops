@@ -802,8 +802,9 @@
                           success: function (dataSet) {
                             console.log('token updated!')
                             console.log('taken=',dataSet.token)
+                            console.log('taken.domain=',window.location.host)
                             window.localStorage['token'] = dataSet.token
-                            window.history.replaceState('','EaseBase1.0','http://10.2.39.18:81'+'/?token='+window.localStorage.getItem("token"))
+                            window.history.replaceState('','EaseBase1.0','http://'+window.location.host+'/?token='+window.localStorage.getItem("token"))
                          }
                   });
             }
