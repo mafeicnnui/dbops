@@ -9,7 +9,7 @@ from web.services.sql import sqlquery, sql_query, sqlrelease, sql_check, sql_for
 from web.services.sql    import sql_release,sqlaudit,sql_audit,sqlrun,sql_run,sql_audit_query,sql_audit_detail,sql_run_query
 from web.services.sql    import get_tree_by_sql,query_sql_release,sql_detail,sql_exp_xls,sql_exp_pdf,sql_rollback_exp
 from web.services.sql    import sql_exp_query,_sql_exp_query,_sql_exp_save,_sql_exp_update,_sql_exp_delete,_sql_exp_export,_sql_exp_detail
-from web.services.sql    import expaudit,exp_audit,exp_detail,exp_audit_query,exp_export_data,exp_download,exp_export_data_delete
+from web.services.sql    import expaudit,exp_audit,exp_detail,exp_audit_query,exp_export_data,exp_download,exp_export_data_delete,es_query,esquery,es_index
 
 sql = [
         (r"/sql/query", sqlquery),
@@ -49,5 +49,9 @@ sql = [
         (r"/sql/exp/data", exp_export_data),
         (r"/sql/exp/download", exp_download),
         (r"/sql/exp/data/delete", exp_export_data_delete),
+
+        (r"/es/query", esquery),
+        (r"/es/_query", es_query),
+        (r"/es/_index", es_index),
 
 ]

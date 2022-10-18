@@ -19,6 +19,7 @@ import string
 import sqlparse
 import re
 import requests
+import decimal
 
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
@@ -620,13 +621,12 @@ class DateEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return obj.strftime('%Y-%m-%d %H:%M:%S')
-
         elif isinstance(obj, datetime.date):
             return obj.strftime("%Y-%m-%d")
-
+        elif isinstance(obj, decimal.Decimal):
+            return str(obj)
         else:
             return json.JSONEncoder.default(self, obj)
-
 
 class create_captcha:
     def __init__(self):
@@ -711,7 +711,6 @@ class create_captcha:
         self.image = self.image.transform((self.pic_size[0], self.pic_size[1]), Image.PERSPECTIVE, params)  # 创建扭曲
         self.image = self.image.filter(ImageFilter.EDGE_ENHANCE_MORE)  # 滤镜，边界加强
         return self.image
-
 
 async def get_audit_rule(p_key):
     sql = "select * from t_sql_audit_rule where rule_code='{0}'".format(p_key)

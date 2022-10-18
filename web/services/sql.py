@@ -14,7 +14,7 @@ from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_s
     exp_rollback
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
-    get_ds_by_dsid_by_cdb
+    get_ds_by_dsid_by_cdb, get_dss_sql_query_type
 from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
     get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck
@@ -26,6 +26,8 @@ from web.utils.common          import DateEncoder,get_server
 from web.utils                 import base_handler
 from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql, \
     upd_exp_sql, query_exp_audit, del_export, get_download, export_data, query_exp_task
+
+from web.model.t_es import get_indexes, query_es
 
 
 class sqlquery(base_handler.TokenHandler):
@@ -645,5 +647,37 @@ class exp_export_data_delete(base_handler.TokenHandler):
        id = self.get_argument("id")
        res = await del_export(id)
        v_json = json.dumps(res, cls=DateEncoder)
+       print(v_json)
+       self.write(v_json)
+
+
+class esquery(base_handler.TokenHandler):
+   async def get(self):
+       self.render("./order/es_query.html", dss= await get_dss_sql_query_type('4'))
+
+class es_index(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       result = await get_indexes(dbid)
+       v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
+       v_json = json.dumps(v_dict)
+       self.write(v_json)
+
+class es_query(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       index_name  = self.get_argument("index_name")
+       body = self.get_argument("body")
+       # print('body=',body)
+       # print('body2=',json.loads(body))
+       result = await query_es(dbid,index_name,body)
+       v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
+       v_json = json.dumps(v_dict,
+                  cls=DateEncoder,
+                  ensure_ascii=False,
+                  indent=4,
+                  separators=(',', ':')) + '\n'
        print(v_json)
        self.write(v_json)

@@ -272,6 +272,14 @@ async def get_dss_sql_query(logon_name):
         """.format(d_user['userid'])
     return  await async_processer.query_list(sql)
 
+async def get_dss_sql_query_type(p_db_type):
+    sql="""select cast(id as char) as id,a.db_desc as name
+           from t_db_source a,t_dmmx b
+           where a.db_type=b.dmm and b.dm='02' and a.status='1' and a.db_type='{0}'
+               order by a.db_desc
+        """.format(p_db_type)
+    return  await async_processer.query_list(sql)
+
 async def get_dss_sql_release(logon_name):
     d_user = await get_user_by_loginame(logon_name)
     sql="""select cast(id as char) as id,a.db_desc as name 

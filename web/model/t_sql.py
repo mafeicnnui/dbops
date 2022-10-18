@@ -202,7 +202,6 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         result['column'] = ''
         return result
 
-
 async def get_ck_result(p_ds,p_sql,curdb):
     result   = {}
     columns  = []
