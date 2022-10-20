@@ -2,6 +2,12 @@
 <head>
     <meta charset="utf-8">
     <title>ES查询</title>
+    <style>
+        #div-table-panal-mapping {
+            display:none;
+            height:60%;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,6 +39,19 @@
                       </select>
                 </div>
             </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <div>
+                        <label class="col-md-3 control-label">类型：</label>
+                    </div>
+                    <div class="col-md-8">
+                         <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_type">
+                            <option value='1' selected = "selected">数据</option>
+                            <option value='2' >映射</option>
+                         </select>
+                   </div>
+                </div>
+           </div>
             <div  class="col-md-3">
                 <div class="form-group">
                       <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
@@ -58,6 +77,15 @@
                     <div id="div-table" ></div>
                 </div>
             </div>
+
+            <div id='div-table-panal-mapping' class="panel panel-border panel-primary" >
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div id="div-mapping" ></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -236,38 +264,6 @@
              $('#div-table-panal').show()
         }
 
-        function query_table(sql){
-            $.ajax({
-                url     : "/es/_query",
-                type    : "post",
-                datatype: "text",
-                data: {
-                    dbid  :  $('#db_source').val(),
-                    index_name :  $('#curr_db').val(),
-                    body:sql
-                },
-                success: function (dataSet) {
-                   console.log('query_table=',dataSet)
-                   console.log('query_table2=',dataSet.data.hits)
-                   console.log('query_table3=',dataSet.data.hits.hits)
-                   var editor = ace.edit("div-table")
-                   editor.setValue('')
-                   editor.insert(JSON.stringify(dataSet.data.hits.hits, null, "\t"))
-                },
-             });
-          }
-
-        function upd_curr_db(dataSet){
-               $("#curr_db").empty();
-               $("#curr_db").append("<option value=''>...</option>");
-                for (i=0;i<dataSet['data'].length;i++){
-                   var val  = dataSet['data'][i];
-                   var text = dataSet['data'][i];
-                   $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-               }
-               $("#curr_db").selectpicker('refresh')
-          }
-
         function set_editor(p_editor) {
                   var editor = ace.edit(p_editor);
                   editor.setTheme("ace/theme/xcode");
@@ -299,6 +295,54 @@
                   editor.setHighlightActiveLine(true);
               }
 
+        function query_table(sql){
+            if ($('#query_type').val() == '1') {
+                  $.ajax({
+                        url     : "/es/_query",
+                        type    : "post",
+                        datatype: "text",
+                        data: {
+                            dbid  :  $('#db_source').val(),
+                            index_name :  $('#curr_db').val(),
+                            body:sql
+                        },
+                        success: function (dataSet) {
+                           console.log('dataSet1=',dataSet)
+                           var editor = ace.edit("div-table")
+                           editor.setValue('')
+                           editor.insert(JSON.stringify(dataSet.data, null, "\t"))
+                        },
+                  })
+            } else {
+                     $.ajax({
+                        url     : "/es/_query/mapping",
+                        type    : "post",
+                        datatype: "text",
+                        data: {
+                            dbid  :  $('#db_source').val(),
+                            index_name :  $('#curr_db').val(),
+                        },
+                        success: function (dataSet) {
+                           var editor = ace.edit("div-mapping")
+                           editor.setValue('')
+                           editor.insert(JSON.stringify(dataSet.data, null, "\t"))
+                        },
+                  })
+            }
+
+          }
+
+        function upd_curr_db(dataSet){
+               $("#curr_db").empty();
+               $("#curr_db").append("<option value=''>...</option>");
+                for (i=0;i<dataSet['data'].length;i++){
+                   var val  = dataSet['data'][i];
+                   var text = dataSet['data'][i];
+                   $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+               }
+               $("#curr_db").selectpicker('refresh')
+        }
+
         $("#query_btn").click(function() {
                 var editor = ace.edit("ace-editor");
                 v_sql=editor.session.getTextRange(editor.getSelectionRange())
@@ -316,12 +360,36 @@
                    return false;
                 }
 
-                if(v_sql=='') {
-                   showtips('info','条件不能为空!');
-                   return false;
+                if(v_sql=='' ) {
+                   if ($('#query_type').val() == '1') {
+                        showtips('info','条件不能为空!');
+                        return false;
+                   } else {
+                       var editor = ace.edit("ace-editor");
+                       editor.setValue('')
+                       $('#ace-editor-panal').hide()
+                   }
                 }
                 query_table(v_sql)
         });
+
+        $('#query_type').change(function(){
+            var editor1 = ace.edit("ace-editor");
+            var editor2 = ace.edit("div-table");
+            if ($('#query_type').val() == '1') {
+                editor1.setValue('')
+                editor2.setValue('')
+                $('#ace-editor-panal').show()
+                $('#div-table-panal').show()
+                $('#div-table-panal-mapping').hide()
+                set_styles()
+            } else {
+                editor1.setValue('')
+                $('#ace-editor-panal').hide()
+                $('#div-table-panal').hide()
+                $('#div-table-panal-mapping').show()
+           }
+        })
 
         $("#db_source").on("changed.bs.select",function(){
                $.ajax({
@@ -345,10 +413,11 @@
         $(document).ready(function() {
               set_editor("ace-editor")
               set_editor_result("div-table")
+              set_editor_result("div-mapping")
               $("#db_source").selectpicker('refresh')
               $("#curr_db").selectpicker('refresh')
+              $("#query_type").selectpicker('refresh')
               set_styles()
-
         });
  </script>
 

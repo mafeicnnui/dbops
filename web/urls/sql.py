@@ -5,7 +5,8 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.sql import sqlquery, sql_query, sqlrelease, sql_check, sql_format, sql_check_result,sql_exp_task, _sql_exp_task
+from web.services.sql import sqlquery, sql_query, sqlrelease, sql_check, sql_format, sql_check_result, sql_exp_task, \
+        _sql_exp_task, es_query_mapping
 from web.services.sql    import sql_release,sqlaudit,sql_audit,sqlrun,sql_run,sql_audit_query,sql_audit_detail,sql_run_query
 from web.services.sql    import get_tree_by_sql,query_sql_release,sql_detail,sql_exp_xls,sql_exp_pdf,sql_rollback_exp
 from web.services.sql    import sql_exp_query,_sql_exp_query,_sql_exp_save,_sql_exp_update,_sql_exp_delete,_sql_exp_export,_sql_exp_detail
@@ -52,6 +53,7 @@ sql = [
 
         (r"/es/query", esquery),
         (r"/es/_query", es_query),
+        (r"/es/_query/mapping", es_query_mapping),
         (r"/es/_index", es_index),
 
 ]

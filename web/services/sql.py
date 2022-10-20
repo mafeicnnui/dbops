@@ -27,7 +27,7 @@ from web.utils                 import base_handler
 from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql, \
     upd_exp_sql, query_exp_audit, del_export, get_download, export_data, query_exp_task
 
-from web.model.t_es import get_indexes, query_es
+from web.model.t_es import get_indexes, query_es, query_es_mapping
 
 
 class sqlquery(base_handler.TokenHandler):
@@ -670,8 +670,6 @@ class es_query(base_handler.TokenHandler):
        dbid   = self.get_argument("dbid")
        index_name  = self.get_argument("index_name")
        body = self.get_argument("body")
-       # print('body=',body)
-       # print('body2=',json.loads(body))
        result = await query_es(dbid,index_name,body)
        v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
        v_json = json.dumps(v_dict,
@@ -679,5 +677,18 @@ class es_query(base_handler.TokenHandler):
                   ensure_ascii=False,
                   indent=4,
                   separators=(',', ':')) + '\n'
-       print(v_json)
+       self.write(v_json)
+
+class es_query_mapping(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       index_name  = self.get_argument("index_name")
+       result = await query_es_mapping(dbid,index_name)
+       v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
+       v_json = json.dumps(v_dict,
+                  cls=DateEncoder,
+                  ensure_ascii=False,
+                  indent=4,
+                  separators=(',', ':')) + '\n'
        self.write(v_json)
