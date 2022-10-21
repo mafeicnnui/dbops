@@ -4,7 +4,7 @@
 # @Author  : 马飞
 # @File    : comm.py.py
 # @Software: PyCharm
-
+import aiomysql
 import pymysql
 import pymssql
 import pymongo
@@ -93,6 +93,39 @@ def get_connection_ds_read_limit(p_ds,p_timeout):
     user     = p_ds['user']
     password = p_ds['password']
     conn     = pymysql.connect(host=ip, port=int(port), user=user, passwd=password, db=service, charset='utf8',read_timeout=p_timeout,connect_timeout=p_timeout)
+    return conn
+
+async def get_connection_ds_read_limit_aiomysql(p_ds,p_timeout,p_event_loop):
+    ip       = p_ds['ip']
+    port     = p_ds['port']
+    service  = p_ds['service']
+    user     = p_ds['user']
+    password = p_ds['password']
+    conn     = await aiomysql.connect(host=ip,
+                                      port=int(port),
+                                      user=user,
+                                      password=password,
+                                      db=service,
+                                      connect_timeout=p_timeout,
+                                      loop= p_event_loop,
+                                      charset='utf8')
+    return conn
+
+async def get_connection_ds_read_limit_aiomysql_dict(p_ds,p_timeout,p_event_loop):
+    ip       = p_ds['ip']
+    port     = p_ds['port']
+    service  = p_ds['service']
+    user     = p_ds['user']
+    password = p_ds['password']
+    conn     = await aiomysql.connect(host=ip,
+                                      port=int(port),
+                                      user=user,
+                                      password=password,
+                                      db=service,
+                                      connect_timeout =p_timeout,
+                                      loop= p_event_loop,
+                                      charset='utf8',
+                                      cursorclass=aiomysql.DictCursor)
     return conn
 
 def get_connection_ds_read_limit_ck(p_ds,p_timeout):

@@ -13,7 +13,7 @@ import requests
 import traceback
 from web.model.t_ds   import get_ds_by_dsid
 from web.utils.common import get_connection_ds_sqlserver, get_connection_ds_read_limit, get_seconds, \
-    get_connection_ds_read_limit_ck
+    get_connection_ds_read_limit_ck, get_connection_ds_read_limit_aiomysql
 from web.utils.common import exception_info_mysql,format_mysql_error
 from web.model.t_sql_check import get_audit_rule
 
@@ -201,6 +201,102 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         result['data'] = ''
         result['column'] = ''
         return result
+
+async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
+    result   = {}
+    columns  = []
+    data     = []
+    p_env    = ''
+    start_time = datetime.datetime.now()
+    #get read timeout
+    read_timeout = int((await get_audit_rule('switch_timeout'))['rule_value'])
+    print('read_timeout=',read_timeout)
+    if p_ds['db_env']=='1':
+        p_env='PROD'
+    if p_ds['db_env']=='2':
+        p_env='DEV'
+
+    p_ds['service'] = curdb
+    if p_ds['proxy_status'] == '0':
+        db = await get_connection_ds_read_limit_aiomysql(p_ds, read_timeout,p_event_loop)
+    else:
+        p_ds['ip'] = p_ds['proxy_server'].split(':')[0]
+        p_ds['port'] = p_ds['proxy_server'].split(':')[1]
+        db =await  get_connection_ds_read_limit_aiomysql(p_ds, read_timeout,p_event_loop)
+
+    # handle the trailing semicolon
+    p_sql = p_sql[0:-1] if p_sql[-1] == ';' else p_sql
+    try:
+        # check sql rwos
+        cr = await db.cursor()
+        st = """select count(0) from ({}) AS x""".format(p_sql)
+        print('st1=',st)
+        await cr.execute(st)
+        rs = await cr.fetchone()
+        rule = await get_audit_rule('switch_query_rows')
+        if rs[0] > int(rule['rule_value']):
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+
+        # execute query
+        print('st2=',p_sql)
+        await cr.execute(p_sql)
+        rs = await cr.fetchall()
+        # get sensitive column
+        c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
+        # process desc
+        i_sensitive = []
+        desc = cr.description
+        for i in range(len(desc)):
+            if desc[i][0] in c_sensitive:
+                i_sensitive.append(i)
+            columns.append({"title": desc[i][0]})
+
+        #process data
+        for i in rs:
+            tmp = []
+            for j in range(len(desc)):
+                if i[j] is None:
+                   tmp.append('')
+                else:
+                   if j in  i_sensitive:
+                       tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
+                   else:
+                       tmp.append(str(i[j]))
+            data.append(tmp)
+
+        result['status'] = '0'
+        result['msg'] =str(get_seconds(start_time))
+        result['data'] = data
+        result['column'] = columns
+        db.close()
+        return result
+    except pymysql.err.OperationalError as e:
+        err= traceback.format_exc()
+        if err.find('timed out')>0:
+            rule  = await get_audit_rule('switch_timeout')
+            result['status'] = '1'
+            result['msg'] = rule['error'].format(rule['rule_value'])
+            result['data'] = ''
+            result['column'] = ''
+            return result
+        else:
+            result['status'] = '1'
+            result['msg'] = format_mysql_error(p_env, exception_info_mysql())
+            result['data'] = ''
+            result['column'] = ''
+            return result
+    except:
+        print('get_mysql_result=',traceback.format_exc())
+        result['status'] = '1'
+        result['msg'] = format_mysql_error(p_env,exception_info_mysql())
+        result['data'] = ''
+        result['column'] = ''
+        return result
+
 
 async def get_ck_result(p_ds,p_sql,curdb):
     result   = {}
@@ -608,6 +704,53 @@ async def exe_query(p_dbid,p_sql,curdb):
 
     return result
 
+async def exe_query_aio(p_dbid,p_sql,curdb,p_event_loop):
+    result = {}
+
+    # 查询校验
+    val = check_sql(p_dbid, p_sql,curdb)
+    if val['status'] != '0':
+        return val
+
+    p_ds  = await get_ds_by_dsid(p_dbid)
+
+    # 查询 MySQL 数据源
+    if p_ds['db_type'] in('0','8'):
+        if p_ds['proxy_status'] == '1':
+           result = get_mysql_proxy_result(p_ds,p_sql,curdb)
+        else:
+           print('get_mysql_result_aiomysql')
+           result = await get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop)
+
+    # 查询 SQLServer 数据源
+    if p_ds['db_type'] == '2':
+        if p_ds['proxy_status'] == '1':
+            result = get_sqlserver_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_sqlserver_result(p_ds, p_sql, curdb)
+
+    # 查询Redis 数据源
+    if p_ds['db_type'] == '5':
+        if p_ds['proxy_status'] == '1':
+            result = get_redis_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_redis_result(p_ds, p_sql, curdb)
+
+    # 查询MongoDB 数据源
+    if p_ds['db_type'] == '6':
+        if p_ds['proxy_status'] == '1':
+            result = get_mongo_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = get_mongo_result(p_ds, p_sql, curdb)
+
+    # 查询ClickHouse 数据源
+    if p_ds['db_type'] == '9':
+        if p_ds['proxy_status'] == '1':
+            result = get_ck_proxy_result(p_ds, p_sql, curdb)
+        else:
+            result = await get_ck_result(p_ds, p_sql, curdb)
+
+    return result
 
 async def exe_query_exp(p_dbid,p_sql,curdb):
     result = {}

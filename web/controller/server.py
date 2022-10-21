@@ -6,6 +6,7 @@
 # @Software: PyCharm
 
 import sys
+import asyncio
 import tornado.ioloop
 import tornado.web
 import tornado.options
@@ -24,6 +25,7 @@ class Application(tornado.web.Application):
                         cookie_secret = "2379874hsdhf0234990sdhsaiuofyasop977djdj",
                         xsrf_cookies  = False,
                         debug         = True,
+                        event_loop    = asyncio.get_event_loop(),
                         login_url     = "/login")
         tornado.web.Application.__init__(self, handlers, **settings)
 

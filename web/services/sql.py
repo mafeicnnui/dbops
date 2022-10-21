@@ -7,7 +7,7 @@
 
 import json
 import traceback
-from web.model.t_sql           import exe_query
+from web.model.t_sql import exe_query, exe_query_aio
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
     query_audit_sql, check_sql, format_sql, get_sql_release, get_order_xh, check_order_xh, update_order, query_rollback, \
@@ -40,7 +40,10 @@ class sql_query(base_handler.TokenHandler):
        dbid   = self.get_argument("dbid")
        sql    = self.get_argument("sql")
        curdb  = self.get_argument("cur_db")
-       result = await exe_query(dbid,sql,curdb)
+       print('settings=', self.settings)
+       #result = await exe_query(dbid,sql,curdb)
+       result = await exe_query_aio(dbid, sql, curdb,self.settings['event_loop'])
+
        v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
        v_json = json.dumps(v_dict)
        self.write(v_json)
