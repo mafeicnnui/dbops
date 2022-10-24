@@ -456,6 +456,7 @@
         $(document).ready(function() {
               var lock = false;
               var table;
+              var query_error = false;
               set_editor("ace-editor");
               set_editor("ace-editor-tab-defi")
 
@@ -556,8 +557,8 @@
                                     items: {
                                         "tab_definition"   : {name: "表定义",   icon: "fa-first-order"},
                                         "idx_definition"   : {name: "索引定义", icon: "fa-diamond"},
-                                        "query_tab_100"    : {name: "查询数据", icon: "fa fa-search"},
-                                        "refresh"          : {name: "刷新库",   icon: "fa fa-refresh"},
+                                        "query_tab_100"    : {name: "查询数据", icon: "fa-search"},
+                                        "refresh"          : {name: "刷新库",   icon: "fa-refresh"},
                                     }
                                 });
                                  //加载数据库列表
@@ -635,7 +636,9 @@
                         }
                         var editor = ace.edit("ace-editor");
                         if (table!=undefined ){
-                            table.destroy();
+                            if (query_error == false) {
+                                table.destroy();
+                            }
                             $('#example').empty();
                         } else {
                             $('#example').empty();
@@ -663,7 +666,9 @@
                         console.log(dataSet);
                         if (dataSet.status=="1") {
                             showtips('error',dataSet.msg);
+                            query_error = true
                         } else {
+                            query_error = false
                             table=$('#example').DataTable( {
                                "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                 destroy       : true,
@@ -746,7 +751,11 @@
                             showtips('info', dataSet.msg);
                         } else {
                             if (table!=undefined ){
-                                table.destroy();
+                                if (query_error == false) {
+                                    table.destroy();
+                                }
+                                $('#example').empty();
+                            } else {
                                 $('#example').empty();
                             }
                             table=$('#example').DataTable( {
