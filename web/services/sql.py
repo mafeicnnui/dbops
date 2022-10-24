@@ -7,6 +7,8 @@
 
 import json
 import traceback
+
+from web.model.t_redis import query_redis, get_redis_db
 from web.model.t_sql import exe_query, exe_query_aio
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
@@ -695,3 +697,32 @@ class es_query_mapping(base_handler.TokenHandler):
                   indent=4,
                   separators=(',', ':')) + '\n'
        self.write(v_json)
+
+class redisquery(base_handler.TokenHandler):
+   async def get(self):
+       self.render("./order/redis_query.html", dss= await get_dss_sql_query_type('5'))
+
+class redis_query(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       db_name  = self.get_argument("db_name")
+       key_name = self.get_argument("key_name")
+       result = await query_redis(dbid,db_name,key_name)
+       v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
+       v_json = json.dumps(v_dict,
+                           cls=DateEncoder,
+                           ensure_ascii=False,
+                           indent=4,
+                           separators=(',', ':')) + '\n'
+       self.write(v_json)
+
+class redis_db(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       result = await get_redis_db(dbid)
+       v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
+       v_json = json.dumps(v_dict)
+       self.write(v_json)
+
