@@ -27,11 +27,17 @@
             right: 0;
             left: 225px;
         }
+
        #div-tree-panal,#ace-editor-panal,#div-table-panal {
           display:none;
        }
 
       .modal-lg-detail {
+            width :60%;
+            height:30%;
+      }
+
+      .modal-lg-demo {
             width :60%;
             height:30%;
       }
@@ -84,9 +90,10 @@
 
            <div  class="col-md-3">
                 <div class="form-group">
-                      <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
+                      <button type="button" id='query_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
                       <button type="button" id='beauty_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="美化" data-original-title="美化"><i class="mdi mdi-yelp"></i></button>
-                      &nbsp;&nbsp;<span id="query_time"></span>
+                      <button type="button" id='demo_btn'    disabled class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="示例" data-original-title="示例"><i class="mdi mdi-help"></i></button>
+                     &nbsp;<span id="query_time"></span>
                  </div>
            </div>
          </form>
@@ -121,6 +128,8 @@
                 <div class="panel-body">
                     <div id='div-table'>
                         <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
+                    </div>
+                    <div id='div-result'>
                     </div>
                 </div>
             </div>
@@ -159,6 +168,27 @@
             <div class="modal-body">
                 <div class="row">
                     <div id='ace-editor-tab-defi' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+   <!--查看DEMO详情  -->
+   <div id="con-close-modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-demo">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id='demo-header'></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor-demo' class="col-md-12"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -444,16 +474,51 @@
         })
 
         $(document).ready(function() {
+
+             Function.prototype.getMultiLine = function() {
+                var lines = new String(this);
+                lines = lines.substring(lines.indexOf("/*") + 3, lines.lastIndexOf("*/"));
+                return lines;
+             }
+
+             var mongo_demo = function() {
+                /*
+                db.monitorLog.find({"terminalNo":"10000201"}).limit(5)
+                db.getCollection('monitorLog').find({"terminalNo":"10000201"}).limit(2)
+                db.monitorLog.find({"terminalNo":"10000201"},{"terminalNo":1}).limit(5)
+                db.monitorLog.find({"terminalNo":"10000201"},{"terminalNo":1,"ip":1}).limit(5)
+                db.getCollection('monitorLog').find({"terminalNo":"10000201"},{"terminalNo":1}).limit(5)
+                db.getCollection('monitorLog').find({"terminalNo":"10000201"},{"terminalNo":1,"ip":1}).limit(5)
+                db.monitorLog.find({}).limit(10)
+                db.getCollection('monitorLog').find({}).limit(5)
+                db.monitorLog.find({},{"terminalNo":1}).limit(10)
+                db.monitorLog.find({'_id':ObjectId("5d5e5f338488d5000145b343")})
+                db.getCollection('monitorLog').find({'_id':ObjectId("5d5e5f338488d5000145b343")})
+                db.monitorLog.find({'_id':ObjectId("5d5e5f338488d5000145b343")},{"terminalNo":1}}).limit(5)
+                db.monitorLog.find({"_id":{$in:[ObjectId("5d5e5f338488d5000145b343")]}}).limit(3)
+                db.monitorLog.find({"_id":{$in:[ObjectId("5d5e5f338488d5000145b343"),ObjectId("5d5e5fc88488d5000145b344")]}}).limit(3)
+                db.monitorLog.find({"_id":{$in:[ObjectId("5d5e5f338488d5000145b343"),ObjectId("5d5e5fc88488d5000145b344")]}},{"terminalNo":1}).limit(5)
+                db.monitorLog.find({"logType" : 1},{"terminalNo":1,"logType":1}).limit(5)
+                db.monitorLog.find({"logType" : {$in:[1,2]}},{"terminalNo":1,"logType":1}).limit(5)
+                db.getCollection("monitorLog").find({ $and : [{"logType" : { "$gte" : 1 }}, {"logType" : { "$lte" : 3 }}] }).limit(10)
+                db.getCollection("monitorLog").find({ $and : [{"logType" : { "$gte" : 1 }}, {"logType" : { "$lte" : 3 }}] },{"terminalNo":1,"ip":1}).limit(10)
+                db.getCollection("monitorLog").find({ "$and" : [{"logType" : { "$gte" : 1 }}] }).limit(10)
+                db.getCollection("monitorLog").find({ $and : [{"logType" : { "$gte" : 1 }}] }).limit(1)
+                db.getCollection("monitorLog").find({ '$and'  :   [{"receiveLogDt" : { "$gte" : ISODate("2019-08-22 00:00:00") }}, {"receiveLogDt" : { "$lte" : ISODate("2019-08-22 23:59:59") }}]}).limit(3)
+                db.getCollection("monitorLog").find({ $and : [{"receiveLogDt" : { "$gte" : ISODate("2019-08-22 00:00:00") }}, {"receiveLogDt" : { "$lte" : ISODate("2019-08-22 23:59:59") }}]}).limit(3)
+                */
+             }
+
               //可搜索选择框初始化
               $('.selectpicker').selectpicker({ size: 10 });
               $(":file").filestyle({input: false});
 
               var lock = false;
               var table;
-              var query_error = false;
-              var db_type;
+              var query_status = false;
               set_editor("ace-editor")
               set_editor("ace-editor-tab-defi")
+              set_editor("ace-editor-demo")
 
               function get_db_type() {
                   var db_type=''
@@ -482,6 +547,30 @@
                        $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                    }
                    $("#curr_db").selectpicker('refresh')
+              }
+
+              function upd_result(){
+                  if (get_db_type()=='6') {
+                        $('#div-table').hide()
+                        $('#div-result').show()
+                        console.log('mongodb')
+                         var editor = ace.edit("div-result")
+                         editor.setValue('')
+                    } else {
+                        $('#div-table').show()
+                        $('#div-result').hide()
+                        console.log('mysql')
+                    }
+              }
+
+              function upd_demo(){
+                  console.log('update demo....')
+                  if (get_db_type()=='6') {
+                       console.log('update demo....false')
+                       $('#demo_btn').attr('disabled',false)
+                    } else {
+                       $('#demo_btn').attr('disabled',true)
+                    }
               }
 
               function upd_curr_db_select(dataSet,curdb){
@@ -592,8 +681,14 @@
                                     }
                                 });
 
-                                 //加载数据库列表
+                                //加载数据库列表
                                 upd_curr_db(dataSet)
+
+                                //更新结果div
+                                upd_result()
+
+                                //更新demo按钮状态
+                                upd_demo()
 
                             }
                         });
@@ -603,7 +698,8 @@
 
               function get_menu_result(key,db_type,curNode) {
                   if (key=='tab_definition') {
-                        $.ajax({
+                      if (db_type == '2' || db_type == '0' ) {
+                          $.ajax({
                             url     : "/get_tab_ddl",
                             type    : "post",
                             datatype: "json",
@@ -629,8 +725,14 @@
                                }
                              }
                          });
+                      } else {
+                          showtips('info','不支持的操作!');
+                          return false;
+                      }
+
                   } else if (key =='idx_definition') {
-                        $.ajax({
+                       if (db_type == '2' || db_type == '0' ) {
+                           $.ajax({
                             url     : "/get_tab_idx",
                             type    : "post",
                             datatype: "json",
@@ -656,31 +758,39 @@
                                }
                              }
                          });
+                       } else if (db_type=='6') {
+                           showtips('info','功能开发中!');
+                       }  else {
+                           showtips('info','不支持的操作!');
+                           return false;
+                       }
                   } else if (key=='query_tab_100'){
 
                         if (db_type == '2'){
                              sql = 'select top 100 * from '+curNode;
                         } else if (db_type == '0') {
-                             sql = 'select * from '+curNode+ ' limit 100';
+                            sql = 'select * from ' + curNode + ' limit 100';
+                        } else if (db_type == '6') {
+                            sql = 'db.'+curNode+'.find({}).limit(10)'.format(curNode)
                         } else {
-                             sql = 'select * from '+curNode+ ' limit 100';
+                            sql = 'select * from '+curNode+ ' limit 100';
                         }
                         var editor = ace.edit("ace-editor");
-
-                        if (table!=undefined){
-                            if (query_error == false) {
-                                table.destroy();
-                            }
-                            $('#example').empty();
-                        } else {
-                            $('#example').empty();
-                        }
                         editor.setValue(sql);
                         query_table(sql)
                      }
               }
 
               function query_table(sql){
+                if (table!=undefined ){
+                    if (query_status == false) {
+                        table.destroy();
+                    }
+                    $('#example').empty();
+                } else {
+                    $('#example').empty();
+                }
+
                 $.ajax({
                     url     : "/sql/_query",
                     type    : "post",
@@ -693,30 +803,43 @@
                     success: function (dataSet) {
                         if (dataSet.status=="1") {
                             showtips('error',dataSet.msg);
-                            query_error = true
+                            query_status = true
                         } else {
-                            query_error = false
-                            table=$('#example').DataTable( {
-                               "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                destroy       : true,
-                                async         : true,
-                                data          : dataSet.data,
-                                columns       : dataSet.column,
-                                scrollX       : true,
-                                scrollY       : $("#h_tab_height").val(),
-                                //scrollCollapse: true,
-                                paging        : false,
-                                ordering      : false,
-                                autoWidth     : true,
-                                "language"    : get_languages()
-                             });
+                            if (get_db_type()=='6') {
+                                query_status = true
+                                $('#div-table').hide()
+                                $('#div-result').show()
+                                console.log('mongodb')
+                                 var editor = ace.edit("div-result")
+                                 editor.setValue('')
+                                 editor.insert(JSON.stringify(dataSet.data, null, "\t"))
+                            } else {
+                                query_status = false
+                                $('#div-table').show()
+                                $('#div-result').hide()
+                                console.log('mysql')
+                                table=$('#example').DataTable( {
+                                   "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                    destroy       : true,
+                                    async         : true,
+                                    data          : dataSet.data,
+                                    columns       : dataSet.column,
+                                    scrollX       : true,
+                                    scrollY       : $("#h_tab_height").val(),
+                                    //scrollCollapse: true,
+                                    paging        : false,
+                                    ordering      : false,
+                                    autoWidth     : true,
+                                    "language"    : get_languages()
+                                 });
+                            }
 
-                             if (dataSet.msg!='' ){
-                                    $('#query_time').css('color','red')
-                                    $('#query_time').text('查询用时:'+dataSet.msg+'秒')
-                             } else {
-                                     $('#query_time').text('');
-                             }
+                            if (dataSet.msg!='' ){
+                                 $('#query_time').css('color','red')
+                                 $('#query_time').text('查询用时:'+dataSet.msg+'秒')
+                            } else {
+                                 $('#query_time').text('');
+                            }
                        }
                     },
                  });
@@ -735,8 +858,22 @@
                   editor.setOptions({
                      enableBasicAutocompletion: true,
                      enableSnippets: true,
-                     enableLiveAutocompletion: true
+                     enableLiveAutocompletion: true,
+                     wrapBehavioursEnabled:false
                   });
+                  editor.setHighlightActiveLine(true);
+              }
+
+              function set_editor_result(p_editor) {
+                  var editor = ace.edit(p_editor);
+                  editor.setTheme("ace/theme/xcode");
+                  editor.getSession().setMode("ace/mode/json");
+                  editor.getSession().setUseSoftTabs(true);
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                  editor.setFontSize(14);
+                  editor.setOption("wrap", "free");
+                  editor.setReadOnly(true);
                   editor.setHighlightActiveLine(true);
               }
 
@@ -797,23 +934,30 @@
                     if(v_sql=='') {
                       v_sql=editor.session.getValue()
                     }
-
-                    if (table!=undefined ){
-                        if (query_error == false) {
-                            table.destroy();
-                        }
-                        $('#example').empty();
-                    } else {
-                        $('#example').empty();
-                    }
                     query_table(v_sql)
 
+              });
+
+              $("#demo_btn").click(function() {
+                    var editor = ace.edit("ace-editor-demo");
+                    editor.setValue('')
+                    editor.insert(mongo_demo.getMultiLine());
+                    $('#demo-header').text('示例信息')
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal-demo').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
               });
 
               $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);
               $('#con-close-modal2').modal({ keyboard: false,backdrop:false});
-              setTimeout("set_styles()",1000);
+              setTimeout("set_styles()",1000)
+              set_editor_result('div-result')
+              $('#div-result').hide()
+              $('#div-table').show()
         });
  </script>
 

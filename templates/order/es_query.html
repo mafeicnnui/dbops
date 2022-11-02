@@ -7,6 +7,10 @@
             display:none;
             height:60%;
         }
+        .modal-lg-demo {
+            width :60%;
+            height:30%;
+        }
     </style>
 </head>
 
@@ -55,7 +59,9 @@
             <div  class="col-md-3">
                 <div class="form-group">
                       <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
-                 </div>
+                      <button type="button" id='demo_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="示例" data-original-title="示例"><i class="mdi mdi-help"></i></button>
+
+                </div>
            </div>
          </form>
     </div>
@@ -89,7 +95,163 @@
         </div>
     </div>
 
+   <!--查看DEMO详情  -->
+   <div id="con-close-modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-demo">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id='demo-header'></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor-demo' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
    <script type="text/javascript">
+
+         var es_demo =
+               [
+                {
+                  "query":{
+                       "term":{
+                            "_id" : "325333945838571520"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                      "match_all":{}
+                   }
+                },
+                {
+                    "from": 0,
+                    "size": 100
+                },
+                {
+                  "query":{
+                       "term":{
+                            "schema": "block_user"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "term":{
+                            "block_users.sex" : 2
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "term":{
+                            "block_users.birthday": "1994-07-05T00:00:00"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "term":{
+                            "block_users.create_user_name": "林丽双"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "wildcard":{
+                            "block_users.create_user_name": "*双"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "wildcard":{
+                            "block_users.nick_name": "*收集*"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                      "bool":{
+                          "must":[
+                            {
+                                "term":{
+                                    "block_users.id": 788
+                                 }
+                            },
+                            {
+                                "term":{
+                                    "block_users.create_user_name": "林丽双"
+                                }
+                            }]
+                       }
+                  }
+                },
+                {
+                  "query":{
+                       "wildcard":{
+                            "block_users.nick_name": "*星火*"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "term":{
+                            "block_users.personl_id": "3653641857"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "wildcard":{
+                            "block_users.introduction": "*长空*"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "wildcard":{
+                            "block_users.nick_name": "长野星火尽散"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "match_phrase":{
+                            "block_users.nick_name": "长野星火尽散"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "wildcard":{
+                            "block_users.nick_name": "*星火*"
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "term":{
+                            "block_users.user_id": 335251997581463550
+                        }
+                   }
+                },
+                {
+                  "query":{
+                       "range":{
+                           "block_users.user_id" : {"gte":335251997581463550,"lte":335251997581463552 }
+                        }
+                   }
+                }
+              ]
 
         function set_screen_size(n_height){
              if (n_height <= 657)
@@ -373,6 +535,20 @@
                 query_table(v_sql)
         });
 
+        $("#demo_btn").click(function() {
+                var editor = ace.edit("ace-editor-demo");
+                editor.setValue('')
+                var demo= JSON.stringify(es_demo, null, "\t")
+                editor.insert(demo);
+                $('#demo-header').text('示例信息')
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-close-modal-demo').modal({
+                   keyboard: false,
+                   backdrop:false
+                });
+         });
+
         $('#query_type').change(function(){
             var editor1 = ace.edit("ace-editor");
             var editor2 = ace.edit("div-table");
@@ -414,6 +590,7 @@
               set_editor("ace-editor")
               set_editor_result("div-table")
               set_editor_result("div-mapping")
+              set_editor("ace-editor-demo")
               $("#db_source").selectpicker('refresh')
               $("#curr_db").selectpicker('refresh')
               $("#query_type").selectpicker('refresh')

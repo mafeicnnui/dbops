@@ -16,6 +16,7 @@ from web.utils.common import get_connection_ds_sqlserver, get_connection_ds_read
     get_connection_ds_read_limit_ck, get_connection_ds_read_limit_aiomysql
 from web.utils.common import exception_info_mysql,format_mysql_error
 from web.model.t_sql_check import get_audit_rule
+from web.utils.mongo_query import mongo_client
 
 def check_sql(p_dbid,p_sql,curdb):
     result = {}
@@ -648,8 +649,29 @@ def get_ck_proxy_result_dict(p_ds,p_sql,curdb):
 def get_mongo_proxy_result():
     pass
 
-def get_mongo_result():
-    pass
+def get_mongo_result(p_ds, p_sql, curdb):
+    res = {}
+    try:
+        print('p_ds=',p_ds)
+        mongo = mongo_client(p_ds['ip'],
+                             p_ds['port'],
+                             p_ds['service'],
+                             curdb,
+                             p_ds['user'],
+                             p_ds['password'])
+        rs = mongo.find_by_where(p_sql)
+        res['status'] = '0'
+        res['msg'] = ''
+        res['data'] = rs
+        res['column'] = ''
+        return res
+    except:
+        res['status'] = '1'
+        res['msg'] = traceback.print_exc()
+        res['data'] = ''
+        res['column'] = ''
+        return res
+
 
 def get_redis_proxy_result():
     pass

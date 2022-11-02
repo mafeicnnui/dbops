@@ -19,7 +19,7 @@ from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, ge
     get_ds_by_dsid_by_cdb, get_dss_sql_query_type
 from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
-    get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck
+    get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo
 from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,get_tab_structure,get_tab_keys,get_tab_incr_col,query_ds
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
 from web.model.t_dmmx          import get_dmm_from_dm,get_users_from_proj,get_users
@@ -45,9 +45,9 @@ class sql_query(base_handler.TokenHandler):
        print('settings=', self.settings)
        #result = await exe_query(dbid,sql,curdb)
        result = await exe_query_aio(dbid, sql, curdb,self.settings['event_loop'])
-
        v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
-       v_json = json.dumps(v_dict)
+       v_json = json.dumps(v_dict,cls=DateEncoder)
+       print('v_json=',v_json)
        self.write(v_json)
 
 class sql_detail(base_handler.BaseHandler):
@@ -196,6 +196,8 @@ class get_tree_by_sql(base_handler.TokenHandler):
                 result = await get_tree_by_dbid_ck_proxy(dbid)
             else:
                 result = await get_tree_by_dbid_ck(dbid)
+        elif p_ds['db_type'] == '6':
+             result = await get_tree_by_dbid_mongo(dbid)
         self.write({"code": result['code'], "message": result['message'], "url": result['db_url'],"desc":result['desc']})
 
 
@@ -658,7 +660,7 @@ class exp_export_data_delete(base_handler.TokenHandler):
 
 class esquery(base_handler.TokenHandler):
    async def get(self):
-       self.render("./order/es_query.html", dss= await get_dss_sql_query_type('4'))
+       self.render("./order/es_query.html", dss= await get_dss_sql_query_type('4',self.username))
 
 class es_index(base_handler.TokenHandler):
    async def post(self):
@@ -700,7 +702,7 @@ class es_query_mapping(base_handler.TokenHandler):
 
 class redisquery(base_handler.TokenHandler):
    async def get(self):
-       self.render("./order/redis_query.html", dss= await get_dss_sql_query_type('5'))
+       self.render("./order/redis_query.html", dss= await get_dss_sql_query_type('5',self.username))
 
 class redis_query(base_handler.TokenHandler):
    async def post(self):

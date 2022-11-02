@@ -722,7 +722,7 @@
                });
              }
 
-             function conninfo() {
+            function conninfo() {
                $('#con-conninfo-modal').modal({
                   keyboard: false,
                   backdrop:false
@@ -801,8 +801,8 @@
                           },
                           success: function (dataSet) {
                             console.log('token updated!')
-                            console.log('taken=',dataSet.token)
-                            console.log('taken.domain=',window.location.host)
+                            // console.log('taken=',dataSet.token)
+                            // console.log('taken.domain=',window.location.host)
                             window.localStorage['token'] = dataSet.token
                             window.history.replaceState('','EaseBase1.0','http://'+window.location.host+'/?token='+window.localStorage.getItem("token"))
                          }
@@ -916,6 +916,7 @@
                       console.log('file>',$(this).attr("id"))
                       let tabId =$(this).attr("id").split('^')[0]
                       let url=$(this).attr("id").split('^')[1]
+                      //let url=$(this).attr("id").split('^')[1]+'?token='+window.localStorage.getItem("token")
 
                       console.log('tabId=',tabId,url)
                       clearInterval(timer);
@@ -940,8 +941,9 @@
                               tabStatus[tabId]=true;
                           }
                       }
-
+                      console.log('-----------------------------------------1')
                       $('#main-container-div').load(url);
+                      console.log('-----------------------------------------2')
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
@@ -1007,7 +1009,6 @@
                 if (! is_white_list(settings['url'])) {
                      console.log('flush token!')
                      refresh_token()
-
                 }
             }).ajaxStop(function() {
                 end_Loader('main-container-div')

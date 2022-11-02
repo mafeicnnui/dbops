@@ -36,7 +36,9 @@
             <div  class="col-md-3">
                 <div class="form-group">
                       <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
-                 </div>
+                      <button type="button" id='demo_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="帮助" data-original-title="帮助"><i class="mdi mdi-help"></i></button>
+
+                </div>
            </div>
          </form>
     </div>
@@ -320,6 +322,11 @@
                 }
                 query_table(v_sql)
         });
+
+        $("#demo_btn").click(function() {
+               showtips('info','请输入KEY名，多个KEY用逗号隔开!');
+               return false;
+         });
 
         $("#db_source").on("changed.bs.select",function(){
                $.ajax({

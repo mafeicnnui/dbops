@@ -11,6 +11,7 @@ from web.model.t_user      import get_user_by_loginame,get_user_by_userid,get_us
 from web.model.t_ds        import get_ds_by_dsid
 from web.model.t_sql import get_mysql_proxy_result_dict, get_sqlserver_proxy_result_dict, get_mysql_proxy_result, \
     get_ck_proxy_result_dict
+from web.utils.mongo_query import mongo_client
 from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync import  sync_processer
 
@@ -584,6 +585,58 @@ async def get_tree_by_dbid(dbid,msg):
         result['db_url'] = ''
     return result
 
+async def get_tree_by_dbid_mongo(dbid):
+    try:
+        result = {}
+        p_ds   = await get_ds_by_dsid(dbid)
+        mongo = mongo_client(p_ds['ip'], p_ds['port'], auth_db='admin',db='admin', user= p_ds['user'], password=p_ds['password'])
+        rs1 = mongo.get_databases()
+        n_tree = []
+        #print('rs1=',rs1)
+        for db in rs1:
+            n_parent = {
+                'id'  : db,
+                'text': db,
+                'icon': 'mdi mdi-database',
+            }
+            rs2 = mongo.get_collections(db)
+
+            n_nodes = []
+            for tab in rs2:
+                n_child = {
+                    'id'  : tab,
+                    'text': tab,
+                    'icon': 'mdi mdi-table-large',
+                }
+                n_nodes.append(n_child)
+            n_parent['nodes']=n_nodes
+            n_tree.append(n_parent)
+
+        if p_ds['db_type'] =='0':
+            db_url ='MySQL://{}:{}/{}'.format(p_ds['ip'],p_ds['port'],p_ds['service'] )
+        elif p_ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] =='2':
+            db_url = 'SQLServer://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] == '6':
+            db_url = 'Mongo://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        else:
+            db_url =''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc']    = p_ds['db_desc']
+        result['db_url']  = db_url
+
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
+
 def dataConvDict(desc,data):
     res = []
     for i in data:
@@ -595,7 +648,6 @@ def dataConvDict(desc,data):
                 tmp.append(str(i[j]))
             res.append(dict(zip([d[0] for d in desc], tmp)))
     return res
-
 
 async def get_tree_by_dbid_ck(dbid):
     try:
