@@ -247,7 +247,7 @@ async def save_slow(p_slow):
                                    slow_status,api_server)
         await async_processer.exec_sql(statement)
 
-        if db_type == '0':
+        if db_type == '0' and inst_id !='':
            st = """INSERT INTO t_db_inst_parameter(inst_id,NAME,VALUE,TYPE,STATUS,create_date) 
                              VALUES({},'慢日志开关'  ,'{}','mysqld','1',NOW()),
                                    ({},'慢日志文件名','{}','mysqld','1',NOW()),
@@ -318,10 +318,12 @@ async def upd_slow(p_slow):
 async def del_slow(p_slowid):
     try:
         slow = await get_slow_by_slowid(p_slowid)
+        print('slow=',slow)
         await async_processer.exec_sql("delete from t_slow_log  where id='{0}'".format(p_slowid))
-        sql = """delete from  t_db_inst_parameter 
-                    where inst_id={}  and (value like 'slow_query_log%' or value like 'long_query_time%')""".format(slow['inst_id'])
-        await async_processer.exec_sql(sql)
+        if slow['inst_id'] != '':
+            sql = """delete from  t_db_inst_parameter 
+                        where inst_id={}  and (`value` like 'slow_query_log%' or `value` like 'long_query_time%')""".format(slow['inst_id'])
+            await async_processer.exec_sql(sql)
         return {'code': '0', 'message':'删除成功!'}
     except :
         traceback.print_exc()

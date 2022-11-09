@@ -669,9 +669,9 @@ async def upd_sql_run_status(p_sqlid,p_user):
 async def upd_run_status(p_sqlid,p_flag,p_err=None,binlog_file=None,start_pos=None,stop_pos=None):
     try:
         if p_flag == 'before':
-            sql = """update t_sql_release set  status ='3',last_update_date ='{0}',exec_start ='{2}' where id='{3}'""".format(current_time(),current_time(),str(p_sqlid))
+            sql = """update t_sql_release set  status ='3',last_update_date ='{0}',exec_start ='{1}' where id='{2}'""".format(current_time(),current_time(),str(p_sqlid))
         elif p_flag =='after':
-            sql = """update t_sql_release set status ='4',last_update_date ='{0}',exec_end ='{1}',binlog_file='{2}',start_pos='{3}',stop_pos='{4}', error = '' where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
+            sql = """update t_sql_release set status ='4',last_update_date ='{0}',exec_end ='{1}',binlog_file='{2}',start_pos='{3}',stop_pos='{4}', error = '',executor='admin' where id='{5}'""".format(current_time(), current_time(),binlog_file,start_pos,stop_pos,str(p_sqlid))
         elif p_flag=='error':
             sql = """update t_sql_release set  status ='5',last_update_date ='{0}',exec_end ='{1}',error = '{2}',failure_times=failure_times+1 where id='{3}'""".format(current_time(), current_time(), p_err,str(p_sqlid))
         else:
@@ -776,31 +776,38 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
 
     try:
         # get binlog ,start_position
-        await async_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
-        await async_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
-        rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
-        binlog_file=rs1[0]
-        start_position=rs1[1]
+        # await async_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
+        # await async_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
+        # rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
+        # binlog_file=rs1[0]
+        # start_position=rs1[1]
+        #
+        # logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
+        # if check_statement_count(sql) == 1:
+        #     logging.info(('exec single statement:'))
+        #     logging.info(('-----------------------------------------'))
+        #     logging.info(('statement:', sql))
+        #     await async_processer.exec_sql_by_ds(p_ds, sql)
+        # elif check_statement_count(sql) > 1:
+        #     logging.info(('exec multi statement:'))
+        #     logging.info(('-----------------------------------------'))
+        #     #await async_processer.exec_sql_by_ds_multi(p_ds, sql)
+        #     for st in reReplace(sql):
+        #         logging.info(('statement=',st))
+        #         await async_processer.exec_sql_by_ds(p_ds, st)
+        # else:
+        #     pass
+        #
+        # # get stop_position
+        # rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
+        # stop_position=rs2[1]
 
-        logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
         if check_statement_count(sql) == 1:
-            logging.info(('exec single statement:'))
-            logging.info(('-----------------------------------------'))
-            logging.info(('statement:', sql))
-            await async_processer.exec_sql_by_ds(p_ds, sql)
-        elif check_statement_count(sql) > 1:
-            logging.info(('exec multi statement:'))
-            logging.info(('-----------------------------------------'))
-            #await async_processer.exec_sql_by_ds_multi(p_ds, sql)
-            for st in reReplace(sql):
-                logging.info(('statement=',st))
-                await async_processer.exec_sql_by_ds(p_ds, st)
-        else:
-            pass
+            binlog_file,start_position,stop_position = await async_processer.exec_sql_by_ds_new(p_ds, sql)
 
-        # get stop_position
-        rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
-        stop_position=rs2[1]
+        if check_statement_count(sql) > 1:
+            binlog_file,start_position,stop_position = await async_processer.exec_sql_by_ds_multi_new(p_ds, sql)
+
         logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
         await upd_run_status(p_sql_id, 'after',None,binlog_file,start_position,stop_position)
 
@@ -808,20 +815,23 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
 
         # send success mail
-        wkno      = await get_sql_release(p_sql_id)
-        v_title   = '工单执行情况[{}]'.format(wkno['message'])
+        wkno  = await get_sql_release(p_sql_id)
+        if wkno['run_time'] is not None and wkno['run_time'] !='':
+            v_title = '定时工单执行情况[{}]'.format(wkno['message'])
+        else:
+            v_title = '工单执行情况[{}]'.format(wkno['message'])
         nowTime   = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         creator   = (await get_user_by_loginame(wkno['creator']))['name']
         auditor   = (await get_user_by_loginame(wkno['auditor']))['name']
         otype     = (await get_dmmc_from_dm('13',wkno['type']))[0]
         status    = (await get_dmmc_from_dm('41',wkno['status']))[0]
 
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in('10.2.39.18','10.2.39.20','10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
+        # if p_host == "124.127.103.190":
+        #     p_host = "124.127.103.190:65482"
+        # elif p_host in('10.2.39.18','10.2.39.20','10.2.39.21'):
+        #     p_host = '{}:81'.format(p_host)
+        # else:
+        #     p_host = p_host
 
         # send mail
         v_content = get_html_contents()
@@ -839,8 +849,8 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content_wx = get_html_contents_release_wx()
         v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
         v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
+                                             p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
+                                             p_ds['url'])
         v_content_wx = v_content_wx.replace('$$CREATOR$$', creator)
         v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
         v_content_wx = v_content_wx.replace('$$STATUS$$', status)
@@ -855,7 +865,8 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         res['message'] = '执行成功!'
         return res
     except Exception as e:
-        error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'
+        from web.utils.common import format_sql as fmt_sql
+        error = fmt_sql(traceback.format_exc())
         res['code'] = '-1'
         res['message'] = '执行失败!'
         logging.error(traceback.format_exc())
@@ -871,12 +882,12 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         otype   = (await get_dmmc_from_dm('13', wkno['type']))[0]
         status  = (await get_dmmc_from_dm('41', wkno['status']))[0]
 
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in('10.2.39.18','10.2.39.20','10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
+        # if p_host == "124.127.103.190":
+        #     p_host = "124.127.103.190:65482"
+        # elif p_host in('10.2.39.18','10.2.39.20','10.2.39.21'):
+        #     p_host = '{}:81'.format(p_host)
+        # else:
+        #     p_host = p_host
 
         # send mail
         v_content = get_html_contents()
@@ -918,28 +929,36 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username,p_host):
     settings = get_sys_settings_sync()
 
     try:
-        # get binlog ,start_position
-        sync_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
-        sync_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
-        rs1 = sync_processer.query_one_by_ds(p_ds, 'show master status')
-        binlog_file=rs1[0]
-        start_position=rs1[1]
+        # get binlog ,start_position，one session execute
+        # sync_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
+        # sync_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
+        # rs1 = sync_processer.query_one_by_ds(p_ds, 'show master status')
+        # binlog_file=rs1[0]
+        # start_position=rs1[1]
+        #
+        # logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
+        # if check_statement_count(sql) == 1:
+        #    sync_processer.exec_sql_by_ds(p_ds, sql)
+        #
+        # if check_statement_count(sql) > 1:
+        #    sync_processer.exec_sql_by_ds_multi(p_ds, sql)
+        #
+        # # get stop_position
+        # rs2 = sync_processer.query_one_by_ds(p_ds, 'show master status')
+        # stop_position=rs2[1]
+        # sync_processer.exec_sql_by_ds(p_ds, 'UNLOCK TABLES')
 
-        logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
+        logging.info(('check_statement_count(sql)=', check_statement_count(sql)))
         if check_statement_count(sql) == 1:
-           sync_processer.exec_sql_by_ds(p_ds, sql)
+            binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_new(p_ds, sql)
 
         if check_statement_count(sql) > 1:
-           sync_processer.exec_sql_by_ds_multi(p_ds, sql)
+            binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_multi_new(p_ds, sql)
 
-        # get stop_position
-        rs2 = sync_processer.query_one_by_ds(p_ds, 'show master status')
-        stop_position=rs2[1]
-        sync_processer.exec_sql_by_ds(p_ds, 'UNLOCK TABLES')
         logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
         upd_run_status_sync(p_sql_id, 'after',None,binlog_file,start_position,stop_position)
 
-        # write rollback statement
+        # write rollback
         write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
 
         # send success mail
@@ -960,7 +979,7 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username,p_host):
 
         # send mail
         v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$',   nowTime)
+        v_content = v_content.replace('$$TIME$$',    nowTime)
         v_content = v_content.replace('$$DBINFO$$',  p_ds['url']+p_ds['service'] if p_ds['url'].find(p_ds['service'])<0 else p_ds['url'])
         v_content = v_content.replace('$$CREATOR$$', creator)
         v_content = v_content.replace('$$AUDITOR$$', auditor )
@@ -994,8 +1013,9 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         res['code'] = '0'
         res['message'] = '工单:{}执行成功!'.format(wkno['message'])
         return res
-    except Exception as e:
-        error = str(e).split(',')[1][:-1].replace("\\","\\\\").replace("'","\\'").replace('"','')+'!'
+    except :
+        from web.utils.common import format_sql as fmt_sql
+        error = fmt_sql(traceback.format_exc())
         logging.error(traceback.format_exc())
         upd_run_status_sync(p_sql_id, 'error', error)
         delete_rollback(p_sql_id)

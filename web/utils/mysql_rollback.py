@@ -13,6 +13,7 @@ import json
 from pymysqlreplication import BinLogStreamReader
 from pymysqlreplication.event import *
 from pymysqlreplication.row_event import (DeleteRowsEvent,UpdateRowsEvent,WriteRowsEvent,)
+
 from web.utils.common import get_connection
 from web.utils.common import format_sql,beauty_sql
 from web.model.t_sql_check import get_obj_name
@@ -93,7 +94,14 @@ def gen_ddl_sql(p_ddl):
        return rsql
     return p_ddl
 
+def get_wkno(p_id):
+    from web.utils.mysql_sync import sync_processer
+    sql="select * from t_sql_release where id={}".format(p_id)
+    return sync_processer.query_dict_one(sql)
+
 def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
+    wk = get_wkno(p_sql_id)
+    print('wk=',wk)
     db = get_connection()
     cr = db.cursor()
     if p_start_pos == p_end_pos :
@@ -138,7 +146,7 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                 for row in binlogevent.rows:
                     event = {"schema": binlogevent.schema, "table": binlogevent.table}
 
-                    if event['schema'] == schema:
+                    if event['schema'] == wk['db'] and wk['sqltext'].count(event['table'])>0:
                         if isinstance(binlogevent, DeleteRowsEvent):
                             event["action"] = "delete"
                             event["data"] = row["values"]
@@ -164,12 +172,11 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
                             insEvent = insEvent + 1
 
-                    message[event['schema']+'.'+event['table']] = {
-                        'insert':insEvent,
-                        'update':updEvent,
-                        'delete':delEvent
-                    }
-
+                        message[event['schema']+'.'+event['table']] = {
+                            'insert':insEvent,
+                            'update':updEvent,
+                            'delete':delEvent
+                        }
 
             if stream.log_pos + 31 == p_end_pos or stream.log_pos >=p_end_pos:
                 db.commit()

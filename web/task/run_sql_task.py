@@ -7,11 +7,13 @@
 # @Software: PyCharm
 
 import time
+import logging
+import datetime
 from web.model.t_sql_release import exe_sql_sync
 from web.utils.mysql_sync import sync_processer
 from concurrent.futures import ProcessPoolExecutor,wait,as_completed
 
-host = "ops.zhitbar.cn"
+host = "ops.zhitbar.cn:59521"
 
 def get_tasks():
     st = """SELECT dbid AS db_id, db AS db_name,
@@ -21,14 +23,20 @@ def get_tasks():
 
 
 def main():
+    logging.basicConfig(filename='/tmp/run_sql_task.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")),
+                        format='[%(asctime)s-%(levelname)s:%(message)s]',
+                        level=logging.INFO, filemode='a', datefmt='%Y-%m-%d %I:%M:%S')
+
     with ProcessPoolExecutor(max_workers=5) as executor:
         while True:
             tasks = get_tasks()
             if tasks!=[]:
+                logging.info(str(tasks))
                 print('tasks=',tasks)
                 all_task = [executor.submit(exe_sql_sync,t['db_id'], t['db_name'], t['sql_id'], t['user_name'],host) for t in tasks]
                 for future in as_completed(all_task):
                     res = future.result()
+                    logging.info(str(res))
                     print("res=",res)
             else:
                time.sleep(1)

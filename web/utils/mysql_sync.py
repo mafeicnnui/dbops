@@ -98,10 +98,47 @@ class sync_processer:
         with mysqlDsManager(p_ds) as cur:
             cur.execute(p_sql)
 
+    def exec_sql_by_ds_new(p_ds,p_sql):
+        print('exec_sql_by_ds_new....')
+        with mysqlDsManager(p_ds) as cur:
+            cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+            cur.execute('FLUSH TABLES WITH READ LOCK')
+            cur.execute('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ')
+            cur.execute('START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */')
+            cur.execute('show master status')
+            binlog_file, start_position = cur.fetchone()[0:2]
+            cur.execute('UNLOCK TABLES')
+            cur.execute(p_sql)
+            cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+            cur.execute('FLUSH TABLES WITH READ LOCK')
+            cur.execute('show master status')
+            _, stop_position = cur.fetchone()[0:2]
+            cur.execute('UNLOCK TABLES')
+        print('exec_sql_by_ds_new....ok')
+        return binlog_file, start_position, stop_position
+
     def exec_sql_by_ds_multi(p_ds,p_sql):
         with mysqlDsManager(p_ds) as cur:
             for st in reReplace(p_sql):
                cur.execute(st)
+
+    def exec_sql_by_ds_multi_new(p_ds,p_sql):
+        with mysqlDsManager(p_ds) as cur:
+            cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+            cur.execute('FLUSH TABLES WITH READ LOCK')
+            cur.execute('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ')
+            cur.execute('START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */')
+            cur.execute('show master status')
+            binlog_file, start_position = cur.fetchone()[0:2]
+            cur.execute('UNLOCK TABLES')
+            for st in reReplace(p_sql):
+               cur.execute(st)
+            cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+            cur.execute('FLUSH TABLES WITH READ LOCK')
+            cur.execute('show master status')
+            _, stop_position = cur.fetchone()[0:2]
+            cur.execute('UNLOCK TABLES')
+        return  binlog_file,start_position,stop_position
 
     def query_one(p_sql):
          with mysqlManager(db) as cur:

@@ -51,7 +51,6 @@ class async_processer:
                         v_list.append(list(r))
         return v_list
 
-
     async def query_one(p_sql):
         async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],
                                db=db['db_service'], autocommit=True) as pool:
@@ -88,7 +87,6 @@ class async_processer:
                     desc = cur.description
         return desc
 
-
     async def exec_sql(p_sql):
         async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],
                                db=db['db_service'], autocommit=True) as pool:
@@ -112,16 +110,62 @@ class async_processer:
                 async with conn.cursor() as cur:
                     await cur.execute(p_sql)
 
-    # 异步一次批量多条SQL语句,执行完所有SQL,再执行手动提交
-    async def exec_sql_by_ds_multi(p_ds,p_sql):
-        async with create_pool(host=p_ds['ip'], port=int(p_ds['port']), user=p_ds['user'], password=p_ds['password'],
+    async def exec_sql_by_ds_new(p_ds, p_sql):
+        async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
+                               user=p_ds['user'], password=p_ds['password'],
                                db=p_ds['service'], autocommit=False) as pool:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
-                    for st in reReplace(p_sql):
+                    await cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+                    await cur.execute('FLUSH TABLES WITH READ LOCK')
+                    await cur.execute('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ')
+                    await cur.execute('START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */')
+                    await cur.execute('show master status')
+                    await cur.execute('UNLOCK TABLES')
+                    binlog_file, start_position = (await cur.fetchone())[0:2]
+                    await cur.execute(p_sql)
+                    await cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+                    await cur.execute('FLUSH TABLES WITH READ LOCK')
+                    await cur.execute('show master status')
+                    _, stop_position = (await cur.fetchone())[0:2]
+                    await cur.execute('UNLOCK TABLES')
+                await conn.commit()
+        return binlog_file, start_position, stop_position
+
+    # match execute
+    async def exec_sql_by_ds_multi(p_ds,p_sql):
+        async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
+                               user=p_ds['user'], password=p_ds['password'],
+                               db=p_ds['service'], autocommit=False) as pool:
+            async with pool.acquire() as conn:
+                async with conn.cursor() as cur:
+                  await cur.fetchone()
+                  for st in reReplace(p_sql):
                        await cur.execute(st)
                 await conn.commit()
 
+    async def exec_sql_by_ds_multi_new(p_ds,p_sql):
+        async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
+                               user=p_ds['user'], password=p_ds['password'],
+                               db=p_ds['service'], autocommit=False) as pool:
+            async with pool.acquire() as conn:
+                async with conn.cursor() as cur:
+                    await cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+                    await cur.execute('FLUSH TABLES WITH READ LOCK')
+                    await cur.execute('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ')
+                    await cur.execute('START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */')
+                    await cur.execute('show master status')
+                    binlog_file, start_position = (await cur.fetchone())[0:2]
+                    await cur.execute('UNLOCK TABLES')
+                    for st in reReplace(p_sql):
+                       await cur.execute(st)
+                    await cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
+                    await cur.execute('FLUSH TABLES WITH READ LOCK')
+                    await cur.execute('show master status')
+                    _, stop_position = (await cur.fetchone())[0:2]
+                    await cur.execute('UNLOCK TABLES')
+                await conn.commit()
+        return binlog_file, start_position, stop_position
 
     async def query_dict_list(p_sql):
         async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],

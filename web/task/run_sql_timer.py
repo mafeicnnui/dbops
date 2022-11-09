@@ -9,20 +9,22 @@
 import time
 import asyncio
 import logging
+import datetime
 from web.model.t_sql_release import exe_sql
 from web.utils.mysql_async import async_processer
 from web.utils.common import current_time
 
-logging.basicConfig(filename='/tmp/schedule.log',format='[%(asctime)s-%(levelname)s:%(message)s]', level = logging.INFO,filemode='a',datefmt='%Y-%m-%d %I:%M:%S')
-
-host = "ops.zhitbar.cn"
+host = "ops.zhitbar.cn:59521"
 
 async def get_tasks():
-    st = """SELECT dbid AS db_id, db AS db_name,id AS sql_id, executor AS user_name,run_time
-                FROM t_sql_release  WHERE STATUS in('1','5') AND run_time IS NOT NULL"""
+    st = """SELECT dbid AS db_id, db AS db_name,id AS sql_id, creator AS user_name,run_time
+            FROM t_sql_release  WHERE STATUS in('1','5') AND run_time IS NOT NULL AND run_time !=''"""
     return await async_processer.query_dict_list(st)
 
 async def main():
+      logging.basicConfig(filename='/tmp/run_sql_timer.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")),
+                          format='[%(asctime)s-%(levelname)s:%(message)s]',
+                          level=logging.INFO, filemode='a', datefmt='%Y-%m-%d %I:%M:%S')
       while True:
             time.sleep(1)
             tasks = await get_tasks()
