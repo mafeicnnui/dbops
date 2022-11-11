@@ -147,7 +147,7 @@ class syncedit(base_handler.TokenHandler):
     async def get(self):
         sync_id   = self.get_argument("sync_id")
         d_sync    = await get_sync_by_syncid(sync_id)
-        if d_sync['sync_ywlx']  in ('21'):
+        if d_sync['sync_ywlx']  == '21':
             self.render("./sync/sync_edit_real.html",
                         sync_id                  =  sync_id,
                         sync_server              =  await get_sync_server(),
@@ -252,7 +252,7 @@ class syncclone(base_handler.TokenHandler):
     async def get(self):
         sync_id = self.get_argument("sync_id")
         d_sync  = await get_sync_by_syncid(sync_id)
-        if d_sync['sync_ywlx'] in ('21'):
+        if d_sync['sync_ywlx']  == '21' :
             self.render("./sync/sync_clone_real.html",
                         sync_id              =  sync_id,
                         sync_server          = await get_sync_server(),

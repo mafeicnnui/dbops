@@ -385,6 +385,7 @@
                     sync_id:syncid
                 },
                 success: function () {
+                   console.log(">>>>>>>>>>>>>>>>>>>>>>>/sync/clone?sync_id="+syncid)
                    $('#main-container-div').load("/sync/clone?sync_id="+syncid);
                 },
              })
