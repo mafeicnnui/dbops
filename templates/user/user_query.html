@@ -7,6 +7,12 @@
         #example{
             width: 100% !important;
         }
+        td,th {
+            white-space: nowrap;
+        }
+        .dataTable_scrollHead {
+            height:39px;
+        }
     </style>
 </head>
 <body>
@@ -54,27 +60,25 @@
                           ordering   :false,
                           scrollY    :true,
                           scrollX    :true,
-                          // "sScrollX": "500px",
+                          //scrollX: "500px",
                           scrollCollapse: true,
-                          paging     : true,
-                          bAutoWidth : true,
+                          paging    : true,
+                          AutoWidth : true,
                           iDisplayLength: 14,
                           data: dataSet,
                           columns: [
-                            { "title": "标识符" ,"visible":true},
-                            { "title": "登陆名" },
-                            { "title": "头像"},
-                            { "title": "工号" },
-                            { "title": "姓名" },
-                            { "title": "性别" },
-                            { "title": "邮箱" },
-                            { "title": "手机" },
-                            { "title": "项目组","visible":false },
-                            { "title": "部门" },
-                            { "title": "过期日期"},
-                            { "title": "状态"},
-                            { "title": "创建日期","visible":false},
-                            { "title": "更新日期"},
+                            { "title": "标识符","sWidth":"60px"},
+                            { "title": "登陆名","sWidth":"120px"},
+                            { "title": "头像","sWidth":"40px"},
+                            { "title": "工号","sWidth":"60px" },
+                            { "title": "姓名","sWidth":"80px" },
+                            { "title": "性别","sWidth":"30px" },
+                            { "title": "邮箱","sWidth":"180px" },
+                            { "title": "手机","sWidth":"100px" },
+                            { "title": "部门","sWidth":"60px" },
+                            { "title": "过期日期","sWidth":"70px"},
+                            { "title": "状态","sWidth":"50px"},
+                            { "title": "更新日期","sWidth":"60px"},
                           ],
                           columnDefs: [
                              {

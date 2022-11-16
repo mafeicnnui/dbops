@@ -66,6 +66,9 @@ class backupadd_save(base_handler.TokenHandler):
         d_backup['task_desc']       = self.get_argument("task_desc")
         d_backup['status']          = self.get_argument("status")
         d_backup['binlog_status']   = self.get_argument("binlog_status")
+        d_backup['oss_status']      = self.get_argument("oss_status")
+        d_backup['oss_cloud']       = self.get_argument("oss_cloud")
+        d_backup['oss_path']        = self.get_argument("oss_path")
         result = await save_backup(d_backup)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -97,6 +100,9 @@ class backupedit(base_handler.TokenHandler):
                     api_server       = d_backup['api_server'] ,
                     status           = d_backup['status'],
                     binlog_status    = d_backup['binlog_status'],
+                    oss_status       = d_backup['oss_status'],
+                    oss_path         = d_backup['oss_path'],
+                    oss_cloud        = d_backup['oss_cloud'],
                     backup_server    = await get_backup_server(),
                     db_server        = await get_db_server(),
                     dm_db_type       = await get_dmm_from_dm('02')
@@ -124,6 +130,9 @@ class backupedit_save(base_handler.TokenHandler):
         d_backup['task_desc']        = self.get_argument("task_desc")
         d_backup['status']           = self.get_argument("status")
         d_backup['binlog_status']    = self.get_argument("binlog_status")
+        d_backup['oss_status']       = self.get_argument("oss_status")
+        d_backup['oss_path']         = self.get_argument("oss_path")
+        d_backup['oss_cloud']        = self.get_argument("oss_cloud")
         result = await upd_backup(d_backup)
         self.write({"code": result['code'], "message": result['message']})
 

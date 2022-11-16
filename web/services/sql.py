@@ -16,7 +16,7 @@ from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_s
     exp_rollback
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
-    get_ds_by_dsid_by_cdb, get_dss_sql_query_type
+    get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export
 from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
     get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo
@@ -519,7 +519,7 @@ class _sql_exp_query(base_handler.TokenHandler):
        dbid   = self.get_argument("dbid")
        creater= self.get_argument("creater")
        key    = self.get_argument("key")
-       v_list = await export_query(dbid,creater,key,self.username)
+       v_list = await export_query(dbid,creater,key,self.username,self.userid)
        v_json = json.dumps(v_list)
        self.write(v_json)
 
@@ -576,7 +576,7 @@ class _sql_exp_detail(base_handler.TokenHandler):
 class expaudit(base_handler.TokenHandler):
    async def get(self):
        self.render("./order/exp_audit.html",
-                   audit_dss = await get_dss_sql_audit(self.username),
+                   audit_dss = await get_dss_sql_export(self.username),
                    creater = await get_users(self.username)
                    )
 
@@ -617,7 +617,7 @@ class exp_audit_query(base_handler.TokenHandler):
 class sql_exp_task(base_handler.TokenHandler):
    async def get(self):
         self.render("./order/exp_task.html",
-                    dss = await get_dss_sql_audit(self.username),
+                    dss = await get_dss_sql_export(self.username),
                     creater = await get_users(self.username))
 
 class _sql_exp_task(base_handler.TokenHandler):
@@ -626,7 +626,7 @@ class _sql_exp_task(base_handler.TokenHandler):
        dbid    = self.get_argument("dbid")
        creater = self.get_argument("creater")
        key     = self.get_argument("key")
-       res = await query_exp_task(dbid, creater,key)
+       res = await query_exp_task(dbid, creater,key,self.userid)
        self.write(json.dumps(res))
 
 

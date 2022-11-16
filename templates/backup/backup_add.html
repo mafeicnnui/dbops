@@ -159,6 +159,36 @@
                     </select>
                 </div>
             </div>
+           <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>oss备份</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="oss_status" name="oss_status">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>oss服务商</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="oss_cloud" name="oss_cloud">
+                        <option value="1">阿里</option>
+                        <option value="2">腾讯</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">oss目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="oss_path"  type="text" class="form-control" placeholder="请输入oss目录">
+                </div>
+           </div>
            <br>
            <div class="form-group m-b-0">
                 <div class="col-sm-offset-6 col-sm-9">
@@ -199,6 +229,9 @@
                     task_desc        : $('#task_desc').val(),
                     status           : $('#status').val(),
                     binlog_status    : $('#binlog_status').val(),
+                    oss_status       : $('#oss_status').val(),
+                    oss_cloud        : $('#oss_cloud').val(),
+                    oss_path         : $('#oss_path').val(),
                 },
                 success: function (dataSet) {
                     console.log(dataSet.code, dataSet.message);

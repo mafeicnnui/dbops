@@ -154,13 +154,15 @@ async def save_backup(p_backup):
             return res
 
         st="""insert into t_db_config
-                (server_id,db_id,db_type,db_tag,expire,bk_base,script_path,script_file,bk_cmd,run_time,comments,python3_home,backup_databases,api_server,status,binlog_status) 
-               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}')
+                (server_id,db_id,db_type,db_tag,expire,bk_base,script_path,script_file,bk_cmd,run_time,comments,
+                 python3_home,backup_databases,api_server,status,binlog_status,oss_status,oss_path,oss_cloud) 
+               values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')
            """.format(p_backup['backup_server'],p_backup['db_server'],p_backup['db_type'],
                        p_backup['backup_tag'], p_backup['backup_expire'],format_sql(p_backup['backup_base']),
                        format_sql(p_backup['script_base']),p_backup['script_name'],p_backup['cmd_name'],
                        p_backup['run_time'],p_backup['task_desc'],format_sql(p_backup['python3_home']),
-                       p_backup['backup_databases'],p_backup['api_server'], p_backup['status'],p_backup['binlog_status'])
+                       p_backup['backup_databases'],p_backup['api_server'],
+                       p_backup['status'],p_backup['binlog_status'],p_backup['oss_status'],p_backup['oss_path'],p_backup['oss_cloud'])
         await async_processer.exec_sql(st)
         return {'code': '0', 'message': '保存成功!'}
     except:
@@ -186,6 +188,9 @@ async def upd_backup(p_backup):
         api_server       = p_backup['api_server']
         status           = p_backup['status']
         binlog_status    = p_backup['binlog_status']
+        oss_status       = p_backup['oss_status']
+        oss_path         = p_backup['oss_path']
+        oss_cloud        = p_backup['oss_cloud']
 
         res = check_backup(p_backup)
         if res['code'] == '-1':
@@ -207,10 +212,14 @@ async def upd_backup(p_backup):
                        backup_databases  ='{12}',
                        api_server        ='{13}',
                        STATUS            ='{14}',
-                       binlog_status     ='{15}'
-                where id='{16}'""".format(backup_server,db_server,db_type,backup_tag,backup_expire,backup_base,
+                       binlog_status     ='{15}',
+                       oss_status        ='{16}',
+                       oss_path          ='{17}',
+                       oss_cloud         ='{18}'
+                where id='{19}'""".format(backup_server,db_server,db_type,backup_tag,backup_expire,backup_base,
                                           script_base,script_name,cmd_name,run_time,task_desc,python3_home,
-                                          backup_databases,api_server,status,binlog_status,backupid)
+                                          backup_databases,api_server,status,binlog_status,
+                                          oss_status,oss_path,oss_cloud,backupid)
         await async_processer.exec_sql(st)
         return {'code':'0','message':'更新成功!'}
     except:
@@ -241,6 +250,9 @@ async def get_backup_by_backupid(p_backupid):
                     api_server,
                     status,
                     binlog_status,
+                    oss_status,
+                    oss_path,
+                    oss_cloud,
                     id  as backup_id
              from t_db_config where id={0}""".format(p_backupid)
     return await async_processer.query_dict_one(sql)
@@ -287,6 +299,10 @@ def check_backup(p_server):
 
     if p_server["status"] == "":
         return {'code': '-1', 'message': '任务状态不能为空!'}
+
+    if p_server["oss_status"] == "1":
+        if p_server["oss_path"]  is None or p_server["oss_path"]=='':
+           return {'code': '-1', 'message': 'oss备份路径不能为空!'}
 
     return {'code': '0', 'message': '验证通过!'}
 

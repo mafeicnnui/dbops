@@ -167,6 +167,7 @@ class projectprivs_save(base_handler.TokenHandler):
         d_proj['priv_audit']    = self.get_argument("priv_audit")
         d_proj['priv_execute']  = self.get_argument("priv_execute")
         d_proj['priv_order']    = self.get_argument("priv_order")
+        d_proj['priv_export']   = self.get_argument("priv_export")
         result = await save_user_proj_privs(d_proj)
         self.write({"code": result['code'], "message": result['message']})
 

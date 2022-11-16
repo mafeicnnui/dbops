@@ -192,13 +192,13 @@ async def query_user(p_name):
                  name,
                  (select dmmc from t_dmmx where dm='04' and dmm=a.gender) as gender,
                  a.email,a.phone,
-                 (select dmmc from t_dmmx where dm='18' and dmm=a.project_group) as project_group,
+                 -- (select dmmc from t_dmmx where dm='18' and dmm=a.project_group) as project_group,
                  (select dmmc from t_dmmx where dm='01' and dmm=a.dept) as dept,
                  date_format(a.expire_date,'%Y-%m-%d') as expire_date,
                  case a.status when '1' then '启用'
                              when '0' then '禁用'
                  end  status,
-                 date_format(a.creation_date,'%Y-%m-%d')    creation_date,
+                 -- date_format(a.creation_date,'%Y-%m-%d')    creation_date,
                  date_format(a.last_update_date,'%Y-%m-%d') last_update_date 
              from t_user a  {}
              order by convert(name using gbk) asc""".format(v_where)
@@ -460,6 +460,7 @@ async def save_user_proj_privs(d_proj):
     priv_audit   = d_proj['priv_audit']
     priv_execute = d_proj['priv_execute']
     priv_order   = d_proj['priv_order']
+    priv_export  = d_proj['priv_export']
 
     try:
         # process query privs
@@ -524,6 +525,20 @@ async def save_user_proj_privs(d_proj):
             sql = """delete from  t_user_proj_privs 
                              where proj_id='{0}' and user_id='{1}' and priv_id='5'""".format(dsid, userid)
             await async_processer.exec_sql(sql)
+
+        # process export privs
+        if priv_export == '1':
+            sql = """delete from  t_user_proj_privs 
+                              where proj_id='{0}' and user_id='{1}' and priv_id='6'""".format(dsid, userid)
+            await async_processer.exec_sql(sql)
+            sql = """insert into t_user_proj_privs(proj_id,user_id,priv_id) 
+                              values('{0}','{1}','{2}') """.format(dsid, userid, '6')
+            await async_processer.exec_sql(sql)
+        else:
+            sql = """delete from  t_user_proj_privs 
+                               where proj_id='{0}' and user_id='{1}' and priv_id='6'""".format(dsid, userid)
+            await async_processer.exec_sql(sql)
+
         result={}
         result['code']='0'
         result['message']='保存成功！'

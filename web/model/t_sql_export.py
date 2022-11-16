@@ -89,13 +89,16 @@ async def update_exp_sql(p_dbid,p_cdb,p_sql,p_flag,p_user,p_id):
         result['message'] = '更新失败!'
         return result
 
-async def export_query(p_dbid,p_creator,p_key,p_username):
+async def export_query(p_dbid,p_creator,p_key,p_username,p_userid):
     v_where=''
     if p_creator != '':
         v_where = v_where + " and a.creator='{}'\n".format(p_creator)
 
     if p_dbid != '':
         v_where = v_where + " and a.dbid='{}'\n".format(p_dbid)
+    else:
+        v_where = v_where + """ and exists(select 1 from t_user_proj_privs x 
+                                           where x.proj_id=b.id and x.user_id='{0}' and priv_id='6')""".format(p_userid)
 
     if p_username != 'admin':
         v_where = v_where + "  and  a.creator='{0}'".format(p_username)
@@ -273,7 +276,7 @@ async def query_exp_audit(p_name,p_dsid,p_creator,p_userid,p_username):
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)
     else:
         v_where = v_where + """ and exists(select 1 from t_user_proj_privs x 
-                                           where x.proj_id=b.id and x.user_id='{0}' and priv_id='3')""".format(p_userid)
+                                           where x.proj_id=b.id and x.user_id='{0}' and priv_id='6')""".format(p_userid)
     if p_creator != '':
         v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
 
@@ -401,13 +404,16 @@ async def del_export(p_id):
         traceback.print_exc()
         return {'code': -1, 'message': '删除失败!'}
 
-async def query_exp_task(p_dsid, p_creater,p_key):
+async def query_exp_task(p_dsid, p_creater,p_key,p_userid):
     vv=''
     if p_key != '':
         vv = vv + " and a.sqltext like '%{0}%'\n".format(p_key)
 
     if p_dsid != '':
         vv = vv + " and a.dbid='{0}'\n".format(p_dsid)
+    else:
+        vv = vv + """ and exists(select 1 from t_user_proj_privs x 
+                                   where x.proj_id=b.dbid and x.user_id='{0}' and priv_id='6')""".format(p_userid)
 
     if p_creater != '':
         vv = vv + " and a.creator='{0}'\n".format(p_creater)

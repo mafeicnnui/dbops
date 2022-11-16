@@ -168,7 +168,7 @@
     function editSql(id){
          console.log('editSql id=',id)
          $('#exp_edit_id').val(id)
-         $('#exp_edit_title').text('工单变更['+id+']')
+         $('#exp_edit_title').text('导出审核['+id+']')
          $.ajax({
                 url: "/sql/exp/_detail",
                 type: "post",

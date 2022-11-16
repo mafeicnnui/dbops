@@ -8,9 +8,9 @@
             width: 100% !important;
         }
       .modal-lg {
-        width:70%;
+        width:75%;
         height:65%;
-        margin-left:400px;
+        margin-left:350px;
         margin-top:80px;
         }
     </style>
@@ -115,25 +115,24 @@
                           async      :true,
                           scrollY    :true,
                           scrollX    :true,
+                          AutoWidth  :true,
                           scrollCollapse: true,
                           paging:     true,
                           iDisplayLength: 14,
                           data: dataSet,
                           columns: [
-                            { "title": "用户ID"},
-                            { "title": "登陆名" },
-                            { "title": "头像"},
-                            { "title": "工号" },
-                            { "title": "姓名" },
-                            { "title": "性别" },
-                            { "title": "邮箱" },
-                            { "title": "手机" },
-                            { "title": "项目组" },
-                            { "title": "部门" },
-                            { "title": "过期日期"},
-                            { "title": "用户状态"},
-                            { "title": "创建日期" },
-                            { "title": "更新日期"},
+                            { "title": "用户ID","sWidth":"60px"},
+                            { "title": "登陆名","sWidth":"120px"},
+                            { "title": "头像","sWidth":"40px"},
+                            { "title": "工号","sWidth":"60px" },
+                            { "title": "姓名","sWidth":"80px" },
+                            { "title": "性别","sWidth":"30px" },
+                            { "title": "邮箱","sWidth":"180px" },
+                            { "title": "手机","sWidth":"100px" },
+                            { "title": "部门","sWidth":"60px" },
+                            { "title": "过期日期","sWidth":"70px"},
+                            { "title": "状态","sWidth":"50px"},
+                            { "title": "更新日期","sWidth":"60px"},
                             {
                                 "title":"操作",
                                 "width": "25px",
@@ -307,6 +306,19 @@
                                     }
                                },
                                {
+                                    "title":"导出",
+                                    "width": "35px",
+                                     "render": function(data,type,row,meta) {
+                                      var  d;
+                                      if (row[11]=='1') {
+                                          d='<input type="checkbox" name="proj_Export" value="1" checked="checked"  onclick="isExport(this);" />'
+                                      } else {
+                                          d='<input type="checkbox" name="proj_Export" value="0"  onclick="isExport(this);" />'
+                                      }
+                                       return d
+                                    }
+                               },
+                               {
                                     "title":"选择",
                                     "width": "35px",
                                     "render": function(data,type,row,meta){
@@ -367,6 +379,14 @@
            }
          }
 
+        function isExport(my){
+           if ($(my).is(':checked')){
+             $(my).val("1")
+           } else {
+             $(my).val("0")
+           }
+         }
+
         function centerModals() {
           $('.modal').each(function(i) {
             var $clone = $(this).clone().css('display', 'block').appendTo('body');
@@ -387,6 +407,7 @@
                   var priv_audit=$(row[8].innerHTML).val()
                   var priv_execute=$(row[9].innerHTML).val()
                   var priv_order=$(row[10].innerHTML).val()
+                  var priv_export=$(row[11].innerHTML).val()
 
                   $.ajax({
                         url     : "/project/privs/save",
@@ -400,6 +421,7 @@
                              priv_audit    :  priv_audit,
                              priv_execute  :  priv_execute,
                              priv_order    :  priv_order,
+                             priv_export    :  priv_export,
                         },
                         success: function (dataSet) {
                              if (dataSet.code=='0') {

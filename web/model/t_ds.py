@@ -113,13 +113,15 @@ async def query_project(p_name,p_userid,is_grants):
                         (SELECT COUNT(0) FROM t_user_proj_privs 
                            WHERE proj_id=a.id AND user_id='{3}' AND priv_id='4') AS execute_priv,
                         (SELECT COUNT(0) FROM t_user_proj_privs 
-                           WHERE proj_id=a.id AND user_id='{4}' AND priv_id='5') AS order_priv                            
+                           WHERE proj_id=a.id AND user_id='{4}' AND priv_id='5') AS order_priv ,
+                        (SELECT COUNT(0) FROM t_user_proj_privs 
+                           WHERE proj_id=a.id AND user_id='{5}' AND priv_id='6') AS export_priv                          
                 FROM t_db_source a,t_dmmx b,t_dmmx c
                 WHERE a.db_type=b.dmm AND b.dm='02'
                   AND a.db_env=c.dmm AND c.dm='03' 
                   and a.status='1'
-                  {5}
-                ORDER BY a.ip,PORT,a.service""".format(p_userid,p_userid,p_userid,p_userid,p_userid,v_where)
+                  {6}
+                ORDER BY a.ip,PORT,a.service""".format(p_userid,p_userid,p_userid,p_userid,p_userid,p_userid,v_where)
     else:
         sql = """SELECT a.id,
                         a.db_desc,
@@ -317,6 +319,16 @@ async def get_dss_order(logon_name):
            from t_db_source a,t_dmmx b
            where a.db_type=b.dmm and b.dm='02' and a.status='1'
                and a.id in (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='5')
+               order by a.db_desc
+        """.format(d_user['userid'])
+    return await async_processer.query_list(sql)
+
+async def get_dss_sql_export(logon_name):
+    d_user = await get_user_by_loginame(logon_name)
+    sql="""select cast(id as char) as id,a.db_desc as name
+           from t_db_source a,t_dmmx b
+           where a.db_type=b.dmm and b.dm='02' and a.status='1'
+               and a.id IN (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='6')
                order by a.db_desc
         """.format(d_user['userid'])
     return await async_processer.query_list(sql)
