@@ -13,7 +13,8 @@ from web.model.t_sql import exe_query, exe_query_aio
 from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
     query_audit_sql, check_sql, format_sql, get_sql_release, get_order_xh, check_order_xh, update_order, query_rollback, \
-    exp_rollback
+    exp_rollback, save_order_prod, get_prod_order_number, query_online_order, query_online_detail, update_order_prod, \
+    delete_online_order
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
     get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export
@@ -22,7 +23,7 @@ from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tre
     get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo
 from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,get_tab_structure,get_tab_keys,get_tab_incr_col,query_ds
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
-from web.model.t_dmmx          import get_dmm_from_dm,get_users_from_proj,get_users
+from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2
 from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common          import DateEncoder,get_server
 from web.utils                 import base_handler
@@ -283,11 +284,15 @@ class orderquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./order/order_query.html",
                     order_dss     = await get_dss_order(self.username),
-                    vers          = await get_dmm_from_dm('12'),
+                   # vers          = await get_dmm_from_dm('12'),
                     order_types   = await get_dmm_from_dm('17'),
                     order_handles = await get_users_from_proj(self.userid),
                     order_status  = await get_dmm_from_dm('19'),
-                    creater = await get_users(self.username))
+                    creater = await get_users(self.username),
+                    order_type_add_ver = await get_dmm_from_dm('12'),
+                    order_types_add_prod = await get_dmm_from_dm2('13','1,2'),
+                    order_status_add_prod =await get_dmm_from_dm2('41','0')
+                    )
 
 class order_query(base_handler.TokenHandler):
     async def post(self):
@@ -727,4 +732,67 @@ class redis_db(base_handler.TokenHandler):
        v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
        v_json = json.dumps(v_dict)
        self.write(v_json)
+
+'''
+  生产上线工单
+
+'''
+
+class prod_online_save(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        order_number    = self.get_argument("order_number")
+        order_ver       = self.get_argument("order_ver")
+        order_type      = self.get_argument("order_type")
+        order_status    = self.get_argument("order_status")
+        order_script    = self.get_argument("order_script")
+        v_list          = await save_order_prod(order_number,order_ver,order_type,order_status,order_script,self.userid)
+        v_json          = json.dumps(v_list)
+        self.write(v_json)
+
+class prod_online_update(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        order_number    = self.get_argument("order_number")
+        order_ver       = self.get_argument("order_ver")
+        order_type      = self.get_argument("order_type")
+        order_status    = self.get_argument("order_status")
+        order_script    = self.get_argument("order_script")
+        v_list          = await update_order_prod(order_number,order_ver,order_type,order_status,order_script,self.userid)
+        v_json          = json.dumps(v_list)
+        self.write(v_json)
+
+class prod_online_delete(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        order_number = self.get_argument("order_number")
+        v_list = await delete_online_order(order_number)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class prod_online_order_number(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        order_type  = self.get_argument("order_type")
+        v_list = await get_prod_order_number(order_type,self.userid)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class online_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname  = self.get_argument("qname")
+        creater = self.get_argument("creater")
+        v_list = await query_online_order(qname,creater,self.username,self.userid)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+
+class online_detail(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_order_number = self.get_argument("order_number")
+        v_list   = await query_online_detail(v_order_number,self.userid)
+        v_json   = json.dumps(v_list)
+        self.write(v_json)
 

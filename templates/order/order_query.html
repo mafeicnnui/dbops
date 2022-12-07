@@ -30,6 +30,11 @@
             height:40%;
         }
 
+        .modal-lg-order-prod {
+            width:60%;
+            height:35%;
+        }
+
         #error-label {
             margin-top:8px;
         }
@@ -121,7 +126,10 @@
         <div class="panel-body">
             <ul class="nav nav-pills m-b-30 pull-left">
                 <li id='id_sql' class="active">
-                    <a href="#hopsonone-sql" data-toggle="tab" aria-expanded="true">SQL工单</a>
+                    <a href="#hopsonone-sql" data-toggle="tab" aria-expanded="true">日常工单</a>
+                </li>
+                <li id='id_prod' class="">
+                    <a href="#hopsonone-prod" data-toggle="tab" aria-expanded="false">生产上线</a>
                 </li>
                 <li id='id_wtd' class="">
                     <a href="#hopsonone-wtd" data-toggle="tab" aria-expanded="false">问题单</a>
@@ -144,6 +152,16 @@
                          </div>
                          <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
                               <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+                         </div>
+                    </div>
+                </div>
+                <div id="hopsonone-prod" class="tab-pane">
+                    <div class="row">
+                         <div id="div-tab3">
+                              <table id="tab-prod" class="table table-striped table-bordered" cellspacing="0" width="100%"  height="100%" ></table>
+                         </div>
+                         <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                              <input  id='add-btn-prod' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
                          </div>
                     </div>
                 </div>
@@ -531,6 +549,284 @@
       </div>
      </div>
 
+     <!--新增上线工单窗口 -->
+     <div id="con-close-add-prod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg-order-prod">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">上线工单</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >工单编号：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="order_number_add_prod"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">上线版本：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_type_add_ver">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_type_add_ver %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单类型：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_type_add_prod">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_types_add_prod %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单状态：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_status_add_prod">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_status_add_prod %}
+                                       <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label" >上线脚本：</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <div id="order_script_add_prod" ></div>
+                           </div>
+                       </div>
+                   </form>
+
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="order_save_btn_prod" >保存</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+     <!--新增上线工单详情窗口 -->
+     <div id="con-close-detail-prod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg-order-prod">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">上线工单详情</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >工单编号：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="order_number_detail_prod"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">上线版本：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" readonly id="order_type_detail_ver">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单类型：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_type_detail_prod">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_types_add_prod %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单状态：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_status_detail_prod">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label" >上线脚本：</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <div id="order_script_detail_prod" ></div>
+                           </div>
+                       </div>
+
+                       <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >发布人：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="creator_detail_prod"  readonly class="form-control">
+                           </div>
+                      </div>
+                      <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >最后更新时间：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="last_update_date_detail_prod"  readonly class="form-control">
+                           </div>
+                      </div>
+                      <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >审核人：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="auditor_detail_prod"  readonly class="form-control">
+                           </div>
+                      </div>
+                      <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >审核时间：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="audit_date_detail_prod"  readonly class="form-control">
+                           </div>
+                      </div>
+                      <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >失败原因：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="audit_message_detail_prod"  readonly class="form-control">
+                           </div>
+                      </div>
+                   </form>
+
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+     <!--变更上线工单详情窗口 -->
+     <div id="con-close-upd-prod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg-order-prod">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">上线工单变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-2 control-label" >工单编号：</label>
+                            </div>
+                            <div class="col-md-10" >
+                                <input type="text" id="order_number_upd_prod"  readonly  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">上线版本：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select"  id="order_type_upd_ver">
+                                     <option value='' selected = "selected">...</option>
+                                     {% for var in order_type_add_ver %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                     {% end %}
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单类型：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_type_upd_prod">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_types_add_prod %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单状态：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_status_upd_prod">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_status_add_prod %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-2 control-label" >上线脚本：</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <div id="order_script_upd_prod" ></div>
+                           </div>
+                       </div>
+                   </form>
+
+                </div>
+            </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="order_upd_btn_prod">变更</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
 </body>
 
 <script>
@@ -663,6 +959,91 @@
            })
           }
 
+    function query_online(){
+             $.ajax({
+              url: "/online/_query",
+              type: "post",
+              datatype: "json",
+              data:{
+                  qname : $("#name").val(),
+                  creater  : $("#sql_creater").val(),
+              },
+              success: function (dataSet) {
+                  $('#curr_userid').val(dataSet['userid'])
+                  $('#tab-prod').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      ordering   :false,
+                      scrollY    :"400px",
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging:     false,
+                      iDisplayLength: 14,
+                      data: dataSet,
+                      columns: [
+                         { "title": "工单编号" },
+                         { "title": "工单类型" },
+                         { "title": "工单状态" },
+                         { "title": "版本号" },
+                         { "title": "发布人" },
+                         { "title": "发布时间" },
+                         { "title": "审核人"},
+                         { "title": "审核时间"},
+                         { "title": "登陆用户","visible":false},
+                         { "title": "操作"},
+                       ],
+                      columnDefs: [
+                        {
+                            targets: 9,
+                            render: function(data, type, row, meta){
+                                 var id=row[0]
+                                 var status = row[2]
+                                 var creator = row[4]
+                                 var logon_user = row[8]
+                                 var online_update
+                                 var online_delete
+                                 var online_detail
+                                 var online_audit
+                                 var online_qx_audit
+
+                                 if(status=='已发布') {
+                                    online_detail= '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showOnline(\''+id+'\');"/>' +'&nbsp;'
+                                    online_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showOnline_upd(\''+id+'\');"/>' +'&nbsp;'
+                                    online_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="showOnline_del(\''+id+'\');"/>' +'&nbsp;'
+
+                                    if (logon_user=='admin') {
+                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="取消审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+                                     } else {
+                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  disabled type="button"  value="审核" />' +'&nbsp;'
+                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" disabled type="button"  value="取消审核" />' +'&nbsp;'
+                                    }
+
+                                 } else {
+                                    online_detail= '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showOnline(\''+id+'\');"/>' +'&nbsp;'
+                                    online_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="变更" onclick="showOnline_upd(\''+id+'\');"/>' +'&nbsp;'
+                                    online_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="删除" onclick="showOnline_del(\''+id+'\');"/>' +'&nbsp;'
+                                    if (logon_user=='admin') {
+                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="取消审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+                                     } else {
+                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  disabled type="button"  value="审核" />' +'&nbsp;'
+                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" disabled type="button"  value="取消审核" />' +'&nbsp;'
+                                    }
+                                 }
+                                 msg = online_detail+online_update+online_delete+online_audit+online_qx_audit
+                                 return msg;
+                            }
+                         }
+                       ],
+                      "language": get_languages()
+                     });
+               }
+           })
+          }
+
     function wtd_release(p_wtd_no){
         $.ajax({
                 url: "/wtd/release",
@@ -694,6 +1075,14 @@
                 showThumbs: true,
                 addMore: true
          })
+    }
+
+    function init_order_prod(){
+         $('#order_number_add_prod').val('')
+         $('#order_type_add_ver').val('')
+         $('#order_type_add_prod').val('')
+         $('#order_status_add_prod').val('')
+         setEditor("order_script_add_prod","")
     }
 
     function init_order_upd(){
@@ -732,6 +1121,18 @@
                     showThumbs: true,
                     addMore: true
              })
+    }
+
+    function init_order_detail_prod(){
+         $('#order_number_detail_prod').val('')
+         $('#order_type_detail_ver').val('')
+         $('#order_type_detail_prod').val('')
+         $('#order_status_detail_prod').val('')
+         setEditor('order_script_detail_prod','')
+         $('#creator_detail_prod').val('')
+         $('#last_update_date_detail_prod').val('')
+         $('#auditor_detail_prod').val('')
+         $('#audit_date_detail_prod').val('')
     }
 
     function get_order_type(p_order_type){
@@ -798,8 +1199,8 @@
                 datatype: "json",
                 data:{id: row},
                 success: function (dataSet) {
-                    setEditor('ace-editor-release',format_sql(dataSet.message.sqltext))
-                    setEditor('ace-editor-error',dataSet.message.error)
+                    setEditor2('ace-editor-release',format_sql(dataSet.message.sqltext))
+                    setEditor2('ace-editor-error',dataSet.message.error)
                       if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
@@ -846,7 +1247,7 @@
                 datatype: "json",
                 data:{id: row},
                 success: function (dataSet) {
-                    setEditor('ace-editor-change',format_sql(dataSet.message.sqltext))
+                    setEditor2('ace-editor-change',format_sql(dataSet.message.sqltext))
                     $('#run_time_change').val(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
@@ -1085,6 +1486,112 @@
           })
     }
 
+    function showOnline_del(p_order_number){
+          swal({
+                title: "确认要删除吗?",
+                text: "问题单["+p_order_number+"]将被删除！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+               }, function (isConfirm) {
+                       if (isConfirm) {
+                             $.ajax({
+                                    url: "/online/delete",
+                                    type: "post",
+                                    datatype: "json",
+                                    data:{
+                                        order_number: p_order_number
+                                    },
+                                    success: function (dataSet) {
+                                        if (dataSet.code=='0') {
+                                             swal("已删除!", "工单["+p_order_number+"]已删除!", "success");
+                                             query_online()
+                                        } else {
+                                             swal("已取消!", "工单["+p_order_number+"]"+dataSet.message+"!", "error");
+                                        }
+                                    }
+                                });
+
+                      } else {
+                          swal("已取消", "问题单[" + p_order_number + "]已取消删除！", "error");
+                      }
+          })
+    }
+
+    function showOnline(p_order_number){
+        init_order_detail_prod();
+        $.ajax({
+                url: "/online/detail",
+                type: "post",
+                datatype: "json",
+                data:{
+                    order_number: p_order_number
+                },
+                success: function (dataSet) {
+                    var online = dataSet
+                    console.log('online=',online,online['order_number'])
+                     $('#order_number_detail_prod').val(online['order_number'])
+
+                     $("#order_type_detail_ver").empty();
+                     $("#order_type_detail_ver").append("<option value='"+online['order_ver']+"'>"+online['order_ver_name']+"</option>");
+
+                     $("#order_type_detail_prod").empty();
+                     $("#order_type_detail_prod").append("<option value='"+online['order_type']+"'>"+online['order_type_name']+"</option>");
+
+                     $("#order_status_detail_prod").empty();
+                     $("#order_status_detail_prod").append("<option value='"+online['order_status']+"'>"+online['order_status_name']+"</option>");
+
+                     setEditor2('order_script_detail_prod',online['sqltext'])
+
+                     $('#creator_detail_prod').val(online['creator_name'])
+                     $('#last_update_date_detail_prod').val(online['last_update_date'])
+                     $('#auditor_detail_prod').val(online['auditor_name'])
+                     $('#audit_date_detail_prod').val(online['audit_date'])
+                     $('#audit_message_detail_prod').val(online['audit_message'])
+
+                     $('.modal').on('show.bs.modal', centerModals);
+                     $(window).on('resize', centerModals);
+                     $('#con-close-detail-prod').modal({
+                        keyboard: false,
+                        backdrop:false
+                     });
+                }
+        });
+    }
+
+    function showOnline_upd(p_order_number){
+        //init_order_upd_prod()
+        $.ajax({
+                url: "/online/detail",
+                type: "post",
+                datatype: "json",
+                data:{
+                    order_number: p_order_number
+                },
+                success: function (dataSet) {
+                    var online = dataSet
+                    $('#order_number_upd_prod') .val(online['order_number'])
+                    $('#order_type_upd_ver') .val(online['order_ver'])
+                    $('#order_type_upd_prod') .val(online['order_type'])
+                    $('#order_status_upd_prod') .val(online['order_status'])
+
+                    setEditor('order_script_upd_prod',online['sqltext'])
+
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-upd-prod').modal({
+                       keyboard: false,
+                       backdrop:false
+                    });
+
+                }
+        });
+    }
+
     function initEditor(p_item) {
           var editor = ace.edit(p_item);
           editor.setTheme("ace/theme/xcode");
@@ -1092,15 +1599,101 @@
           editor.setShowPrintMargin(false);
           editor.setFontSize(15);
           editor.getSession().setUseSoftTabs(true);
-          editor.setReadOnly(true);
+          //editor.setReadOnly(true);
     }
 
     function setEditor(p_item,p_value) {
          var editor = ace.edit(p_item);
-         editor.setValue('')
-         editor.insert(p_value);
-         // editor.setValue(p_value)
+         editor.setValue(p_value)
+         editor.setReadOnly(false);
+    }
+
+    function setEditor2(p_item,p_value) {
+         var editor = ace.edit(p_item);
+         editor.setValue(p_value)
          editor.setReadOnly(true);
+    }
+
+    function check_online_add() {
+            var res = {
+                "status":false,
+                "statement":''
+            }
+            if($('#order_number_add_prod').val()=='') {
+               showtips('info','工单编号不能为空!');
+               return res
+            }
+
+            if($('#order_type_add_ver').val()=='') {
+               showtips('info','上线版本不能为空!');
+               return res
+            }
+
+            if($('#order_type_add_prod').val()=='') {
+               showtips('info','工单类型不能为空!');
+               return res
+            }
+
+           if($('#order_status_add_prod').val()=='') {
+               showtips('info','工单状态不能为空!');
+               return res
+            }
+
+            var editor = ace.edit("order_script_add_prod")
+            v_sql=editor.session.getTextRange(editor.getSelectionRange())
+            if(v_sql=='') {
+               v_sql=editor.session.getValue()
+            }
+
+           if(v_sql=='') {
+               showtips('info','上线脚本不能为空!');
+               return res
+            }
+
+           res['status'] = true
+           res['statement'] = v_sql
+           return res
+    }
+
+    function check_online_upd() {
+            var res = {
+                "status":false,
+                "statement":''
+            }
+            if($('#order_number_upd_prod').val()=='') {
+               showtips('info','工单编号不能为空!');
+               return res
+            }
+
+            if($('#order_type_upd_ver').val()=='') {
+               showtips('info','上线版本不能为空!');
+               return res
+            }
+
+            if($('#order_type_upd_prod').val()=='') {
+               showtips('info','工单类型不能为空!');
+               return res
+            }
+
+           if($('#order_status_upd_prod').val()=='') {
+               showtips('info','工单状态不能为空!');
+               return res
+            }
+
+            var editor = ace.edit("order_script_upd_prod")
+            v_sql=editor.session.getTextRange(editor.getSelectionRange())
+            if(v_sql=='') {
+               v_sql=editor.session.getValue()
+            }
+
+           if(v_sql=='') {
+               showtips('info','上线脚本不能为空!');
+               return res
+            }
+
+           res['status'] = true
+           res['statement'] = v_sql
+           return res
     }
 
     $('#order_attach_upd').click(function(){
@@ -1167,6 +1760,27 @@
         }
      });
 
+    $('#order_type_add_prod').change(function() {
+        if ($('#order_type_add_prod').val()!=''){
+            $.ajax({
+                  url: "/online/order_number",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      order_type : $('#order_type_add_prod').val(),
+                  },
+                  success: function (dataSet) {
+                      if (dataSet['code'] == '0') {
+                          $("#order_number_add_prod").val(dataSet['message']);
+                      } else {
+                          showtips('info','生成工单号出错!');
+                          return false;
+                      }
+                  }
+            })
+        }
+    });
+
     $('#add-btn').click(function(){
         $('.modal').on('show.bs.modal', centerModals);
         $(window).on('resize', centerModals);
@@ -1175,6 +1789,16 @@
                backdrop:false
          });
         init_order()
+    })
+
+    $('#add-btn-prod').click(function(){
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-add-prod').modal({
+               keyboard: false,
+               backdrop:false
+         });
+        init_order_prod()
     })
 
     $('#file_order').filer({
@@ -1203,6 +1827,36 @@
         showThumbs: true,
         addMore: true
     });
+
+    $('#order_save_btn_prod').click(function(){
+            var res
+            res= check_online_add()
+            if (! res['status']) {
+               return false;
+            }
+
+            $.ajax({
+                    url: "/online/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        order_number : $('#order_number_add_prod').val(),
+                        order_ver    : $('#order_type_add_ver').val(),
+                        order_type   : $('#order_type_add_prod').val(),
+                        order_status : $('#order_status_add_prod').val(),
+                        order_script : res['statement'],
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.code == 0) {
+                            swal("保存成功", "", "success")
+                            query_online()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    }
+             })
+
+     })
 
     $('#order_save_btn').click(function(){
 
@@ -1357,6 +2011,36 @@
         }
      })
 
+    $('#order_upd_btn_prod').click(function(){
+            var res
+            res= check_online_upd()
+            if (! res['status']) {
+               return false;
+            }
+            console.log('upd res=',res)
+
+            $.ajax({
+                    url: "/online/update",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        order_number: $('#order_number_upd_prod').val(),
+                        order_ver: $('#order_type_upd_ver').val(),
+                        order_type: $('#order_type_upd_prod').val(),
+                        order_status: $('#order_status_upd_prod').val(),
+                        order_script : res['statement'],
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.code == 0) {
+                            swal("更新成功", "", "success")
+                            query_online()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    }
+            })
+     })
+
     $("#order_env").bind("input propertychange",function(){
         if ($("#order_env").val()!='' && $("#order_type").val()!=''){
             var order_env = get_order_env($("#order_env").find("option:selected").text())
@@ -1437,21 +2121,22 @@
     });
 
     $(document).ready(function() {
-         //可搜索选择框初始化
           $('.selectpicker').selectpicker({
               size: 10
           });
           $(":file").filestyle({input: false});
 
-          //init ace editor
           initEditor('ace-editor-release');
           //initEditor('ace-editor-rollback');
           initEditor('ace-editor-error');
           initEditor('ace-editor-change');
+          initEditor('order_script_add_prod');
+          initEditor('order_script_detail_prod');
+          initEditor('order_script_upd_prod');
 
           $("#query_btn").click(function() {
                 query_order()
-                query_wtd()
+                //query_wtd()
           });
 
           $("#query_btn").click()
@@ -1459,12 +2144,16 @@
           $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
                 var activeTab = $(e.target).text();
                 var previousTab = $(e.relatedTarget).text();
-                console.log(activeTab, previousTab)
-                if (activeTab == 'SQL工单') {
+                //console.log(activeTab, previousTab)
+                if (activeTab == '日常工单') {
                     query_order()
                 }
                 if (activeTab == '问题单') {
                    query_wtd()
+                }
+
+                if (activeTab == '生产上线') {
+                   query_online()
                 }
 
                 if (activeTab == '发布语句') {

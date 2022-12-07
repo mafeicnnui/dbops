@@ -1106,6 +1106,10 @@
               $("#release_btn").click(function()  {
                   var editor = ace.edit("ace-editor")
                   v_sql=editor.session.getTextRange(editor.getSelectionRange())
+                  if(v_sql=='') {
+                    v_sql=editor.session.getValue()
+                  }
+
                   if (check_order_xh($('#sql_desc').val())>0) {
                       showtips('error', '工单已存在!');
                       return
