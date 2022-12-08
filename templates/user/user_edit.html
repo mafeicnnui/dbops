@@ -206,35 +206,25 @@
             </div>
         </div>
 
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label">系统角色</label>
-                </div>
-                <div class="col-md-10">
-                    <select multiple="multiple" class="form-control" id="ue_sele_sys_priv"  >
-                        {% for var1 in sys_roles %}
-                          <option value={{var1[0]}} >{{var1[1]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-           </div>
-        </div>
+
 
         <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ue_sele_role_priv">*</span>用户角色</label>
-                </div>
-                <div class="col-md-10">
-                    <select multiple="multiple" class="form-control" id="ue_sele_role_priv"  >
-                        {% for var1 in user_roles %}
-                          <option value={{var1[0]}} >{{var1[1]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-           </div>
-        </div>
+               <div class="form-group col-md-6">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv2">*</span>用户角色</label>
+                    </div>
+                    <div class="col-md-10">
+                         <select class="selectpicker" multiple data-style="btn-default" id="ua_sele_role_priv2"  >
+                             {% for var in sys_roles %}
+                                <option value={{var[0]}} >{{var[1]}}</option>
+                             {% end %}
+                         </select>
+                         <input  id="sys_roles" type="hidden" value="{{sys_roles}}" >
+                         <input  id="user_roles" type="hidden" value="{{user_roles}}" >
+                    </div>
+               </div>
+          </div>
+
 
         <br>
         <div class="form-group m-b-0">
@@ -256,29 +246,13 @@
 
           $('#expire_date').attr("readonly", "readonly");
 
-          $("#ue_sele_sys_priv").click(function () {
-               var options=$('#ue_sele_sys_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#ue_sele_role_priv').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#ue_sele_sys_priv option:selected').remove();
-               }
-          });
+          $('.selectpicker').selectpicker({
+               noneSelectedText : '请选择角色...'
+          })
 
-          $("#ue_sele_role_priv").click(function () {
-               var options=$('#ue_sele_role_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#ue_sele_sys_priv').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#ue_sele_role_priv option:selected').remove();
-               }
-          });
+          $('.selectpicker').selectpicker(
+              'val' ,get_privs_init()
+          )
 
         });
 
@@ -287,17 +261,28 @@
         });
 
         function get_privs(){
-             var tmp='';
-             var val='';
-             console.log('get_privs=',$('#ue_sele_role_priv option'))
-             $('#ue_sele_role_priv option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-        };
+              var tmp='';
+              arr = $('#ua_sele_role_priv2').val()
+              if (arr.length>0) {
+                 for (let i = 0, len = arr.length; i < len; i++) {
+                   tmp=tmp+','+arr[i];
+                 }
+              } else {
+                  return ''
+              }
+              return tmp.substr(1);
+          }
+
+        function get_privs_init(){
+              arr = $('#user_roles').val()
+              return arr.split(',')
+        }
 
         $("#save").click(function () {
+
+              console.log('get_privs1=',get_privs())
+
+              console.log('get_privs2=',get_privs2())
 
           if ($("#filer_input1").get(0).files.length>0){
               var fd = new FormData();
@@ -406,8 +391,7 @@
 
       });
 
-       //Example 2
-       $('#filer_input1').filer({
+        $('#filer_input1').filer({
             limit: 1,
             maxSize: 3,
             extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],

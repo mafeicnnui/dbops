@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 from web.services.sql import orderquery, order_query, order_delete, order_query_xh, order_check_xh, order_update, \
-        online_query, online_detail, prod_online_update, prod_online_delete
+        online_query, online_detail, prod_online_update, prod_online_delete, prod_online_audit, prod_online_audit_canal
 from web.services.sql   import wtd_save,wtd_release,wtd_update,wtd_delete,\
                                get_order_no,wtd_query,wtd_detail,get_order_env,\
                                get_order_type,get_order_status,get_order_handler,\
@@ -40,6 +40,8 @@ wtd = [
         (r"/online/save", prod_online_save),
         (r"/online/update", prod_online_update),
         (r"/online/delete", prod_online_delete),
+        (r"/online/audit", prod_online_audit),
+        (r"/online/audit_canal", prod_online_audit_canal),
         (r"/online/order_number", prod_online_order_number),
         (r"/online/_query", online_query),
         (r"/online/detail", online_detail),

@@ -27,6 +27,9 @@
 </head>
 <body>
    <p></p>
+
+
+
    <form class="form-horizontal" role="form" >
         <div class="row">
            <div class="form-group col-md-6">
@@ -180,79 +183,55 @@
                    </div>
                 </div>
           </div>
+
           <div class="row">
                <div class="form-group col-md-6">
                     <div>
-                        <label class="col-md-2 control-label">系统角色</label>
+                        <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv2">*</span>用户角色</label>
                     </div>
                     <div class="col-md-10">
-                        <select multiple="multiple" class="form-control" id="ua_sele_sys_priv" name="roles" >
-                            {% for var in roles %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                    </div>
-               </div>
-          </div>
-          <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv">*</span>用户角色</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select multiple="multiple" class="form-control" id="ua_sele_role_priv" name="roles" >
-                        </select>
+                         <select class="selectpicker" multiple data-style="btn-default" id="ua_sele_role_priv2"  >
+                             {% for var in roles %}
+                                <option value={{var[0]}} >{{var[1]}}</option>
+                             {% end %}
+                         </select>
                     </div>
                </div>
           </div>
           <br>
           <div class="form-group m-b-0">
                 <div class="col-sm-offset-3 col-sm-9">
-                  <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                    <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+<!--                    <button id="add3" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存3</button>-->
                 </div>
            </div>
+           <br>
        </form>
 
     <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
     <script>
-
         $(document).ready(function() {
 
           set_selected();
 
-          $("#ua_sele_sys_priv").click(function () {
-               options=$('#ua_sele_sys_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#ua_sele_role_priv').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#ua_sele_sys_priv option:selected').remove();
-               }
-          });
-
-          $("#ua_sele_role_priv").click(function () {
-               options=$('#ua_sele_role_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#ua_sele_sys_priv').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#ua_sele_role_priv option:selected').remove();
-               }
-          });
+          $('#add3').click(function(){
+               $('.selectpicker').selectpicker(
+                   'val' ,['1','2']
+               );
+          })
 
           function get_privs(){
-             var tmp='';
-             var val='';
-             $('#ua_sele_role_priv option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-          };
+              var tmp='';
+              arr = $('#ua_sele_role_priv2').val()
+              if (arr.length>0) {
+                 for (let i = 0, len = arr.length; i < len; i++) {
+                   tmp=tmp+','+arr[i];
+                 }
+              } else {
+                  return ''
+              }
+              return tmp.substr(1);
+          }
 
           $('#expire_date').attr("readonly", "readonly");
 
@@ -351,6 +330,10 @@
                 showThumbs: true,
                 addMore: true
            });
+
+          $('.selectpicker').selectpicker({
+               noneSelectedText : '请选择角色...'
+          });
        });
 
    </script>

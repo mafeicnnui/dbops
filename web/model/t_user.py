@@ -426,7 +426,7 @@ async def save_user(p_user):
         privs        = p_user['privs']
         file_path    = p_user['file_path']
         file_name    = p_user['file_name']
-
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>.privs:',privs)
         if file_path=='':
            file_path = '/static/assets/images/users'
 
@@ -642,12 +642,8 @@ async def del_user(p_user):
         result['message'] = '删除失败！'
     return result
 
-async def get_sys_roles(p_userid):
-    sql="""select cast(id as char) as id,name 
-           from t_role
-           where status='1'
-             and id not in(select role_id from t_user_role where user_id='{0}')      
-        """.format(p_userid)
+async def get_sys_roles():
+    sql="""select cast(id as char) as id,name from t_role where status='1'"""
     return await async_processer.query_list(sql)
 
 async def get_user_roles(p_userid):
@@ -658,6 +654,14 @@ async def get_user_roles(p_userid):
         """.format(p_userid)
     return await async_processer.query_list(sql)
 
+async def get_user_roles_n(p_userid):
+    st="""select cast(id as char) as id
+           from t_role 
+            where status='1'  
+              and id  in(select role_id from t_user_role where user_id='{0}')    
+        """.format(p_userid)
+    rs =  await async_processer.query_list(st)
+    return ','.join([i[0] for i in rs])
 
 async def query_session(p_name):
     v_where = ''

@@ -148,12 +148,14 @@ async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
 
 async def query_order(p_name,p_dsid,p_creator,p_username):
     v_where=''
-
-    if p_creator != '':
-        v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
-
     if p_username != 'admin':
-       v_where = "  and  a.creator='{0}'".format(p_username)
+        if p_creator != '':
+            v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
+        else:
+            v_where = "  and  a.creator='{0}'".format(p_username)
+    else:
+        if p_creator != '':
+            v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
 
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
@@ -1376,7 +1378,7 @@ async def update_order_prod(order_number,order_ver,order_type,order_status,order
            st = '''update t_sql_online set 
                           order_ver= '{}',
                           order_type = '{}',
-                          order_status = '{}',
+                          order_status = replace('{}','2','0'),
                           sqltext = '{}',
                           updator = '{}',
                           last_update_date = now()
@@ -1416,14 +1418,16 @@ async def get_prod_order_number(p_order_type,p_userid):
         result['message'] = traceback.format_exc()
         return result
 
-async def query_online_order(p_name,p_creator,p_username,p_userid):
+async def query_online_order(p_name,p_creator,p_username):
     v_where=''
-
-    if p_creator != '':
-        v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
-
     if p_username != 'admin':
-       v_where = "  and  a.creator='{0}'".format(p_userid)
+        if p_creator != '':
+            v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
+        else:
+            v_where = "  and  a.creator='{0}'".format(p_username)
+    else:
+        if p_creator != '':
+            v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
 
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
@@ -1436,8 +1440,9 @@ async def query_online_order(p_name,p_creator,p_username,p_userid):
                            WHEN '2' THEN '审核失败'
                      END  order_status,  
                      (select dmmc from t_dmmx f where f.dm='12' and f.dmm=a.order_ver) as order_ver,
-                     (SELECT NAME FROM t_user e WHERE e.id=a.creator) creator,
+                     (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
                      DATE_FORMAT(a.create_date,'%Y-%m-%d %h:%i:%s')  create_date,
+                     DATE_FORMAT(a.last_update_date,'%Y-%m-%d %h:%i:%s')  last_update_date,
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
                      DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
                      '{}'
@@ -1464,8 +1469,8 @@ async def query_online_detail(p_order_number,p_userid):
                  (SELECT dmmc FROM t_dmmx WHERE dm='13' AND dmm=a.order_type) AS order_type_name,
                  (SELECT dmmc FROM t_dmmx WHERE dm='41' AND dmm=a.order_status) AS order_status_name,       
                  (SELECT dmmc FROM t_dmmx WHERE dm='12' AND dmm=a.order_ver) AS order_ver_name,             
-                 (SELECT NAME FROM t_user WHERE id=a.creator) AS creator_name,
-                 (SELECT NAME FROM t_user WHERE id=a.auditor) AS auditor_name,
+                 (SELECT NAME FROM t_user WHERE login_name=a.creator) AS creator_name,
+                 (SELECT NAME FROM t_user WHERE login_name=a.auditor) AS auditor_name,
                  sqltext,
                  audit_message,
                  '{0}' as curr_user
@@ -1503,4 +1508,47 @@ async def delete_online_order(p_order_number):
         traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '删除失败!'
+        return result
+
+async def audit_online_order(p_order_number,audit_status,audit_message,p_username):
+    result = {}
+    try:
+        if await check_online_order(p_order_number):
+            sql = """update t_sql_online 
+                         set order_status='{}',
+                             auditor='{}',
+                             audit_message='{}',
+                             audit_date=now()
+                         where order_number='{}'""".format(audit_status,p_username,audit_message,p_order_number)
+            await async_processer.exec_sql(sql)
+            result['code']='0'
+            result['message']='审核成功!'
+            return result
+        else:
+            result['code'] = '-1'
+            result['message'] = '`{}`工单不存在!'.format(p_order_number)
+            return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '审核失败!'
+        return result
+
+async def audit_canal_online_order(p_order_number):
+    result = {}
+    try:
+        if await check_online_order(p_order_number):
+            sql = "update t_sql_online set order_status='0',auditor='',audit_date=null where order_number='{0}'".format(p_order_number)
+            await async_processer.exec_sql(sql)
+            result['code']='0'
+            result['message']='取消审核成功!'
+            return result
+        else:
+            result['code'] = '-1'
+            result['message'] = '`{}`工单不存在!'.format(p_order_number)
+            return result
+    except:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '审核失败!'
         return result

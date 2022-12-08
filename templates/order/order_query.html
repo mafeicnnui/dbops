@@ -728,7 +728,7 @@
                                 <label class="col-md-2 control-label" >失败原因：</label>
                             </div>
                             <div class="col-md-10" >
-                                <input type="text" id="audit_message_detail_prod"  readonly class="form-control">
+                                <input type="text" id="audit_message_detail_prod"  readonly class="form-control" style="color:red">
                            </div>
                       </div>
                    </form>
@@ -737,7 +737,7 @@
             </div>
                <div class="modal-footer">
                     <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                       <button  type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
                     </div>
                </div>
             </div>
@@ -745,7 +745,7 @@
       </div>
      </div>
 
-     <!--变更上线工单详情窗口 -->
+     <!--变更上线工单变更窗口 -->
      <div id="con-close-upd-prod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-lg-order-prod">
         <div class="modal-content">
@@ -798,7 +798,7 @@
                             <div class="col-md-10">
                                 <select class="form-control select" id="order_status_upd_prod">
                                     <option value='' selected = "selected">...</option>
-                                    {% for var in order_status_add_prod %}
+                                    {% for var in order_status_upd_prod %}
                                       <option value={{var[0]}}>{{var[1]}}</option>
                                     {% end %}
                                 </select>
@@ -826,6 +826,46 @@
          </div>
       </div>
      </div>
+
+     <!--上线工单审核  -->
+     <div id="con-close-audit-prod" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">上线工单审核</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div >
+                        <label class="col-md-3 control-label">审核结果：</label>
+                    </div>
+                    <div class="col-md-9">
+                        <select class="form-control select" id="online_prod_audit_result">
+                            <option value='1' selected = "selected">审核成功</option>
+                            <option value='2' >审核失改</option>
+                        </select>
+                   </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div >
+                        <label class="col-md-3 control-label">失败原因：</label>
+                    </div>
+                    <div class="col-md-9">
+                        <textarea class="form-control" readonly rows="3" style="min-width: 90%;color:red" id="online_prod_audit_message"></textarea>
+                   </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                    <input type='hidden' id='online_prod_audit_order_number'>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="online_prod_audit_btn" >审核</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
 
 </body>
 
@@ -989,6 +1029,7 @@
                          { "title": "版本号" },
                          { "title": "发布人" },
                          { "title": "发布时间" },
+                         { "title": "最近更新时间" },
                          { "title": "审核人"},
                          { "title": "审核时间"},
                          { "title": "登陆用户","visible":false},
@@ -996,26 +1037,25 @@
                        ],
                       columnDefs: [
                         {
-                            targets: 9,
+                            targets: 10,
                             render: function(data, type, row, meta){
                                  var id=row[0]
                                  var status = row[2]
-                                 var creator = row[4]
-                                 var logon_user = row[8]
+                                 var logon_user = row[9]
                                  var online_update
                                  var online_delete
                                  var online_detail
                                  var online_audit
                                  var online_qx_audit
 
-                                 if(status=='已发布') {
+                                 if(status=='已发布' || status=='审核失败') {
                                     online_detail= '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showOnline(\''+id+'\');"/>' +'&nbsp;'
                                     online_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showOnline_upd(\''+id+'\');"/>' +'&nbsp;'
                                     online_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="showOnline_del(\''+id+'\');"/>' +'&nbsp;'
 
                                     if (logon_user=='admin') {
-                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
-                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="取消审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"   type="button" value="审核" onclick="showOnline_audit(\''+id+'\');"/>' +'&nbsp;'
+                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" disabled type="button"  value="取消审核" onclick="showOnline_audit_canal(\''+id+'\');"/>' +'&nbsp;'
                                      } else {
                                          online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  disabled type="button"  value="审核" />' +'&nbsp;'
                                          online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" disabled type="button"  value="取消审核" />' +'&nbsp;'
@@ -1026,8 +1066,8 @@
                                     online_update  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="变更" onclick="showOnline_upd(\''+id+'\');"/>' +'&nbsp;'
                                     online_delete  = '&nbsp;'+'<input class="btn btn-xs btn-primary disabled" disabled type="button"  value="删除" onclick="showOnline_del(\''+id+'\');"/>' +'&nbsp;'
                                     if (logon_user=='admin') {
-                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
-                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="取消审核" onclick="showWtd_del(\''+id+'\');"/>' +'&nbsp;'
+                                         online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  disabled type="button"  value="审核" onclick="showOnline_audit(\''+id+'\');"/>' +'&nbsp;'
+                                         online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" type="button"  value="取消审核" onclick="showOnline_audit_canal(\''+id+'\');"/>' +'&nbsp;'
                                      } else {
                                          online_audit   = '&nbsp;'+'<input class="btn btn-xs btn-primary"  disabled type="button"  value="审核" />' +'&nbsp;'
                                          online_qx_audit  = '&nbsp;'+'<input class="btn btn-xs btn-primary" disabled type="button"  value="取消审核" />' +'&nbsp;'
@@ -1573,14 +1613,13 @@
                     order_number: p_order_number
                 },
                 success: function (dataSet) {
+                    console.log('showOnline_upd=',dataSet)
                     var online = dataSet
-                    $('#order_number_upd_prod') .val(online['order_number'])
-                    $('#order_type_upd_ver') .val(online['order_ver'])
-                    $('#order_type_upd_prod') .val(online['order_type'])
-                    $('#order_status_upd_prod') .val(online['order_status'])
-
+                    $('#order_number_upd_prod').val(online['order_number'])
+                    $('#order_type_upd_ver').val(online['order_ver'])
+                    $('#order_type_upd_prod').val(online['order_type'])
+                    $('#order_status_upd_prod').val(online['order_status'])
                     setEditor('order_script_upd_prod',online['sqltext'])
-
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
                     $('#con-close-upd-prod').modal({
@@ -1590,6 +1629,55 @@
 
                 }
         });
+    }
+
+    function showOnline_audit(p_order_number){
+         $('.modal').on('show.bs.modal', centerModals);
+         $(window).on('resize', centerModals);
+         $('#con-close-audit-prod').modal({
+            keyboard: false,
+            backdrop:false
+         });
+         $('#online_prod_audit_order_number').val(p_order_number)
+         $('#online_prod_audit_message').attr("readonly",true);
+         $('#online_prod_audit_message').val("");
+         $('#online_prod_audit_result').val("1")
+    }
+
+    function showOnline_audit_canal(p_order_number){
+          swal({
+                title: "确认要取消审核吗?",
+                text: "工单["+p_order_number+"]将被取消!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 取消审核!",
+                cancelButtonText:  "否, 不取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+               }, function (isConfirm) {
+                       if (isConfirm) {
+                             $.ajax({
+                                    url: "/online/audit_canal",
+                                    type: "post",
+                                    datatype: "json",
+                                    data:{
+                                        order_number: p_order_number
+                                    },
+                                    success: function (dataSet) {
+                                        if (dataSet.code=='0') {
+                                             swal("已取消!", "工单["+p_order_number+"]已取消审核!", "success");
+                                             query_online()
+                                        } else {
+                                             swal("取消审核失败!", "工单["+p_order_number+"]"+dataSet.message+"!", "error");
+                                        }
+                                    }
+                                });
+
+                      } else {
+                          swal("已取消", "工单[" + p_order_number + "]取消审核已撤销!", "error");
+                      }
+          })
     }
 
     function initEditor(p_item) {
@@ -1695,6 +1783,39 @@
            res['statement'] = v_sql
            return res
     }
+
+    $('#online_prod_audit_result').change(function(){
+        if ($('#online_prod_audit_result').val() == '1') {
+            $('#online_prod_audit_message').attr("readonly",true);
+            $('#online_prod_audit_message').val("");
+        } else {
+            $('#online_prod_audit_message').attr("readonly",false);
+        }
+
+    })
+
+    $('#online_prod_audit_btn').click(function(){
+        var p_order_number = $('#online_prod_audit_order_number').val()
+        $.ajax({
+                url: "/online/audit",
+                type: "post",
+                datatype: "json",
+                data:{
+                    order_number: $('#online_prod_audit_order_number').val(),
+                    audit_status: $('#online_prod_audit_result').val(),
+                    audit_message:$('#online_prod_audit_message').val()
+                },
+                success: function (dataSet) {
+                    if (dataSet.code=='0') {
+                         swal("已审核!", "工单["+p_order_number+"]已审核!", "success");
+                         query_online()
+                         $('#con-close-audit-prod').modal('hide');
+                    } else {
+                         swal("审核失败!", "工单["+p_order_number+"]"+dataSet.message+"!", "error");
+                    }
+                }
+        });
+    })
 
     $('#order_attach_upd').click(function(){
             $.ajax({
@@ -2121,6 +2242,8 @@
     });
 
     $(document).ready(function() {
+          var tabPageName='日常工单'
+
           $('.selectpicker').selectpicker({
               size: 10
           });
@@ -2135,8 +2258,17 @@
           initEditor('order_script_upd_prod');
 
           $("#query_btn").click(function() {
-                query_order()
-                //query_wtd()
+               console.log('tabPageName=',tabPageName)
+               if (tabPageName == '日常工单') {
+                    query_order()
+               }
+               if (tabPageName == '问题单') {
+                   query_wtd()
+               }
+
+               if (tabPageName == '生产上线') {
+                   query_online()
+               }
           });
 
           $("#query_btn").click()
@@ -2144,6 +2276,7 @@
           $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
                 var activeTab = $(e.target).text();
                 var previousTab = $(e.relatedTarget).text();
+                tabPageName = activeTab
                 //console.log(activeTab, previousTab)
                 if (activeTab == '日常工单') {
                     query_order()

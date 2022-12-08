@@ -9,7 +9,8 @@ import json
 import uuid
 import tornado.gen
 from web.model.t_role  import get_roles
-from web.model.t_user  import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session
+from web.model.t_user import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session, \
+    get_user_roles_n
 from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_proj_privs
 from web.model.t_dmmx  import get_dmm_from_dm
 from web.model.t_ds    import query_project
@@ -104,8 +105,8 @@ class useredit(base_handler.TokenHandler):
                      image_path  = d_user['image_path'],
                      image_name  = d_user['image_name'],
                      user_image  = d_user['image_path']+'/'+d_user['image_name'],
-                     sys_roles   = await get_sys_roles(userid),
-                     user_roles  = await get_user_roles(userid),
+                     sys_roles   = await get_sys_roles(),
+                     user_roles  = await get_user_roles_n(userid),
                      genders     = genders,
                      depts       = depts,
                      proj_groups = proj_groups
