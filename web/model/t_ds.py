@@ -103,7 +103,7 @@ async def query_project(p_name,p_userid,is_grants):
                         a.db_desc,
                         concat(substr(CONCAT(b.dmmc,':/',ip,':',PORT,'/',service),1,30),'...') AS NAME,             
                         c.dmmc AS db_env,
-                        updator,DATE_FORMAT(last_update_date,'%Y-%m-%d') last_update_date,
+                        -- updator,DATE_FORMAT(last_update_date,'%Y-%m-%d') last_update_date,
                         (SELECT COUNT(0) FROM t_user_proj_privs 
                            WHERE proj_id=a.id AND user_id='{0}' AND priv_id='1') AS query_priv,
                         (SELECT COUNT(0) FROM t_user_proj_privs 
@@ -321,6 +321,15 @@ async def get_dss_order(logon_name):
                and a.id in (select proj_id from t_user_proj_privs where proj_id=a.id and user_id='{0}' and priv_id='5')
                order by a.db_desc
         """.format(d_user['userid'])
+    return await async_processer.query_list(sql)
+
+async def get_dss_order_online():
+    sql="""SELECT CAST(id AS CHAR) AS id,a.flag1 AS NAME 
+           FROM t_db_source a
+           WHERE a.status='1' AND a.`db_env`='1'       
+              AND a.`db_type` IN(0,5,6)
+               AND a.id IN(16,84,206,221,218,32,220)
+               ORDER BY a.db_type,a.id"""
     return await async_processer.query_list(sql)
 
 async def get_dss_sql_export(logon_name):

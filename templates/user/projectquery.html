@@ -238,14 +238,14 @@
                               { "title": "描述" },
                               { "title": "定义" },
                               { "title": "环境" },
-                              { "title": "创建人" },
-                              { "title": "创建日期" },
+                              // { "title": "创建人" },
+                              // { "title": "创建日期" },
                               {
                                     "title":"查询",
                                     "width": "35px",
                                      "render": function(data,type,row,meta) {
                                          var a;
-                                         if (row[6] == '1') {
+                                         if (row[4] == '1') {
                                              a = '<input type="checkbox" name="proj_query" value="1" checked="checked"  onclick="isSeleQuery(this);" />' + '&nbsp;'
                                          } else {
                                              a = '<input type="checkbox" name="proj_query" value="0"  onclick="isSeleQuery(this);" />' + '&nbsp;'
@@ -258,7 +258,7 @@
                                     "width": "35px",
                                      "render": function(data,type,row,meta) {
                                        var  b;
-                                       if (row[7]=='1') {
+                                       if (row[5]=='1') {
                                               b='<input type="checkbox" name="proj_release" value="1" checked="checked"  onclick="isSeleRelease(this);" />'
                                        } else {
                                               b='<input type="checkbox" name="proj_release" value="0"  onclick="isSeleRelease(this);" />'
@@ -271,7 +271,7 @@
                                     "width": "35px",
                                      "render": function(data,type,row,meta) {
                                        var  c;
-                                       if (row[8]=='1') {
+                                       if (row[6]=='1') {
                                               c='<input type="checkbox" name="proj_audit" value="1" checked="checked"  onclick="isSeleAudit(this);" />'
                                        } else {
                                               c='<input type="checkbox" name="proj_audit" value="0"  onclick="isSeleAudit(this);" />'
@@ -284,7 +284,7 @@
                                     "width": "35px",
                                      "render": function(data,type,row,meta) {
                                       var  d;
-                                      if (row[9]=='1') {
+                                      if (row[7]=='1') {
                                           d='<input type="checkbox" name="proj_Execute" value="1" checked="checked"  onclick="isSeleExecute(this);" />'
                                       } else {
                                           d='<input type="checkbox" name="proj_Execute" value="0"  onclick="isSeleExecute(this);" />'
@@ -297,7 +297,7 @@
                                     "width": "35px",
                                      "render": function(data,type,row,meta) {
                                       var  d;
-                                      if (row[10]=='1') {
+                                      if (row[8]=='1') {
                                           d='<input type="checkbox" name="proj_Order" value="1" checked="checked"  onclick="isSeleOrder(this);" />'
                                       } else {
                                           d='<input type="checkbox" name="proj_Order" value="0"  onclick="isSeleOrder(this);" />'
@@ -310,7 +310,7 @@
                                     "width": "35px",
                                      "render": function(data,type,row,meta) {
                                       var  d;
-                                      if (row[11]=='1') {
+                                      if (row[9]=='1') {
                                           d='<input type="checkbox" name="proj_Export" value="1" checked="checked"  onclick="isExport(this);" />'
                                       } else {
                                           d='<input type="checkbox" name="proj_Export" value="0"  onclick="isExport(this);" />'
@@ -338,6 +338,10 @@
         $(document).ready(function() {
             $("#query_btn").click();
         });
+
+         $(document).on('click','p.class',function(e) {
+             e.preventDefault()
+         });
 
         function isSeleQuery(my){
            if ($(my).is(':checked')){
@@ -388,26 +392,26 @@
          }
 
         function centerModals() {
-          $('.modal').each(function(i) {
-            var $clone = $(this).clone().css('display', 'block').appendTo('body');
-            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-            top = top > 50 ? top : 0;
-            $clone.remove();
-            $(this).find('.modal-content').css("margin-top", top - 50);
-          });
+              $('.modal').each(function(i) {
+                var $clone = $(this).clone().css('display', 'block').appendTo('body');
+                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+                top = top > 50 ? top : 0;
+                $clone.remove();
+                $(this).find('.modal-content').css("margin-top", top - 50);
+              });
          }
 
-         $('#save_user_proj_privs').on('click', function() {
-             $("#example2 tbody tr td input:radio").each( function() {
+        $('#save_user_proj_privs').on('click', function() {
+             $("#example2 tbody tr td input:radio:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
                   var userid=$('#ds_user_id').val()
                   var dsid =row[0].innerHTML
-                  var priv_query=$(row[6].innerHTML).val()
-                  var priv_release=$(row[7].innerHTML).val()
-                  var priv_audit=$(row[8].innerHTML).val()
-                  var priv_execute=$(row[9].innerHTML).val()
-                  var priv_order=$(row[10].innerHTML).val()
-                  var priv_export=$(row[11].innerHTML).val()
+                  var priv_query=$(row[4].innerHTML).val()
+                  var priv_release=$(row[5].innerHTML).val()
+                  var priv_audit=$(row[6].innerHTML).val()
+                  var priv_execute=$(row[7].innerHTML).val()
+                  var priv_order=$(row[8].innerHTML).val()
+                  var priv_export=$(row[9].innerHTML).val()
 
                   $.ajax({
                         url     : "/project/privs/save",
@@ -421,14 +425,16 @@
                              priv_audit    :  priv_audit,
                              priv_execute  :  priv_execute,
                              priv_order    :  priv_order,
-                             priv_export    :  priv_export,
+                             priv_export   :  priv_export,
                         },
                         success: function (dataSet) {
                              if (dataSet.code=='0') {
-                                swal("保存成功", "", "success")
+                                //swal("保存成功", "", "success")
+                                swal({title: "保存成功",type: "info",timer: 2000,showConfirmButton: false});
                                 project_query()
                              } else {
-                                swal(dataSet.message, "", "error")
+                                //swal(dataSet.message, "", "error")
+                                swal({title: dataSet.message,type: "error",timer: 2000,showConfirmButton: false});
                              }
                         },
                   })

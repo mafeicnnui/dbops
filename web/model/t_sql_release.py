@@ -13,10 +13,10 @@ import json
 import xlrd,xlwt
 import os,zipfile
 from xpinyin import Pinyin
-from web.utils.common import current_time, send_message, send_message_sync, current_rq
+from web.utils.common           import current_time, send_message, send_message_sync, current_rq
 from web.model.t_user           import get_user_by_loginame
 from web.model.t_ds             import get_ds_by_dsid,get_ds_by_dsid_sync
-from web.model.t_dmmx import get_dmmc_from_dm, get_dmmc_from_dm_sync, get_dmm_from_dm2
+from web.model.t_dmmx           import get_dmmc_from_dm, get_dmmc_from_dm_sync, get_dmm_from_dm2
 from web.model.t_sql_check      import check_mysql_ddl
 from web.utils.common           import send_mail,send_mail_param,get_sys_settings,get_sys_settings_sync
 from web.utils.common           import format_sql as fmt_sql
@@ -1349,17 +1349,17 @@ async def exp_sql_pdf(static_path,p_month,p_market_id):
     os.system('rm -f {0}'.format(file_name))
     return rzip_file
 
-async def save_order_prod(order_number,order_ver,order_type,order_status,order_script,p_user):
+async def save_order_prod(order_env,order_number,order_ver,order_type,order_status,order_script,p_user):
     result = {}
     try:
         if await check_online_order(order_number):
-            result['code'] = '0'
+            result['code'] = '-1'
             result['message'] = '操作失败(工单已存在)!'
             return result
         else:
-           st = '''insert into t_sql_online(order_number,order_ver,order_type,order_status,sqltext,creator,create_date)
-                   values('{0}','{1}','{2}','{3}','{4}','{5}',now())
-                '''.format(order_number,order_ver,order_type,order_status,fmt_sql(order_script),p_user)
+           st = '''insert into t_sql_online(order_number,order_ver,order_type,order_status,sqltext,creator,create_date,order_env)
+                   values('{0}','{1}','{2}','{3}','{4}','{5}',now(),'{6}')
+                '''.format(order_number,order_ver,order_type,order_status,fmt_sql(order_script),p_user,order_env)
         print(st)
         await async_processer.exec_sql(st)
         result['code']='0'
@@ -1371,7 +1371,7 @@ async def save_order_prod(order_number,order_ver,order_type,order_status,order_s
         result['message'] = '操作失败!'
         return result
 
-async def update_order_prod(order_number,order_ver,order_type,order_status,order_script,p_user):
+async def update_order_prod(order_env,order_number,order_ver,order_type,order_status,order_script,p_user):
     result = {}
     try:
         if await check_online_order(order_number):
@@ -1381,9 +1381,10 @@ async def update_order_prod(order_number,order_ver,order_type,order_status,order
                           order_status = replace('{}','2','0'),
                           sqltext = '{}',
                           updator = '{}',
-                          last_update_date = now()
+                          last_update_date = now(),
+                          order_env = '{}'
                    where order_number='{}'
-                '''.format(order_ver,order_type,order_status,fmt_sql(order_script),p_user,order_number)
+                '''.format(order_ver,order_type,order_status,fmt_sql(order_script),p_user,order_env,order_number)
            await async_processer.exec_sql(st)
            result['code']='0'
            result['message']='操作成功!'
@@ -1398,16 +1399,17 @@ async def update_order_prod(order_number,order_ver,order_type,order_status,order
         result['message'] = '操作失败!'
         return result
 
-async def get_prod_order_number(p_order_type,p_userid):
+async def get_prod_order_number(p_order_type,p_userid,p_username):
     result = {}
     try:
         py = Pinyin()
         xm = await async_processer.query_dict_one('select name from t_user where id = {}'.format(p_userid))
         rs = py.get_pinyin(xm['name']).split('-')
         sp = ''.join(i[0].upper() for i in rs)
-        tp = await async_processer.query_dict_one("select dmmc2 from t_dmmx where dm='13' and dmm='{}'".format(p_order_type))
+        tp = await async_processer.query_dict_one("select dmmc2 from t_dmmx where dm='46' and dmm='{}'".format(p_order_type))
         st ="""SELECT lpad(COUNT(0)+1,3,0)  as xh FROM t_sql_online a
-                WHERE a.creator={}  and a.order_type='{}' """.format(p_userid,p_order_type)
+                WHERE a.creator='{}'  and a.order_type='{}' """.format(p_username,p_order_type)
+        print('get_prod_order_number=',st)
         xh = await async_processer.query_dict_one(st)
         result['code']='0'
         result['message']=sp+'_'+tp['dmmc2']+'_'+str(xh['xh'])
@@ -1418,7 +1420,7 @@ async def get_prod_order_number(p_order_type,p_userid):
         result['message'] = traceback.format_exc()
         return result
 
-async def query_online_order(p_name,p_creator,p_username):
+async def query_online_order(p_name,p_creator,p_username,p_order_ver,p_order_env):
     v_where=''
     if p_username != 'admin':
         if p_creator != '':
@@ -1432,22 +1434,30 @@ async def query_online_order(p_name,p_creator,p_username):
     if p_name != '':
        v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
 
-    sql = """SELECT  a.order_number,
+    if p_order_ver != '':
+        v_where = v_where + " and a.order_ver='{0}'\n".format(p_order_ver)
+
+    if p_order_env != '':
+        v_where = v_where + " and a.order_env='{0}'\n".format(p_order_env)
+
+    sql = """SELECT  
+                     (select dmmc from t_dmmx f where f.dm='12' and f.dmm=a.order_ver) as order_ver,
+                     (select flag1 from t_db_source f where f.id=a.order_env) as order_env,
+                     a.order_number,
                      c.dmmc AS 'order_type',
                      CASE a.order_status 
                            WHEN '0' THEN '已发布'
                            WHEN '1' THEN '已审核'
                            WHEN '2' THEN '审核失败'
                      END  order_status,  
-                     (select dmmc from t_dmmx f where f.dm='12' and f.dmm=a.order_ver) as order_ver,
+                     
                      (SELECT NAME FROM t_user e WHERE e.login_name=a.creator) creator,
                      DATE_FORMAT(a.create_date,'%Y-%m-%d %h:%i:%s')  create_date,
                      DATE_FORMAT(a.last_update_date,'%Y-%m-%d %h:%i:%s')  last_update_date,
-                     (SELECT NAME FROM t_user e WHERE e.login_name=a.auditor) auditor,
                      DATE_FORMAT(a.audit_date,'%y-%m-%d %h:%i:%s')   audit_date,
                      '{}'
             FROM t_sql_online a, t_dmmx c
-            WHERE  c.dm='13'
+            WHERE  c.dm='46'
               AND a.order_type=c.dmm
               {} order by a.create_date desc
           """.format(p_username,v_where)
@@ -1456,6 +1466,7 @@ async def query_online_order(p_name,p_creator,p_username):
 
 async def query_online_detail(p_order_number,p_userid):
     sql = """SELECT 
+                 order_env,
                  order_number,
                  order_type,
                  order_ver,
@@ -1471,6 +1482,7 @@ async def query_online_detail(p_order_number,p_userid):
                  (SELECT dmmc FROM t_dmmx WHERE dm='12' AND dmm=a.order_ver) AS order_ver_name,             
                  (SELECT NAME FROM t_user WHERE login_name=a.creator) AS creator_name,
                  (SELECT NAME FROM t_user WHERE login_name=a.auditor) AS auditor_name,
+                 (select flag1 from t_db_source f where f.id=a.order_env) as order_env_name,
                  sqltext,
                  audit_message,
                  '{0}' as curr_user

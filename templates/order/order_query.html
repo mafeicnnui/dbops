@@ -77,7 +77,7 @@
     <input type='hidden' id='cur_release_num'>
     <div class="row">
         <div class="col-md-12">
-           <div class="col-md-3">
+           <div class="col-md-2">
                <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
                     <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
@@ -88,13 +88,24 @@
                      <span class="input-group-addon">工单环境</span>
                        <select class="form-control select" id="db_audit_source">
                             <option value='' selected = "selected">...</option>
-                            {% for var in order_dss %}
+                            {% for var in order_dss_online %}
                               <option value={{var[0]}}>{{var[1]}}</option>
                             {% end %}
                        </select>
                  </div>
             </div>
             <div class="col-md-3">
+                 <div class="input-group">
+                     <span class="input-group-addon">版本号</span>
+                       <select class="form-control select" id="db_online_ver">
+                            <option value='' selected = "selected">...</option>
+                            {% for var in order_type_add_ver %}
+                              <option value={{var[0]}}>{{var[1]}}</option>
+                            {% end %}
+                       </select>
+                 </div>
+            </div>
+            <div class="col-md-2">
                  <div class="input-group">
                     <span class="input-group-addon">发布人</span>
                     <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
@@ -560,6 +571,19 @@
                <div class="panel panel-flat">
                     <div class="panel-body">
                       <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单环境：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_type_add_env">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_dss_online %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
                         <div class="form-group" >
                             <div>
                                 <label class="col-md-2 control-label" >工单编号：</label>
@@ -756,6 +780,19 @@
                <div class="panel panel-flat">
                     <div class="panel-body">
                       <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">工单环境：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="order_type_upd_env">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in order_dss_online %}
+                                      <option value={{var[0]}}>{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
                         <div class="form-group" >
                             <div>
                                 <label class="col-md-2 control-label" >工单编号：</label>
@@ -1005,8 +1042,10 @@
               type: "post",
               datatype: "json",
               data:{
-                  qname : $("#name").val(),
-                  creater  : $("#sql_creater").val(),
+                  qname    : $("#name").val(),
+                  creater   : $("#sql_creater").val(),
+                  order_ver : $("#db_online_ver").val(),
+                  order_env : $("#db_audit_source").val(),
               },
               success: function (dataSet) {
                   $('#curr_userid').val(dataSet['userid'])
@@ -1023,14 +1062,14 @@
                       iDisplayLength: 14,
                       data: dataSet,
                       columns: [
+                         { "title": "版本号" },
+                         { "title": "工单环境"},
                          { "title": "工单编号" },
                          { "title": "工单类型" },
                          { "title": "工单状态" },
-                         { "title": "版本号" },
                          { "title": "发布人" },
                          { "title": "发布时间" },
                          { "title": "最近更新时间" },
-                         { "title": "审核人"},
                          { "title": "审核时间"},
                          { "title": "登陆用户","visible":false},
                          { "title": "操作"},
@@ -1039,8 +1078,8 @@
                         {
                             targets: 10,
                             render: function(data, type, row, meta){
-                                 var id=row[0]
-                                 var status = row[2]
+                                 var id=row[2]
+                                 var status = row[4]
                                  var logon_user = row[9]
                                  var online_update
                                  var online_delete
@@ -1615,6 +1654,7 @@
                 success: function (dataSet) {
                     console.log('showOnline_upd=',dataSet)
                     var online = dataSet
+                    $('#order_type_upd_env').val(online['order_env'])
                     $('#order_number_upd_prod').val(online['order_number'])
                     $('#order_type_upd_ver').val(online['order_ver'])
                     $('#order_type_upd_prod').val(online['order_type'])
@@ -1707,6 +1747,12 @@
                 "status":false,
                 "statement":''
             }
+
+            if($('#order_type_add_env').val()=='') {
+               showtips('info','工单环境不能为空!');
+               return res
+            }
+
             if($('#order_number_add_prod').val()=='') {
                showtips('info','工单编号不能为空!');
                return res
@@ -1748,6 +1794,12 @@
                 "status":false,
                 "statement":''
             }
+
+            if($('#order_type_upd_env').val()=='') {
+               showtips('info','工单环境不能为空!');
+               return res
+            }
+
             if($('#order_number_upd_prod').val()=='') {
                showtips('info','工单编号不能为空!');
                return res
@@ -1961,6 +2013,7 @@
                     type: "post",
                     datatype: "json",
                     data: {
+                        order_env    : $('#order_type_add_env').val(),
                         order_number : $('#order_number_add_prod').val(),
                         order_ver    : $('#order_type_add_ver').val(),
                         order_type   : $('#order_type_add_prod').val(),
@@ -2145,10 +2198,11 @@
                     type: "post",
                     datatype: "json",
                     data: {
-                        order_number: $('#order_number_upd_prod').val(),
-                        order_ver: $('#order_type_upd_ver').val(),
-                        order_type: $('#order_type_upd_prod').val(),
-                        order_status: $('#order_status_upd_prod').val(),
+                        order_env    : $('#order_type_upd_env').val(),
+                        order_number : $('#order_number_upd_prod').val(),
+                        order_ver    : $('#order_type_upd_ver').val(),
+                        order_type   : $('#order_type_upd_prod').val(),
+                        order_status : $('#order_status_upd_prod').val(),
                         order_script : res['statement'],
                     },
                     success: function (dataSet) {
