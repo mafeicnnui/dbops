@@ -326,9 +326,9 @@ async def get_dss_order(logon_name):
 async def get_dss_order_online():
     sql="""SELECT CAST(id AS CHAR) AS id,a.flag1 AS NAME 
            FROM t_db_source a
-           WHERE a.status='1' AND a.`db_env`='1'       
+           WHERE a.status='1' AND a.`db_env` IN('1','2','3')       
               AND a.`db_type` IN(0,5,6)
-               AND a.id IN(16,84,206,221,218,32,220)
+               AND a.id IN(1,2,16,84,206,221,218,32,220)
                ORDER BY a.db_type,a.id"""
     return await async_processer.query_list(sql)
 

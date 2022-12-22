@@ -13,6 +13,8 @@ import json
 import xlrd,xlwt
 import os,zipfile
 from xpinyin import Pinyin
+
+from web.model.t_sql_online     import check_online
 from web.utils.common           import current_time, send_message, send_message_sync, current_rq
 from web.model.t_user           import get_user_by_loginame
 from web.model.t_ds             import get_ds_by_dsid,get_ds_by_dsid_sync
@@ -1352,8 +1354,14 @@ async def exp_sql_pdf(static_path,p_month,p_market_id):
 async def save_order_prod(order_env,order_number,order_ver,order_type,order_status,order_script,p_user):
     result = {}
     try:
-        if await check_online_order(order_number):
+        rs = await check_online(order_env,order_type,order_script)
+        if not rs['code'] :
             result['code'] = '-1'
+            result['message'] = rs['msg']
+            return result
+
+        if await check_online_order(order_number):
+            result['code'] = '-2'
             result['message'] = '操作失败(工单已存在)!'
             return result
         else:

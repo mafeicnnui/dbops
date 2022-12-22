@@ -2021,11 +2021,21 @@
                         order_script : res['statement'],
                     },
                     success: function (dataSet) {
+                        console.log(dataSet)
                         if (dataSet.code == 0) {
                             swal("保存成功", "", "success")
                             query_online()
+                            $('#order_type_add_prod').change()
                         } else {
-                            swal(dataSet.message, "", "error")
+                            if (dataSet.code == -1) {
+                                var msg='';
+                                for(var i of dataSet.message) {
+                                    msg = msg + i['msg']+'\n'
+                                }
+                                swal("保存失败",msg, "error")
+                            }  else  if (dataSet.code == -2) {
+                                swal("保存失败",dataSet.message, "error")
+                            }
                         }
                     }
              })
