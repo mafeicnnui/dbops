@@ -14,7 +14,7 @@ from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
     query_audit_sql, check_sql, format_sql, get_sql_release, get_order_xh, check_order_xh, update_order, query_rollback, \
     exp_rollback, save_order_prod, get_prod_order_number, query_online_order, query_online_detail, update_order_prod, \
-    delete_online_order, audit_online_order, audit_canal_online_order
+    delete_online_order, audit_online_order, audit_canal_online_order, query_online_ver_desc
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
     get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export, get_dss_order_online
@@ -82,7 +82,8 @@ class sql_release(base_handler.TokenHandler):
        desc       = self.get_argument("desc")
        type       = self.get_argument("type")
        time       = self.get_argument("time")
-       result     = await save_sql(dbid,cdb,sql,desc,user,type,time,self.username,self.request.host)
+       reason     = self.get_argument("reason")
+       result     = await save_sql(dbid,cdb,sql,desc,user,type,time,self.username,self.request.host,reason)
        self.write({"code": result['code'], "message": result['message']})
 
 class sql_check(base_handler.TokenHandler):
@@ -748,8 +749,6 @@ class prod_online_save(base_handler.TokenHandler):
         order_type      = self.get_argument("order_type")
         order_status    = self.get_argument("order_status")
         order_script    = self.get_argument("order_script")
-        print('----------------------------------')
-        print(order_env,order_number,order_ver,order_type,order_status,order_script)
         v_list          = await save_order_prod(order_env,order_number,order_ver,order_type,order_status,order_script,self.username)
         v_json          = json.dumps(v_list)
         self.write(v_json)
@@ -818,6 +817,15 @@ class online_detail(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         v_order_number = self.get_argument("order_number")
         v_list   = await query_online_detail(v_order_number,self.userid)
+        v_json   = json.dumps(v_list)
+        self.write(v_json)
+
+
+class online_ver_desc(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_ver = self.get_argument("ver")
+        v_list   = await query_online_ver_desc(v_ver)
         v_json   = json.dumps(v_list)
         self.write(v_json)
 

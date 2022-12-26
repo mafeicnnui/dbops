@@ -89,7 +89,8 @@ async def del_sys_code(code):
 
 async def save_sys_code_detail(code):
     try:
-        sql= "insert into t_dmmx(dm,dmm,dmmc,flag,create_time,update_time) values('{}','{}','{}','{}',now(),now())".format(code['type_code'],format_sql(code['detail_code']),code['detail_name'],code['detail_status'])
+        sql= "insert into t_dmmx(dm,dmm,dmmc,dmmc2,flag,create_time,update_time) values('{}','{}','{}','{}','{}',now(),now())"\
+              .format(code['type_code'],format_sql(code['detail_code']),code['detail_name'],code['detail_desc'],code['detail_status'])
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '保存成功!'}
     except:
@@ -101,10 +102,11 @@ async def upd_sys_code_detail(code):
         sql= """update t_dmmx 
                    set dmm ='{}',
                        dmmc ='{}',
+                       dmmc2 ='{}',
                        flag = '{}',
                        update_time=now()
                 where   dm  = '{}' and dmm='{}'
-             """.format(code['detail_code'],code['detail_name'],code['detail_status'],code['type_code'],format_sql(code['detail_code_old']))
+             """.format(code['detail_code'],code['detail_name'],code['detail_desc'],code['detail_status'],code['type_code'],format_sql(code['detail_code_old']))
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '更新成功!'}
     except:
@@ -136,7 +138,10 @@ async def query_dm_detail(p_code):
     v_where=' '
     if p_code != '':
         v_where = "  and (b.dm='{0}' or b.dmm='{1}' or a.mc  like '%{2}%')".format(p_code,p_code,p_code)
-    sql = """SELECT a.dm,a.mc,b.dmm,b.dmmc,
+    sql = """SELECT a.dm,a.mc,
+                  substr(b.dmm,1,20) as dmm,
+                  substr(b.dmmc,1,50) as dmmc,
+                  b.dmmc2,
                   case b.flag when '1' then '启用'  when '0' then '禁用' end  as flag,
                   date_format(b.create_time,'%Y-%m-%d %H:%i:%s')  as  create_time,
                   date_format(b.update_time,'%Y-%m-%d %H:%i:%s')  as  update_time

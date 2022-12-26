@@ -367,6 +367,28 @@
             </div>
          </div>
        </div>
+       <div class="row">
+          <div class="col-md-6">
+               <div class="form-group">
+                    <div>
+                        <label class="col-md-2 control-label"><span id="s_sync_real_status">*</span>任务控制</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select class="form-control select" id="real_sync_status" >
+                            <option value='' selected = "selected">......</option>
+                            {% for var in dm_real_sync_status %}
+                                {%  if var[0]==real_sync_status %}
+                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                                {% else %}
+                                   <option value={{var[0]}}>{{var[1]}}</option>
+                                {% end %}
+                            {% end %}
+                        </select>
+                   </div>
+               </div>
+           </div>
+       </div>
+
        <br>
        <div class="row">
          <div class="col-md-6">
@@ -1017,7 +1039,9 @@
                     api_server           : $('#api_server').val(),
                     status               : $('#status').val(),
                     desc_db_prefix       : $('#desc_db_prefix').val(),
-                    ch_cluster_name      : $('#ch_cluster_name').val()
+                    ch_cluster_name      : $('#ch_cluster_name').val(),
+                    real_sync_status     : $('#real_sync_status').val(),
+
             },
             success: function (dataSet) {
                 console.log(dataSet.code, dataSet.message);

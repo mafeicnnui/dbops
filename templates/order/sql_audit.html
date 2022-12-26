@@ -79,10 +79,14 @@
             <div class="modal-body">
                 <input id="sql_id" type="hidden"  value='' >
                 <div class="row">
-                    <label>运行库 &nbsp;&nbsp;：</label>
+                    <label>运行实例：</label>
                     <span id ='run_db_detail' style="color:red"></span>
                 </div>
                 <input id="sql_status" type="hidden"  value='' >
+                <div class="row">
+                    <label>发布原因：</label>
+                    <span id ='reason_detail'></span>
+                </div>
                 <div class="row">
                     <label>运行时间：</label>
                     <span id ='run_time_detail' style="color:red"></span>
@@ -258,6 +262,8 @@
                     editor.insert(format_sql(dataSet.message.sqltext))
                     editor.setReadOnly(true);
                     $('#run_time_detail').text(dataSet.message.run_time)
+                    $('#reason_detail').text(dataSet.message.reason)
+
                     if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {

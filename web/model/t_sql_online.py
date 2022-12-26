@@ -10,45 +10,6 @@ from web.model.t_ds import get_ds_by_dsid
 from web.utils.mysql_async import async_processer,reReplace
 from web.utils.common  import format_sql,format_exception
 
-def get_obj_name(p_sql):
-    if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
-        or p_sql.upper().count("TRUNCATE") > 0 and p_sql.upper().count("TABLE") > 0 \
-         or p_sql.upper().count("ALTER") > 0 and p_sql.upper().count("TABLE") > 0 \
-           or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("TABLE") > 0 \
-             or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("DATABASE") > 0 \
-                or  p_sql.upper().count("CREATE")>0 and p_sql.upper().count("VIEW")>0 \
-                   or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("FUNCTION") > 0 \
-                    or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
-                      or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
-                        or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0  \
-                           or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0:
-
-       if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
-           obj = re.split(r'\s+', p_sql)[3].replace('`', '')
-       else:
-           obj=re.split(r'\s+', p_sql)[2].replace('`', '')
-
-       if ('(') in obj:
-           if obj.find('.')<0:
-              return obj.split('(')[0]
-           else:
-              return obj.split('(')[0].split('.')[1]
-       else:
-           return obj
-
-
-    if get_obj_op(p_sql) in('INSERT','DELETE'):
-         if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','').find('.')<0:
-            return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip()
-         else:
-            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().split('.')[1]
-
-    if get_obj_op(p_sql) in('UPDATE'):
-        if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','').find('.')<0:
-           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip()
-        else:
-           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().split('.')[1]
-
 def get_obj_type(p_sql):
     if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
        or p_sql.upper().count("ALTER") > 0 and p_sql.upper().count("TABLE") > 0 \
@@ -85,6 +46,46 @@ def get_obj_op(p_sql):
     if re.split(r'\s+', p_sql)[0].upper() in('INSERT','UPDATE','DELETE') :
        return re.split(r'\s+', p_sql)[0].upper()
 
+def get_obj_name(p_sql):
+    if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TABLE") > 0 \
+        or p_sql.upper().count("TRUNCATE") > 0 and p_sql.upper().count("TABLE") > 0 \
+         or p_sql.upper().count("ALTER") > 0 and p_sql.upper().count("TABLE") > 0 \
+           or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("TABLE") > 0 \
+             or p_sql.upper().count("DROP") > 0 and p_sql.upper().count("DATABASE") > 0 \
+                or  p_sql.upper().count("CREATE")>0 and p_sql.upper().count("VIEW")>0 \
+                   or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("FUNCTION") > 0 \
+                    or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("PROCEDURE") > 0 \
+                      or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
+                        or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0  \
+                           or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0:
+
+       if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
+           obj = re.split(r'\s+', p_sql)[3].replace('`', '')
+       else:
+           obj=re.split(r'\s+', p_sql)[2].replace('`', '')
+
+       if ('(') in obj:
+           if obj.find('.')<0:
+              return obj.split('(')[0]
+           else:
+              return obj.split('(')[0].split('.')[1]
+       else:
+           return obj
+
+    print('op>>>>>',get_obj_op(p_sql))
+
+    if get_obj_op(p_sql) in('INSERT','DELETE'):
+         if re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().replace('`','').find('.')<0:
+            return  re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip()
+         else:
+            return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip()
+
+    if get_obj_op(p_sql) in('UPDATE'):
+        if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`','').find('.')<0:
+           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip()
+        else:
+           return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip()
+
 async def f_get_table_ddl(p_ds,db,tb):
     sql = """show create table {}.{}""".format(db,tb)
     rs = await async_processer.query_one_by_ds(p_ds, sql)
@@ -109,19 +110,28 @@ async def get_obj_exists_auto_incr_not_1_multi(p_ds,op,db,tb,cfg):
     res = {'code': 0, 'msg': 'success'}
     try:
         dp = 'drop table {}'
-        st ='''SELECT  count(0)
+        st = ['''SELECT  count(0)
                  FROM  information_schema.tables   
                 WHERE UPPER(table_schema)=upper('{}')
                   AND UPPER(table_name)=upper('{}')
-                  and AUTO_INCREMENT=1'''
-        if op == 'CREATE_TABLE':
+                  and AUTO_INCREMENT IS NULL''',
 
-            rs = await async_processer.query_one_by_ds(p_ds, st.format(db,tb))
-            cfg[db + '.' + tb] = dp.format(db + '.' + tb)
-            if rs[0] == 0:
-               return {'code':-1,'msg':'表:{}.{}自增ID不为1!'.format(db,tb)}
+            '''SELECT  count(0)
+                     FROM  information_schema.tables   
+                    WHERE UPPER(table_schema)=upper('{}')
+                      AND UPPER(table_name)=upper('{}')
+                      and AUTO_INCREMENT=1''']
+        if op == 'CREATE_TABLE':
+            rs = await async_processer.query_one_by_ds(p_ds, st[0].format(db, tb))
+            if rs[0] == 1:
+               return res
             else:
-               return  res
+                rs = await async_processer.query_one_by_ds(p_ds, st[1].format(db,tb))
+                cfg[db + '.' + tb] = dp.format(db + '.' + tb)
+                if rs[0] == 0:
+                   return {'code':-1,'msg':'表:{}.{}自增ID不为1!'.format(db,tb)}
+                else:
+                   return  res
     except Exception as e:
         return {'code': -1, 'msg': format_sql(format_exception(str(e)))}
 
@@ -162,8 +172,14 @@ async def check_online_ddl(p_dbid,p_sql):
             continue
 
         if ob.find('.') < 0:
-            res.append({'code': -1, 'msg': '对象名`{}`不含库名!'.format(ob)})
-            continue
+            if len(res) > 0:
+                for o in res:
+                    if o['obj'] != ob:
+                        res.append({'obj': ob, 'msg': '对象名`{}`不含库名!'.format(ob)})
+                        continue
+            else:
+                res.append({'obj': ob, 'msg': '对象名`{}`不含库名!'.format(ob)})
+                continue
         else:
            db = ob.split('.')[0]
            tb = ob.split('.')[1]
@@ -189,19 +205,34 @@ async def check_online_ddl(p_dbid,p_sql):
        await async_processer.exec_sql_by_ds(ds, v)
 
     if len(res)>0:
-        # 输出错误
-        print('--------------------error-----------------------')
-        for i in res:
-          print(i)
-        print('--------------------end-----------------------')
         return {'code':False,'msg':res}
     else:
         return {'code':True,'msg':'success'}
 
+async def check_online_dml(p_sql):
+    res = []
+    for s in reReplace(p_sql.replace("\\", "\\\\")):
+        ob = get_obj_name(s.strip())
+        print('check_online_dml ob=',ob)
+        if s.strip() == '':
+            continue
+
+        if ob.find('.') < 0:
+            if len(res)>0:
+                for o in res:
+                   if o['obj'] != ob :
+                     res.append({'obj': ob, 'msg': '对象名`{}`不含库名!'.format(ob)})
+            else:
+                res.append({'obj': ob, 'msg': '对象名`{}`不含库名!'.format(ob)})
+
+    if len(res)>0:
+        return {'code':False,'msg':res}
+    else:
+        return {'code':True,'msg':'success'}
 
 async def check_online(p_dbid,p_type,p_sql):
     if p_type == '1':
        return await check_online_ddl(p_dbid,p_sql)
 
     if p_type == '2':
-       pass
+       return await check_online_dml(p_sql)

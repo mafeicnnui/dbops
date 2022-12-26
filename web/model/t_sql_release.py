@@ -410,7 +410,7 @@ async def check_order_xh(p_message):
 
 async def query_audit_sql(id):
     res = {}
-    st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid,a.run_result from t_sql_release a where a.id={0}""".format(id)
+    st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid,a.run_result,reason from t_sql_release a where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(st)
     st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(id)
     rs['rollback'] =  await async_processer.query_dict_list(st)
@@ -510,7 +510,7 @@ async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
         result['message'] = '发布失败！'
         return result
 
-async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time,p_username,p_host):
+async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time,p_username,p_host,p_reason):
     result = {}
     try:
         if check_validate(p_dbid,p_cdb,p_sql,desc,p_user,type)['code']!='0':
@@ -527,9 +527,9 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time,p_username,p_host):
             result['message'] = '发布失败!'
             return result
 
-        sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type,run_time) 
-                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}')
-            """.format(p_sqlid,p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type,time)
+        sql="""insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type,run_time,reason) 
+                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}')
+            """.format(p_sqlid,p_dbid,p_cdb,fmt_sql(p_sql),'0',desc,current_time(),p_user['login_name'],current_time(),p_user['login_name'],type,time,p_reason)
 
         await async_processer.exec_sql(sql)
         result['code']='0'
@@ -1383,6 +1383,13 @@ async def update_order_prod(order_env,order_number,order_ver,order_type,order_st
     result = {}
     try:
         if await check_online_order(order_number):
+
+           rs = await check_online(order_env, order_type, order_script)
+           if not rs['code']:
+              result['code'] = '-1'
+              result['message'] = rs['msg']
+              return result
+
            st = '''update t_sql_online set 
                           order_ver= '{}',
                           order_type = '{}',
@@ -1398,7 +1405,7 @@ async def update_order_prod(order_env,order_number,order_ver,order_type,order_st
            result['message']='操作成功!'
            return result
         else:
-            result['code'] = '-1'
+            result['code'] = '-2'
             result['message'] = '操作失败(工单不存在)!'
             return result
     except :
@@ -1478,6 +1485,7 @@ async def query_online_detail(p_order_number,p_userid):
                  order_number,
                  order_type,
                  order_ver,
+                 (select dmmc2 from t_dmmx b where b.dm=12 and b.dmm=a.order_ver) as order_ver_desc,
                  order_status,                
                  creator,
                  date_format(a.create_date,'%Y-%m-%d') as  create_date,
@@ -1499,9 +1507,18 @@ async def query_online_detail(p_order_number,p_userid):
     print('query_online_detail=',rs)
     return rs
 
-async def check_online_order(p_order_number):
+async def query_online_ver_desc(p_dmm):
     try:
-        st ="""SELECT COUNT(0) as xh FROM t_sql_online WHERE order_number='{}'""".format(p_order_number)
+        sql = "SELECT  dmmc2 FROM t_dmmx WHERE dm=12 and dmm='{}'".format(p_dmm)
+        rs = await async_processer.query_dict_one(sql)
+        return rs
+    except:
+        return {'dmmc2': ''}
+
+
+async def check_online_order(p_ver):
+    try:
+        st ="""SELECT COUNT(0) as xh FROM t_sql_online WHERE order_number='{}'""".format(p_ver)
         rs = await async_processer.query_dict_one(st)
         if rs['xh']>0:
            return True

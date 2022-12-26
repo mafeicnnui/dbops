@@ -163,6 +163,7 @@ class sys_code_detail_add_save(base_handler.TokenHandler):
         code['detail_name']   = self.get_argument("detail_name")
         code['detail_code']   = self.get_argument("detail_code")
         code['detail_status'] = self.get_argument("detail_status")
+        code['detail_desc']   = self.get_argument("detail_desc")
         result = await save_sys_code_detail(code)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -175,6 +176,7 @@ class sys_code_detail_upd_save(base_handler.TokenHandler):
         code['detail_code']    = self.get_argument("detail_code")
         code['detail_code_old'] = self.get_argument("detail_code_old")
         code['detail_status']  = self.get_argument("detail_status")
+        code['detail_desc']    = self.get_argument("detail_desc")
         result = await upd_sys_code_detail(code)
         self.write({"code": result['code'], "message": result['message']})
 

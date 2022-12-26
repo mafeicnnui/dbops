@@ -202,6 +202,14 @@
                         </div>
                         <div class="form-group">
                             <div >
+                                <label class="col-md-3 control-label"><span id="s_add_detail_desc">*</span>小类描述：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_detail_desc"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
                                 <label class="col-md-3 control-label"><span id="s_add_detail_status">*</span>小类状态：</label>
                             </div>
                             <div class="col-md-9">
@@ -264,6 +272,14 @@
                             </div>
                             <div class="col-md-9" >
                                 <input type="text" id="upd_detail_name"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_upd_detail_desc">*</span>小类描述：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="upd_detail_desc"  class="form-control">
                            </div>
                         </div>
                         <div class="form-group">
@@ -355,17 +371,19 @@
                       destroy    :true,
                       async      :true,
                       ordering   :false,
-                      scrollY    :false,
-                      scrollX    :false,
+                      //scrollY    :true,
+                      //scrollX    :true,
                       scrollCollapse: true,
                       paging:     true,
                       iDisplayLength: 12,
+                      //AutoWidth : true,
                       data: dataSet,
                       columns: [
                           { "title": "类型代码" },
                           { "title": "类型描述" },
                           { "title": "明细代码" },
-                          { "title": "明细描述" },
+                          { "title": "明细名称","sWidth":"100px"},
+                          { "title": "明细描述","sWidth":"150px" },
                           { "title": "明细状态" },
                           { "title": "创建日期" },
                           { "title": "更新日期" },
@@ -373,7 +391,7 @@
                        ],
                      columnDefs: [
                      {
-                        targets: 7,
+                        targets: 8,
                         render: function(data, type, row, meta){
                             var btn ='&nbsp;'+
                                   '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="updCodeDetail(\''+escape(row)+'\');"/>' +'&nbsp;'+
@@ -420,7 +438,7 @@
             $('#upd_detail_code').val(obj.split(',')[2])
             $('#upd_detail_name').val(obj.split(',')[3])
             $("#upd_detail_code_old").val(obj.split(',')[2])
-
+            $('#upd_detail_desc').val(obj.split(',')[4])
             if (obj.split(',')[4]=='启用') {
                   $('#upd_detail_status').val('1')
             } else {
@@ -595,6 +613,8 @@
                   detail_name   : $("#add_detail_name").val(),
                   detail_code   : $("#add_detail_code").val(),
                   detail_status : $("#add_detail_status").val(),
+                  detail_desc   : $("#add_detail_desc").val(),
+
               },
               success: function (dataSet) {
                 if (dataSet.code == 0) {
@@ -613,11 +633,12 @@
               type: "post",
               datatype: "json",
               data: {
-                  type_code     : $("#upd_type_code_detail").val(),
-                  detail_name   : $("#upd_detail_name").val(),
-                  detail_code   : $("#upd_detail_code").val(),
+                  type_code       : $("#upd_type_code_detail").val(),
+                  detail_name     : $("#upd_detail_name").val(),
+                  detail_code     : $("#upd_detail_code").val(),
                   detail_code_old : $("#upd_detail_code_old").val(),
-                  detail_status : $("#upd_detail_status").val(),
+                  detail_status   : $("#upd_detail_status").val(),
+                  detail_desc     : $("#upd_detail_desc").val(),
               },
               success: function (dataSet) {
                 if (dataSet.code == 0) {

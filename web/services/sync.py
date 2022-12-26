@@ -157,6 +157,7 @@ class syncedit(base_handler.TokenHandler):
                         dm_sync_ywlx             =  await get_dmm_from_dm('08'),
                         dm_sync_data_type        =  await get_dmm_from_dm('09'),
                         dm_sync_time_type        =  await get_dmm_from_dm('10'),
+                        dm_real_sync_status      =  await get_dmm_from_dm('47'),
                         server_id                =  d_sync['server_id'],
                         sour_db_server           =  d_sync['sour_db_server'],
                         desc_db_server           =  d_sync['desc_db_server'],
@@ -182,6 +183,7 @@ class syncedit(base_handler.TokenHandler):
                         status                   =  d_sync['status'],
                         desc_db_prefix           =  d_sync['desc_db_prefix'],
                         ch_cluster_name          =  d_sync['ch_cluster_name'],
+                        real_sync_status         =  d_sync['real_sync_status'],
                     )
         else:
             self.render("./sync/sync_edit.html",
@@ -262,6 +264,7 @@ class syncclone(base_handler.TokenHandler):
                         dm_sync_ywlx         = await get_dmm_from_dm('08'),
                         dm_sync_data_type    = await get_dmm_from_dm('09'),
                         dm_sync_time_type    = await get_dmm_from_dm('10'),
+                        dm_real_sync_status  = await get_dmm_from_dm('47'),
                         server_id            = d_sync['server_id'],
                         sour_db_server       = d_sync['sour_db_server'],
                         desc_db_server       = d_sync['desc_db_server'],
@@ -287,6 +290,7 @@ class syncclone(base_handler.TokenHandler):
                         desc_db_prefix       = d_sync['desc_db_prefix'],
                         process_num          = d_sync['process_num'],
                         ch_cluster_name      = d_sync['ch_cluster_name'],
+                        real_sync_status     = d_sync['real_sync_status'],
                         )
         else:
             self.render("./sync/sync_clone.html",
@@ -718,8 +722,9 @@ class sync_real(base_handler.TokenHandler):
                     dm_db_type        = await get_dmm_from_dm('02'),
                     dm_sync_ywlx      = await get_dmm_from_dm('08'),
                     dm_sync_data_type = await get_dmm_from_dm2('09','2,7,8'),
-                    dm_sync_time_type = await get_dmm_from_dm('10')
-                    )
+                    dm_sync_time_type = await get_dmm_from_dm('10'),
+                    dm_real_sync_status = await get_dmm_from_dm('47'),
+                   )
 
 class sync_real_save(base_handler.TokenHandler):
     async def post(self):
@@ -747,6 +752,7 @@ class sync_real_save(base_handler.TokenHandler):
         d_sync['status']               = self.get_argument("status")
         d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
         d_sync['ch_cluster_name']      = self.get_argument("ch_cluster_name")
+        d_sync['real_sync_status']     = self.get_argument("real_sync_status")
         result = await save_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -778,6 +784,7 @@ class sync_real_edit_save(base_handler.TokenHandler):
         d_sync['sync_id']              = self.get_argument("sync_id")
         d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
         d_sync['ch_cluster_name']      = self.get_argument("ch_cluster_name")
+        d_sync['real_sync_status']     = self.get_argument("real_sync_status")
         result = await upd_sync_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -809,5 +816,6 @@ class sync_real_clone_save(base_handler.TokenHandler):
         d_sync['desc_db_prefix']       = self.get_argument("desc_db_prefix")
         d_sync['sync_id']              = self.get_argument("sync_id")
         d_sync['ch_cluster_name']      = self.get_argument("ch_cluster_name")
+        d_sync['real_sync_status']     = self.get_argument("real_sync_status")
         result = await save_sync_clone_real(d_sync)
         self.write({"code": result['code'], "message": result['message']})

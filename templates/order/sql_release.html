@@ -66,21 +66,7 @@
                </div>
              </div>
        </div>
-
-       <div class="col-md-3">
-           <div class="form-group">
-                <div id="div_sql_desc">
-                    <div>
-                        <label class="col-md-3 control-label"><span id="s_sql_desc">*</span>描述:</label>
-                    </div>
-                    <div class="col-md-9">
-                        <input id="sql_desc"  type="text" class="form-control" readonly placeholder="请输入工单说明">
-                    </div>
-                </div>
-           </div>
-       </div>
-
-        <div class="col-md-2">
+       <div class="col-md-2">
            <div class="form-group">
                 <div>
                     <label class="col-md-4 control-label"><span id="s_order_type">*</span>类型:</label>
@@ -95,13 +81,37 @@
                 </div>
            </div>
        </div>
+       <div class="col-md-2">
+           <div class="form-group">
+                <div id="div_sql_desc">
+                    <div>
+                        <label class="col-md-3 control-label"><span id="s_sql_desc">*</span>编号:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input id="sql_desc"  type="text" class="form-control" readonly>
+                    </div>
+                </div>
+           </div>
+       </div>
 
        <div class="col-md-3">
            <div class="form-group">
-                <div>
-                    <label class="col-md-4 control-label">定时:<i class="ion-android-alarm"></i></label>
+                <div id="div_sql_desc2">
+                    <div>
+                        <label class="col-md-3 control-label"><span>*</span>描述:</label>
+                    </div>
+                    <div class="col-md-9">
+                        <input id="sql_desc2"  type="text" class="form-control"  placeholder="请输入发布原因">
+                    </div>
                 </div>
-                <div class="col-md-6">
+           </div>
+       </div>
+       <div class="col-md-2">
+           <div class="form-group">
+                <div>
+                    <label class="col-md-3 control-label">定时:<i class="ion-android-alarm"></i></label>
+                </div>
+                <div class="col-md-7">
                    <span class="input-group-btn">
                       <input  id="run_time"  type="text" class="form-control datetimepicker"  readonly >
                    </span>
@@ -711,9 +721,17 @@
                       return false;
                   }
                   if ($('#sql_desc').val()=='') {
-                      showtips('error','请输入工单描述!');
+                      showtips('error','工单编号不能为空!');
                       return false;
                   }
+
+                  if ($('#sql_desc2').val()=='') {
+                      showtips('error','请输入发布原因!');
+                      return false;
+                  }
+
+                  $('#sql_desc2').val()
+
                   if ($('#db_order_type').val()=='') {
                       showtips('error','工单类型不能为空!');
                       return false;
@@ -1123,12 +1141,13 @@
                         type    : "post",
                         datatype: "json",
                         data: {
-                            dbid  :  $('#db_source').val(),
-                            cur_db:  $('#curr_db').val(),
-                            sql   :  editor.session.getTextRange(editor.getSelectionRange()),
-                            desc  :  $('#sql_desc').val(),
-                            type  :  $('#db_order_type').val(),
-                            time  :  $('#run_time').val()
+                            dbid   :  $('#db_source').val(),
+                            cur_db :  $('#curr_db').val(),
+                            sql    :  editor.session.getTextRange(editor.getSelectionRange()),
+                            desc   :  $('#sql_desc').val(),
+                            type   :  $('#db_order_type').val(),
+                            time   :  $('#run_time').val(),
+                            reason :  $('#sql_desc2').val(),
                         },
                         success: function (dataSet) {
                             if (dataSet.status=="1") {
