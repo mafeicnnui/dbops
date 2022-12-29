@@ -253,22 +253,17 @@
                    //检测日期范围是否超过配置值
                    var rq_range = $('#rq_range_filter').val()
                    var rq_range2 = $('#rq_range_filter').val().split(',')
-                   console.log('rq_range=',rq_range)
-                   console.log('rq_range2=',rq_range2)
                    for( var i in rq_range2) {
                        var c = rq_range2[i].split('#')[0]
                        var n = rq_range2[i].split('#')[1]
                        var d = rq_range2[i].split('#')[2]
-                       console.log('rq....=',c,n,d)
-                       console.log('rqq=',$('#'+c+'_begin').val())
-                       console.log('rqz=',$('#'+c+'_end').val())
-                       console.log('xxxxxxxxxxxxxxx')
-                       // if ($('#'+c).val() =='') {
-                       //    showtips('error',n+'不能为空!');
-                       //    return false;
-                       // }
+                       var rqq = $('#'+c+'_begin').val()
+                       var rqz = $('#'+c+'_end').val()
+                       if (GetDateDiff(rqq, rqz, "day")>parseInt(d)) {
+                            showtips('error',n+'查询范围不能超过'+d+'天');
+                            return false;
+                       }
                    }
-
 
                    if (table!=undefined ){
                          table.destroy();
