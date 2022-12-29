@@ -31,6 +31,8 @@
   <br>
   <form class="form-horizontal" role="form" id="form_bbgl_filter"></form>
   <input type="hidden" id="notnull_filter">
+  <input type="hidden" id="rq_range_filter">
+
   <br>
   <div id='div-table'>
       <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
@@ -45,17 +47,27 @@
                     url     : "/bbgl/filter",
                     type    : "post",
                     datatype: "json",
+                    async   : false,
                     data: {
-                        bbdm   :  $('#bbdm').val(),
+                        bbdm : $('#bbdm').val(),
                     },
                     success: function (filter) {
+                      console.log('filter=',filter)
                       var notnull_filter =''
+                      var rq_range_filter=''
                       for (i=0;i<filter.length;i++){
                           if (filter[i].is_null=='Y') {
                               notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
                           }
+                          if (filter[i].is_range=='Y') {
+                              rq_range_filter = rq_range_filter +filter[i].filter_code+'#'+filter[i].filter_name+'#'+filter[i].rq_range+','
+                          }
+
                       }
+                      console.log('notnull_filter=',notnull_filter.slice(0,-1))
+                      console.log('rq_range_filter=',rq_range_filter.slice(0,-1))
                       $('#notnull_filter').val(notnull_filter.slice(0,-1))
+                      $('#rq_range_filter').val(rq_range_filter.slice(0,-1))
                    },
                 });
           }
@@ -64,18 +76,19 @@
               $.ajax({
                     url     : "/bbgl/filter",
                     type    : "post",
+                    async   : false,
                     datatype: "json",
                     data: {
                         bbdm   :  $('#bbdm').val(),
                     },
                     success: function (filter) {
                       $('#form_bbgl_filter').empty()
-                      var htmlFilter='<div class="row">'
-                      var notnull_filter =''
+                      var htmlFilter=''
+                      var rowFilter='<div class="row">'
+                      var filter_number =0;
                       for (i=0;i<filter.length;i++){
-                          if (filter[i].is_null=='Y') {
-                              notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
-                          }
+
+                          filter_number = filter_number +1
 
                           if (filter[i].filter_type=='1') {
 
@@ -96,7 +109,7 @@
                                        },
                                    });
 
-                                   htmlFilter=htmlFilter+
+                                   rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
@@ -106,7 +119,7 @@
                                      '      </div>\n' +
                                      '</div>'
                               } else {
-                                   htmlFilter=htmlFilter+
+                                   rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
@@ -116,16 +129,43 @@
                               }
 
                           }  else if (filter[i].filter_type=='2') {
-                               htmlFilter=htmlFilter+
+
+                              if (filter[i].is_range=='Y') {
+                                  rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
+                                     '            <input id="'+filter[i].filter_code+'_begin" name="'+filter[i].filter_code+'_begin"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>' +
+                                     '</div>\n'
+
+                                  if (filter_number % 4 == 0) {
+                                      rowFilter=rowFilter+'</div>\n'
+                                      htmlFilter = htmlFilter +rowFilter+'<br>'
+                                      rowFilter='<div class="row">'
+                                  }
+
+                                  rowFilter=rowFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'止</span>\n' +
+                                     '            <input id="'+filter[i].filter_code+'_end" name="'+filter[i].filter_code+'_end"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+                                  filter_number = filter_number +1
+                                  console.log('range.....')
+                              } else {
+                                   rowFilter=rowFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
                                      '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
                                      '      </div>\n' +
                                      '</div>'
+                              }
 
                           }  else if  (filter[i].filter_type=='3') {
-                                htmlFilter=htmlFilter+
+                                rowFilter=rowFilter+
                                      '<div class="col-md-4">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
@@ -133,9 +173,19 @@
                                      '      </div>\n' +
                                      '</div>'
                           }
+
+                          if (filter_number % 4 == 0) {
+                              rowFilter=rowFilter+'</div>\n'
+                              htmlFilter = htmlFilter +rowFilter+'<br>'
+                              rowFilter='<div class="row">'
+                          }
                       }
-                      $('#notnull_filter').val(notnull_filter.slice(0,-1))
-                      htmlFilter=htmlFilter+'</div>'
+
+                      if (filter_number % 4 != 0) {
+                           rowFilter=rowFilter+'</div>\n'
+                           htmlFilter = htmlFilter +rowFilter+'<br>'
+                      }
+
                       $('#form_bbgl_filter').append(htmlFilter)
 
                       $.fn.datepicker.dates['zh-CN'] = {
@@ -188,6 +238,7 @@
 
                    check_bbgl();
 
+                   //检测条件是否为空值
                    var nullstr = $('#notnull_filter').val()
                    var nullstr2 = nullstr.split(',')
                    for( var i in nullstr2) {
@@ -198,6 +249,26 @@
                           return false;
                        }
                    }
+
+                   //检测日期范围是否超过配置值
+                   var rq_range = $('#rq_range_filter').val()
+                   var rq_range2 = $('#rq_range_filter').val().split(',')
+                   console.log('rq_range=',rq_range)
+                   console.log('rq_range2=',rq_range2)
+                   for( var i in rq_range2) {
+                       var c = rq_range2[i].split('#')[0]
+                       var n = rq_range2[i].split('#')[1]
+                       var d = rq_range2[i].split('#')[2]
+                       console.log('rq....=',c,n,d)
+                       console.log('rqq=',$('#'+c+'_begin').val())
+                       console.log('rqz=',$('#'+c+'_end').val())
+                       console.log('xxxxxxxxxxxxxxx')
+                       // if ($('#'+c).val() =='') {
+                       //    showtips('error',n+'不能为空!');
+                       //    return false;
+                       // }
+                   }
+
 
                    if (table!=undefined ){
                          table.destroy();

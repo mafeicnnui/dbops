@@ -125,7 +125,9 @@ async def query_bbgl_header(p_bbdm):
       return await async_processer.query_list(st)
 
 async def query_bbgl_filter(p_bbdm):
-    st = "select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc,a.is_item,a.item_value,a.is_null from t_bbgl_filter a,t_dmmx b where a.filter_type=b.dmm and b.dm='42' and a.bbdm='{}' order by a.bbdm,a.xh".format(p_bbdm)
+    st = "select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc,a.is_item,a.item_value,a.is_null,a.is_range,a.rq_range " \
+         "from t_bbgl_filter a,t_dmmx b " \
+         "where a.filter_type=b.dmm and b.dm='42' and a.bbdm='{}' order by a.bbdm,a.xh".format(p_bbdm)
     return await async_processer.query_list(st)
 
 async def query_bbgl_preprocess(p_bbdm):
@@ -154,6 +156,8 @@ async def query_bbgl_data(bbdm,param):
 
          ds  = await get_ds_by_dsid(cfg['dsid'])
 
+         print('param=',param)
+
          # 2. 预处理
          if preprocess != []:
              #3. 获取预处理脚本，替换变量为实参
@@ -175,7 +179,7 @@ async def query_bbgl_data(bbdm,param):
          for key, value in param.items():
              cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
 
-         # 调用查询语句返回数据
+         # 执行查询
          print(cfg['replace_statement'])
          result = await exe_query_exp(cfg['dsid'],cfg['replace_statement'],cfg['db'])
 
@@ -213,11 +217,12 @@ async def delete_bbgl_header(p_bbdm,p_xh):
         return {'code': -1, 'message': '删除失败!'}
 
 
-async def update_bbgl_filter(p_bbdm,p_xh,p_name,p_code,p_type,p_item,p_item_value,p_notnull):
+async def update_bbgl_filter(p_bbdm,p_xh,p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_is_range,p_rq_range):
     try:
         st = "update t_bbgl_filter " \
-             " set filter_name='{}',filter_code='{}',filter_type='{}',is_item='{}',item_value='{}',is_null='{}' " \
-             "  where bbdm='{}' and xh={}".format(p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_bbdm,p_xh)
+             " set filter_name='{}',filter_code='{}',filter_type='{}',is_item='{}'," \
+                  "item_value='{}',is_null='{}',is_range='{}',rq_range='{}' " \
+             "  where bbdm='{}' and xh={}".format(p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_is_range,p_rq_range,p_bbdm,p_xh)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '更新成功!'}
     except Exception as e:

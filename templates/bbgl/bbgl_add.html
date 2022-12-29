@@ -412,6 +412,25 @@
                                 </select>
                            </div>
                          </div>
+                         <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>是否范围：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <select class="form-control select" id="upd_range_type" name="upd_range_type">
+                                    <option value='Y'>是</option>
+                                    <option value='N' selected = "selected">否</option>
+                                </select>
+                           </div>
+                         </div>
+                         <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" >最大查询区间(天)：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="upd_max_rq_range_name"  name="upd_max_rq_range_name" class="form-control">
+                           </div>
+                        </div>
 
                       </form>
                   </div>
@@ -583,6 +602,8 @@
                                 { "title": "列表项","width":"100px"},
                                 { "title": "列表值","width":"100px"},
                                 { "title": "必选项","width":"100px"},
+                                { "title": "是否范围","width":"100px"},
+                                { "title": "日期范围","width":"100px"},
                                 {
                                     "title":"功能",
                                     "width": "25px",
@@ -731,6 +752,9 @@
               $('#upd_select_type').val(row[5])
               $('#upd_select_cfg').val(row[6])
               $('#upd_notnull_type').val(row[7])
+              $('#upd_range_type').val(row[8])
+              $('#upd_max_rq_range_name').val(row[9])
+
               open_model('modal-upd-filter')
          }
 
@@ -923,7 +947,9 @@
                         type : $('#upd_filter_type').val(),
                         item : $('#upd_select_type').val(),
                         cfg  : $('#upd_select_cfg').val(),
-                        notnull : $('#upd_notnull_type').val()
+                        notnull : $('#upd_notnull_type').val(),
+                        is_range : $('#upd_range_type').val(),
+                        rq_range : $('#upd_max_rq_range_name').val()
                     },
                     success: function (dataSet) {
                          if (dataSet.code=='0') {

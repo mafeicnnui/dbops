@@ -201,7 +201,9 @@ class bbgl_update_filter (base_handler.TokenHandler):
         item        = self.get_argument("item")
         cfg         = self.get_argument("cfg")
         notnull     = self.get_argument("notnull")
-        v_list      = await update_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,item,cfg,notnull)
+        is_range    = self.get_argument("is_range")
+        rq_range    = self.get_argument("rq_range")
+        v_list      = await update_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,item,cfg,notnull,is_range,rq_range)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 
