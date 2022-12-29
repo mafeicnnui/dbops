@@ -30,6 +30,7 @@
   </form>
   <br>
   <form class="form-horizontal" role="form" id="form_bbgl_filter"></form>
+  <input type="hidden" id="notnull_filter">
   <br>
   <div id='div-table'>
       <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
@@ -38,8 +39,9 @@
   <script>
       $(document).ready(function() {
           var table;
-          $('#bbdm').change(function(){
-                $.ajax({
+
+          function check_bbgl(){
+               $.ajax({
                     url     : "/bbgl/filter",
                     type    : "post",
                     datatype: "json",
@@ -47,23 +49,78 @@
                         bbdm   :  $('#bbdm').val(),
                     },
                     success: function (filter) {
-                      var htmlFilter='<div class="row">'
+                      var notnull_filter =''
                       for (i=0;i<filter.length;i++){
+                          if (filter[i].is_null=='Y') {
+                              notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
+                          }
+                      }
+                      $('#notnull_filter').val(notnull_filter.slice(0,-1))
+                   },
+                });
+          }
+
+          $('#bbdm').change(function(){
+              $.ajax({
+                    url     : "/bbgl/filter",
+                    type    : "post",
+                    datatype: "json",
+                    data: {
+                        bbdm   :  $('#bbdm').val(),
+                    },
+                    success: function (filter) {
+                      $('#form_bbgl_filter').empty()
+                      var htmlFilter='<div class="row">'
+                      var notnull_filter =''
+                      for (i=0;i<filter.length;i++){
+                          if (filter[i].is_null=='Y') {
+                              notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
+                          }
+
                           if (filter[i].filter_type=='1') {
-                               htmlFilter=htmlFilter+
+
+                              if (filter[i].is_item=='Y') {
+                                  var options = ''
+                                  $.ajax({
+                                        url     : "/bbgl/query/dm",
+                                        type    : "post",
+                                        datatype: "json",
+                                        async   :false,
+                                        data: {
+                                            dm   :  filter[i].item_value,
+                                        },
+                                        success: function (dataSet) {
+                                            for (dm=0;dm<dataSet.length;dm++) {
+                                                options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
+                                            }
+                                       },
+                                   });
+
+                                   htmlFilter=htmlFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <input name="'+filter[i].filter_code+'" type="text" class="form-control" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
+                                     '                <option value="" selected = "selected">...</option>\n' +options+
+                                     '            </select> '+
                                      '      </div>\n' +
                                      '</div>'
+                              } else {
+                                   htmlFilter=htmlFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'" type="text" class="form-control" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '       </div>\n' +
+                                     '</div>'
+                              }
 
                           }  else if (filter[i].filter_type=='2') {
                                htmlFilter=htmlFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <input name="'+filter[i].filter_code+'"  readonly type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
                                      '      </div>\n' +
                                      '</div>'
 
@@ -72,11 +129,12 @@
                                      '<div class="col-md-4">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <input name="'+filter[i].filter_code+'" readonly type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"  type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
                                      '      </div>\n' +
                                      '</div>'
                           }
                       }
+                      $('#notnull_filter').val(notnull_filter.slice(0,-1))
                       htmlFilter=htmlFilter+'</div>'
                       $('#form_bbgl_filter').append(htmlFilter)
 
@@ -124,9 +182,23 @@
                    $('#query_time').text('');
 
                    if ($('#bbdm').val()=='') {
-                      showtips('info','请选择报表!');
+                      showtips('error','请选择报表!');
                       return false;
-                    }
+                   }
+
+                   check_bbgl();
+
+                   var nullstr = $('#notnull_filter').val()
+                   var nullstr2 = nullstr.split(',')
+                   for( var i in nullstr2) {
+                       var c = nullstr2[i].split('#')[0]
+                       var n = nullstr2[i].split('#')[1]
+                       if ($('#'+c).val() =='') {
+                          showtips('error',n+'不能为空!');
+                          return false;
+                       }
+                   }
+
                    if (table!=undefined ){
                          table.destroy();
                     }

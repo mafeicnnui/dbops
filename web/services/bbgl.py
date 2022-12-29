@@ -7,7 +7,7 @@
 
 import json
 from   web.utils   import base_handler
-from   web.model.t_dmmx  import get_dmm_from_dm
+from web.model.t_dmmx import get_dmm_from_dm, get_dmlx_from_dm_bbgl, get_dmm_from_dm_bbgl
 from   web.utils.common  import DateEncoder
 
 from   web.model.t_dmmx  import get_bbtj_db_server
@@ -32,10 +32,19 @@ class bbgl_query_data (base_handler.TokenHandler):
         bbdm   = self.get_argument("bbdm")
         param  = self.get_argument("param")
         param  = json.loads(param)
+        print('param=',param)
         v_list = await query_bbgl_data(bbdm,param)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
+class bbgl_query_dm (base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        dm   = self.get_argument("dm")
+        print('dm=',dm)
+        v_list = await get_dmm_from_dm_bbgl(dm)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
 
 class bbgl_filter(base_handler.TokenHandler):
     async def post(self):
@@ -60,6 +69,7 @@ class bbgl_add(base_handler.TokenHandler):
         self.render("./bbgl/bbgl_add.html",
                     db_server = await get_bbtj_db_server(),
                     dm_filter = await get_dmm_from_dm('42'),
+                    dm_select_cfg = await get_dmlx_from_dm_bbgl(),
               )
 
 
@@ -91,7 +101,8 @@ class bbgl_add_filter_save (base_handler.TokenHandler):
         filter_name  = self.get_argument("name")
         filter_code  = self.get_argument("code")
         filter_type  = self.get_argument("type")
-        v_list       = await save_bbgl_filter(bbdm,filter_name,filter_code,filter_type)
+        item         = self.get_argument("item")
+        v_list       = await save_bbgl_filter(bbdm,filter_name,filter_code,filter_type,item)
         v_json       = json.dumps(v_list)
         self.write(v_json)
 
@@ -187,7 +198,10 @@ class bbgl_update_filter (base_handler.TokenHandler):
         filter_name = self.get_argument("name")
         filter_code = self.get_argument("code")
         filter_type = self.get_argument("type")
-        v_list      = await update_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type)
+        item        = self.get_argument("item")
+        cfg         = self.get_argument("cfg")
+        notnull     = self.get_argument("notnull")
+        v_list      = await update_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,item,cfg,notnull)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 

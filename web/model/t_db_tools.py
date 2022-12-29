@@ -498,8 +498,8 @@ async def db_stru_compare_ck_data(sour_db_server,sour_schema,desc_db_server,desc
                            (select db_desc from t_db_source where id=a.dest_dsid) as dest_desc,
                            dest_schema,
                            dest_table,
-                           dest_rows,
                            sour_rows,
+                           dest_rows,
                            case when dest_rows!=sour_rows then '<span style="color:red">×</span>' 
                            else '<span style="color:green">√</span>' end result
                        FROM t_db_compare_data a order by id"""

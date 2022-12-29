@@ -17,6 +17,13 @@ async def get_dmm_from_dm2(p_dm,p_dmm):
     sql = "select dmm,dmmc from t_dmmx where dm='{0}' and instr('{1}',dmm)>0".format(p_dm,p_dmm)
     return await async_processer.query_list(sql)
 
+async def get_dmlx_from_dm_bbgl():
+    sql = "select dm,mc from t_bbgl_dmlx order by mc"
+    return await async_processer.query_list(sql)
+
+async def get_dmm_from_dm_bbgl(p_dm):
+    sql = "select dmm,dmmc from t_bbgl_dmmx where dm='{0}'".format(p_dm)
+    return await async_processer.query_list(sql)
 
 async def get_dmmc_from_dm(p_dm,p_dmm):
     sql = "select dmmc from t_dmmx where dm='{0}' and dmm={1}".format(p_dm,p_dmm)

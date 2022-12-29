@@ -5,7 +5,7 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.bbgl  import bbgl_add,bbgl_add_save,bbgl_add_header_save,bbgl_header_query
+from web.services.bbgl import bbgl_add, bbgl_add_save, bbgl_add_header_save, bbgl_header_query, bbgl_query_dm
 from web.services.bbgl  import bbgl_add_filter_save,bbgl_filter_query
 from web.services.bbgl  import bbgl_add_preprocess_save,bbgl_preprocess_query
 from web.services.bbgl  import bbgl_add_statement_save,bbgl_statement_query
@@ -49,6 +49,7 @@ bbgl = [
         (r"/bbgl/query/data", bbgl_query_data),
         (r"/bbgl/filter", bbgl_filter),
         (r"/bbgl/config", bbgl_config),
+        (r"/bbgl/query/dm", bbgl_query_dm),
 
         # 报表维护
         (r"/bbgl/change", bbgl_change),

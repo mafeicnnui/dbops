@@ -30,6 +30,10 @@ async def get_preprocess(p_bbdm):
     st = "select statement,description from t_bbgl_preproccess where bbdm='{}' ORDER BY xh".format(p_bbdm)
     return  await async_processer.query_dict_list(st)
 
+async def get_headers(p_bbdm):
+    st = "select xh,header_name from t_bbgl_header where bbdm='{}' ORDER BY xh".format(p_bbdm)
+    return  await async_processer.query_dict_list(st)
+
 async def get_filter(p_bbdm):
     st = "select  * from t_bbgl_filter where bbdm='{}' ORDER BY xh".format(p_bbdm)
     return  await async_processer.query_dict_list(st)
@@ -87,10 +91,10 @@ async def save_bbgl_header(bbdm,name,width):
         traceback.print_exc()
         return {'code': -1, 'message': '保存失败!'}
 
-async def save_bbgl_filter(bbdm, filter_name, filter_code,filter_type):
+async def save_bbgl_filter(bbdm, filter_name, filter_code,filter_type,item):
     try:
-        st = "insert into t_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type) \
-                 values('{}',{},'{}','{}','{}')".format(bbdm, (await get_filter_xh(bbdm)), filter_name, filter_code,filter_type)
+        st = "insert into t_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,is_item) \
+                 values('{}',{},'{}','{}','{}','{}')".format(bbdm, (await get_filter_xh(bbdm)), filter_name, filter_code,filter_type,item)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '保存成功!'}
     except Exception as e:
@@ -121,7 +125,7 @@ async def query_bbgl_header(p_bbdm):
       return await async_processer.query_list(st)
 
 async def query_bbgl_filter(p_bbdm):
-    st = "select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc from t_bbgl_filter a,t_dmmx b where a.filter_type=b.dmm and b.dm='42' and a.bbdm='{}' order by a.bbdm,a.xh".format(p_bbdm)
+    st = "select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc,a.is_item,a.item_value,a.is_null from t_bbgl_filter a,t_dmmx b where a.filter_type=b.dmm and b.dm='42' and a.bbdm='{}' order by a.bbdm,a.xh".format(p_bbdm)
     return await async_processer.query_list(st)
 
 async def query_bbgl_preprocess(p_bbdm):
@@ -146,24 +150,41 @@ async def query_bbgl_data(bbdm,param):
          #1.通过bbdm获取报表定义相关数据
          cfg = await get_config(bbdm)
          preprocess=  await get_preprocess(bbdm)
+         headers = await get_headers(bbdm)
+
          ds  = await get_ds_by_dsid(cfg['dsid'])
 
-         #2. 获取预处理脚本，替换变量为实参
-         for s in preprocess:
-             s['replace_statement'] = s['statement']
-             for key,value in param.items():
-                 s['replace_statement']= s['replace_statement'].replace('$$'+key+'$$',value)
+         # 2. 预处理
+         if preprocess != []:
+             #3. 获取预处理脚本，替换变量为实参
+             for s in preprocess:
+                 s['replace_statement'] = s['statement']
+                 for key,value in param.items():
+                     s['replace_statement']= s['replace_statement'].replace('$$'+key+'$$',value)
 
-         #3. 执行预处理代码
-         start_time = datetime.datetime.now()
-         for s in preprocess:
-             print('exec:',s['replace_statement'])
-             await async_processer.exec_sql_by_ds(ds,s['replace_statement'])
-         preProcessTime = get_seconds(start_time)
+             #4. 执行预处理代码
+             start_time = datetime.datetime.now()
+             for s in preprocess:
+                 await async_processer.exec_sql_by_ds(ds,s['replace_statement'])
+             preProcessTime = get_seconds(start_time)
+         else:
+             preProcessTime = 0
+
+         #5. 处理查询定义中占位符
+         cfg['replace_statement'] = cfg['statement']
+         for key, value in param.items():
+             cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
 
          # 调用查询语句返回数据
-         print('>>>',cfg['dsid'],cfg['statement'],cfg['db'])
-         result = await exe_query_exp(cfg['dsid'],cfg['statement'],cfg['db'])
+         print(cfg['replace_statement'])
+         result = await exe_query_exp(cfg['dsid'],cfg['replace_statement'],cfg['db'])
+
+         # 替换表头
+         if headers !=[]:
+             xh = 0
+             for i in result['column']:
+                 i['title'] =headers[xh]['header_name']
+                 xh=xh+1
          result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime)}
          return  result
 
@@ -192,11 +213,11 @@ async def delete_bbgl_header(p_bbdm,p_xh):
         return {'code': -1, 'message': '删除失败!'}
 
 
-async def update_bbgl_filter(p_bbdm,p_xh,p_name,p_code,p_type):
+async def update_bbgl_filter(p_bbdm,p_xh,p_name,p_code,p_type,p_item,p_item_value,p_notnull):
     try:
         st = "update t_bbgl_filter " \
-             " set filter_name='{}',filter_code='{}',filter_type='{}' " \
-             "  where bbdm='{}' and xh={}".format(p_name,p_code,p_type,p_bbdm,p_xh)
+             " set filter_name='{}',filter_code='{}',filter_type='{}',is_item='{}',item_value='{}',is_null='{}' " \
+             "  where bbdm='{}' and xh={}".format(p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_bbdm,p_xh)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '更新成功!'}
     except Exception as e:
