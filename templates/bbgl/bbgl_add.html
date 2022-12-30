@@ -183,7 +183,7 @@
                                 <label class="col-md-3 control-label"><span>*</span>条件代码：</label>
                             </div>
                             <div class="col-md-9">
-                               <input type="text" id="add_filter_width"  class="form-control">
+                               <input type="text" id="add_filter_code"  class="form-control">
                            </div>
                         </div>
                         <div class="form-group">
@@ -205,10 +205,63 @@
                             </div>
                             <div class="col-md-9">
                                <select class="form-control select" id="add_select_type" name="add_select_type">
-                                    <option value='' selected = "selected">...</option>
                                     <option value='Y'>是</option>
-                                    <option value='N'>否</option>
+                                    <option value='N' selected = "selected">否</option>
                                 </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>列表项配置：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <select class="form-control select" id="add_select_cfg" name="add_select_cfg">
+                                    <option value='' selected = "selected">请选择...</option>
+                                    {% for var in dm_select_cfg %}
+                                      <option value={{var[0]}} >{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>是否非空：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <select class="form-control select" id="add_notnull_type" name="add_notnull_type">
+                                    <option value='Y'>是</option>
+                                    <option value='N' selected = "selected">否</option>
+                                </select>
+                           </div>
+                         </div>
+                         <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>是否模糊：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <select class="form-control select" id="add_like_type" name="add_like_type">
+                                    <option value='Y'>是</option>
+                                    <option value='N' selected = "selected">否</option>
+                                </select>
+                           </div>
+                         </div>
+                         <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span>*</span>是否范围：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <select class="form-control select" id="add_range_type" name="add_range_type">
+                                    <option value='Y'>是</option>
+                                    <option value='N' selected = "selected">否</option>
+                                </select>
+                           </div>
+                         </div>
+                         <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span>*</span>范围区间(天)：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="add_max_rq_range_name"  name="add_max_rq_range_name" class="form-control">
                            </div>
                         </div>
                       </form>
@@ -361,7 +414,7 @@
                                 <label class="col-md-3 control-label"><span>*</span>条件代码：</label>
                             </div>
                             <div class="col-md-9">
-                               <input type="text" id="upd_filter_width"  class="form-control">
+                               <input type="text" id="upd_filter_code"  class="form-control">
                            </div>
                         </div>
                         <div class="form-group">
@@ -414,6 +467,17 @@
                          </div>
                          <div class="form-group">
                             <div >
+                                <label class="col-md-3 control-label"><span>*</span>模糊查询：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <select class="form-control select" id="upd_like_type" name="upd_like_type">
+                                    <option value='Y'>是</option>
+                                    <option value='N' selected = "selected">否</option>
+                                </select>
+                           </div>
+                         </div>
+                         <div class="form-group">
+                            <div >
                                 <label class="col-md-3 control-label"><span>*</span>是否范围：</label>
                             </div>
                             <div class="col-md-9">
@@ -425,13 +489,12 @@
                          </div>
                          <div class="form-group" >
                             <div>
-                                <label class="col-md-3 control-label" >最大查询区间(天)：</label>
+                                <label class="col-md-3 control-label" ><span>*</span>范围区间(天)：</label>
                             </div>
                             <div class="col-md-9" >
                                 <input type="text" id="upd_max_rq_range_name"  name="upd_max_rq_range_name" class="form-control">
                            </div>
                         </div>
-
                       </form>
                   </div>
                </div>
@@ -489,6 +552,29 @@
 
     <script>
 
+         function initAddValue(flag) {
+             if (flag == 'header') {
+
+             }
+             if (flag == 'filter') {
+                  $('#add_filter_name').val('')
+                  $('#add_filter_code').val('')
+                  $('#add_filter_type').val('')
+                  $('#add_select_typ').val('N')
+                  $('#add_select_cfg').val('')
+                  $('#add_notnull_type').val('N')
+                  $('#add_like_type').val('N')
+                  $('#add_range_typ').val('N')
+                  $('#add_max_rq_range_name').val('')
+             }
+             if (flag == 'preprocess') {
+
+             }
+             if (flag == 'query') {
+
+             }
+         }
+
          function addBtn() {
 
             if ($('#cur_tab').val()=='表头定义') {
@@ -496,6 +582,7 @@
             }
             if ($('#cur_tab').val()=='条件定义') {
                 open_model('modal-add-filter')
+                initAddValue('filter')
             }
             if ($('#cur_tab').val()=='预处理定义') {
                 open_model('modal-add-pre-process')
@@ -599,11 +686,12 @@
                                 { "title": "代码","width":"100px"},
                                 { "title": "类型代码","visible":false },
                                 { "title": "类型","width":"100px"},
-                                { "title": "列表项","width":"100px"},
+                                { "title": "列表项","width":"100px" },
                                 { "title": "列表值","width":"100px"},
                                 { "title": "必选项","width":"100px"},
                                 { "title": "是否范围","width":"100px"},
                                 { "title": "日期范围","width":"100px"},
+                                { "title": "模糊查询","width":"100px"},
                                 {
                                     "title":"功能",
                                     "width": "25px",
@@ -747,14 +835,14 @@
               console.log('edit_filter2[=',row)
               $('#upd_filter_xh').val(row[0])
               $('#upd_filter_name').val(row[1])
-              $('#upd_filter_width').val(row[2])
+              $('#upd_filter_code').val(row[2])
               $('#upd_filter_type').val(row[3])
               $('#upd_select_type').val(row[5])
               $('#upd_select_cfg').val(row[6])
-              $('#upd_notnull_type').val(row[7])
-              $('#upd_range_type').val(row[8])
-              $('#upd_max_rq_range_name').val(row[9])
-
+              $('#upd_notnull_type').val(row[8])
+              $('#upd_range_type').val(row[9])
+              $('#upd_max_rq_range_name').val(row[10])
+              $('#upd_like_type').val(row[11])
               open_model('modal-upd-filter')
          }
 
@@ -782,7 +870,7 @@
                                 success: function (dataSet) {
                                      if (dataSet.code=='0') {
                                         swal("已删除!", "条件["+p_xh+"]已注销!", "success");
-                                        query_header()
+                                        query_filter()
                                      } else {
                                         swal("删除失败!", "条件["+p_xh+"]"+dataSet.message+"!", "error");
                                      }
@@ -880,30 +968,94 @@
                 });
          }
 
-         function check_valid(){
+         function check_valid(p_flag){
              if ($('#bbdm').val()==''){
-                  swal("报表代码不能为空", "", "error")
+                  swal("报表代码不能为空!", "", "error")
                   return false
              }
              if ($('#bbmc').val()==''){
-                  swal("报表名称不能为空", "", "error")
-                   return false
+                  swal("报表名称不能为空!", "", "error")
+                  return false
              }
 
              if ($('#dsid').val()==''){
-                  swal("数据源不能为空", "", "error")
+                  swal("数据源不能为空!", "", "error")
                    return false
              }
 
              if ($('#curr_db').val()==''){
-                  swal("数据库不能为空", "", "error")
+                  swal("数据库不能为空!", "", "error")
                    return false
              }
+
+             if (p_flag == 'add_filter') {
+                 if ($('#add_select_type').val() == 'Y' && $('#add_select_cfg').val() == '') {
+                     swal("列表项配置不能为空!", "", "error")
+                     return false
+                 }
+                 if ($('#add_range_type').val() == 'Y' && $('#add_max_rq_range_name').val() == '') {
+                     swal("范围区间不能为空!", "", "error")
+                     return false
+                 }
+                 if ($('#add_range_type').val() == 'Y' && $('#add_max_rq_range_name').val() != '') {
+                     var v = $('#add_max_rq_range_name').val()
+                     if  (isNaN(parseInt(v)) ) {
+                         swal("范围区间值必须为整数!", "", "error")
+                         return false
+                     }
+                 }
+             }
+
+             if (p_flag == 'upd_filter') {
+                if ($('#upd_select_type').val() == 'Y' && $('#upd_select_cfg').val() == '') {
+                     swal("列表项配置不能为空!", "", "error")
+                     return false
+                 }
+                 if ($('#upd_range_type').val() == 'Y' && $('#upd_max_rq_range_name').val() == '') {
+                     swal("范围区间不能为空!", "", "error")
+                     return false
+                 }
+                 if ($('#upd_range_type').val() == 'Y' && $('#upd_max_rq_range_name').val() != '') {
+                     var v = $('#upd_max_rq_range_name').val()
+                     if  (isNaN(parseInt(v)) ) {
+                         swal("范围区间值必须为整数!", "", "error")
+                         return false
+                     }
+                 }
+             }
+
              return true;
          }
 
+         function upd_db(p_val){
+               if ($('#dsid').val() != '') {
+                    $.ajax({
+                    url     :"/get_tree",
+                    type    :"post",
+                    datatype:"json",
+                    data: {
+                        dbid : $('#dsid').val(),
+                        msg  : $('#curr_db').val()
+                    },
+                    success: function (dataSet) {
+                           $("#curr_db").empty();
+                           $("#curr_db").append("<option value=''>...</option>");
+                            for (i=0;i<dataSet['message'].length;i++){
+                               var val  = dataSet['message'][i].id;
+                               var text = dataSet['message'][i].id;
+                               $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                           }
+                           if (p_val !='') {
+                               $("#curr_db").val(p_val)
+                           }
+                           $("#curr_db").selectpicker('refresh')
+                    }
+                 })
+               }
+          }
+
          $('#upd_header_btn').click(function () {
-                if (!check_valid()) {
+                if (!check_valid('')) {
                   return false;
                 }
 
@@ -930,7 +1082,7 @@
          })
 
          $('#upd_filter_btn').click(function () {
-                if (!check_valid()) {
+                if (!check_valid('upd_filter')) {
                   return false;
                 }
 
@@ -943,13 +1095,14 @@
                         bbdm : $('#bbdm').val(),
                         xh   : $('#upd_filter_xh').val(),
                         name : $('#upd_filter_name').val(),
-                        code : $('#upd_filter_width').val(),
+                        code : $('#upd_filter_code').val(),
                         type : $('#upd_filter_type').val(),
                         item : $('#upd_select_type').val(),
                         cfg  : $('#upd_select_cfg').val(),
                         notnull : $('#upd_notnull_type').val(),
                         is_range : $('#upd_range_type').val(),
-                        rq_range : $('#upd_max_rq_range_name').val()
+                        rq_range : $('#upd_max_rq_range_name').val(),
+                        is_like  :$('#upd_like_type').val(),
                     },
                     success: function (dataSet) {
                          if (dataSet.code=='0') {
@@ -963,7 +1116,7 @@
          })
 
          $('#upd_preprocess_btn').click(function () {
-                if (!check_valid()) {
+                if (!check_valid('')) {
                   return false;
                 }
 
@@ -990,7 +1143,7 @@
          })
 
          $('#upd_query_btn').click(function () {
-                if (!check_valid()) {
+                if (!check_valid('')) {
                   return false;
                 }
 
@@ -1018,7 +1171,7 @@
 
          $('#save_btn').click(function(){
 
-              if (!check_valid()) {
+              if (!check_valid('')) {
                   return false;
               }
 
@@ -1046,7 +1199,7 @@
          });
 
          $('#save_header_btn').click(function(){
-                if (!check_valid()) {
+                if (!check_valid('')) {
                   return false;
                 }
 
@@ -1072,7 +1225,7 @@
          });
 
          $('#save_filter_btn').click(function(){
-                if (!check_valid()) {
+                if (!check_valid('add_filter')) {
                   return false;
                 }
 
@@ -1081,11 +1234,17 @@
                     type: "post",
                     datatype: "json",
                     data: {
-                        bbdm   : $('#bbdm').val(),
-                        name   : $('#add_filter_name').val(),
-                        code  :  $('#add_filter_width').val(),
-                        type  :  $('#add_filter_type').val(),
-                        item  :  $('#add_select_type').val()
+                        bbdm     : $('#bbdm').val(),
+                        name     : $('#add_filter_name').val(),
+                        code     : $('#add_filter_code').val(),
+                        type     : $('#add_filter_type').val(),
+                        item     : $('#add_select_type').val(),
+                        cfg      : $('#add_select_cfg').val(),
+                        notnull  : $('#add_notnull_type').val(),
+                        is_range : $('#add_range_type').val(),
+                        rq_range : $('#add_max_rq_range_name').val(),
+                        is_like  :$('#add_like_type').val(),
+
                     },
                     success: function (dataSet) {
                         if (dataSet.code == 0) {
@@ -1191,32 +1350,53 @@
 
          });
 
-         function upd_db(p_val){
-               if ($('#dsid').val() != '') {
-                    $.ajax({
-                    url     :"/get_tree",
-                    type    :"post",
-                    datatype:"json",
-                    data: {
-                        dbid : $('#dsid').val(),
-                        msg  : $('#curr_db').val()
-                    },
-                    success: function (dataSet) {
-                           $("#curr_db").empty();
-                           $("#curr_db").append("<option value=''>...</option>");
-                            for (i=0;i<dataSet['message'].length;i++){
-                               var val  = dataSet['message'][i].id;
-                               var text = dataSet['message'][i].id;
-                               $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                           }
-                           if (p_val !='') {
-                               $("#curr_db").val(p_val)
-                           }
-                           $("#curr_db").selectpicker('refresh')
-                    }
-                 })
-               }
-          }
+         $('#add_filter_type').change(function(){
+             if ($('#add_filter_type').val() == '1') {
+                  $('#add_select_type').attr("disabled", false);
+                  $('#add_select_cfg').attr("disabled", false);
+                  $('#add_notnull_type').attr("disabled", false);
+                  $('#add_like_type').attr("disabled", false);
+                  $('#add_range_type').attr("disabled", true);
+                  $('#add_max_rq_range_name').attr("disabled", true);
+             } else {
+                  $('#add_select_type').attr("disabled", true);
+                  $('#add_select_cfg').attr("disabled", true);
+                  $('#add_notnull_type').attr("disabled", true);
+                  $('#add_like_type').attr("disabled", true);
+                  $('#add_range_type').attr("disabled", false);
+                  $('#add_max_rq_range_name').attr("disabled", false);
+             }
+             $('#add_select_type').val('N')
+             $('#add_select_cfg').val('')
+             $('#add_notnull_type').val('N')
+             $('#add_like_type').val('N')
+             $('#add_range_type').val('N')
+             $('#add_max_rq_range_name').val('')
+         })
+
+         $('#upd_filter_type').change(function(){
+            if ($('#upd_filter_type').val() == '1') {
+                  $('#upd_select_type').attr("disabled", false);
+                  $('#upd_select_cfg').attr("disabled", false);
+                  $('#upd_notnull_type').attr("disabled", false);
+                  $('#upd_like_type').attr("disabled", false);
+                  $('#upd_range_type').attr("disabled", true);
+                  $('#upd_max_rq_range_name').attr("disabled", true);
+             } else {
+                  $('#upd_select_type').attr("disabled", true);
+                  $('#upd_select_cfg').attr("disabled", true);
+                  $('#upd_notnull_type').attr("disabled", false);
+                  $('#upd_like_type').attr("disabled", true);
+                  $('#upd_range_type').attr("disabled", false);
+                  $('#upd_max_rq_range_name').attr("disabled", false);
+             }
+             $('#upd_select_type').val('N')
+             $('#upd_select_cfg').val('')
+             $('#upd_notnull_type').val('N')
+             $('#upd_like_type').val('N')
+             $('#upd_range_type').val('N')
+             $('#upd_max_rq_range_name').val('')
+         })
 
          $('#dsid').change(function(){
               upd_db('');

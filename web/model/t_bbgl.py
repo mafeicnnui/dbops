@@ -91,10 +91,12 @@ async def save_bbgl_header(bbdm,name,width):
         traceback.print_exc()
         return {'code': -1, 'message': '保存失败!'}
 
-async def save_bbgl_filter(bbdm, filter_name, filter_code,filter_type,item):
+async def save_bbgl_filter(bbdm, filter_name, filter_code,filter_type,item,p_item_value,p_notnull,p_is_range,p_rq_range,p_is_like):
     try:
-        st = "insert into t_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,is_item) \
-                 values('{}',{},'{}','{}','{}','{}')".format(bbdm, (await get_filter_xh(bbdm)), filter_name, filter_code,filter_type,item)
+        st = "insert into t_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,is_item,item_value,is_null,is_range,rq_range,is_like) \
+                 values('{}',{},'{}','{}','{}','{}','{}','{}','{}','{}','{}')".\
+            format(bbdm, (await get_filter_xh(bbdm)), filter_name, filter_code,filter_type,item,p_item_value,p_notnull,p_is_range,p_rq_range,p_is_like)
+        print(st)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '保存成功!'}
     except Exception as e:
@@ -125,9 +127,14 @@ async def query_bbgl_header(p_bbdm):
       return await async_processer.query_list(st)
 
 async def query_bbgl_filter(p_bbdm):
-    st = "select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc,a.is_item,a.item_value,a.is_null,a.is_range,a.rq_range " \
-         "from t_bbgl_filter a,t_dmmx b " \
-         "where a.filter_type=b.dmm and b.dm='42' and a.bbdm='{}' order by a.bbdm,a.xh".format(p_bbdm)
+    st = """select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc,
+                   a.is_item,
+                   a.item_value,
+                   (select mc from t_bbgl_dmlx c where c.dm=a.item_value) as  item_name,
+                   a.is_null,a.is_range,a.rq_range,a.is_like 
+            from t_bbgl_filter a,t_dmmx b 
+             where a.filter_type=b.dmm and b.dm='42'              
+              and a.bbdm='{}' order by a.bbdm,a.xh""".format(p_bbdm)
     return await async_processer.query_list(st)
 
 async def query_bbgl_preprocess(p_bbdm):
@@ -217,12 +224,13 @@ async def delete_bbgl_header(p_bbdm,p_xh):
         return {'code': -1, 'message': '删除失败!'}
 
 
-async def update_bbgl_filter(p_bbdm,p_xh,p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_is_range,p_rq_range):
+async def update_bbgl_filter(p_bbdm,p_xh,p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_is_range,p_rq_range,p_is_like):
     try:
         st = "update t_bbgl_filter " \
              " set filter_name='{}',filter_code='{}',filter_type='{}',is_item='{}'," \
-                  "item_value='{}',is_null='{}',is_range='{}',rq_range='{}' " \
-             "  where bbdm='{}' and xh={}".format(p_name,p_code,p_type,p_item,p_item_value,p_notnull,p_is_range,p_rq_range,p_bbdm,p_xh)
+                  "item_value='{}',is_null='{}',is_range='{}',rq_range='{}',is_like='{}' " \
+             "  where bbdm='{}' and xh={}".format(p_name,p_code,p_type,p_item,p_item_value,
+                                                  p_notnull,p_is_range,p_rq_range,p_is_like,p_bbdm,p_xh)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '更新成功!'}
     except Exception as e:

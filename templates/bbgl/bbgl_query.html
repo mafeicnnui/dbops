@@ -52,7 +52,7 @@
                         bbdm : $('#bbdm').val(),
                     },
                     success: function (filter) {
-                      console.log('filter=',filter)
+                      // console.log('filter=',filter)
                       var notnull_filter =''
                       var rq_range_filter=''
                       for (i=0;i<filter.length;i++){
@@ -62,10 +62,9 @@
                           if (filter[i].is_range=='Y') {
                               rq_range_filter = rq_range_filter +filter[i].filter_code+'#'+filter[i].filter_name+'#'+filter[i].rq_range+','
                           }
-
                       }
-                      console.log('notnull_filter=',notnull_filter.slice(0,-1))
-                      console.log('rq_range_filter=',rq_range_filter.slice(0,-1))
+                      // console.log('notnull_filter=',notnull_filter.slice(0,-1))
+                      // console.log('rq_range_filter=',rq_range_filter.slice(0,-1))
                       $('#notnull_filter').val(notnull_filter.slice(0,-1))
                       $('#rq_range_filter').val(rq_range_filter.slice(0,-1))
                    },
@@ -165,13 +164,48 @@
                               }
 
                           }  else if  (filter[i].filter_type=='3') {
-                                rowFilter=rowFilter+
-                                     '<div class="col-md-4">\n' +
+                                 // rowFilter=rowFilter+
+                                //      '<div class="col-md-4">\n' +
+                                //      '       <div class="input-group">\n' +
+                                //      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                //      '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"  type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                //      '      </div>\n' +
+                                //      '</div>'
+
+                                 if (filter[i].is_range=='Y') {
+                                  rowFilter=rowFilter+
+                                     '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"  type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
+                                     '            <input id="'+filter[i].filter_code+'_begin" name="'+filter[i].filter_code+'_begin"   type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>' +
+                                     '</div>\n'
+
+                                  if (filter_number % 4 == 0) {
+                                      rowFilter=rowFilter+'</div>\n'
+                                      htmlFilter = htmlFilter +rowFilter+'<br>'
+                                      rowFilter='<div class="row">'
+                                  }
+
+                                  rowFilter=rowFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'止</span>\n' +
+                                     '            <input id="'+filter[i].filter_code+'_end" name="'+filter[i].filter_code+'_end"   type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
                                      '      </div>\n' +
                                      '</div>'
+                                  filter_number = filter_number +1
+                                  console.log('range.....')
+                              } else {
+                                   rowFilter=rowFilter+
+                                     '<div class="col-md-3">\n' +
+                                     '       <div class="input-group">\n' +
+                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
+                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"   type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
+                                     '      </div>\n' +
+                                     '</div>'
+                              }
+
                           }
 
                           if (filter_number % 4 == 0) {
@@ -239,13 +273,25 @@
                    check_bbgl();
 
                    //检测条件是否为空值
-                   var nullstr = $('#notnull_filter').val()
+                   var nullstr  = $('#notnull_filter').val()
                    var nullstr2 = nullstr.split(',')
+                   var rq_range = $('#rq_range_filter').val()
                    for( var i in nullstr2) {
                        var c = nullstr2[i].split('#')[0]
                        var n = nullstr2[i].split('#')[1]
+
                        if ($('#'+c).val() =='') {
                           showtips('error',n+'不能为空!');
+                          return false;
+                       }
+
+                       if ($('#'+c+'_begin').val() =='') {
+                          showtips('error',n+'起不能为空!');
+                          return false;
+                       }
+
+                       if ($('#'+c+'_end').val() =='') {
+                          showtips('error',n+'止不能为空!');
                           return false;
                        }
                    }
@@ -253,12 +299,16 @@
                    //检测日期范围是否超过配置值
                    var rq_range = $('#rq_range_filter').val()
                    var rq_range2 = $('#rq_range_filter').val().split(',')
+                   console.log('rq_range=',rq_range)
+                   console.log('rq_range2=',rq_range2)
                    for( var i in rq_range2) {
                        var c = rq_range2[i].split('#')[0]
                        var n = rq_range2[i].split('#')[1]
                        var d = rq_range2[i].split('#')[2]
+                       console.log(c,n,d)
                        var rqq = $('#'+c+'_begin').val()
                        var rqz = $('#'+c+'_end').val()
+                       console.log('rqq=',rqq,'rqz=',rqz)
                        if (GetDateDiff(rqq, rqz, "day")>parseInt(d)) {
                             showtips('error',n+'查询范围不能超过'+d+'天');
                             return false;

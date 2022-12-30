@@ -102,7 +102,12 @@ class bbgl_add_filter_save (base_handler.TokenHandler):
         filter_code  = self.get_argument("code")
         filter_type  = self.get_argument("type")
         item         = self.get_argument("item")
-        v_list       = await save_bbgl_filter(bbdm,filter_name,filter_code,filter_type,item)
+        cfg          = self.get_argument("cfg")
+        notnull      = self.get_argument("notnull")
+        is_range     = self.get_argument("is_range")
+        rq_range     = self.get_argument("rq_range")
+        is_like      = self.get_argument("is_like")
+        v_list       = await save_bbgl_filter(bbdm,filter_name,filter_code,filter_type,item,cfg,notnull,is_range,rq_range,is_like)
         v_json       = json.dumps(v_list)
         self.write(v_json)
 
@@ -118,9 +123,6 @@ class bbgl_add_preprocess_save (base_handler.TokenHandler):
         print('bbgl_add_preprocess_save2=', bbdm)
         print('bbgl_add_preprocess_save3=', statement)
         print('bbgl_add_preprocess_save=4', description)
-
-
-
         v_list       = await save_bbgl_preprocess(bbdm,statement,description)
         v_json       = json.dumps(v_list)
         self.write(v_json)
@@ -203,7 +205,8 @@ class bbgl_update_filter (base_handler.TokenHandler):
         notnull     = self.get_argument("notnull")
         is_range    = self.get_argument("is_range")
         rq_range    = self.get_argument("rq_range")
-        v_list      = await update_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,item,cfg,notnull,is_range,rq_range)
+        is_like     = self.get_argument("is_like")
+        v_list      = await update_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,item,cfg,notnull,is_range,rq_range,is_like)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 

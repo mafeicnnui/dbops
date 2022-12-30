@@ -1,4 +1,4 @@
-一、概述  
+一、功能描述  
 
    Easebase 数据库自动化运维平台,基于python3.6+tornado+bootstrap开发 
    
