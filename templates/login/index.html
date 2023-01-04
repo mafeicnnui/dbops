@@ -122,7 +122,6 @@
             }
         </style>
     </head>
-
     <body  class="fixed-left">
         <div id="wrapper">
             <div class="topbar">
@@ -803,8 +802,6 @@
                           },
                           success: function (dataSet) {
                             console.log('token updated!')
-                            // console.log('taken=',dataSet.token)
-                            // console.log('taken.domain=',window.location.host)
                             window.localStorage['token'] = dataSet.token
                             window.history.replaceState('','EaseBase1.0','http://'+window.location.host+'/?token='+window.localStorage.getItem("token"))
                          }
@@ -918,9 +915,6 @@
                       console.log('file>',$(this).attr("id"))
                       let tabId =$(this).attr("id").split('^')[0]
                       let url=$(this).attr("id").split('^')[1]
-                      //let url=$(this).attr("id").split('^')[1]+'?token='+window.localStorage.getItem("token")
-
-                      console.log('tabId=',tabId,url)
                       clearInterval(timer);
                       clearInterval(timer1);
                       clearInterval(timer2);
@@ -943,9 +937,8 @@
                               tabStatus[tabId]=true;
                           }
                       }
-                      console.log('-----------------------------------------1')
+                      console.log('url--->',url)
                       $('#main-container-div').load(url);
-                      console.log('-----------------------------------------2')
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
@@ -981,14 +974,6 @@
                     showThumbs: true,
                     addMore: true
              });
-
-            // $(document).bind("keydown", function(e) {//文档绑定键盘按下事件
-            //     e = window.event || e;  //解决浏览器兼容的问题
-            //     if(e.keyCode == 116) {  //F5按下
-            //     　　e.keyCode = 0;
-            //     　　return false;
-            //     }
-            // });
 
             $(document).ready(function() {
                  setInterval("updateTime();",1000);

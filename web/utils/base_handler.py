@@ -65,8 +65,10 @@ class TokenHandlerLogin(BaseHandler):
         try:
             head = self.request.headers
             token = head.get("token","")
+            print('header-token=',token)
             if token == '':
                token = self.get_argument("token")
+               print('body-token=',token)
 
             print('TokenHandlerLogin taken:',token)
             result = jwt_auth.parse_payload(token)

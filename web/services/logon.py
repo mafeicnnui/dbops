@@ -40,7 +40,6 @@ class logon_check(base_handler.TokenHandlerLogin):
 
 class update_token(base_handler.TokenHandler):
     async def post(self):
-        print('update_token=>url=',self.request.uri)
         token= await refresh_token(self.get_argument("token"),self.session_id)
         self.token = token
         self.write({"token": token})
