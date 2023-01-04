@@ -1,14 +1,14 @@
 一、平台介绍  
 
    Easebase平台是一款基于python3.6+tornado+bootstrap开发的数据库自动化运维平台，功能非常丰富，将DBA日常绝大多数工作都自动化管理，提升DBA工作效率
-   说明：该平台依赖dbapi平台接口服务，需要在部署后再部署dbapi服务 
+   该平台依赖dbapi平台接口服务，需要在部署后再部署dbapi服务 
    
 二、平台架构
    
-   ![RUNOOB 图标](static\doc\images\framework.png)
+   ![RUNOOB 图标](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/framework.png)
    
 
-一、功能概述
+三、功能概述
        
    | 功能名称   | 功能描述                                           | 备注                        |
 | ---------- | :------------------------------------------------- | --------------------------- |
