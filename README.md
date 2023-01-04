@@ -5,7 +5,7 @@
    
 二、平台架构
    
-   ![RUNOOB 图标](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/framework.png)
+   ![平台架构](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/framework.png)
    
 
 三、功能概述
