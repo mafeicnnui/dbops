@@ -68,16 +68,22 @@
                 });
          }
 
-      function edit_config(p_bbdm) {
+      function edit_config(p_row) {
+          console.log('edit_config=',p_row)
+          var bbdm = p_row.split(',')[0]
+          var dsid = p_row.split(',')[2]
+          var db = p_row.split(',')[4]
            $.ajax({
                 url: "/bbgl/edit",
                 type: "get",
                 datatype: "html",
                 data: {
-                    bbdm:p_bbdm
+                    bbdm:bbdm,
+                    dsid:dsid,
+                    db:db
                 },
                 success: function () {
-                    $('#main-container-div').load("/bbgl/edit?bbdm="+p_bbdm);
+                    $('#main-container-div').load("/bbgl/edit?bbdm="+bbdm+'&dsid='+dsid+'&db='+db);
                 },
             })
       }
@@ -106,7 +112,9 @@
                                   columns: [
                                     { "title": "报表代码" },
                                     { "title": "报表名称"},
+                                    { "title": "数据源ID","visible":false },
                                     { "title": "数据源名" },
+                                    { "title": "数据库名" },
                                     { "title": "创建人" },
                                     { "title": "创建日期" },
                                     { "title": "最近更新" },
@@ -117,7 +125,7 @@
                                         {
                                            bbdm = row[0]
                                            msg ='&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="edit_config(\''+bbdm+'\');"/>' +'&nbsp;'+
+                                              '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="edit_config(\''+row+'\');"/>' +'&nbsp;'+
                                               '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_config(\''+bbdm+'\');"/>';
                                            return msg;
                                         }

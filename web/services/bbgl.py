@@ -287,11 +287,16 @@ class bbgl_query_export(base_handler.TokenHandler):
 class bbgl_edit(base_handler.TokenHandler):
    async def get(self):
         bbdm = self.get_argument("bbdm")
+        dsid = self.get_argument("dsid")
+        db   = self.get_argument("db")
         print('bbgl_edit=',bbdm)
         self.render("./bbgl/bbgl_edit.html",
                     bbdm = bbdm,
+                    dsid = int(dsid),
+                    db=db,
                     db_server=await get_bbtj_db_server(),
-                    dm_filter=await get_dmm_from_dm('42')
+                    dm_filter=await get_dmm_from_dm('42'),
+                    dm_select_cfg=await get_dmlx_from_dm_bbgl(),
                     )
 
 class bbgl_delete (base_handler.TokenHandler):

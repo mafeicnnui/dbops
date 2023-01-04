@@ -127,7 +127,11 @@ async def query_bbgl_header(p_bbdm):
       return await async_processer.query_list(st)
 
 async def query_bbgl_filter(p_bbdm):
-    st = """select a.xh,a.filter_name,a.filter_code,a.filter_type,b.dmmc,
+    st = """select a.xh,
+                   a.filter_name,
+                   a.filter_code,
+                   a.filter_type,
+                   b.dmmc,
                    a.is_item,
                    a.item_value,
                    (select mc from t_bbgl_dmlx c where c.dm=a.item_value) as  item_name,
@@ -187,7 +191,7 @@ async def query_bbgl_data(bbdm,param):
              cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
 
          # 执行查询
-         print(cfg['replace_statement'])
+         print('replace_statement=',cfg['replace_statement'])
          result = await exe_query_exp(cfg['dsid'],cfg['replace_statement'],cfg['db'])
 
          # 替换表头
@@ -285,7 +289,7 @@ async def query_bbgl_config(p_bbdm):
     if p_bbdm!='':
        vv = " and a.bbdm='{}'".format(p_bbdm)
     st = """select 
-                 bbdm,bbmc,b.db_desc,u.name,
+                 bbdm,bbmc,b.id,b.db_desc,a.db,u.name,
                  date_format(a.create_date,'%Y-%m-%d')    create_date,
                  date_format(a.last_update_date,'%Y-%m-%d') last_update_date 
            from t_bbgl_config a,t_db_source b,t_user u
