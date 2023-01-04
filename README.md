@@ -37,16 +37,16 @@
 ## 四、安装部署  
 
 
-###4.1 安装python3环境 
+### 4.1 安装python3环境 
     
     yum -y install python3
     
 
-###4.2 安装python3及依赖  
+### 4.2 安装python3及依赖  
 
     pip3 install -r requirements.txt -i https://pypi.douban.com/simple
     
-###4.3  数据库连接配置
+### 4.3  数据库连接配置
 
     vi /config/config.json 
     {
@@ -59,42 +59,42 @@
     }
     
         
-###4.4 数据库初始化
+### 4.4 数据库初始化
     
      mysql -upuppet -p12345678 -h'192.168.1.1' <puppet.sql
 
-##五、停启服务
+## 五、停启服务
 
-###5.1 启动服务  
+### 5.1 启动服务  
 
     start.sh 
 
 
-###5.2 重启服务  
+### 5.2 重启服务  
 
     restart.sh
     
-###5.3 配置nginx  
+### 5.3 配置nginx  
 
     详见 /dbops/doc/conf/nginx.conf
 
 
-###5.4 停止服务  
+### 5.4 停止服务  
 
     stop.sh
 
-5.5 访问EaseBase  
+### 5.5 访问EaseBase  
     
     http://IP:81
     user:admin/admin
 
-##六、docker部署 
+## 六、docker部署 
 
-###6.1 获取镜像
+### 6.1 获取镜像
 
     docker pull mafeicnnui/dbops:2.0
 
-###6.2 配置数据源
+### 6.2 配置数据源
 
     mkdir /home/dbops
     vi config.json 
@@ -108,7 +108,7 @@
     }
 
 
-###6.3 运行容器
+### 6.3 运行容器
 
     docker run \
        --name dbops \
@@ -116,7 +116,7 @@
        -v /home/dbops/config.json:/opt/dbops/config/config.json:ro \
        -d mafeicnnui/dbops:2.3
     
-###6.4 访问 easebase
+### 6.4 访问 easebase
     
     http://IP:8081
     user:admin/admin
