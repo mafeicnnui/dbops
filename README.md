@@ -1,14 +1,14 @@
-一、平台介绍  
+## 一、平台介绍  
 
    Easebase平台是一款基于python3.6+tornado+bootstrap开发的数据库自动化运维平台，功能非常丰富，将DBA日常绝大多数工作都自动化管理，提升DBA工作效率
    该平台依赖dbapi平台接口服务，需要在部署后再部署dbapi服务 
    
-二、平台架构
+## 二、平台架构
    
    ![平台架构](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/framework.png)
    
 
-三、功能概述
+## 三、功能概述
        
    | 功能名称   | 功能描述                                           | 备注                        |
 | ---------- | :------------------------------------------------- | --------------------------- |
@@ -34,19 +34,19 @@
 
        
        
-二、安装部署  
+## 四、安装部署  
 
 
-2.1 安装python3环境 
+###4.1 安装python3环境 
     
     yum -y install python3
     
 
-2.2 安装python3及依赖  
+###4.2 安装python3及依赖  
 
     pip3 install -r requirements.txt -i https://pypi.douban.com/simple
     
-2.3  数据库连接配置
+###4.3  数据库连接配置
 
     vi /config/config.json 
     {
@@ -59,42 +59,42 @@
     }
     
         
-2.5 数据库初始化
+###4.4 数据库初始化
     
      mysql -upuppet -p12345678 -h'192.168.1.1' <puppet.sql
 
-三、停启服务
+##五、停启服务
 
-3.1 启动服务  
+###5.1 启动服务  
 
     start.sh 
 
 
-3.2 重启服务  
+###5.2 重启服务  
 
     restart.sh
     
-3.4 配置nginx  
+###5.3 配置nginx  
 
     详见 /dbops/doc/conf/nginx.conf
 
 
-3.3 停止服务  
+###5.4 停止服务  
 
     stop.sh
 
-3.4 访问devops  
+5.5 访问EaseBase  
     
     http://IP:81
     user:admin/admin
 
-三、docker部署 
+##六、docker部署 
 
-3.1 获取镜像
+###6.1 获取镜像
 
     docker pull mafeicnnui/dbops:2.0
 
-3.2 配置数据源
+###6.2 配置数据源
 
     mkdir /home/dbops
     vi config.json 
@@ -108,7 +108,7 @@
     }
 
 
-3.3 运行容器
+###6.3 运行容器
 
     docker run \
        --name dbops \
@@ -116,7 +116,7 @@
        -v /home/dbops/config.json:/opt/dbops/config/config.json:ro \
        -d mafeicnnui/dbops:2.3
     
-3.4 访问 easebase
+###6.4 访问 easebase
     
     http://IP:8081
     user:admin/admin
