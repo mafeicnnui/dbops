@@ -19,52 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="README.md update">
-      <change afterPath="$PROJECT_DIR$/doc/conf/supervisord.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/data/initialize.sql" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sql README.md update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sql/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/all/cre_proc.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/all/cre_tab.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/table/cre_tab.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/all/cre_view.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/all/init_data.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_db_source.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_db_weekly_items.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_dmlx.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_dmmx.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_func.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_monitor_index.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_monitor_templete.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_role.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_role_privs.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_sql_audit_rule.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_sys_stats_idx.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_templete.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_user.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_user_proj_privs.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_user_role.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/data/t_xtqx.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/archive/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/backup/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/database/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/datax/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/dbsource/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/func/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/kpi/cre_kpi.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/menu/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/minio/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/monitor/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/order/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/port/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/public/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/role/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/server/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/slowlog/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/syncer/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/transfer/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/user/cre_user.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/tab/weekly/cre_tab.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/view/cre_view.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/view/cre_view.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -700,14 +657,7 @@
       <workItem from="1672367911854" duration="13820000" />
       <workItem from="1672706289771" duration="13721000" />
       <workItem from="1672794710781" duration="11695000" />
-      <workItem from="1672880803093" duration="5122000" />
-    </task>
-    <task id="LOCAL-00171" summary="optimize main page">
-      <created>1650357034585</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1650357034585</updated>
+      <workItem from="1672880803093" duration="5324000" />
     </task>
     <task id="LOCAL-00172" summary="mysql real sync fix">
       <created>1650357054245</created>
@@ -1045,7 +995,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672822150073</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="sql README.md update">
+      <created>1672899384467</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1672899384468</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1064,7 +1021,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="sql publish optimized" />
     <MESSAGE value="support sql export" />
     <MESSAGE value="console parameter changed" />
     <MESSAGE value="add sql export" />
@@ -1089,7 +1045,8 @@
     <MESSAGE value="role code optimize" />
     <MESSAGE value="requirements.txt update" />
     <MESSAGE value="README.md update" />
-    <option name="LAST_COMMIT_MESSAGE" value="README.md update" />
+    <MESSAGE value="sql README.md update" />
+    <option name="LAST_COMMIT_MESSAGE" value="sql README.md update" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1672896915889">
@@ -1130,10 +1087,10 @@
     </state>
     <state x="127" y="278" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318052583" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672896919772" />
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672822156980">
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672899390098">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672822156980" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672899390098" />
     <state x="2270" y="62" width="1178" height="798" key="find.popup" timestamp="1672816035836">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>

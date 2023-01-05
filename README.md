@@ -66,7 +66,7 @@
         
 ### 4.4 数据库初始化
     
-     mysql -upuppet -p12345678 -h'192.168.1.1' <puppet.sql
+    详见：sql/README.md
 
 ## 五、停启服务
 
