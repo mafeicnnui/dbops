@@ -9,7 +9,6 @@ MySQL - 5.6.44-log : Database - puppet
 /*!40101 SET SQL_MODE=''*/;
 
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`puppet` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
@@ -25,7 +24,7 @@ CREATE TABLE `docker_log` (
   `cmd` varchar(1000) DEFAULT NULL,
   `msg` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `docker_log_data` */
 
@@ -36,6 +35,26 @@ CREATE TABLE `docker_log_data` (
   `msg` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=384 DEFAULT CHARSET=utf8mb4;
+
+/*Table structure for table `t_alert_task` */
+
+DROP TABLE IF EXISTS `t_alert_task`;
+
+CREATE TABLE `t_alert_task` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `task_tag` varchar(50) DEFAULT NULL COMMENT '任务标识',
+  `server_id` varchar(20) DEFAULT NULL COMMENT '服务器ID',
+  `templete_id` varchar(20) DEFAULT NULL COMMENT '模板ID',
+  `comments` varchar(50) DEFAULT NULL COMMENT '任务描述',
+  `run_time` varchar(20) DEFAULT NULL COMMENT '运行时间',
+  `script_path` varchar(200) DEFAULT NULL COMMENT '脚本路径',
+  `script_file` varchar(100) DEFAULT NULL COMMENT '脚本文件名',
+  `python3_home` varchar(200) DEFAULT NULL COMMENT 'python3路径',
+  `api_server` varchar(100) DEFAULT NULL COMMENT 'api服务地址',
+  `status` varchar(1) DEFAULT '1' COMMENT '任务状态',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_t_alert_task_u1` (`task_tag`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_bbgl_config` */
 
@@ -57,7 +76,37 @@ CREATE TABLE `t_bbgl_config` (
   `last_update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_bbdm_u1` (`bbdm`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4;
+
+/*Table structure for table `t_bbgl_dmlx` */
+
+DROP TABLE IF EXISTS `t_bbgl_dmlx`;
+
+CREATE TABLE `t_bbgl_dmlx` (
+  `dm` varchar(10) NOT NULL COMMENT '大类代码',
+  `mc` varchar(100) DEFAULT NULL COMMENT '大类名称',
+  `flag` varchar(1) DEFAULT NULL COMMENT '大类状态',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`dm`),
+  KEY `idx_t_dmlx` (`dm`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Table structure for table `t_bbgl_dmmx` */
+
+DROP TABLE IF EXISTS `t_bbgl_dmmx`;
+
+CREATE TABLE `t_bbgl_dmmx` (
+  `dm` varchar(10) NOT NULL DEFAULT '' COMMENT '代码大类',
+  `dmm` varchar(200) NOT NULL DEFAULT '' COMMENT '代码小类',
+  `dmmc` varchar(100) DEFAULT NULL COMMENT '小类名称',
+  `dmmc2` varchar(100) DEFAULT NULL COMMENT '小类名称2',
+  `flag` varchar(1) DEFAULT NULL COMMENT '小类状态',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`dm`,`dmm`),
+  KEY `idx_t_dmmx` (`dm`,`dmm`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_bbgl_export` */
 
@@ -76,7 +125,7 @@ CREATE TABLE `t_bbgl_export` (
   `create_date` datetime DEFAULT NULL,
   `error` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_bbgl_filter` */
 
@@ -89,8 +138,14 @@ CREATE TABLE `t_bbgl_filter` (
   `filter_name` varchar(100) DEFAULT NULL,
   `filter_code` varchar(50) DEFAULT NULL,
   `filter_type` varchar(50) DEFAULT NULL,
+  `is_item` varchar(1) DEFAULT NULL COMMENT '是否列表项',
+  `item_value` varchar(10) DEFAULT NULL COMMENT '列表项代码(t_bbgl_dmlx.dm)',
+  `is_null` varchar(1) DEFAULT NULL COMMENT '是否非空条件',
+  `is_range` varchar(1) DEFAULT NULL COMMENT '是否日期范围',
+  `rq_range` varchar(11) DEFAULT NULL COMMENT '日期最大查询范围',
+  `is_like` varchar(1) DEFAULT NULL COMMENT '是否支持模糊查询',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_bbgl_header` */
 
@@ -103,7 +158,7 @@ CREATE TABLE `t_bbgl_header` (
   `header_name` varchar(50) DEFAULT NULL,
   `header_width` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_bbgl_preproccess` */
 
@@ -116,7 +171,7 @@ CREATE TABLE `t_bbgl_preproccess` (
   `statement` longtext,
   `description` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_bbtj_log` */
 
@@ -197,7 +252,7 @@ CREATE TABLE `t_datax_sync_config` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_t_datax_config_u1` (`sync_tag`),
   KEY `idx_t_datax_sync_config_u1` (`sync_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=314 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_datax_sync_log` */
 
@@ -214,7 +269,7 @@ CREATE TABLE `t_datax_sync_log` (
   KEY `idx_create_date_n1` (`create_date`),
   KEY `idx_create_date_u1` (`sync_tag`),
   KEY `idx_sync_tag_create_date` (`sync_tag`,`create_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=344403 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1426217 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_archive_config` */
 
@@ -245,7 +300,7 @@ CREATE TABLE `t_db_archive_config` (
   `status` varchar(1) DEFAULT NULL COMMENT '归档状态',
   PRIMARY KEY (`id`),
   KEY `idx_t_db_archive_config_u1` (`archive_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_archive_log` */
 
@@ -263,7 +318,7 @@ CREATE TABLE `t_db_archive_log` (
   `percent` decimal(10,2) DEFAULT NULL COMMENT '归档进度',
   `message` varchar(1000) DEFAULT NULL COMMENT '归档消息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1372 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2449 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_backup_detail` */
 
@@ -284,7 +339,7 @@ CREATE TABLE `t_db_backup_detail` (
   `STATUS` varchar(1) DEFAULT NULL COMMENT '备份状态',
   `error` longtext COMMENT '错误消息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1201596 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1568635 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_backup_total` */
 
@@ -303,7 +358,7 @@ CREATE TABLE `t_db_backup_total` (
   `STATUS` varchar(1) DEFAULT NULL COMMENT '备份状态',
   PRIMARY KEY (`id`),
   KEY `idx_t_db_backup_total_n1` (`create_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=49353 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=62640 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_compare` */
 
@@ -325,8 +380,10 @@ CREATE TABLE `t_db_compare` (
   `column_key` varchar(3) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `extra` varchar(30) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `column_comment` varchar(1024) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `idx_t_db_compare_c1` (`dsid`,`table_schema`,`table_name`,`column_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_db_compare_data` */
 
@@ -342,7 +399,7 @@ CREATE TABLE `t_db_compare_data` (
   `sour_rows` int(11) DEFAULT NULL,
   `dest_rows` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_db_compare_detail` */
 
@@ -372,8 +429,10 @@ CREATE TABLE `t_db_compare_idx` (
   `seq_in_index` varchar(100) DEFAULT NULL,
   `column_name` varchar(100) DEFAULT NULL,
   `nullable` varchar(100) DEFAULT NULL,
-  `visible` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `visible` varchar(100) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=194 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_db_config` */
 
@@ -397,9 +456,13 @@ CREATE TABLE `t_db_config` (
   `api_server` varchar(100) DEFAULT NULL COMMENT 'API接口地址',
   `status` varchar(1) DEFAULT NULL COMMENT '任务状态',
   `task_status` varchar(1) DEFAULT '0' COMMENT '运行状态',
+  `binlog_status` varchar(1) DEFAULT '0' COMMENT '是否备份binlog(1.启用,0.禁用)',
+  `oss_status` varchar(1) DEFAULT '0' COMMENT '是否备份binlog(1.启用,0.禁用)',
+  `oss_path` varchar(200) DEFAULT NULL COMMENT 'oss备份路径',
+  `oss_cloud` varchar(1) DEFAULT NULL COMMENT 'oss服务商(1.阿里,2.腾讯)',
   PRIMARY KEY (`id`),
   KEY `idx_t_db_config_u1` (`db_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_inst` */
 
@@ -444,7 +507,7 @@ CREATE TABLE `t_db_inst_log` (
   `message` varchar(1000) DEFAULT NULL COMMENT '日志消息',
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8367 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9249 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_inst_opt_log` */
 
@@ -461,7 +524,7 @@ CREATE TABLE `t_db_inst_opt_log` (
   `status` varchar(1) DEFAULT NULL COMMENT '执行状态',
   `message` text COMMENT '错误消息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=326 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=327 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_inst_parameter` */
 
@@ -508,7 +571,7 @@ CREATE TABLE `t_db_opt_log` (
   `status` varchar(1) DEFAULT NULL COMMENT '执行状态',
   `message` text COMMENT '错误消息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_source` */
 
@@ -537,8 +600,9 @@ CREATE TABLE `t_db_source` (
   `market_id` varchar(10) DEFAULT NULL COMMENT '项目编码',
   `flag1` varchar(100) DEFAULT NULL COMMENT '商管周报',
   `stream_load` varchar(100) DEFAULT NULL COMMENT 'stream_load服务',
+  `related_id` varchar(11) DEFAULT NULL COMMENT '存储数据源对应的内网或外网数据源ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=195 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=226 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_sync_config` */
 
@@ -576,9 +640,11 @@ CREATE TABLE `t_db_sync_config` (
   `desc_db_prefix` varchar(50) DEFAULT NULL COMMENT '目标库前缀',
   `log_db_id` int(11) DEFAULT NULL COMMENT '日志库ID',
   `log_db_name` varchar(100) DEFAULT NULL COMMENT '日志库名称',
+  `ch_cluster_name` varchar(100) DEFAULT NULL COMMENT 'CH集群名称',
+  `real_sync_status` varchar(20) DEFAULT NULL COMMENT '实时任务状态(t_dmmx.dmm=47）',
   PRIMARY KEY (`id`),
   KEY `idx_t_db_config_u1` (`sync_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=533 DEFAULT CHARSET=utf8 COMMENT='数据库同步配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=564 DEFAULT CHARSET=utf8 COMMENT='数据库同步配置表';
 
 /*Table structure for table `t_db_sync_monitor` */
 
@@ -618,7 +684,7 @@ CREATE TABLE `t_db_sync_real_log` (
   KEY `idx_create_date_n1` (`create_date`),
   KEY `idx_create_date_u1` (`sync_tag`(255)),
   KEY `idx_sync_tag_create_date` (`sync_tag`(255),`create_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=1866005 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3464752 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_sync_tab_config` */
 
@@ -639,7 +705,7 @@ CREATE TABLE `t_db_sync_tab_config` (
   PRIMARY KEY (`id`),
   KEY `idx_t_db_sync_tab_config_n1` (`sync_tag`),
   KEY `idx_t_db_sync_tab_config_u1` (`sync_tag`,`db_name`,`schema_name`,`tab_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4407 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4844 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_sync_tasks_log` */
 
@@ -655,7 +721,7 @@ CREATE TABLE `t_db_sync_tasks_log` (
   KEY `idx_create_date_n1` (`create_date`),
   KEY `idx_create_date_u1` (`sync_tag`(255)),
   KEY `idx_sync_tag_create_date` (`sync_tag`(255),`create_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=271078 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=988430 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_sync_tasks_log_detail` */
 
@@ -671,7 +737,7 @@ CREATE TABLE `t_db_sync_tasks_log_detail` (
   PRIMARY KEY (`id`),
   KEY `idx_create_date_n1` (`create_date`),
   KEY `idx_create_date_u1` (`sync_tag`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=2466893 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9810652 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_transfer_config` */
 
@@ -697,7 +763,7 @@ CREATE TABLE `t_db_transfer_config` (
   `status` varchar(1) DEFAULT NULL COMMENT '任务状态',
   PRIMARY KEY (`id`),
   KEY `idx_t_db_transfer_config_u1` (`transfer_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_transfer_log` */
 
@@ -712,7 +778,7 @@ CREATE TABLE `t_db_transfer_log` (
   `amount` int(11) DEFAULT NULL COMMENT '传输数量',
   `percent` decimal(10,2) DEFAULT NULL COMMENT '传输进度',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_user` */
 
@@ -731,7 +797,7 @@ CREATE TABLE `t_db_user` (
   `created_date` datetime DEFAULT NULL COMMENT '创建时间',
   `last_update_date` datetime DEFAULT NULL COMMENT '最近更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_db_weekly_items` */
 
@@ -769,6 +835,7 @@ CREATE TABLE `t_dmmx` (
   `dm` varchar(10) NOT NULL DEFAULT '' COMMENT '代码大类',
   `dmm` varchar(200) NOT NULL DEFAULT '' COMMENT '代码小类',
   `dmmc` varchar(100) DEFAULT NULL COMMENT '小类名称',
+  `dmmc2` varchar(100) DEFAULT NULL COMMENT '小类名称2',
   `flag` varchar(1) DEFAULT NULL COMMENT '小类状态',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
@@ -787,7 +854,7 @@ CREATE TABLE `t_forget_password` (
   `creation_date` datetime DEFAULT NULL COMMENT '创建时间',
   `creator` varchar(20) DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_func` */
 
@@ -804,7 +871,7 @@ CREATE TABLE `t_func` (
   `last_update_date` date DEFAULT NULL COMMENT '最近更新时间',
   `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=228 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=245 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_kpi_bbtj` */
 
@@ -821,8 +888,22 @@ CREATE TABLE `t_kpi_bbtj` (
   `item_month` varchar(100) DEFAULT NULL,
   `item_rate` varchar(100) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
+  `sn` int(11) DEFAULT NULL COMMENT '序号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8508 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=106642 DEFAULT CHARSET=utf8mb4;
+
+/*Table structure for table `t_kpi_bbtj_sn` */
+
+DROP TABLE IF EXISTS `t_kpi_bbtj_sn`;
+
+CREATE TABLE `t_kpi_bbtj_sn` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_type` varchar(100) DEFAULT NULL,
+  `market_name` varchar(100) DEFAULT NULL,
+  `sn` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_t_kpi_bbtj_sn_u1` (`item_type`,`market_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_kpi_item` */
 
@@ -837,7 +918,7 @@ CREATE TABLE `t_kpi_item` (
   `is_stat` varchar(3) DEFAULT NULL,
   `stat_sql_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=151 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_kpi_item_log` */
 
@@ -852,8 +933,10 @@ CREATE TABLE `t_kpi_item_log` (
   `xh` int(11) DEFAULT NULL,
   `statement` text,
   `item_value` varchar(100) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `create_time` datetime DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=72385 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_kpi_item_sql` */
 
@@ -865,8 +948,10 @@ CREATE TABLE `t_kpi_item_sql` (
   `statement` text,
   `value` varchar(100) DEFAULT NULL COMMENT '当前统计结果',
   `dsid` varchar(20) DEFAULT NULL,
-  `description` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `description` varchar(100) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_kpi_item_value` */
 
@@ -877,8 +962,10 @@ CREATE TABLE `t_kpi_item_value` (
   `market_name` varchar(100) NOT NULL,
   `item_name` varchar(100) NOT NULL,
   `item_value` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`market_name`,`item_month`,`item_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`item_month`,`market_name`,`item_name`,`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1933 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_kpi_label` */
 
@@ -917,7 +1004,7 @@ CREATE TABLE `t_minio_config` (
   `status` varchar(1) DEFAULT NULL COMMENT '任务状态',
   PRIMARY KEY (`id`),
   KEY `idx_t_minio_config_u1` (`sync_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_minio_log` */
 
@@ -955,7 +1042,7 @@ CREATE TABLE `t_monitor_index` (
   `trigger_times` int(11) DEFAULT NULL COMMENT '触发次数',
   PRIMARY KEY (`id`),
   KEY `idx_t_monitor_index_u1` (`index_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_project` */
 
@@ -973,7 +1060,7 @@ CREATE TABLE `t_monitor_project` (
   `strategy` varchar(20) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_project_err` */
 
@@ -986,7 +1073,7 @@ CREATE TABLE `t_monitor_project_err` (
   `error_times` int(11) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_project_log` */
 
@@ -1000,7 +1087,7 @@ CREATE TABLE `t_monitor_project_log` (
   `link_status` varchar(10) DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8959095 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14306211 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_server_warn_log` */
 
@@ -1012,13 +1099,16 @@ CREATE TABLE `t_monitor_server_warn_log` (
   `index_code` varchar(50) NOT NULL COMMENT '指标代码',
   `index_name` varchar(100) DEFAULT NULL COMMENT '指标名称',
   `index_value` varchar(100) DEFAULT NULL COMMENT '指标值',
-  `fail_times` int(11) DEFAULT NULL COMMENT '失败次数',
+  `fail_times` int(11) DEFAULT '0' COMMENT '失败次数',
   `succ_times` int(11) DEFAULT NULL COMMENT '成功次数',
-  `is_send_rcv_mail` varchar(10) DEFAULT NULL COMMENT '是否发送邮件',
+  `is_send_alt_mail` varchar(10) DEFAULT NULL COMMENT '是否发送告警邮件',
+  `is_send_alt_mail_times` int(11) DEFAULT '0' COMMENT '发送告警邮件次数',
+  `is_send_rcv_mail` varchar(10) DEFAULT NULL COMMENT '是否发送恢复邮件',
+  `first_failure_time` datetime DEFAULT NULL COMMENT '首次失败时间',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`server_id`,`index_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=179 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_service` */
 
@@ -1041,7 +1131,7 @@ CREATE TABLE `t_monitor_service` (
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   `sxh` bigint(20) DEFAULT NULL COMMENT '顺序号',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57806166 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=107150691 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_task` */
 
@@ -1063,7 +1153,7 @@ CREATE TABLE `t_monitor_task` (
   `receiver` varchar(100) DEFAULT NULL COMMENT '监控收件人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_t_monitor_task_u1` (`task_tag`)
-) ENGINE=InnoDB AUTO_INCREMENT=359 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=369 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_task_db_log` */
 
@@ -1085,7 +1175,7 @@ CREATE TABLE `t_monitor_task_db_log` (
   KEY `idx_t_monitor_task_db_log_n1` (`create_date`),
   KEY `idx_t_monitor_task_db_log_c1` (`db_id`,`create_date`),
   KEY `idx_t_monitor_task_db_log_n2` (`server_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=751289 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2994146 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_task_server_log` */
 
@@ -1108,7 +1198,7 @@ CREATE TABLE `t_monitor_task_server_log` (
   PRIMARY KEY (`id`),
   KEY `idx_t_monitor_task_server_log_n1` (`create_date`),
   KEY `idx_t_monitor_task_server_log_n2` (`server_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=571238 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2140249 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_templete` */
 
@@ -1117,7 +1207,7 @@ DROP TABLE IF EXISTS `t_monitor_templete`;
 CREATE TABLE `t_monitor_templete` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(20) DEFAULT NULL COMMENT '模板名称',
-  `code` varchar(20) DEFAULT NULL COMMENT '模板代码',
+  `code` varchar(40) DEFAULT NULL COMMENT '模板代码',
   `type` varchar(20) DEFAULT NULL COMMENT '模板类型',
   `status` varchar(1) DEFAULT NULL COMMENT '模板状态',
   `creation_date` date DEFAULT NULL COMMENT '创建时间',
@@ -1126,7 +1216,7 @@ CREATE TABLE `t_monitor_templete` (
   `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_t_monitor_templete_u1` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_templete_index` */
 
@@ -1141,7 +1231,7 @@ CREATE TABLE `t_monitor_templete_index` (
   `last_update_date` date DEFAULT NULL COMMENT '更新时间',
   `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_monitor_warn_log` */
 
@@ -1179,7 +1269,7 @@ CREATE TABLE `t_port` (
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   `update_date` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=162 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_role` */
 
@@ -1209,7 +1299,7 @@ CREATE TABLE `t_role_func_privs` (
   `last_update_date` date DEFAULT NULL COMMENT '更新时间',
   `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28588 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30700 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_role_privs` */
 
@@ -1224,7 +1314,7 @@ CREATE TABLE `t_role_privs` (
   `last_update_date` date DEFAULT NULL COMMENT '更新时间',
   `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5451 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6422 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_server` */
 
@@ -1245,7 +1335,7 @@ CREATE TABLE `t_server` (
   `status` varchar(20) NOT NULL,
   `flag1` varchar(100) DEFAULT NULL COMMENT '商管周报',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=180 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_session` */
 
@@ -1262,7 +1352,7 @@ CREATE TABLE `t_session` (
   `online_time` int(11) DEFAULT NULL,
   `last_update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`session_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3231 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_session_history` */
 
@@ -1278,7 +1368,7 @@ CREATE TABLE `t_session_history` (
   `online_time` int(11) DEFAULT NULL,
   `last_update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`session_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3229 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `t_slow_detail` */
 
@@ -1314,7 +1404,7 @@ CREATE TABLE `t_slow_detail` (
   KEY `idx_t_slow_detail_n6` (`finish_time`,`inst_id`,`USER`),
   KEY `idx_t_slow_detail_n7` (`db_id`,`finish_time`,`db`),
   KEY `idx_t_slow_detail_n8` (`db_id`,`finish_time`,`USER`)
-) ENGINE=InnoDB AUTO_INCREMENT=1551198 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1534625 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_slow_detail_mssql` */
 
@@ -1335,7 +1425,7 @@ CREATE TABLE `t_slow_detail_mssql` (
   `sql_text` longtext,
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1104055 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_slow_detail_oracle` */
 
@@ -1384,7 +1474,7 @@ CREATE TABLE `t_slow_log` (
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   `last_update_date` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_sql_audit_rule` */
 
@@ -1400,7 +1490,7 @@ CREATE TABLE `t_sql_audit_rule` (
   `status` varchar(1) DEFAULT NULL COMMENT '是否启用',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_t_sql_audit_rule_u1` (`rule_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_sql_audit_rule_err` */
 
@@ -1416,7 +1506,7 @@ CREATE TABLE `t_sql_audit_rule_err` (
   `obj_name` varchar(100) DEFAULT NULL COMMENT '对象ID',
   `error` text COMMENT '错误消息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14201 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19907 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_sql_backup` */
 
@@ -1426,8 +1516,72 @@ CREATE TABLE `t_sql_backup` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `release_id` bigint(20) DEFAULT NULL,
   `rollback_statement` longtext,
+  PRIMARY KEY (`id`),
+  KEY `idx_release_id` (`release_id`,`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=104360 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `t_sql_export` */
+
+DROP TABLE IF EXISTS `t_sql_export`;
+
+CREATE TABLE `t_sql_export` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `dbid` int(11) NOT NULL COMMENT '数据源ID',
+  `db` varchar(50) DEFAULT NULL COMMENT '数据库名称',
+  `sqltext` longtext COMMENT 'SQL文本',
+  `status` varchar(1) DEFAULT NULL COMMENT '0:已发布,1:审核成功，2:审核失败,3:执行中,4:执行成功，5:执行失败,6:已驳回,7:准备执行',
+  `creation_date` datetime DEFAULT NULL COMMENT '创建时间',
+  `creator` varchar(20) DEFAULT NULL COMMENT '创建人',
+  `last_update_date` datetime DEFAULT NULL COMMENT '更新时间',
+  `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
+  `audit_date` datetime DEFAULT NULL COMMENT '审核时间',
+  `auditor` varchar(20) DEFAULT NULL COMMENT '审核人',
+  `audit_message` varchar(100) DEFAULT NULL COMMENT '审核消息',
+  `executor` varchar(20) DEFAULT NULL COMMENT '执行人',
+  `run_time` varchar(20) DEFAULT NULL COMMENT '运行时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24270 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `t_sql_export_task` */
+
+DROP TABLE IF EXISTS `t_sql_export_task`;
+
+CREATE TABLE `t_sql_export_task` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `release_id` int(11) DEFAULT NULL COMMENT '导出id',
+  `status` varchar(20) DEFAULT NULL COMMENT 'dm=43',
+  `file` varchar(100) DEFAULT NULL,
+  `real_file` varchar(200) DEFAULT NULL,
+  `size` varchar(50) DEFAULT NULL,
+  `process` varchar(50) DEFAULT NULL,
+  `creator` varchar(50) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `error` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4;
+
+/*Table structure for table `t_sql_online` */
+
+DROP TABLE IF EXISTS `t_sql_online`;
+
+CREATE TABLE `t_sql_online` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `order_type` varchar(10) DEFAULT NULL COMMENT 'SQL类型',
+  `sqltext` longtext COMMENT 'SQL文本',
+  `order_status` varchar(1) DEFAULT NULL COMMENT '0:已发布,1:审核成功，2:审核失败',
+  `order_number` varchar(50) DEFAULT NULL COMMENT '工单编号:姓名缩拼_工单类型_序号',
+  `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+  `creator` varchar(20) DEFAULT NULL COMMENT '创建人',
+  `last_update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最近更新时间',
+  `updator` varchar(20) DEFAULT NULL COMMENT '更新人',
+  `audit_date` datetime DEFAULT NULL COMMENT '审核时间',
+  `auditor` varchar(20) DEFAULT NULL COMMENT '审核人',
+  `audit_message` varchar(100) DEFAULT NULL COMMENT '审核消息',
+  `order_ver` varchar(20) DEFAULT NULL COMMENT '上线版本',
+  `order_env` varchar(10) DEFAULT NULL COMMENT '工单环境',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_ui_1` (`order_number`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_sql_release` */
 
@@ -1452,14 +1606,16 @@ CREATE TABLE `t_sql_release` (
   `executor` varchar(20) DEFAULT NULL COMMENT '执行人',
   `exec_start` datetime DEFAULT NULL COMMENT '开始时间',
   `exec_end` datetime DEFAULT NULL COMMENT '完成时间',
-  `error` varchar(1000) DEFAULT NULL COMMENT '错误消息',
+  `error` text COMMENT '错误消息',
   `binlog_file` varchar(100) DEFAULT NULL COMMENT '二进制文件名',
   `start_pos` varchar(20) DEFAULT NULL COMMENT '开始位置',
   `stop_pos` varchar(20) DEFAULT NULL COMMENT '结束位置',
   `run_time` varchar(20) DEFAULT NULL COMMENT '运行时间',
   `failure_times` int(11) DEFAULT '0' COMMENT '失败次数',
+  `run_result` longtext COMMENT '运行结果',
+  `reason` varchar(100) DEFAULT NULL COMMENT '发布原因',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=723 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1497 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_sql_release_results` */
 
@@ -1484,7 +1640,7 @@ CREATE TABLE `t_sys_settings` (
   `value` varchar(200) DEFAULT NULL,
   `desc` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_sys_stats_idx` */
 
@@ -1496,7 +1652,26 @@ CREATE TABLE `t_sys_stats_idx` (
   `idx_sql` varchar(2000) DEFAULT NULL COMMENT '指标SQL',
   PRIMARY KEY (`id`),
   KEY `idx_t_sys_stats_idx_u1` (`idx_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COMMENT='指标统计表';
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='指标统计表';
+
+/*Table structure for table `t_task` */
+
+DROP TABLE IF EXISTS `t_task`;
+
+CREATE TABLE `t_task` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `task_tag` varchar(50) DEFAULT NULL COMMENT '任务标识',
+  `server_id` varchar(20) DEFAULT NULL COMMENT '服务器ID',
+  `comments` varchar(50) DEFAULT NULL COMMENT '任务描述',
+  `run_time` varchar(20) DEFAULT NULL COMMENT '运行时间',
+  `script_path` varchar(200) DEFAULT NULL COMMENT '代理路径',
+  `script_file` varchar(100) DEFAULT NULL COMMENT '代理文件名',
+  `python3_home` varchar(200) DEFAULT NULL COMMENT 'python3路径',
+  `api_server` varchar(100) DEFAULT NULL COMMENT 'api服务地址',
+  `status` varchar(1) DEFAULT NULL COMMENT '任务状态',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_t_task_u1` (`task_tag`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_templete` */
 
@@ -1508,7 +1683,7 @@ CREATE TABLE `t_templete` (
   `contents` text COMMENT '模板内容',
   `description` varchar(100) DEFAULT NULL COMMENT '模板描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_user` */
 
@@ -1535,7 +1710,7 @@ CREATE TABLE `t_user` (
   `file_name` varchar(100) DEFAULT NULL COMMENT '图标名称',
   PRIMARY KEY (`id`),
   KEY `idx_login_name_n1` (`login_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_user_proj_privs` */
 
@@ -1547,7 +1722,7 @@ CREATE TABLE `t_user_proj_privs` (
   `user_id` int(11) DEFAULT NULL COMMENT '用户ID',
   `priv_id` int(11) DEFAULT NULL COMMENT '权限ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6556 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7276 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_user_role` */
 
@@ -1558,7 +1733,7 @@ CREATE TABLE `t_user_role` (
   `user_id` int(11) NOT NULL COMMENT '用户ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=525 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=687 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_wtd` */
 
@@ -1579,7 +1754,7 @@ CREATE TABLE `t_wtd` (
   `attachment_name` varchar(1000) DEFAULT NULL COMMENT '附件名称',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_order_no_u1` (`order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `t_xtqx` */
 
@@ -1601,6 +1776,5 @@ CREATE TABLE `t_xtqx` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
