@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sql README.md update">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="README.md update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
@@ -658,14 +658,7 @@
       <workItem from="1672706289771" duration="13721000" />
       <workItem from="1672794710781" duration="11695000" />
       <workItem from="1672880803093" duration="6241000" />
-      <workItem from="1672903068745" duration="714000" />
-    </task>
-    <task id="LOCAL-00173" summary="bug fix">
-      <created>1655105575194</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1655105575195</updated>
+      <workItem from="1672903068745" duration="971000" />
     </task>
     <task id="LOCAL-00174" summary="sql publish optimized">
       <created>1656063056162</created>
@@ -1003,7 +996,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672899589597</updated>
     </task>
-    <option name="localTasksCounter" value="222" />
+    <task id="LOCAL-00222" summary="README.md update">
+      <created>1672903790656</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1672903790657</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1045,9 +1045,9 @@
     <MESSAGE value="logon optimize" />
     <MESSAGE value="role code optimize" />
     <MESSAGE value="requirements.txt update" />
-    <MESSAGE value="README.md update" />
     <MESSAGE value="sql README.md update" />
-    <option name="LAST_COMMIT_MESSAGE" value="sql README.md update" />
+    <MESSAGE value="README.md update" />
+    <option name="LAST_COMMIT_MESSAGE" value="README.md update" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1672903777522">
@@ -1088,10 +1088,10 @@
     </state>
     <state x="127" y="278" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318052583" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672903780834" />
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672899592188">
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672903794263">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672899592188" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672903794263" />
     <state x="2270" y="62" width="1178" height="798" key="find.popup" timestamp="1672816035836">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
