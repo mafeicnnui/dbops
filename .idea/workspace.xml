@@ -657,14 +657,8 @@
       <workItem from="1672367911854" duration="13820000" />
       <workItem from="1672706289771" duration="13721000" />
       <workItem from="1672794710781" duration="11695000" />
-      <workItem from="1672880803093" duration="5324000" />
-    </task>
-    <task id="LOCAL-00172" summary="mysql real sync fix">
-      <created>1650357054245</created>
-      <option name="number" value="00172" />
-      <option name="presentableId" value="LOCAL-00172" />
-      <option name="project" value="LOCAL" />
-      <updated>1650357054245</updated>
+      <workItem from="1672880803093" duration="6241000" />
+      <workItem from="1672903068745" duration="714000" />
     </task>
     <task id="LOCAL-00173" summary="bug fix">
       <created>1655105575194</created>
@@ -1002,7 +996,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672899384468</updated>
     </task>
-    <option name="localTasksCounter" value="221" />
+    <task id="LOCAL-00221" summary="sql README.md update">
+      <created>1672899589597</created>
+      <option name="number" value="00221" />
+      <option name="presentableId" value="LOCAL-00221" />
+      <option name="project" value="LOCAL" />
+      <updated>1672899589597</updated>
+    </task>
+    <option name="localTasksCounter" value="222" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1049,15 +1050,15 @@
     <option name="LAST_COMMIT_MESSAGE" value="sql README.md update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1672896915889">
+    <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1672903777522">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="132" y="261" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318049397" />
-    <state x="2006" y="37" width="1149" height="683" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672896915889" />
-    <state x="2220" y="111" key="#SSH_Configurations" timestamp="1672896915019">
+    <state x="2006" y="37" width="1149" height="683" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672903777522" />
+    <state x="2220" y="111" key="#SSH_Configurations" timestamp="1672903775468">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672896915019" />
+    <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672903775468" />
     <state x="2085" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1667523936952">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
@@ -1082,15 +1083,15 @@
     </state>
     <state width="1877" height="163" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1670478131224" />
     <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672827440355" />
-    <state x="2240" y="-2" width="998" height="708" key="SettingsEditor" timestamp="1672896919772">
+    <state x="2240" y="-2" width="998" height="708" key="SettingsEditor" timestamp="1672903780834">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="127" y="278" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318052583" />
-    <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672896919772" />
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672899390098">
+    <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672903780834" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672899592188">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672899390098" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672899592188" />
     <state x="2270" y="62" width="1178" height="798" key="find.popup" timestamp="1672816035836">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
@@ -1099,11 +1100,11 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2343" y="191" width="339" height="539" key="ftp.server.browser/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1667527098478" />
-    <state x="2006" y="190" key="publish.login" timestamp="1672896881099">
+    <state x="2006" y="190" key="publish.login" timestamp="1672903749861">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="86" y="370" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1668494382689" />
-    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672896881099" />
+    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672903749861" />
     <state x="2543" y="45" width="672" height="678" key="search.everywhere.popup" timestamp="1672382176552">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
