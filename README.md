@@ -115,9 +115,10 @@
 
 ### 4.1 安装python3环境 
 
-    CentOS Linux release 7.6.1810 
+    系统：CentOS Linux release 7.6.1810 
     
-    yum -y install python3
+    yum -y install python3    
+    yum -y install python3-devel
     
 
 ### 4.2 安装python3及依赖  
@@ -142,6 +143,11 @@
     详见：sql/README.md
 
 ## 五、停启服务
+
+### 首次运行执行：
+
+    cd dbops    
+    chmod +x *.sh
 
 ### 5.1 启动服务  
 

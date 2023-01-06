@@ -1,4 +1,4 @@
-CREATE VIEW CREATE ALGORITHM = UNDEFINED DEFINER = `puppet` @`%` SQL SECURITY DEFINER VIEW `v_monitor_service` AS
+CREATE VIEW  `v_monitor_service` AS
 SELECT 
   `t_monitor_service`.`server_id` AS `server_id`,
   `t_monitor_service`.`server_desc` AS `server_desc`,

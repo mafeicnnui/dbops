@@ -22,7 +22,12 @@
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="README.md update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/conf/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/doc/conf/nginx.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sql/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/data/initialize.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/data/initialize.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/proc/proc_trunc_log.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/proc/proc_trunc_log.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/view/cre_view.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/view/cre_view.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,11 +90,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\sql\data" />
       <recent name="D:\work\dbops\sql\table" />
       <recent name="D:\work\dbops\static\doc" />
       <recent name="D:\work\dbops" />
       <recent name="D:\work\dbops\web" />
-      <recent name="D:\work\dbops\web\task" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\work\dbops\static\doc\images" />
@@ -662,14 +667,7 @@
       <workItem from="1672903068745" duration="3276000" />
       <workItem from="1672968296380" duration="1030000" />
       <workItem from="1672972020607" duration="3398000" />
-      <workItem from="1672989079688" duration="2428000" />
-    </task>
-    <task id="LOCAL-00185" summary="bug fix">
-      <created>1665653234690</created>
-      <option name="number" value="00185" />
-      <option name="presentableId" value="LOCAL-00185" />
-      <option name="project" value="LOCAL" />
-      <updated>1665653234691</updated>
+      <workItem from="1672989079688" duration="5271000" />
     </task>
     <task id="LOCAL-00186" summary="bug fix">
       <created>1665973334983</created>
@@ -1007,7 +1005,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672990099685</updated>
     </task>
-    <option name="localTasksCounter" value="234" />
+    <task id="LOCAL-00234" summary="README.md update">
+      <created>1672993708755</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1672993708755</updated>
+    </task>
+    <option name="localTasksCounter" value="235" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1054,19 +1059,19 @@
     <option name="LAST_COMMIT_MESSAGE" value="README.md update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1672972045281">
+    <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1672994204042">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="132" y="261" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318049397" />
-    <state x="2006" y="37" width="1149" height="683" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672972045281" />
+    <state x="2006" y="37" width="1149" height="683" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672994204042" />
     <state x="2525" y="29" key="#Options" timestamp="1672906107824">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2525" y="29" key="#Options/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672906107824" />
-    <state x="2220" y="111" key="#SSH_Configurations" timestamp="1672972044594">
+    <state x="2220" y="111" key="#SSH_Configurations" timestamp="1672994203006">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672972044594" />
+    <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672994203006" />
     <state x="2085" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1667523936952">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
@@ -1091,11 +1096,11 @@
     </state>
     <state width="1877" height="163" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1670478131224" />
     <state width="1877" height="152" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672987434159" />
-    <state x="2240" y="-2" width="998" height="708" key="SettingsEditor" timestamp="1672972048193">
+    <state x="2240" y="-2" width="998" height="708" key="SettingsEditor" timestamp="1672994207231">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="127" y="278" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318052583" />
-    <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672972048193" />
+    <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672994207231" />
     <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672990151848">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
@@ -1112,11 +1117,11 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2343" y="191" width="339" height="539" key="ftp.server.browser/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1667527098478" />
-    <state x="2006" y="190" key="publish.login" timestamp="1672993701288">
+    <state x="2006" y="190" key="publish.login" timestamp="1672994184524">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="86" y="370" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1668494382689" />
-    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672993701288" />
+    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672994184524" />
     <state x="2543" y="45" width="672" height="678" key="search.everywhere.popup" timestamp="1672904664929">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
