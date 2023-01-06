@@ -20,8 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="README.md update">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/doc/images/weixin.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/doc/images/weixin.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -661,14 +660,7 @@
       <workItem from="1672903068745" duration="3276000" />
       <workItem from="1672968296380" duration="1030000" />
       <workItem from="1672972020607" duration="3398000" />
-      <workItem from="1672989079688" duration="775000" />
-    </task>
-    <task id="LOCAL-00183" summary="sync update">
-      <created>1663297262662</created>
-      <option name="number" value="00183" />
-      <option name="presentableId" value="LOCAL-00183" />
-      <option name="project" value="LOCAL" />
-      <updated>1663297262663</updated>
+      <workItem from="1672989079688" duration="1013000" />
     </task>
     <task id="LOCAL-00184" summary="ds update">
       <created>1663297275789</created>
@@ -1006,7 +998,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672989347873</updated>
     </task>
-    <option name="localTasksCounter" value="232" />
+    <task id="LOCAL-00232" summary="README.md update">
+      <created>1672989860645</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1672989860645</updated>
+    </task>
+    <option name="localTasksCounter" value="233" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1095,10 +1094,10 @@
     </state>
     <state x="127" y="278" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318052583" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672972048193" />
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672989352127">
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672989865080">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989352127" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989865080" />
     <state x="2673" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1672989207330">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
@@ -1111,11 +1110,11 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2343" y="191" width="339" height="539" key="ftp.server.browser/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1667527098478" />
-    <state x="2006" y="190" key="publish.login" timestamp="1672989799236">
+    <state x="2006" y="190" key="publish.login" timestamp="1672990084077">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="86" y="370" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1668494382689" />
-    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989799236" />
+    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672990084077" />
     <state x="2543" y="45" width="672" height="678" key="search.everywhere.popup" timestamp="1672904664929">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
