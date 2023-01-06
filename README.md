@@ -119,6 +119,7 @@
     
     yum -y install python3    
     yum -y install python3-devel
+    yum -y install fontconfig 
     
 
 ### 4.2 安装python3及依赖  
@@ -148,6 +149,17 @@
 
     cd dbops    
     chmod +x *.sh
+    
+### 安装字体
+
+    cd dbops/doc/font
+    sudo mkdir -p /usr/share/fonts/dejavu
+    cd dbops/doc/font
+    tar xf dejavu.tar.gz
+    sudo cp DejaVuSans.ttf /usr/share/fonts/dejavu
+    fc-cache
+    fc-list    
+    
 
 ### 5.1 启动服务  
 
