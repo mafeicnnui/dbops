@@ -201,4 +201,4 @@
 
     zhdn_791005@163.com
     
-    ![联系方式](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/weixin.png)
+![image](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/weixin.png)
