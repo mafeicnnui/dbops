@@ -831,9 +831,7 @@
          }
 
          function edit_filter(p_row) {
-              console.log('edit_filter[=',p_row)
               row = unescape(p_row).split(',')
-              console.log('edit_filter2[=',row)
               $('#upd_filter_xh').val(row[0])
               $('#upd_filter_name').val(row[1])
               $('#upd_filter_code').val(row[2])
@@ -844,7 +842,7 @@
               $('#upd_range_type').val(row[9])
               $('#upd_max_rq_range_name').val(row[10])
               $('#upd_like_type').val(row[11])
-              $('#upd_filter_type').change()
+              set_filter_status()
               open_model('modal-upd-filter')
          }
 
@@ -1054,6 +1052,24 @@
                  })
                }
           }
+
+         function set_filter_status() {
+              if ($('#upd_filter_type').val() == '1') {
+                  $('#upd_select_type').attr("disabled", false);
+                  $('#upd_select_cfg').attr("disabled", false);
+                  $('#upd_notnull_type').attr("disabled", false);
+                  $('#upd_like_type').attr("disabled", false);
+                  $('#upd_range_type').attr("disabled", true);
+                  $('#upd_max_rq_range_name').attr("disabled", true);
+             } else {
+                  $('#upd_select_type').attr("disabled", true);
+                  $('#upd_select_cfg').attr("disabled", true);
+                  $('#upd_notnull_type').attr("disabled", false);
+                  $('#upd_like_type').attr("disabled", true);
+                  $('#upd_range_type').attr("disabled", false);
+                  $('#upd_max_rq_range_name').attr("disabled", false);
+             }
+         }
 
          $('#upd_header_btn').click(function () {
                 if (!check_valid('')) {
@@ -1377,21 +1393,7 @@
          })
 
          $('#upd_filter_type').change(function(){
-            if ($('#upd_filter_type').val() == '1') {
-                  $('#upd_select_type').attr("disabled", false);
-                  $('#upd_select_cfg').attr("disabled", false);
-                  $('#upd_notnull_type').attr("disabled", false);
-                  $('#upd_like_type').attr("disabled", false);
-                  $('#upd_range_type').attr("disabled", true);
-                  $('#upd_max_rq_range_name').attr("disabled", true);
-             } else {
-                  $('#upd_select_type').attr("disabled", true);
-                  $('#upd_select_cfg').attr("disabled", true);
-                  $('#upd_notnull_type').attr("disabled", false);
-                  $('#upd_like_type').attr("disabled", true);
-                  $('#upd_range_type').attr("disabled", false);
-                  $('#upd_max_rq_range_name').attr("disabled", false);
-             }
+             set_filter_status()
              $('#upd_select_type').val('N')
              $('#upd_select_cfg').val('')
              $('#upd_notnull_type').val('N')
