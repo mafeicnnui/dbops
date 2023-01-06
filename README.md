@@ -114,6 +114,8 @@
 
 
 ### 4.1 安装python3环境 
+
+    CentOS Linux release 7.6.1810 
     
     yum -y install python3
     
