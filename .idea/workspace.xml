@@ -20,9 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="README.md update">
-      <change afterPath="$PROJECT_DIR$/static/doc/images/weixin.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/doc/images/weixin.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/doc/images/weixin.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -662,14 +663,7 @@
       <workItem from="1672903068745" duration="3276000" />
       <workItem from="1672968296380" duration="1030000" />
       <workItem from="1672972020607" duration="3398000" />
-      <workItem from="1672989079688" duration="81000" />
-    </task>
-    <task id="LOCAL-00181" summary="sync update">
-      <created>1662518796000</created>
-      <option name="number" value="00181" />
-      <option name="presentableId" value="LOCAL-00181" />
-      <option name="project" value="LOCAL" />
-      <updated>1662518796001</updated>
+      <workItem from="1672989079688" duration="261000" />
     </task>
     <task id="LOCAL-00182" summary="sync update">
       <created>1663297217517</created>
@@ -1007,7 +1001,14 @@
       <option name="project" value="LOCAL" />
       <updated>1672987418502</updated>
     </task>
-    <option name="localTasksCounter" value="230" />
+    <task id="LOCAL-00230" summary="README.md update">
+      <created>1672989165340</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1672989165341</updated>
+    </task>
+    <option name="localTasksCounter" value="231" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1096,10 +1097,14 @@
     </state>
     <state x="127" y="278" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1666318052583" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672972048193" />
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672987424235">
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1672989236239">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672987424235" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989236239" />
+    <state x="2673" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1672989207330">
+      <screen x="1920" y="-180" width="1920" height="1040" />
+    </state>
+    <state x="2673" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989207330" />
     <state x="2270" y="62" width="1178" height="798" key="find.popup" timestamp="1672972137210">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
@@ -1108,11 +1113,11 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2343" y="191" width="339" height="539" key="ftp.server.browser/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1667527098478" />
-    <state x="2006" y="190" key="publish.login" timestamp="1672989153457">
+    <state x="2006" y="190" key="publish.login" timestamp="1672989340944">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="86" y="370" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1668494382689" />
-    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989153457" />
+    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989340944" />
     <state x="2543" y="45" width="672" height="678" key="search.everywhere.popup" timestamp="1672904664929">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
