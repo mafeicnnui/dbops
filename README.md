@@ -85,6 +85,7 @@
 | mysql->kafka | Y    | Y    | Y    | 解析binlog   |
 | mysql->ES    | Y    | Y    | Y    | 解析binlog   |
 | mysql->mongo | S    | S    | -    | 解析binlog   |
+| mysql->clickhouse | S    | S    | -    | 解析binlog   |
 | mongo->mongo | S    | S    | -    | 解析rs.oplog |
 | mongo->kafka | Y    | Y    | Y    | 解析rs.oplog |
 | mongo->ES    | Y    | Y    | Y    | 解析rs.oplog |
