@@ -220,7 +220,5 @@
 ## 七、联系方式
 
     zhdn_791005@163.com
-    
-![image](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/weixin.png)
 
-![image](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/qq.jpg)
+![image](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/qq.png)
