@@ -122,7 +122,7 @@
             }
         </style>
     </head>
-    <body  class="fixed-left">
+    <body class="fixed-left">
         <div id="wrapper">
             <div class="topbar">
                 <div class="topbar-left">
@@ -623,9 +623,6 @@
                       data:{
                            'token': window.localStorage.getItem("token")
                       },
-                      // headers: {
-                      //   'token': window.localStorage.getItem("token")
-                      // },
                       success: function (dataSet) {
                          $("#ul-menu").append(dataSet.message);
                          $('#main-container-div').load("/main");
@@ -686,15 +683,6 @@
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
 
         <script>
-            var timer ;
-            var timer1;
-            var timer2;
-            var timer3;
-            var timer4;
-            var timer5;
-            var timer6;
-            var timer7;
-            var timer8;
             var tabStatus = new Array;
 
             $.fn.serializeObject = function()
@@ -912,18 +900,9 @@
             });
 
             $(".file").click(function() {
-                      console.log('file>',$(this).attr("id"))
+                      // console.log('file>',$(this).attr("id"))
                       let tabId =$(this).attr("id").split('^')[0]
                       let url=$(this).attr("id").split('^')[1]
-                      clearInterval(timer);
-                      clearInterval(timer1);
-                      clearInterval(timer2);
-                      clearInterval(timer3);
-                      clearInterval(timer4);
-                      clearInterval(timer5);
-                      clearInterval(timer6);
-                      clearInterval(timer7);
-                      clearInterval(timer8);
 
                       $('#ul_tabs').find('li').each(function() {
                            $(this).removeClass("active")
@@ -937,7 +916,7 @@
                               tabStatus[tabId]=true;
                           }
                       }
-                      console.log('url--->',url)
+                      // console.log('url--->',url)
                       $('#main-container-div').load(url);
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
@@ -982,9 +961,6 @@
 
             $.ajaxSetup({
                  timeout:6000000,
-                 // headers: {
-                 //  'token': window.localStorage.getItem("token"),
-                 // },
                  data: {
                   'token': window.localStorage.getItem("token"),
                  }
