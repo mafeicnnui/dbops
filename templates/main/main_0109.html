@@ -38,9 +38,48 @@
           min-height: 180px;
         }
 
+       #active_num_hopson_biz_55,#total_num_hopson_biz_55,#qps_num_hopson_biz_55,#tps_num_hopson_biz_55{
+            width:350px;
+            height:165px;
+        }
+
+        #active_num_hopson_biz_slave_88,#total_num_hopson_biz_slave_88,#qps_num_hopson_biz_slave_88,#tps_num_hopson_biz_slave_88{
+            width:350px;
+            height:165px;
+        }
+
+        #active_num_hopson_bi_54,#total_num_hopson_bi_54,#qps_num_hopson_bi_54,#tps_num_hopson_bi_54{
+            width:350px;
+            height:165px;
+        }
+        #active_num_hopson_stage_53,#total_num_hopson_stage_53,#qps_num_hopson_stage_53,#tps_num_hopson_stage_53{
+            width:350px;
+            height:165px;
+        }
+
         #hopson_order_num{
             width:100%;
             height:200px;
+        }
+
+        #hst_prod_real_sync_mysql_clickhouse_logger,#hst_prod_real_sync_mysql_clickhouse_executer{
+            width:100%;
+            height:150px;
+        }
+
+        #hft_prod_real_sync_mysql_clickhouse_logger,#hft_prod_real_sync_mysql_clickhouse_executer{
+            width:100%;
+            height:150px;
+        }
+
+        #hst_prod_real_sync_mysql_mysql_logger,#hst_prod_real_sync_mysql_mysql_executer{
+            width:100%;
+            height:150px;
+        }
+
+        #hft_prod_real_sync_mysql_mysql_logger,#hft_prod_real_sync_mysql_mysql_executer{
+            width:100%;
+            height:150px;
         }
 
         #monitor_review {
@@ -200,6 +239,265 @@
         </div>
     </div>
 
+     <!--实时同步 -->
+     <div class="row">
+          <div class="panel panel-border panel-primary">
+               <div class="panel-heading">
+                    <h3 id='hst_real_div' class="panel-title">实时同步[合生通]</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row" >
+                           <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel" >
+                                    <div id='hst_prod_real_sync_mysql_clickhouse_logger'></div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                     <div id='hst_prod_real_sync_mysql_clickhouse_executer'></div>
+                                </div>
+                            </div>
+                           </div>
+                           <div class="panel-footer">
+                                 <span style="color:#726397">检查点:</span><span id ='hst-real-process'></span>
+                           </div>
+                    </div>
+                    <hr>
+                    <div class="row" >
+                           <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                    <div id='hst_prod_real_sync_mysql_mysql_logger'></div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                     <div id='hst_prod_real_sync_mysql_mysql_executer'></div>
+                                </div>
+                            </div>
+                           </div>
+                           <div class="panel-footer">
+                                <span style="color:#726397">检查点:</span><span id ='hst-real-process-mysql'></span>
+                           </div>
+                     </div>
+                </div>
+
+            </div>
+    </div>
+
+    <!--实时同步 -->
+    <div class="row">
+          <div class="panel panel-border panel-primary">
+               <div class="panel-heading">
+                    <h3 id='hft_real_div' class="panel-title">实时同步[会付通]</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row" >
+                        <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                    <div id='hft_prod_real_sync_mysql_clickhouse_logger'></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                     <div id='hft_prod_real_sync_mysql_clickhouse_executer'></div>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                             <span style="color:#726397">检查点:</span><span id ='hft-real-process'></span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row" >
+                        <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                    <div id='hft_prod_real_sync_mysql_mysql_logger'></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="top:10px;">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                     <div id='hft_prod_real_sync_mysql_mysql_executer'></div>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                             <span style="color:#726397">检查点:</span><span id ='hft-real-process-mysql'></span>
+                         </div>
+                      </div>
+                </div>
+            </div>
+    </div>
+
+    <!--数据库运行情况 合生通-主库-->
+    <div class="row">
+          <div class="panel panel-border panel-primary">
+                <div class="panel-heading">
+                    <h3 id='title_55' class="panel-title">合生通-主库[MySQL]</h3>
+                </div>
+                <div class="panel-body">
+                   <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='total_num_hopson_biz_55'></div>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='active_num_hopson_biz_55'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='qps_num_hopson_biz_55'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='tps_num_hopson_biz_55'></div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!--数据库运行情况 合生通-从库-->
+    <div class="row">
+          <div class="panel panel-border panel-teal">
+                <div class="panel-heading">
+                    <h3 id='title_88' class="panel-title">合生通-从库[MySQL]</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='total_num_hopson_biz_slave_88'></div>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='active_num_hopson_biz_slave_88'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='qps_num_hopson_biz_slave_88'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='tps_num_hopson_biz_slave_88'></div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+    <!--数据库运行情况 合生通-BI库-->
+    <div class="row">
+          <div class="panel panel-border panel-inverse">
+                <div class="panel-heading">
+                    <h3 id='title_54' class="panel-title">合生通-BI库[MySQL]</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                 <div id='total_num_hopson_bi_54'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='active_num_hopson_bi_54'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='qps_num_hopson_bi_54'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='tps_num_hopson_bi_54'></div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+     <!--数据库运行情况 中转库-->
+    <div class="row">
+          <div class="panel panel-border panel-brown">
+                <div class="panel-heading">
+                    <h3 id='title_53' class="panel-title">合生通-中转库[MySQL]</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                               <div id='total_num_hopson_stage_53'></div>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='active_num_hopson_stage_53'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='qps_num_hopson_stage_53'></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                         <div class="panel panel-border panel-primary">
+                            <div class="panel-body fixed-panel">
+                                <div id='tps_num_hopson_stage_53'></div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
     <!--数据库备份情况 -->
     <div id='div-backup' class="panel panel-default">
         <div class="panel-body">
@@ -314,7 +612,89 @@
       </div>
      </div>
 
+     <!--图表放大窗口 -->
+    <div id="con-modal-img-win" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id='monitor_review_title' class="modal-title">图表预览</h4>
+                <input type="hidden" id="monitor_review_title_hidden">
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                         <form class="form-horizontal" role="form">
+                            <div class="form-group" >
+                               <div class="col-md-2">
+                                    <div class="input-group">
+                                        <label class="control-label">开始日期</label>
+                                    </div>
+                               </div>
+                               <div class="col-md-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="ion-ios7-clock-outline"></i></span>
+                                        <input  id="begin_date"  type="text" value="" class="form-control datetimepicker"  readonly >
+                                        <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+                                    </div>
+                               </div>
+                               <div class="text-right col-md-2">
+                                    <div class="input-group">
+                                      <label class="control-label">结束日期&nbsp;</label>
+                                    </div>
+                               </div>
+                               <div class="col-md-3">
+                                  <div class="input-group">
+                                      <span class="input-group-addon"><i class="ion-ios7-alarm-outline"></i></span>
+                                      <input  id="end_date"  type="text" value="" class="form-control datetimepicker"  readonly  >
+                                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+                                  </div>
+                               </div>
+                               <div class="col-md-2">
+                                   <div class="input-group">
+                                        <span class="input-group-btn">
+                                           <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                                        </span>
+                                   </div>
+                               </div>
+
+                            </div>
+                         </form>
+                         <div class="col-md-12">
+                             <div class="panel panel-border panel-primary">
+                                <div class="panel-body fixed-panel">
+                                    <div id='monitor_review'></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
     <script>
+
+        let n_hst_max_id  = 0
+        let n_hft_max_id  = 0
+        let n_hst2_max_id = 0
+        let n_hft2_max_id = 0
+        let n_hst3_max_id = 0
+        let n_hft3_max_id = 0
+        let n_hst4_max_id = 0
+        let n_hft4_max_id = 0
+
+        let n_hst_data    = [];
+        let n_hft_data    = [];
+        let n_hst_data2   = [];
+        let n_hft_data2   = [];
+        let n_hst_data3   = [];
+        let n_hft_data3   = [];
+        let n_hst_data4   = [];
+        let n_hft_data4   = [];
+
+        let n_timerout    = 30000
 
         function get_charts(p_item,p_title,p_x_data,p_y_data,p_color) {
               var myChart = echarts.init($('#'+p_item)[0]);
@@ -556,6 +936,301 @@
               myChart.setOption(option);
         }
 
+        function get_charts_real_line(p_item,p_title,p_flag,p_color) {
+
+            function get_options(p_title,p_data,p_color){
+                option = {
+                      tooltip: {
+                        trigger: 'axis',
+                        formatter: function (params) {
+                          params = params[0];
+                          return (
+                             params.name.split(' ')[1] +
+                            ' : ' +
+                            params.value[1]/10+'[e/s]'
+                          );
+                        },
+                        axisPointer: {
+                          animation: false
+                        }
+                      },
+                      title:{
+                         text:p_title,
+                         left:'center',
+                         textStyle:{
+                            color:p_color,
+                            fontStyle:'italic',
+                            fontWeight:'bold',
+                            fontFamily:'宋体',
+                    　　　　 fontSize:14
+                        }
+                      },
+                      grid: {
+                           top: '25px',
+                           bottom: '20px',
+                           right: '25px',
+                           left:'40px'
+                      },
+                      xAxis: {
+                        type: 'time',
+                        splitLine: {
+                          show: false
+                        }
+                      },
+                      yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '100%'],
+                        splitLine: {
+                          show: false
+                        }
+                      },
+                      series: [
+                        {
+                          type: 'line',
+                          areaStyle: {color:p_color},
+                          itemStyle: {normal:{color:p_color}},
+                          showSymbol: false,
+                          data: p_data
+                        }
+                      ]
+                    };
+                return option
+            }
+
+            function getRealData(p_sync_tag,p_max_id) {
+                 var myChart = echarts.init($('#'+p_item)[0],'light');
+                 $.ajax({
+                        url: "/get/db/real/sync",
+                        type: "post",
+                        async:true,
+                        data: {
+                             'sync_tag': p_sync_tag,
+                             'max_id'  : p_max_id
+                        },
+                        datatype: "json",
+                        success: function (dataSet) {
+                             if (p_flag == 'HST') {
+                                 n_hst_data =  dataSet.data
+                                 n_hst_max_id = dataSet.max_id +1
+                                 option = get_options(p_title,n_hst_data,p_color)
+                                 myChart.setOption(option);
+                             } else if  (p_flag == 'HST2') {
+                                n_hst_data2 =  dataSet.data
+                                n_hst2_max_id = dataSet.max_id +1
+                                option = get_options(p_title,n_hst_data2,p_color)
+                                myChart.setOption(option);
+                             } else if (p_flag == 'HFT') {
+                                 n_hft_data =  dataSet.data
+                                 n_hft_max_id = dataSet.max_id +1
+                                 option = get_options(p_title,n_hft_data,p_color)
+                                 myChart.setOption(option);
+                             } else if  (p_flag == 'HFT2') {
+                                n_hft_data2 =  dataSet.data
+                                n_hft2_max_id= dataSet.max_id +1
+                                option = get_options(p_title,n_hft_data2,p_color)
+                                myChart.setOption(option);
+                             } else if  (p_flag == 'HST3') {
+                                n_hst_data3 =  dataSet.data
+                                n_hst3_max_id = dataSet.max_id +1
+                                option = get_options(p_title,n_hst_data3,p_color)
+                                myChart.setOption(option);
+                             } else if  (p_flag == 'HFT3') {
+                                n_hft_data3 =  dataSet.data
+                                n_hft3_max_id= dataSet.max_id +1
+                                option = get_options(p_title,n_hft_data3,p_color)
+                                myChart.setOption(option);
+                             } else if  (p_flag == 'HST4') {
+                                n_hst_data4 =  dataSet.data
+                                n_hst4_max_id = dataSet.max_id +1
+                                option = get_options(p_title,n_hst_data4,p_color)
+                                myChart.setOption(option);
+                             } else if  (p_flag == 'HFT4') {
+                                n_hft_data4 =  dataSet.data
+                                n_hft4_max_id= dataSet.max_id +1
+                                option = get_options(p_title,n_hft_data4,p_color)
+                                myChart.setOption(option);
+                             }
+                        }
+                  });
+            }
+
+            function getRealData_timer(p_sync_tag,p_max_id) {
+                 var myChart = echarts.init($('#'+p_item)[0],'light');
+                 $.ajax({
+                        url: "/get/db/real/sync",
+                        type: "post",
+                        async:true,
+                        data: {
+                             'sync_tag': p_sync_tag,
+                             'max_id'  : p_max_id
+                        },
+                        datatype: "json",
+                        success: function (res) {
+                             if (p_flag == 'HST') {
+                                 if (n_hst_data.length > 0 ) {
+                                     n_hst_data.shift();
+                                     n_hst_data.push(res.data[0])
+                                     n_hst_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hst_data
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HFT') {
+                                if (n_hft_data.length > 0 ) {
+                                     n_hft_data.shift();
+                                     n_hft_data.push(res.data[0])
+                                     n_hft_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hft_data
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HST2') {
+                                if (n_hst_data2.length > 0 ) {
+                                     n_hst_data2.shift();
+                                     n_hst_data2.push(res.data[0])
+                                     n_hst2_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hst_data2
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HFT2') {
+                                if (n_hft_data2.length > 0 ) {
+                                     n_hft_data2.shift();
+                                     n_hft_data2.push(res.data[0])
+                                     n_hft2_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hft_data2
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HST3') {
+                                if (n_hst_data3.length > 0 ) {
+                                     n_hst_data3.shift();
+                                     n_hst_data3.push(res.data[0])
+                                     n_hst3_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hst_data3
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HFT3') {
+                                if (n_hft_data3.length > 0 ) {
+                                     n_hft_data3.shift();
+                                     n_hft_data3.push(res.data[0])
+                                     n_hft3_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hft_data3
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HST4') {
+                                if (n_hst_data4.length > 0 ) {
+                                     n_hst_data4.shift();
+                                     n_hst_data4.push(res.data[0])
+                                     n_hst4_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hst_data4
+                                          }
+                                        ]
+                                      });
+                                 }
+                             } else if  (p_flag == 'HFT4') {
+                                if (n_hft_data4.length > 0 ) {
+                                     n_hft_data4.shift();
+                                     n_hft_data4.push(res.data[0])
+                                     n_hft4_max_id = res.max_id+1
+                                     myChart.setOption({
+                                        series: [
+                                          {
+                                            data: n_hft_data4
+                                          }
+                                        ]
+                                      });
+                                 }
+                             }
+
+                             if (p_sync_tag=='hst_prod_real_sync_mysql_clickhouse_logger') {
+                                 $('#hst-real-process').text(
+                                   'mysql:'+res.c_binlogfile+'/'+res.c_binlogpos+' -  syncer:'+res.binlogfile+'/'+res.binlogpos)
+                             }
+                             if (p_sync_tag=='hft_prod_real_sync_mysql_clickhouse_logger') {
+                                 $('#hft-real-process').text(
+                                   'mysql:'+res.c_binlogfile+'/'+res.c_binlogpos+' -  syncer:'+res.binlogfile+'/'+res.binlogpos)
+                             }
+
+                            if (p_sync_tag=='hst_prod_real_sync_mysql_mysql_logger') {
+                                 $('#hst-real-process-mysql').text(
+                                   'mysql:'+res.c_binlogfile+'/'+res.c_binlogpos+' -  syncer:'+res.binlogfile+'/'+res.binlogpos)
+                             }
+                             if (p_sync_tag=='hft_prod_real_sync_mysql_mysql_logger') {
+                                 $('#hft-real-process-mysql').text(
+                                   'mysql:'+res.c_binlogfile+'/'+res.c_binlogpos+' -  syncer:'+res.binlogfile+'/'+res.binlogpos)
+                             }
+
+                        }
+                  });
+            }
+
+            getRealData(p_item,1)
+
+            if (p_flag == 'HST') {
+               timer = setInterval(function () {
+                  getRealData_timer(p_item,n_hst_max_id)
+                }, n_timerout);
+            }  else if  (p_flag == 'HFT') {
+               timer2 = setInterval(function () {
+                  getRealData_timer(p_item,n_hft_max_id)
+                }, n_timerout+1000);
+            }  else if (p_flag == 'HST2') {
+               timer3 = setInterval(function () {
+                  getRealData_timer(p_item,n_hst2_max_id)
+                }, n_timerout+2000);
+            }  else if  (p_flag == 'HFT2') {
+               timer4 = setInterval(function () {
+                  getRealData_timer(p_item,n_hft2_max_id)
+                }, n_timerout+3000);
+            }  else if (p_flag == 'HST3') {
+               timer5 = setInterval(function () {
+                  getRealData_timer(p_item,n_hst3_max_id)
+                }, n_timerout+1000);
+            }  else if  (p_flag == 'HFT3') {
+               timer6 = setInterval(function () {
+                  getRealData_timer(p_item,n_hft3_max_id)
+                }, n_timerout+2000);
+            }  else if (p_flag == 'HST4') {
+               timer7 = setInterval(function () {
+                  getRealData_timer(p_item,n_hst4_max_id)
+                }, n_timerout*3000);
+            }  else if  (p_flag == 'HFT4') {
+               timer8 = setInterval(function () {
+                  getRealData_timer(p_item,n_hft4_max_id)
+                },n_timerout+4000);
+            }
+        }
+
         function set_sync_task(dataSet,max_syrq,sync_sts) {
             $('#sync_comments').val(dataSet['comments'])
             $('#sync_tag').val(dataSet['sync_tag'])
@@ -614,9 +1289,26 @@
                             end_Loader(p_render_id)
                         },
                         success: function (dataSet) {
+                            //console.log(dataSet)
                             get_charts_bar(p_render_id, '',dataSet['amount']['x'], dataSet['amount']['y'],'#6495ed')
                         }
                     });
+                }  else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->ck->logger]','HST','#b7a9ce')
+                }   else if (p_id.indexOf("hst_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->ck->execter]','HST2','#d4ab9e')
+                }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_logger") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->ck_>logger]','HFT','#8aa1a1')
+                }  else if (p_id.indexOf("hft_prod_real_sync_mysql_clickhouse_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->ck_>execter]','HFT2','#d08e7d')
+                }  else if (p_id.indexOf("hst_prod_real_sync_mysql_mysql_logger") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->mysql->logger]','HST3','#b7a9ce')
+                }  else if (p_id.indexOf("hst_prod_real_sync_mysql_mysql_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->mysql->execter]','HST4','#d4ab9e')
+                }  else if (p_id.indexOf("hft_prod_real_sync_mysql_mysql_logger") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->mysql_>logger]','HFT3','#8aa1a1')
+                }  else if (p_id.indexOf("hft_prod_real_sync_mysql_mysql_executer") >= 0 ) {
+                    get_charts_real_line(p_render_id,'[mysql->ck_>execter]','HFT4','#d08e7d')
                 }
             }
 
@@ -1015,10 +1707,10 @@
                }
 
                if (!(id===undefined) && (id!='monitor_review') &&(id.indexOf('order')>=0 || id.indexOf('real_sync')>=0)) {
+                   //console.log('------------------:',id)
                    get_contents_from_div(id,id)
                }
             });
-
         });
 
         $("#db-sync-prod").on("click","td i",function(){
