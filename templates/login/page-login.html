@@ -223,7 +223,7 @@
                                 verify_code :$('#verify_code').val()
                             },
                             success: function (dataSet) {
-                                console.log(dataSet)
+                                console.log('logon_check=',dataSet)
                                 if (dataSet.code=='-1') {
                                     $('#prompt').text(dataSet.message)
                                     $('#prompt').css('color','red')

@@ -675,10 +675,8 @@
         <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
         <script src="{{static_url('assets/js/utils.js')}}"></script>
-
         <script src="{{static_url('plugins/multiselect/js/jquery.multi-select.js')}}"></script>
         <script src="{{static_url('plugins/bootstrap-select/js/bootstrap-select.min.js')}}" ></script>
-
         <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
         <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
 
@@ -900,7 +898,6 @@
             });
 
             $(".file").click(function() {
-                      // console.log('file>',$(this).attr("id"))
                       let tabId =$(this).attr("id").split('^')[0]
                       let url=$(this).attr("id").split('^')[1]
 
@@ -916,14 +913,14 @@
                               tabStatus[tabId]=true;
                           }
                       }
-                      // console.log('url--->',url)
+
                       $('#main-container-div').load(url);
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
                          url = '/'+id.replace(/_/g,'/')
                          $('#main-container-div').load(url);
-                          refresh_token();
+                         refresh_token ();
                       })
 
                       $('#'+'close_'+tabId).click(function(){
@@ -962,8 +959,11 @@
             $.ajaxSetup({
                  timeout:6000000,
                  data: {
-                  'token': window.localStorage.getItem("token"),
-                 }
+                   'token': window.localStorage.getItem("token"),
+                 },
+                // headers: {
+                //   'token': window.localStorage.getItem("token")
+                // }
             });
 
             $(document).ajaxStart(function() {
@@ -976,7 +976,6 @@
             }).ajaxStop(function() {
                 end_Loader('main-container-div')
             }).ajaxError(function( event, request,options ) {
-                console.log('request.status>',request.status)
                 if (request.status==401){
                     swal("用户认证已过期!", "", "error")
                 } else if (request.status==402) {

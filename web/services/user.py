@@ -25,6 +25,7 @@ class user_query(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         qname = self.get_argument("qname")
         v_list = await query_user(qname)
+        print('user_query:',v_list)
         v_json = json.dumps(v_list)
         self.write(v_json)
 

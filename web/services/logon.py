@@ -13,75 +13,77 @@ from web.model.t_user      import upd_password,get_user_by_userid,get_user_by_lo
 from web.model.t_xtqx      import get_tree_by_userid
 from web.model.t_dmmx      import get_dmm_from_dm
 from web.utils.common      import send_mail_param,get_sys_settings,get_rand_str,current_time,china_rq,china_week,welcome,china_time,create_captcha
-from web.utils.jwt_auth import create_token, refresh_token, insert_session_log, update_session_log, delete_session_log, \
-    check_sess_exists
+from web.utils.jwt_auth    import  delete_session_log
 from web.utils             import base_handler
-from tornado.web import HTTPError
+
 class logon(tornado.web.RequestHandler):
      def get(self):
         self.render("./login/page-login.html")
 
-class logon_check(base_handler.TokenHandlerLogin):
+class logon_check(base_handler.BaseHandler):
     async def post(self):
         username    = self.get_argument("username")
         password    = self.get_argument("password")
         verify_code = self.get_argument("verify_code")
         verify_img  = str(self.get_secure_cookie("verify_img"), encoding="utf-8")
-        #remote_ip   = self.request.remote_ip
         remote_ip   = self.request.headers.get("X-Real-Ip", "")
         result      = await logon_user_check(username, password, verify_code, verify_img)
         if result['code'] == '0':
            d_user = await get_user_by_loginame(username)
-           token = await create_token({"username": username, "userid": d_user['userid'],"name":d_user['name'],"remote_ip":remote_ip})
+           token = await self.create_token({"username": username, "userid": d_user['userid'],"name":d_user['name'],"remote_ip":remote_ip})
            self.write({"code": result['code'], "message": result['message'], "token": token})
         else:
            self.write({"code": result['code'], "message": result['message']})
 
-
 class update_token(base_handler.TokenHandler):
     async def post(self):
-        token= await refresh_token(self.get_argument("token"),self.session_id)
-        self.token = token
+        token= await self.refresh_token(self.get_argument("token"),self.session_id)
+        print('update_token=',token)
         self.write({"token": token})
 
-class index(base_handler.TokenHandlerLogin):
-    async def get(self):
-        if self.token_passed:
-            if (await check_sess_exists(self.session_id)) == 0:
-                self.render('./login/page-404.html')
-            else:
-                d_user      = await get_user_by_loginame(self.username)
-                genders     = await get_dmm_from_dm('04')
-                depts       = await get_dmm_from_dm('01')
-                proj_groups = await get_dmm_from_dm('18')
-                self.render("./login/index.html",
-                            china_rq     =  china_rq(),
-                            china_week   =  china_week(),
-                            china_time   =  china_time(),
-                            welcome      =  welcome(d_user['username']),
-                            userid       =  d_user['userid'],
-                            loginname    =  d_user['login_name'],
-                            wkno         =  d_user['wkno'],
-                            username     =  d_user['username'],
-                            password     =  d_user['password'],
-                            gender       =  d_user['gender'],
-                            email        =  d_user['email'],
-                            phone        =  d_user['phone'],
-                            proj_group   =  d_user['project_group'],
-                            dept         =  d_user['dept'],
-                            expire_date  =  d_user['expire_date'],
-                            status       =  d_user['status'],
-                            file_path    =  d_user['file_path'],
-                            file_name    =  d_user['file_name'],
-                            user_image   =  d_user['file_path'] + '/' + d_user['file_name'],
-                            user_roles   =  await get_user_roles(self.userid),
-                            genders      =  genders,
-                            depts        =  depts,
-                            d_user       =  d_user,
-                            proj_groups  = proj_groups,
-                           )
+class index(base_handler.TokenHandler):
+  async def get(self):
+    token = self.get_argument("token")
+    await self.refresh_token(token,self.session_id)
+    if self.token_passed:
+        if (await self.check_sess_exists(self.session_id)) == 0:
+            self.render('./login/page-404.html')
         else:
-            self.redirect('/login')
+            d_user      = await get_user_by_loginame(self.username)
+            genders     = await get_dmm_from_dm('04')
+            depts       = await get_dmm_from_dm('01')
+            proj_groups = await get_dmm_from_dm('18')
+            self.render("./login/index.html",
+                        china_rq     =  china_rq(),
+                        china_week   =  china_week(),
+                        china_time   =  china_time(),
+                        welcome      =  welcome(d_user['username']),
+                        userid       =  d_user['userid'],
+                        loginname    =  d_user['login_name'],
+                        wkno         =  d_user['wkno'],
+                        username     =  d_user['username'],
+                        password     =  d_user['password'],
+                        gender       =  d_user['gender'],
+                        email        =  d_user['email'],
+                        phone        =  d_user['phone'],
+                        proj_group   =  d_user['project_group'],
+                        dept         =  d_user['dept'],
+                        expire_date  =  d_user['expire_date'],
+                        status       =  d_user['status'],
+                        file_path    =  d_user['file_path'],
+                        file_name    =  d_user['file_name'],
+                        user_image   =  d_user['file_path'] + '/' + d_user['file_name'],
+                        user_roles   =  await get_user_roles(self.userid),
+                        genders      =  genders,
+                        depts        =  depts,
+                        d_user       =  d_user,
+                        proj_groups  = proj_groups,
+                       )
+    else:
+        self.redirect('/login')
+
+  def write_error(self, status_code: int, **kwargs) :
+      self.redirect('/login')
 
 class get_tree(base_handler.TokenHandler):
     async def post(self):
@@ -99,41 +101,6 @@ class platform(base_handler.BaseHandler):
 class easylife(base_handler.BaseHandler):
      def get(self):
         self.render("./main/easylife.html")
-
-# class unlock(base_handler.TokenHandler):
-#     async def post(self):
-#         await self.check_valid()
-#         unlock_password = self.get_argument("unlock_password")
-#         username = str(self.get_secure_cookie("username"), encoding="utf-8")
-#         d_user   = await get_user_by_loginame(username)
-#         if d_user['password']==unlock_password:
-#             self.set_secure_cookie("screen_lock_status", 'unlock')
-#             self.set_secure_cookie("heartbeat", 'health', expires=time.time() + 300)
-#             self.write({"code":0})
-#         else:
-#             self.write({"code":-1})
-#
-# class lock(base_handler.TokenHandler):
-#     async def post(self):
-#         await self.check_valid()
-#         self.set_secure_cookie("screen_lock_status", 'locked')
-#         self.write({"code":0})
-#
-# class heartbeat(base_handler.TokenHandler):
-#     def post(self):
-#         status = self.get_secure_cookie("heartbeat")
-#         if status is None:
-#             self.write({"code": 'undefined'})
-#         else:
-#             self.write({"code": str(status, encoding="utf-8")})
-#
-# class lock_status(base_handler.TokenHandler):
-#   def post(self):
-#       status = self.get_secure_cookie("screen_lock_status")
-#       if status is None:
-#          self.write({"code": 'undefined'})
-#       else:
-#          self.write({"code": str(status, encoding="utf-8")})
 
 class get_time(base_handler.TokenHandler):
     def post(self):
@@ -213,3 +180,38 @@ class get_verify(base_handler.BaseHandler):
         v_dict = {"image": file.split('/')[-1], "verify": chars}
         v_json = json.dumps(v_dict)
         self.write(v_json)
+
+# class unlock(base_handler.TokenHandler):
+#     async def post(self):
+#         await self.check_valid()
+#         unlock_password = self.get_argument("unlock_password")
+#         username = str(self.get_secure_cookie("username"), encoding="utf-8")
+#         d_user   = await get_user_by_loginame(username)
+#         if d_user['password']==unlock_password:
+#             self.set_secure_cookie("screen_lock_status", 'unlock')
+#             self.set_secure_cookie("heartbeat", 'health', expires=time.time() + 300)
+#             self.write({"code":0})
+#         else:
+#             self.write({"code":-1})
+#
+# class lock(base_handler.TokenHandler):
+#     async def post(self):
+#         await self.check_valid()
+#         self.set_secure_cookie("screen_lock_status", 'locked')
+#         self.write({"code":0})
+#
+# class heartbeat(base_handler.TokenHandler):
+#     def post(self):
+#         status = self.get_secure_cookie("heartbeat")
+#         if status is None:
+#             self.write({"code": 'undefined'})
+#         else:
+#             self.write({"code": str(status, encoding="utf-8")})
+#
+# class lock_status(base_handler.TokenHandler):
+#   def post(self):
+#       status = self.get_secure_cookie("screen_lock_status")
+#       if status is None:
+#          self.write({"code": 'undefined'})
+#       else:
+#          self.write({"code": str(status, encoding="utf-8")})

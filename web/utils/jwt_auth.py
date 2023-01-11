@@ -82,18 +82,13 @@ def parse_payload(token):
     return result
 
 async def insert_session_log(p_userid,p_username,p_name,p_remote_ip):
-    # gen session_id
     st = """insert into t_session(userid,username,logon_time,name,login_ip,last_update_time) 
                   values('{}','{}',now(),'{}','{}',now())""".format(p_userid, p_username, p_name,p_remote_ip)
     id = await async_processer.exec_ins_sql(st)
-    # The other same user is logon
-    print('kickout_session_log!')
     await kickout_session_log(p_username,id)
-    print('kickout_session_log!!!!!!!!!!!!!')
     return id
 
 async def update_session_log(p_session_id):
-    # set state for timeout
     st = """update t_session 
              set state=case when TIMESTAMPDIFF(SECOND,last_update_time,now())>600 then '2' else '1' end,
                  online_time=TIMESTAMPDIFF(SECOND,logon_time,NOW()),
@@ -115,10 +110,8 @@ async def update_session_log(p_session_id):
     await async_processer.exec_sql(st)
 
 async def delete_session_log(p_session_id):
-    # set state is logout state
     st = """update t_session  set state='4' where session_id={}""".format(p_session_id)
     await async_processer.exec_sql(st)
-    # set state for timeout
     st = """insert into t_session_history(session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time) 
              select session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time
                from t_session where session_id={}""".format(p_session_id)
@@ -127,10 +120,8 @@ async def delete_session_log(p_session_id):
     await async_processer.exec_sql(st)
 
 async def kill_session_log(p_session_id):
-    # set state is kill state
     st = """update t_session  set state='3' where session_id={}""".format(p_session_id)
     await async_processer.exec_sql(st)
-    # move session to history
     st = """insert into t_session_history(session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time) 
              select session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time
                from t_session where session_id={}""".format(p_session_id)
@@ -139,18 +130,13 @@ async def kill_session_log(p_session_id):
     await async_processer.exec_sql(st)
 
 async def kickout_session_log(p_username,p_session_id):
-    # set state is kill state
     st = """update t_session  set state='6' where username='{}' and session_id!={}""".format(p_username,p_session_id)
-    print('>>>>1', st)
     await async_processer.exec_sql(st)
-    # move session to history
     st = """insert into t_session_history(session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time) 
              select session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time
                from t_session where username='{}' and state='6'""".format(p_username)
-    print('>>>>2', st)
     await async_processer.exec_sql(st)
     st = """delete from t_session where username='{}' and state='6'""".format(p_username)
-    print('>>>>3', st)
     await async_processer.exec_sql(st)
 
 async def get_sessoin_state(p_session_id):
