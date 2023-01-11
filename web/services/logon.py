@@ -43,8 +43,6 @@ class update_token(base_handler.TokenHandler):
 
 class index(base_handler.TokenHandler):
   async def get(self):
-    token = self.get_argument("token")
-    await self.refresh_token(token,self.session_id)
     if self.token_passed:
         if (await self.check_sess_exists(self.session_id)) == 0:
             self.render('./login/page-404.html')

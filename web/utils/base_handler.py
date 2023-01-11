@@ -12,12 +12,13 @@ import tornado.web
 from web.utils import jwt_auth
 from tornado.web import HTTPError
 from web.model.t_xtqx  import check_url
+from web.utils.common import get_sys_settings_sync
 from web.utils.mysql_async import async_processer
 from jwt import exceptions
 
 JWT_SALT = 'Hopson2021@abcd'
 ISS_UER  = 'zhitbar.cn'
-TIMEOUT  = 60
+TIMEOUT  = int(get_sys_settings_sync()['TOKEN_EXPIRE_TIME'])
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -66,24 +67,19 @@ class BaseHandler(tornado.web.RequestHandler):
             raise HTTPError(504, json.dumps({'code': 504, 'error': '用户会话过期!'}, ensure_ascii=False))
 
         payload = result['data']
-        print('refresh_token=>payload:', payload)
         payload['exp'] = datetime.datetime.utcnow() + datetime.timedelta(minutes=timeout)
         payload['iat'] = datetime.datetime.utcnow()
         payload['iss'] = ISS_UER
         result = jwt.encode(payload=payload, key=JWT_SALT, algorithm="HS256", headers=headers)
-        # update session
         await self.update_session_log(payload['session_id'])
         self.token = result
         return result
 
     async def insert_session_log(self, p_userid, p_username, p_name, p_remote_ip):
-        # gen session_id
         st = """insert into t_session(userid,username,logon_time,name,login_ip,last_update_time) 
                            values('{}','{}',now(),'{}','{}',now())""".format(p_userid, p_username, p_name, p_remote_ip)
         id = await async_processer.exec_ins_sql(st)
-        print('kickout_session_log!')
         await self.kickout_session_log(p_username, id)
-        print('kickout_session_log!!!!!!!!!!!!!')
         return id
 
     async def update_session_log(self, p_session_id):
@@ -132,19 +128,13 @@ class BaseHandler(tornado.web.RequestHandler):
         await async_processer.exec_sql(st)
 
     async def kickout_session_log(self, p_username, p_session_id):
-        # set state is kill state
-        st = """update t_session  set state='6' where username='{}' and session_id!={}""".format(p_username,
-                                                                                                 p_session_id)
-        print('>>>>1', st)
+        st = """update t_session  set state='6' where username='{}' and session_id!={}""".format(p_username,p_session_id)
         await async_processer.exec_sql(st)
-        # move session to history
         st = """insert into t_session_history(session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time) 
                       select session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time
                         from t_session where username='{}' and state='6'""".format(p_username)
-        print('>>>>2', st)
         await async_processer.exec_sql(st)
         st = """delete from t_session where username='{}' and state='6'""".format(p_username)
-        print('>>>>3', st)
         await async_processer.exec_sql(st)
 
     async def get_sessoin_state(self, p_session_id):
@@ -155,7 +145,8 @@ class BaseHandler(tornado.web.RequestHandler):
 
     async def check_sess_exists(self, p_session_id):
         return (await async_processer.query_one("select count(0) "
-                                                "from t_session where session_id={}".format(p_session_id)))[0]
+                "from t_session where session_id={} "
+                " AND TIMESTAMPDIFF(MINUTE,last_update_time,NOW())<={}".format(p_session_id,TIMEOUT)))[0]
 
 class TokenHandler(BaseHandler):
 
@@ -171,7 +162,6 @@ class TokenHandler(BaseHandler):
                 result['error'] = 'token认证算法错误!'
             else:
                 verified_payload = jwt.decode(token, JWT_SALT, issuer=ISS_UER, algorithms=["HS256"])
-                # print('verified_payload=', verified_payload)
                 result['status'] = True
                 result['code'] = 200
                 result['data'] = verified_payload
@@ -236,38 +226,3 @@ class TokenHandler(BaseHandler):
         self.session_id = result['data']['session_id']
         self.token = token
         self.result = {'code': True, 'message': "success!"}
-
-
-
-
-
-# class TokenHandlerLogin(BaseHandler):
-#
-#     async def prepare(self):
-#         try:
-#             head = self.request.headers
-#             token = head.get("token","")
-#             print('header-token=',token)
-#             if token == '':
-#                token = self.get_argument("token")
-#                print('body-token=',token)
-#
-#             print('TokenHandlerLogin taken111:',token)
-#             result = jwt_auth.parse_payload(token)
-#             print('token result = ',result)
-#             if not result["status"]:
-#                self.token_passed = False
-#                self.username = ''
-#                self.userid = ''
-#                self.session_id = ''
-#             else:
-#                self.token_passed = True
-#                self.username = result['data']['username']
-#                self.userid = result['data']['userid']
-#                self.session_id = result['data']['session_id']
-#         except:
-#             traceback.print_exc()
-#             self.token_passed = False
-#             self.username = ''
-#             self.userid = ''
-#             self.session_id = ''
