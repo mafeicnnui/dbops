@@ -17,7 +17,7 @@ from jwt import exceptions
 
 JWT_SALT = 'Hopson2021@abcd'
 ISS_UER  = 'zhitbar.cn'
-TIMEOUT  = 1
+TIMEOUT  = 60
 
 class BaseHandler(tornado.web.RequestHandler):
 
