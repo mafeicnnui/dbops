@@ -2,6 +2,23 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`puppet` /*!40100 DEFAULT CHARACTER SET 
 
 USE `puppet`;
 
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('2','send_server','smtp.exmail.qq.com','发件服务器');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('4','send_port','465','发件服务器端口');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('6','sender','190343@lifeat.cn','发件人');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('8','sendpass','R86hyfjobMBYR76h','发件人密码');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('10','receiver','190343@lifeat.cn','收件人');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('11','canal_user','canal2021','canal用户');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('12','canal_pass','canal@Hopson2018','canal密码');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('13','CC','190343@lifeat.cn','邮件抄送人');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('14','REAL_SYNC_STATUS','STOP','ck实时同步状态:pause暂停，stop停止，running运行');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('15','WEBSSH_URL','http://ssh.zhitbar.cn:65483','webssh服务地址');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('17','WX_URL','https://api.hopsontong.com/wxcp/message/template/send','合生通助手接口地址');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('18','MYSQL_REAL_SYNC_STATUS','STOP','MYSQL实时同步状态:pause暂停，stop停止，running运行');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('19','WEBRDP_URL','http://rdp.zhitbar.cn:9528','webrdp服务地址');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('21','WEBRDP_URL2','http://10.2.39.21:9528','webrdp服务内网地址');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('22','WEBSSH_URL2','http://10.2.39.18:65483','webssh服务内网地址');
+insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('23','TOKEN_EXPIRE_TIME','30','token过期时间(分钟)');
+
 INSERT  INTO `t_user`(`id`,`name`,`wkno`,`gender`,`email`,`phone`,`project_group`,`dept`,`expire_date`,`password`,`status`,`creation_date`,`creator`,`last_update_date`,`updator`,`login_name`,`file_path`,`file_name`) VALUES (1,'管理员','190343','1','190343@lifeat.cn','00000000000','1','03','2021-05-30','47508EE611CC14EFB8C805158601FE09','1','2018-08-27','DBA','2020-12-03','DBA','admin','/static/assets/images/users','93d64232-3a5f-11ea-bb2b-000c29cd7d70_admin.jpg');
 INSERT  INTO `t_user_role`(`id`,`user_id`,`role_id`) VALUES (1,1,1);
 INSERT  INTO `t_role`(`id`,`name`,`status`,`creation_date`,`creator`,`last_update_date`,`updator`) VALUES (1,'数据库管理员','1','2020-04-07','DBA','2022-10-17','DBA');
