@@ -115,7 +115,6 @@ async def get_mysql_result(p_ds,p_sql,curdb):
     start_time = datetime.datetime.now()
     #get read timeout
     read_timeout = int((await get_audit_rule('switch_timeout'))['rule_value'])
-    print('read_timeout=',read_timeout)
     if p_ds['db_env']=='1':
         p_env='PROD'
     if p_ds['db_env']=='2':
@@ -135,7 +134,6 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         # check sql rwos
         cr = db.cursor()
         st = """select count(0) from ({}) AS x""".format(p_sql)
-        print('st1=',st)
         cr.execute(st)
         rs = cr.fetchone()
         rule = await get_audit_rule('switch_query_rows')
@@ -147,7 +145,6 @@ async def get_mysql_result(p_ds,p_sql,curdb):
             return result
 
         # execute query
-        print('st2=',p_sql)
         cr.execute(p_sql)
         rs = cr.fetchall()
         # get sensitive column
@@ -231,7 +228,6 @@ async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
         # check sql rwos
         cr = await db.cursor()
         st = """select count(0) from ({}) AS x""".format(p_sql)
-        print('st1=',st)
         await cr.execute(st)
         rs = await cr.fetchone()
         rule = await get_audit_rule('switch_query_rows')
@@ -243,7 +239,6 @@ async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
             return result
 
         # execute query
-        print('st2=',p_sql)
         await cr.execute(p_sql)
         rs = await cr.fetchall()
         # get sensitive column

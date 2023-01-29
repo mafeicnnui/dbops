@@ -180,6 +180,7 @@ async def query_bbgl_data(bbdm,param):
              #4. 执行预处理代码
              start_time = datetime.datetime.now()
              for s in preprocess:
+                 print('---->',s['replace_statement'])
                  await async_processer.exec_sql_by_ds(ds,s['replace_statement'])
              preProcessTime = get_seconds(start_time)
          else:
@@ -252,13 +253,14 @@ async def delete_bbgl_filter(p_bbdm,p_xh):
 
 async def query_bbgl_preprocess_detail(p_bbdm,p_xh):
     st = "select * from t_bbgl_preproccess where bbdm='{}' and xh={}".format(p_bbdm,p_xh)
+    print(st)
     return await async_processer.query_dict_one(st)
 
 async def update_bbgl_preprocess(p_bbdm,p_xh,p_statement,p_description):
     try:
         st = "update t_bbgl_preproccess " \
              " set statement='{}',`description`='{}' " \
-             "  where bbdm='{}' and xh={}".format(p_statement,p_description,p_bbdm,p_xh)
+             "  where bbdm='{}' and xh={}".format(fmt_sql(p_statement),p_description,p_bbdm,p_xh)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '更新成功!'}
     except Exception as e:

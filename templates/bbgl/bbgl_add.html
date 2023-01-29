@@ -910,6 +910,9 @@
          }
 
          function edit_preprocess(p_row) {
+              row = unescape(p_row).split(',')
+              $('#upd_preprocess_xh').val(row[0])
+
               $.ajax({
                     url: "/bbgl/query/preprocess",
                     type: "post",
