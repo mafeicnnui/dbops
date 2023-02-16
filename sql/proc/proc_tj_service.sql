@@ -4,7 +4,7 @@ USE `puppet`$$
 
 DROP PROCEDURE IF EXISTS `proc_tj_service`$$
 
-CREATE DEFINER=`puppet`@`%` PROCEDURE `proc_tj_service`()
+CREATE  PROCEDURE `proc_tj_service`()
 BEGIN
   DECLARE n_server_id    INT;
   DECLARE v_server_desc  VARCHAR(100);

@@ -19,12 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="optimize python lib">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="bbtj bug fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/proc/proc_clear_log.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/proc/proc_clear_log.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/proc/proc_tj_service.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/proc/proc_tj_service.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/proc/proc_tj_sync_monitor.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/proc/proc_tj_sync_monitor.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/proc/proc_trunc_log.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/proc/proc_trunc_log.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +78,7 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/doc/images" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sql/proc" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -86,19 +86,19 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\sql\proc" />
+      <recent name="D:\work\dbops\static\doc\images" />
+      <recent name="D:\work\dbops\templates\main" />
+      <recent name="D:\work\dbops\sql\data" />
+      <recent name="D:\work\dbops\doc\font" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\sql\data" />
       <recent name="D:\work\dbops\sql\table" />
       <recent name="D:\work\dbops\static\doc" />
       <recent name="D:\work\dbops" />
       <recent name="D:\work\dbops\web" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\static\doc\images" />
-      <recent name="D:\work\dbops\templates\main" />
-      <recent name="D:\work\dbops\sql\data" />
-      <recent name="D:\work\dbops\doc\font" />
-      <recent name="D:\work\dbops\sql\all" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -674,14 +674,14 @@
       <workItem from="1673596534818" duration="2140000" />
       <workItem from="1674950678669" duration="1194000" />
       <workItem from="1674972180839" duration="603000" />
-      <workItem from="1674980569545" duration="1825000" />
-    </task>
-    <task id="LOCAL-00201" summary="real sync optimize">
-      <created>1672045567314</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1672045567314</updated>
+      <workItem from="1674980569545" duration="2131000" />
+      <workItem from="1675216966744" duration="1404000" />
+      <workItem from="1675740285940" duration="687000" />
+      <workItem from="1675818306389" duration="2414000" />
+      <workItem from="1675821077869" duration="679000" />
+      <workItem from="1676009120078" duration="224000" />
+      <workItem from="1676430523583" duration="100000" />
+      <workItem from="1676512104908" duration="2101000" />
     </task>
     <task id="LOCAL-00202" summary="bbgl optimize">
       <created>1672298673660</created>
@@ -1019,7 +1019,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673504239159</updated>
     </task>
-    <option name="localTasksCounter" value="250" />
+    <task id="LOCAL-00250" summary="bbtj bug fix">
+      <created>1674982643337</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1674982643338</updated>
+    </task>
+    <option name="localTasksCounter" value="251" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1038,7 +1045,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="mysql query support async" />
     <MESSAGE value="add redis query" />
     <MESSAGE value="db console bug fix" />
     <MESSAGE value="add mongo,es,redis query" />
@@ -1063,7 +1069,8 @@
     <MESSAGE value="logon optimize" />
     <MESSAGE value="update sql" />
     <MESSAGE value="optimize python lib" />
-    <option name="LAST_COMMIT_MESSAGE" value="optimize python lib" />
+    <MESSAGE value="bbtj bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="bbtj bug fix" />
   </component>
   <component name="WindowStateProjectService">
     <state x="2006" y="37" width="1149" height="683" key="#Deployment" timestamp="1674980591739">
@@ -1078,55 +1085,47 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674980590930" />
-    <state x="2085" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1667523936952">
-      <screen x="1920" y="-180" width="1920" height="1040" />
-    </state>
-    <state x="2085" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1667523936952" />
-    <state width="1877" height="493" key="GridCell.Tab.0.bottom" timestamp="1674981405495">
+    <state width="1877" height="88" key="GridCell.Tab.0.bottom" timestamp="1674982703403">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state width="1877" height="163" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1670478131225" />
-    <state width="1877" height="493" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674981405495" />
-    <state width="1877" height="493" key="GridCell.Tab.0.center" timestamp="1674981405495">
+    <state width="1877" height="88" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674982703403" />
+    <state width="1877" height="88" key="GridCell.Tab.0.center" timestamp="1674982703403">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state width="1877" height="163" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1670478131224" />
-    <state width="1877" height="493" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674981405495" />
-    <state width="1877" height="493" key="GridCell.Tab.0.left" timestamp="1674981405494">
+    <state width="1877" height="88" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674982703403" />
+    <state width="1877" height="88" key="GridCell.Tab.0.left" timestamp="1674982703403">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state width="1877" height="163" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1670478131224" />
-    <state width="1877" height="493" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674981405494" />
-    <state width="1877" height="493" key="GridCell.Tab.0.right" timestamp="1674981405495">
+    <state width="1877" height="88" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674982703403" />
+    <state width="1877" height="88" key="GridCell.Tab.0.right" timestamp="1674982703403">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state width="1877" height="163" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1670478131224" />
-    <state width="1877" height="493" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674981405495" />
+    <state width="1877" height="88" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674982703403" />
     <state x="2240" y="-2" width="998" height="708" key="SettingsEditor" timestamp="1674980594955">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674980594955" />
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1673421873965">
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2" timestamp="1674982646130">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1673421873965" />
+    <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674982646130" />
     <state x="2673" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1672989207330">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2673" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1672989207330" />
-    <state x="2149" y="62" width="1178" height="798" key="find.popup" timestamp="1673421201455">
+    <state x="2149" y="62" width="1178" height="798" key="find.popup" timestamp="1675217022296">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
-    <state x="2149" y="62" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1673421201455" />
-    <state x="2343" y="191" width="339" height="539" key="ftp.server.browser" timestamp="1667527098478">
-      <screen x="1920" y="-180" width="1920" height="1040" />
-    </state>
-    <state x="2343" y="191" width="339" height="539" key="ftp.server.browser/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1667527098478" />
-    <state x="2006" y="190" key="publish.login" timestamp="1674982265904">
+    <state x="2149" y="62" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1675217022296" />
+    <state x="2006" y="190" key="publish.login" timestamp="1676514446345">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="86" y="370" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@0.0.1920.1040" timestamp="1668494382689" />
-    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1674982265904" />
+    <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1676514446345" />
     <state x="2543" y="45" width="672" height="678" key="search.everywhere.popup" timestamp="1672904664929">
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>

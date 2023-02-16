@@ -4,7 +4,7 @@ USE `puppet`$$
 
 DROP PROCEDURE IF EXISTS `proc_trunc_log`$$
 
-CREATE DEFINER=`puppet`@`%` PROCEDURE `proc_trunc_log`()
+CREATE  PROCEDURE `proc_trunc_log`()
 BEGIN
 	TRUNCATE TABLE `t_db_sync_tasks_log`;
 	TRUNCATE TABLE `t_db_sync_tasks_log_detail`;

@@ -4,7 +4,7 @@ USE `puppet`$$
 
 DROP PROCEDURE IF EXISTS `proc_tj_sync_monitor`$$
 
-CREATE DEFINER=`puppet`@`%` PROCEDURE `proc_tj_sync_monitor`()
+CREATE  PROCEDURE `proc_tj_sync_monitor`()
 BEGIN
   DECLARE v_market_id         VARCHAR(10);
   DECLARE v_market_name       VARCHAR(100);

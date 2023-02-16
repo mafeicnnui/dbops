@@ -4,7 +4,7 @@ USE `puppet`$$
 
 DROP PROCEDURE IF EXISTS `proc_clear_log`$$
 
-CREATE DEFINER=`puppet`@`%` PROCEDURE `proc_clear_log`()
+CREATE PROCEDURE `proc_clear_log`()
 BEGIN
 
 	DELETE FROM t_monitor_task_db_log
