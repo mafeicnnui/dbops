@@ -9,7 +9,7 @@ import json
 import tornado.web
 from web.model.t_monitor import query_monitor_index, save_index, upd_index, del_index, query_monitor_log_analyze, \
     query_monitor_templete_type, query_alert, save_alert_task, get_alert_task_by_tag, upd_alert_task, del_alert, \
-    push_alert_task
+    push_alert_task, query_monitor_api, query_monitor_api_log
 from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get_monitor_indexes_by_type,get_monitor_task_by_tag,query_monitor_sys
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
@@ -355,6 +355,12 @@ class get_monitor_view_proj(base_handler.BaseHandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
+class get_monitor_view_api(base_handler.BaseHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_list = await query_monitor_api()
+        v_json = json.dumps(v_list)
+        self.write(v_json)
 
 class get_monitor_view_proj_log(base_handler.BaseHandler):
     async def post(self):
@@ -367,6 +373,16 @@ class get_monitor_view_proj_log(base_handler.BaseHandler):
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
+class get_monitor_view_api_log(base_handler.BaseHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        market_id  = self.get_argument("market_id")
+        begin_date = self.get_argument("begin_date")
+        end_date   = self.get_argument("end_date")
+        print(market_id,begin_date,end_date)
+        v_list     = await query_monitor_api_log(market_id,begin_date,end_date)
+        v_json     = json.dumps(v_list)
+        self.write(v_json)
 
 class get_monitor_task(base_handler.TokenHandler):
     async def post(self):

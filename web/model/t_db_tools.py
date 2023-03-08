@@ -87,6 +87,7 @@ async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema,
                       AND b.`extra` = a.`extra`
                       AND b.`column_comment` = a.`column_comment`)"""
       res = await async_processer.query_list(sql.format(sour_db_server,desc_db_server))
+      print('res=',res)
       return res
 
 async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_schema, sour_tab):

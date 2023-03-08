@@ -103,7 +103,7 @@
                                             <label class="col-md-2 control-label"><span id="s_add_gather_task_tag">*</span>任务标识</label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input id="add_gather_task_tag"  type="text" readonly class="form-control" placeholder="请输入任务标识">
+                                            <input id="add_gather_task_tag"  type="text"  class="form-control" placeholder="请输入任务标识">
                                         </div>
                                    </div>
                                    <div class="form-group">
@@ -111,7 +111,7 @@
                                             <label class="col-md-2 control-label"><span id="s_add_gather_task_desc">*</span>任务描述</label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input id="add_gather_task_desc"  type="text" readonly class="form-control"  placeholder="请输入任务描述">
+                                            <input id="add_gather_task_desc"  type="text"  class="form-control"  placeholder="请输入任务描述">
                                         </div>
                                    </div>
                                    <div class="form-group">
@@ -637,7 +637,7 @@
 
 <script>
 
-      function isSelect(row) {
+     function isSelect(row) {
           $('#upd_task_tag_hidden').val(row)
           $('#task_upd_win').attr("disabled",false);
           $('#task_del_btn').attr("disabled",false);
@@ -698,7 +698,7 @@
              })
         }
 
-        function set_gather_title(){
+        function set_gather_title() {
             if ($('#add_gather_task_db_server').val()!=''){
                 var options=$('#add_gather_task_db_server option:selected');
                 $("#add_gather_task_tag").val('gather_task_db_'+$(options[0]).val());

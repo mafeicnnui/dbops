@@ -546,6 +546,20 @@ async def query_monitor_proj():
              FROM t_monitor_project order by id"""
     return {'data': await async_processer.query_list(sql)}
 
+async def query_monitor_api():
+    sql = """SELECT a.market_id,
+                    c.dmmc AS market_name,
+                    b.server_desc2 as server_desc,
+                    api_interface,
+                    api_status,
+                    response_time,
+                    DATE_FORMAT(a.update_time,'%Y-%m-%d %H:%i:%s') AS update_time 
+             FROM t_monitor_api_log a,t_server b ,t_dmmx c
+             WHERE a.server_id=b.id AND a.market_id=c.dmm AND c.dm='05'
+               AND a.id IN(SELECT MAX(id) FROM t_monitor_api_log GROUP BY market_id,server_id,api_interface)
+             ORDER BY a.id DESC"""
+    return {'data': await async_processer.query_list(sql)}
+
 async def query_monitor_proj_log(p_market_id,p_begin_date,p_end_date):
     res = {}
     sql = """SELECT  DATE_FORMAT(update_time,'%H:%i') update_time,
@@ -555,6 +569,23 @@ async def query_monitor_proj_log(p_market_id,p_begin_date,p_end_date):
                     and update_time between '{}' and '{}'
                       order by update_time""".format(p_market_id,p_begin_date,p_end_date)
     print(sql)
+    x = []
+    y = []
+    for r in  await async_processer.query_list(sql):
+        x.append(r[0])
+        y.append(r[1])
+    res['x'] = x
+    res['y'] = y
+    return res
+
+async def query_monitor_api_log(p_market_id,p_begin_date,p_end_date):
+    res = {}
+    sql = """SELECT  DATE_FORMAT(update_time,'%H:%i') update_time,
+                     CASE WHEN api_status = '200' THEN ROUND(response_time,2) ELSE 0 END AS response_time
+                 FROM t_monitor_api_log
+                  WHERE market_id='{}' 
+                    AND update_time BETWEEN '{}' AND '{}'
+                      ORDER BY update_time""".format(p_market_id,p_begin_date,p_end_date)
     x = []
     y = []
     for r in  await async_processer.query_list(sql):

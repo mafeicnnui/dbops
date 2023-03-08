@@ -68,83 +68,67 @@
                 <li id='incr_li' class="">
                     <a href="#svr-monitor" data-toggle="tab" aria-expanded="false">服务监控</a>
                 </li>
-                 <li id='proj_li' class="">
+                <li id='proj_li' class="">
                     <a href="#proj-monitor" data-toggle="tab" aria-expanded="false">外网监控</a>
+                </li>
+                <li id='api_li' class="">
+                    <a href="#api-monitor" data-toggle="tab" aria-expanded="false">接口监控</a>
                 </li>
             </ul>
             <div class="tab-content br-n pn">
                 <div id="sys-monitor" class="tab-pane active">
-                 <div class="row">
-                 </div>
-                 <div class="row">
-                        <div class="col-md-4">
-                            <span class="label text-primary">合生通&nbsp;</span>
-                            <div class="radio radio-info radio-inline">
-                                <input type="radio" id="inlineRadio1" value="hst-dev" name="radioInline_sys" >
-                                <label for="inlineRadio1">开发</label>
+                     <div class="row">
+                     </div>
+                     <div class="row">
+                            <div class="col-md-4">
+                                <span class="label text-primary">合生通&nbsp;</span>
+                                <div class="radio radio-info radio-inline">
+                                    <input type="radio" id="inlineRadio1" value="hst-dev" name="radioInline_sys" >
+                                    <label for="inlineRadio1">开发</label>
+                                </div>
+                                <div class="radio radio-inline">
+                                    <input type="radio" id="inlineRadio2" value="hst-test" name="radioInline_sys" >
+                                    <label for="inlineRadio2">测试</label>
+                                </div>
+                               <div class="radio radio-info radio-inline">
+                                    <input type="radio" id="inlineRadio3" value="hst-pre" name="radioInline_sys" >
+                                    <label for="inlineRadio3">预发布</label>
+                                </div>
+                                <div class="radio radio-inline">
+                                    <input type="radio" id="inlineRadio4" value="hst-prod" name="radioInline_sys" checked>
+                                    <label for="inlineRadio4">生产</label>
+                                </div>
+                                <div class="radio radio-inline">
+                                    <input type="radio" id="inlineRadio6" value="hst-proj" name="radioInline_sys" >
+                                    <label for="inlineRadio6">项目</label>
+                                </div>
                             </div>
-                            <div class="radio radio-inline">
-                                <input type="radio" id="inlineRadio2" value="hst-test" name="radioInline_sys" >
-                                <label for="inlineRadio2">测试</label>
+                            <div class="col-md-1">
+                                  <span class="label text-danger">平台组&nbsp;</span>
+                                  <div class="radio radio-inline">
+                                    <input type="radio" id="inlineRadio25" value="platform-prod" name="radioInline_sys" checked>
+                                    <label for="inlineRadio31">生产</label>
+                                  </div>
                             </div>
-                           <div class="radio radio-info radio-inline">
-                                <input type="radio" id="inlineRadio3" value="hst-pre" name="radioInline_sys" >
-                                <label for="inlineRadio3">预发布</label>
+                            <div class="col-md-2">
+                                  <span class="label text-danger">商管&nbsp;</span>
+                                  <div class="radio radio-inline">
+                                    <input type="radio" id="inlineRadio31" value="sg-prod" name="radioInline_sys" checked>
+                                    <label for="inlineRadio31">生产</label>
+                                  </div>
                             </div>
-                            <div class="radio radio-inline">
-                                <input type="radio" id="inlineRadio4" value="hst-prod" name="radioInline_sys" checked>
-                                <label for="inlineRadio4">生产</label>
-                            </div>
-                            <div class="radio radio-inline">
-                                <input type="radio" id="inlineRadio6" value="hst-proj" name="radioInline_sys" >
-                                <label for="inlineRadio6">项目</label>
+                            <div class="col-md-2 input-group">
+                                <input type="text" id="search_text_sys" class="form-control">
+                                <span class="input-group-btn">
+                                   <button type="button"  class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                                </span>
                             </div>
                         </div>
-<!--                        <div class="col-md-3">-->
-<!--                             <span class="label text-success">好房&nbsp;</span>-->
-<!--                             <div class="radio radio-info radio-inline">-->
-<!--                                <input type="radio" id="inlineRadio21" value="easylife-dev" name="radioInline_sys" >-->
-<!--                                <label for="inlineRadio21">开发</label>-->
-<!--                            </div>-->
-<!--                            <div class="radio radio-inline">-->
-<!--                                <input type="radio" id="inlineRadio22" value="easylife-test" name="radioInline_sys" >-->
-<!--                                <label for="inlineRadio22">测试</label>-->
-<!--                            </div>-->
-<!--                           <div class="radio radio-info radio-inline">-->
-<!--                                <input type="radio" id="inlineRadio23" value="easylife-gray" name="radioInline_sys" >-->
-<!--                                <label for="inlineRadio23">灰度</label>-->
-<!--                            </div>-->
-<!--                            <div class="radio radio-inline">-->
-<!--                                <input type="radio" id="inlineRadio24" value="easylife-prod" name="radioInline_sys" >-->
-<!--                                <label for="inlineRadio24">生产</label>-->
-<!--                            </div>-->
-<!--                        </div>-->
-                        <div class="col-md-1">
-                              <span class="label text-danger">平台组&nbsp;</span>
-                              <div class="radio radio-inline">
-                                <input type="radio" id="inlineRadio25" value="platform-prod" name="radioInline_sys" checked>
-                                <label for="inlineRadio31">生产</label>
-                              </div>
+                        <div class="row">
+                            <div id='div-sys-monitor' class="col-md-12">
+                               <table id="tab-sys-monitor" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                              <span class="label text-danger">商管&nbsp;</span>
-                              <div class="radio radio-inline">
-                                <input type="radio" id="inlineRadio31" value="sg-prod" name="radioInline_sys" checked>
-                                <label for="inlineRadio31">生产</label>
-                              </div>
-                        </div>
-                        <div class="col-md-2 input-group">
-                            <input type="text" id="search_text_sys" class="form-control">
-                            <span class="input-group-btn">
-                               <button type="button"  class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id='div-sys-monitor' class="col-md-12">
-                           <table id="tab-sys-monitor" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-                        </div>
-                    </div>
                 </div>
                 <div id="svr-monitor" class="tab-pane">
                      <div class="row">
@@ -173,25 +157,6 @@
                                     <label for="inlineRadio6">项目</label>
                                 </div>
                           </div>
-<!--                          <div class="col-md-3">-->
-<!--                                <span class="label text-success">好房&nbsp;</span>-->
-<!--                                <div class="radio radio-info radio-inline">-->
-<!--                                    <input type="radio" id="inlineRadio51" value="easylife-dev" name="radioInline_svr" >-->
-<!--                                    <label for="inlineRadio51">开发</label>-->
-<!--                                </div>-->
-<!--                                <div class="radio radio-inline">-->
-<!--                                    <input type="radio" id="inlineRadio52" value="easylife-test" name="radioInline_svr" >-->
-<!--                                    <label for="inlineRadio52">测试</label>-->
-<!--                                </div>-->
-<!--                                <div class="radio radio-info radio-inline">-->
-<!--                                    <input type="radio" id="inlineRadio53" value="easylife-grey" name="radioInline_svr" >-->
-<!--                                    <label for="inlineRadio53">灰度</label>-->
-<!--                                </div>-->
-<!--                                <div class="radio radio-inline">-->
-<!--                                    <input type="radio" id="inlineRadio54" value="easylife-prod" name="radioInline_svr">-->
-<!--                                    <label for="inlineRadio54">生产</label>-->
-<!--                                </div>-->
-<!--                          </div>-->
                           <div class="col-md-1">
                               <span class="label text-danger">平台组&nbsp;</span>
                               <div class="radio radio-inline">
@@ -228,6 +193,15 @@
                         </div>
                     </div>
                 </div>
+                <div id="api-monitor" class="tab-pane">
+                     <div class="row">
+                     </div>
+                     <div class="row">
+                        <div id='div-api-monitor' class="col-md-12">
+                            <table id="tab-api-monitor" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -239,31 +213,31 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 id='monitor_review_title' class="modal-title">图表预览</h4>
+                <h4 id='monitor_review_title' style="color:cornflowerblue" class="modal-title">图表预览</h4>
             </div>
             <div class="modal-body">
                <div class="panel panel-flat">
                     <div class="panel-body">
                          <form class="form-horizontal" role="form">
                             <div class="form-group" >
-                               <div class="col-md-2">
+                               <div class="col-md-1" align="right">
                                     <div class="input-group">
                                         <label class="control-label">开始日期</label>
                                     </div>
                                </div>
-                               <div class="col-md-3">
+                               <div class="col-md-2">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="ion-ios7-clock-outline"></i></span>
                                         <input  id="begin_date"  type="text" value="" class="form-control datetimepicker"  readonly >
                                         <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
                                     </div>
                                </div>
-                               <div class="text-right col-md-2">
-                                    <div class="input-group">
+                               <div class="col-md-1" align="right">
+                                    <div class="input-group text-right">
                                       <label class="control-label">结束日期&nbsp;</label>
                                     </div>
                                </div>
-                               <div class="col-md-3">
+                               <div class="col-md-2">
                                   <div class="input-group">
                                       <span class="input-group-addon"><i class="ion-ios7-alarm-outline"></i></span>
                                       <input  id="end_date"  type="text" value="" class="form-control datetimepicker"  readonly  >
@@ -295,6 +269,9 @@
      </div>
 
     <input id='current_tab_hidden' type='hidden'>
+    <input id='current_image_hidden' type='hidden'>
+    <input id='current_market_hidden' type='hidden'>
+    <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
 
     <script>
           //获取系统监控数据
@@ -753,7 +730,71 @@
            });
           }
 
-          //获取项目外网数据
+          //获取应用接口数据
+          function get_api_monitor(){
+              $.ajax({
+                  url: "/monitor/view/api",
+                  type: "post",
+                  datatype: "json",
+                  success: function (dataSet) {
+                     $('#tab-api-monitor').DataTable( {
+                              "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                              destroy    : true,
+                              async      : true,
+                              ordering   : true,
+                              scrollY    : true,
+                              scrollX    : false,
+                              paging     : false,
+                              data       : dataSet.data,
+                              autoFill   : false,
+                              bAutoWidth : false,
+                              info       : true,
+                              columns: [
+                                { "title": "项目编码","width":"10%"},
+                                { "title": "项目名称"},
+                                { "title": "采集服务器"},
+                                { "title": "接口地址"},
+                                { "title": "接口状态","className" : 'table_td_center'},
+                                { "title": "响应时间(毫秒)","className" : 'table_td_center'},
+                                { "title": "更新时间","className" : 'table_td_center'},
+                                { "title": "详情","className" : 'table_td_center'},
+                              ],
+                              columnDefs: [
+                                  {
+                                        targets: 4,
+                                        render: function(data, type, row){
+                                            var  api_status   = row[4]
+                                            var  update_time  = row[6]
+                                            var  market_id    = row[0]
+                                            if (api_status != '200') {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-warning"></i>'
+                                                    return msg;
+                                             } else {
+                                                    msg ='<i id="net@'+market_id+'@'+update_time+'" class="ion-ios7-lightbulb color-success"></i>'
+                                                    return msg;
+                                             }
+                                        }
+                                  },
+                                  {
+                                      targets:7,
+                                      render: function (data, type, row, meta) {
+                                            var  market_id    = row[0]
+                                            var  market_name    = row[1]
+                                            var  api_interface    = row[3]
+                                            var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_api_grapha(\''+market_id+'@'+market_name+'@'+api_interface+'\');"/>' +'&nbsp;';
+                                            return msg ;
+                                      }
+                                  }
+                              ],
+                             "language": get_languages()
+                         });
+
+                  }
+             });
+          }
+
+           //获取项目外网数据
           function get_proj_monitor(){
               $.ajax({
                   url: "/monitor/view/proj",
@@ -868,13 +909,50 @@
               });
           }
 
+            // 获取图表数据
+          function get_contents_from_div_large_api(p_market_id) {
+              $.ajax({
+                    url: "/monitor/view/api/log",
+                    type: "post",
+                    data: {
+                        'market_id'   : p_market_id,
+                        'begin_date'  : $('#begin_date').val(),
+                        'end_date'    : $('#end_date').val()
+                    },
+                    datatype: "json",
+                    success: function (dataSet) {
+                        get_charts_large_label('停简单接口调用图表',dataSet.x, dataSet.y,'#edc4a7','请求时间[时:分]','响应时长[毫秒]')
+                    }
+              });
+          }
+
           function show_proj_grapha(p_market){
               p_market_id = p_market.split('@')[0]
               p_market_name =p_market.split('@')[1]
               $('#begin_date').val(GetDate(3));
               $('#end_date').val(GetDate(2));
               $('#monitor_review_title').text(p_market_name+'链路图表');
+              $('#current_image_hidden').val('proj')
+              $('#current_market_hidden').val(p_market_id)
               get_contents_from_div_large(p_market_id);
+              $('.modal').on('show.bs.modal', centerModals);
+              $(window).on('resize', centerModals);
+              $('#con-modal-img-win').modal({
+                  keyboard: false,
+                  backdrop:false
+              });
+          }
+
+          function show_api_grapha(p_market){
+              p_market_id = p_market.split('@')[0]
+              p_market_name =p_market.split('@')[1]
+              p_api_interface=p_market.split('@')[2]
+              $('#begin_date').val(get_hour(1));
+              $('#end_date').val(get_hour(0));
+              $('#monitor_review_title').text(p_market_name+' - 停简单接口 - ['+p_api_interface+']');
+              $('#current_image_hidden').val('api')
+              $('#current_market_hidden').val(p_market_id)
+              get_contents_from_div_large_api(p_market_id);
               $('.modal').on('show.bs.modal', centerModals);
               $(window).on('resize', centerModals);
               $('#con-modal-img-win').modal({
@@ -889,18 +967,19 @@
               var previousTab = $(e.relatedTarget).text();
               $('#current_tab_hidden').val(activeTab)
               if (activeTab=='系统监控') {
-                  console.log('系统监控')
                   get_sys_monitor()
               }
 
               if (activeTab=='服务监控') {
-                 console.log('服务监控')
                  get_svr_mon_data()
               }
 
                if (activeTab=='外网监控') {
-                 console.log('外网监控')
                  get_proj_monitor()
+               }
+
+               if (activeTab=='接口监控') {
+                 get_api_monitor()
                }
            })
 
@@ -965,6 +1044,15 @@
                       }
                   }
              })
+         })
+
+         $('#query_btn').click(function(){
+            if ($('#current_image_hidden').val() == 'api') {
+                get_contents_from_div_large_api($('#current_market_hidden').val());
+            }
+            if ($('#current_image_hidden').val() == 'proj') {
+                get_contents_from_div_large($('#current_market_hidden').val());
+            }
          })
 
     </script>

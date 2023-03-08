@@ -321,6 +321,108 @@ function get_charts_large(p_title,p_x_data,p_y_data,p_color) {
       myChart.setOption(option);
 }
 
+ // 显示图表
+function get_charts_large_label(p_title,p_x_data,p_y_data,p_color,p_x_label,p_y_label) {
+      var myChart = echarts.init($('#monitor_review')[0])
+      var option = {
+          title:{
+                 text:p_title,
+                 left:'center',
+                 textStyle:{
+                    color:'#9ea7c4',
+                    fontWeight:'bold',
+                    fontFamily:'宋体',
+            　　　　 fontSize:12
+                }
+           },
+           grid: {
+                 left: '5%',
+                 right: '10%',
+                 bottom: '10%',
+                 containLabel: true,
+                 borderWidth: 1,
+                 borderColor: '#ccc'
+           },
+           xAxis: {
+                type: 'category',
+                name:p_x_label,
+                splitLine:{
+                   show:false
+                },
+                axisLine: { show: true,lineStyle:{ color:'#329ba3' }},
+                axisLabel:{
+                    textStyle:
+                        {  color:'#9ea7c4',
+                           fontSize:8,
+                           fontStyle: 'italic',
+                           fontWeight: 'bold'
+                        }
+                },
+                axisTick : {show: false},
+                data: p_x_data
+            },
+           yAxis: {
+                name:p_y_label,
+                type: 'value',
+                splitLine:{
+                   show:false
+                },
+                margin: 5,
+                rotate: 60,
+                axisTick : {show:false},
+                splitLine: {show:false},
+                axisLabel: {textStyle:{color:'#9ea7c4',fontSize:8} },
+                axisLine : {show: true,lineStyle:{ color:'#6173A3'}},
+            },
+           tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#83d5a5'
+                }
+              },
+              formatter: function (params, ticket, callback) {
+                  var htmlStr = '';
+                  for(var i=0;i<params.length;i++){
+                        var param = params[i];
+                        var valx = param.name;
+                        var valy = param.value;
+                        var valz = valx.split(':')[0]+'时'+valx.split(':')[1]+'分'
+                        console.log(i,param)
+                        htmlStr=htmlStr+'<span>请求时间&nbsp;&nbsp;:&nbsp;'+valz+'</span><br>'+'<span>响应时长&nbsp;&nbsp;: '+valy+'毫秒</span>'
+                  }
+                  return htmlStr;
+                 }
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                　　　　show:true,
+                　　　　excludeComponents :['toolbox'],
+                　　　　pixelRatio: 1
+                    }
+                }
+            },
+            series: [{
+                data: p_y_data,
+                type: 'line',
+                itemStyle : {
+                    normal : {
+                      lineStyle:{
+                        color:p_color
+                      }
+                    }
+                },
+                showAllSymbol: false,
+                symbolSize:1,
+                smooth: true
+            }]
+      };
+      myChart.setOption(option);
+}
+
 //返回备份任务数组
 function get_backup_tasks(){
     $.ajax({
@@ -360,7 +462,7 @@ function format_sql(sql) {
     return res
 }
 
- String.prototype.format = function () {
+String.prototype.format = function () {
     var values = arguments;
     return this.replace(/\{(\d+)\}/g, function (match, index) {
         if (values.length > index) {
@@ -370,3 +472,33 @@ function format_sql(sql) {
         }
     });
 };
+
+Date.prototype.format = function(fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+        };
+        if(/(y+)/.test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 -RegExp.$1.length));
+        }
+        for(var k in o) {
+                if(new RegExp("(" + k + ")").test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                }
+        }
+        return fmt;
+}
+
+//获取当前时间前一小时
+function get_hour(n_hours) {
+    var now = new Date;
+    now.setMinutes(now.getMinutes() - n_hours*30);
+    var stime = now.format("yyyy-MM-dd hh:mm");//一个小时前的时间
+    console.log('get_hour_minus_one_hours=',stime)
+    return stime
+}
