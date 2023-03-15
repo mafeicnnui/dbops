@@ -1,284 +1,341 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
     <title>系统设置</title>
+    <style>
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+       .modal-lg {
+            width:70%;
+            height:45%;
+            margin-left:400px;
+            margin-top:80px;
+        }
+
+    </style>
 </head>
+
 <body>
-    <p></p>
-     <form class="form-horizontal" role="form">
-        <div class="panel panel-default">
-          <div class="panel-body">
-              <ul class="nav nav-pills m-b-30 pull-left">
-                    <li id='secure_setting_tab' class="active">
-                        <a href="#secure_setting_div" data-toggle="tab" aria-expanded="true">安全设置</a>
-                    </li>
-                    <li id='mail_setting_tab' class="">
-                        <a href="#mail_setting_div" data-toggle="tab" aria-expanded="false">邮件设置</a>
-                    </li>
-                    <li id='interface_setting_tab' class="">
-                        <a href="#interface_setting_div" data-toggle="tab" aria-expanded="false">接口服务设置</a>
-                    </li>
-                    <li id='db_setting_tab' class="">
-                        <a href="#db_setting_div" data-toggle="tab" aria-expanded="false">元数据库设置</a>
-                    </li>
-                    <li id='ldap_tab' class="">
-                        <a href="#ldap_div" data-toggle="tab" aria-expanded="false">LDAP设置</a>
-                    </li>
-                    <li id='main_tab' class="">
-                        <a href="#ldap_div" data-toggle="tab" aria-expanded="false">主面板设置</a>
-                    </li>
+   <row>
 
-              </ul>
-              <div class="tab-content br-n pn">
-                    <div id="secure_setting_div" class="tab-pane active">
-                        <div class="row" > </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">登陆超时设置</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input  class="form-control" id="login_timeout"  type="text" value="30">
-                                    </div>
-                                 </div>
-                            </div>
-                        </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">口令重试次数</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input class="form-control" id="password_rep_times" type="text" value="3">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">ajax超时设置</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input class="form-control" id="ajax_timeout" type="text" value="3">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                    </div>
-                    <div id="mail_setting_div"  class="tab-pane">
-                        <div class="row" ></div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">邮件服务器地址</label>
-                                    </div>
-                                    <div class="col-md-9 text-left">
-                                        <input id='send_mail_server' class="form-control" type="text" value="smtp.exmail.qq.com">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                             <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">邮件服务器端口</label>
-                                    </div>
-                                    <div class="col-md-9 text-left">
-                                        <input id='send_mail_port' class="form-control" type="text" value="465">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">发件人邮箱名称</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='send_mail_user' class="form-control" type="text" value="190343@lifeat.cn">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">发件人邮箱密码</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='send_mail_pass' class="form-control" type="password" value="Hhc5HBtAuYTPGHQ8">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">备份任务收件人</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='send_mail_bakcup' class="form-control" type="text" value="190343@lifeat.cn">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">同步任务收件人</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='send_mail_sync' class="form-control" type="text" value="190343@lifeat.cn">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">监控任务收件人</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='send_mail_monitor' class="form-control" type="text" value="190343@lifeat.cn">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                    </div>
-                    <div id="interface_setting_div" class="tab-pane ">
-                        <div class="row" > </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">接口服务器地址[内网]</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='api_server' class="form-control" type="text" value="10.2.39.18">
-                                    </div>
-                                 </div>
-                            </div>
-                        </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">接口服务器端口[内网]</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='api_port' class="form-control" type="text" value="80">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">接口服务器地址[外网]</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='api_server2' class="form-control" type="text" value="124.127.103.190">
-                                    </div>
-                                 </div>
-                            </div>
-                        </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">接口服务器端口[外网]</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='api_port2' class="form-control" type="text" value="65480">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                    </div>
-                    <div id="db_setting_div" class="tab-pane">
-                        <div class="row" > </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">元数据库地址</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                         <input id='db_ip' class="form-control"  readonly type="text" value="10.2.39.18">
-                                    </div>
-                                 </div>
-                            </div>
-                        </div>
-                        <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">元数据库端口</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='db_port' class="form-control" readonly type="text" value="3306">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">元数据库名称</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='db_name' class="form-control" readonly type="text" value="puppet">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">元数据库用户</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='db_user' class="form-control" readonly type="text" value="puppet">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                       <div class="row" >
-                            <div class="col-md-6">
-                                 <div class="form-group">
-                                    <div class="col-md-3 text-right">
-                                       <label class="control-label text-left">元数据库密码</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input id='db_pass' class="form-control" readonly type="password" value="Puppet@123">
-                                    </div>
-                                 </div>
-                            </div>
-                       </div>
-                    </div>
-             </div>
-          </div>
-        </div>
-     </form>
-    <script>
-      $(document).ready(function() {
 
-      });
-   </script>
+
+   </row>
+
+     <div class="col-md-3 input-group">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" id="type-name"  class="form-control" placeholder="请输入代码或名称">
+            <span class="input-group-btn">
+               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+            </span>
+      </div>
+
+      <div class="col-md-3 input-group">
+            <span class="input-group-btn">
+               <input  id='setting-add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="&nbsp;&nbsp;新增"/>
+            </span>
+      </div>
+
+    <br>
+
+    <!--代码管理 -->
+    <table id="tab-sys-code-type" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+<!--    <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">-->
+<!--        <input  id='setting-add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>-->
+<!--    </div>-->
+
+    <!--新增参数窗口 -->
+    <div id="con-modal-code-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增参数</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                  <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_add_setting_key">*</span>键名：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="add_setting_key"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_setting_value">*</span>键值：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_setting_value"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_setting_desc">*</span>描述：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="add_setting_desc"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_add_setting_status">*</span>状态：</label>
+                            </div>
+                            <div class="col-md-9">
+                                 <select class="form-control select" id="add_setting_status" >
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                 </select>
+                           </div>
+                        </div>
+                      </form>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="setting_add_btn" >保存</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+              </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
+    <!--参数变更窗口 -->
+    <div id="con-modal-code-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">参数变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                  <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group" >
+                            <div>
+                                <label class="col-md-3 control-label" ><span id="s_upd_setting_key">*</span>键名：</label>
+                            </div>
+                            <div class="col-md-9" >
+                                <input type="text" id="upd_setting_key"  readonly class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_setting_value">*</span>键值：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_setting_value"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-3 control-label"><span id="s_upd_setting_desc">*</span>描述：</label>
+                            </div>
+                            <div class="col-md-9">
+                               <input type="text" id="upd_setting_desc"  class="form-control">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label class="col-md-3 control-label"><span id="s_upd_type_status">*</span>状态：</label>
+                            </div>
+                            <div class="col-md-9">
+                                 <select class="form-control select" id="upd_setting_status" >
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                 </select>
+                           </div>
+                        </div>
+                      </form>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="setting_upd_btn" >更新</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+              </div>
+            </div>
+         </div>
+      </div>
+     </div>
+
 </body>
+
+<script type="text/javascript">
+
+     function query_sys_setting(){
+            $.ajax({
+              url: "/sys/setting/_query",
+              type: "post",
+              datatype: "json",
+              data: {
+                code:$("#type-name").val()
+            },
+              success: function (dataSet) {
+                $('#tab-sys-code-type').DataTable( {
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      destroy    :true,
+                      async      :true,
+                      ordering   :false,
+                      scrollY    :false,
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging:     true,
+                      iDisplayLength: 20,
+                      data: dataSet,
+                      columns: [
+                         { "title": "键名" },
+                         { "title": "键值" },
+                         { "title": "描述" },
+                         { "title": "状态" },
+                         { "title": "创建日期" },
+                         { "title": "更新日期" },
+                         { "title": "操作"},
+                       ],
+                      columnDefs: [
+                      {
+                        targets: 6,
+                        render: function(data, type, row, meta){
+                              var btn ='&nbsp;'+
+                                  '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="updSetting(\''+escape(row)+'\');"/>' +'&nbsp;'+
+                                  '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delSetting(\''+row[0]+'\');"/>' +'&nbsp;'
+                            return btn
+                        }
+                      }
+                     ],
+                      "language": get_languages()
+                    });
+                }
+            })
+      }
+
+     function updSetting(row){
+            obj = unescape(row)
+            console.log('updSetting=',obj)
+            $('#upd_setting_key').val(obj.split(',')[0])
+            $('#upd_setting_value').val(obj.split(',')[1])
+            $('#upd_setting_desc').val(obj.split(',')[2])
+            if (obj.split(',')[3]=='启用') {
+                 $('#upd_setting_status').val('1')
+            } else {
+                 $('#upd_setting_status').val('0')
+            }
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-modal-code-upd').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+     }
+
+     function delSetting(key){
+          swal({
+                title: "确认要删除吗?",
+                text: "所有使用该参数[`"+key+"`]的程序可能会有问题!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 撤销!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+                if (isConfirm) {
+                       $.ajax({
+                          url: "/sys/setting/del",
+                          type: "post",
+                          datatype: "json",
+                          data: {
+                              key : key,
+                          },
+                          success: function (dataSet) {
+                            if (dataSet.code == 0) {
+                                swal(dataSet.message, "", "success")
+                                query_sys_setting()
+                            } else {
+                                swal(dataSet.message, "", "error")
+                            }
+                          },
+                       })
+
+                } else {
+                    swal("已取消", "参数["+key+"]未删除！", "error");
+                }
+            });
+     }
+
+     $('#setting-add-btn').click(function(){
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-modal-code-add').modal({
+                   keyboard: false,
+                   backdrop:false
+            });
+     });
+
+     $("#query_btn").click(function() {
+           query_sys_setting();
+     });
+
+     $("#type-name").bind("input propertychange",function(){
+          $("#query_btn").click();
+     });
+
+     $('#setting_add_btn').click(function(){
+          $.ajax({
+              url: "/sys/setting/add/save",
+              type: "post",
+              datatype: "json",
+              data: {
+                  key    : $("#add_setting_key").val(),
+                  value  : $("#add_setting_value").val(),
+                  desc   : $("#add_setting_desc").val(),
+                  status : $("#add_setting_status").val(),
+              },
+              success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("保存成功", "", "success")
+                    query_sys_setting()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+              },
+          })
+     });
+
+     $('#setting_upd_btn').click(function(){
+          $.ajax({
+              url: "/sys/setting/upd/save",
+              type: "post",
+              datatype: "json",
+              data: {
+                  key    : $("#upd_setting_key").val(),
+                  value  : $("#upd_setting_value").val(),
+                  desc   : $("#upd_setting_desc").val(),
+                  status : $("#upd_setting_status").val(),
+              },
+              success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal(dataSet.message, "", "success")
+                    query_sys_setting()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+              },
+          })
+     })
+
+     $(document).ready(function() {
+         set_selected()
+         query_sys_setting();
+     });
+
+ </script>
+
 </html>
