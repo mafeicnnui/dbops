@@ -9,6 +9,7 @@ import json
 import traceback
 import requests
 
+from web.model.t_ds import  get_ds_by_dsid
 from web.utils.common      import format_sql
 from web.utils.common      import current_rq
 from web.utils.mysql_async import async_processer
@@ -812,3 +813,28 @@ async def del_alert(p_task_tag):
     except :
         traceback.print_exc()
         return {'code': '-1', 'message': '删除失败!'}
+
+async def get_redis_slowlog_hz(p_batch_id):
+    sql = """SELECT  * FROM t_monitor_redis_hz_log a
+             where a.batch_id='{0}'
+               AND a.create_time BETWEEN DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND NOW()
+               AND a.command NOT IN(SELECT command FROM t_monitor_redis_whitelist b WHERE a.dbid=b.dbid)         
+          """.format(p_batch_id)
+    return (await async_processer.query_dict_list(sql))
+
+async def get_redis_slowlog_mx(p_batch_id):
+    sql = """SELECT  dbid,batch_id,start_time,duration,command,MAX(create_time) AS create_time
+             FROM t_monitor_redis_log a 
+             where a.batch_id='{0}'
+               AND a.create_time BETWEEN DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND NOW()
+               AND a.command NOT IN(SELECT command FROM t_monitor_redis_whitelist b WHERE a.dbid=b.dbid)   
+                 GROUP BY dbid,batch_id,start_time,duration,command          
+          """.format(p_batch_id)
+    return (await async_processer.query_dict_list(sql))
+
+async def get_redis_slowlog_dbinfo(p_batch_id):
+    st = """SELECT  dbid FROM t_monitor_redis_log where batch_id='{0}' limit 1""".format(p_batch_id)
+    dbid =  (await async_processer.query_dict_one(st))['dbid']
+    print('dbid=',dbid)
+    dbinfo = await get_ds_by_dsid(dbid)
+    return dbinfo

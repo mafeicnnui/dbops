@@ -60,3 +60,16 @@ async def query_redis(p_dbid,p_db_name,p_key_name):
     except:
         traceback.print_exc()
         return {'code':-1,'data':[],'message':traceback.format_exc()}
+
+
+async def query_redis_keys(p_dbid,p_db_name,p_key_name):
+    try:
+        ds = await  get_ds_by_dsid(p_dbid)
+        print(p_db_name,p_db_name.replace('db',''))
+        redis = get_ds_redis(ds['ip'], ds['port'], ds['password'],p_db_name.replace('db',''))
+        keyname = p_key_name.split(' ')[1].replace('"','').replace("'",'').strip()
+        res = redis.keys(keyname)
+        return {'code':0,'data':res,'message':''}
+    except:
+        traceback.print_exc()
+        return {'code':-1,'data':[],'message':traceback.format_exc()}
