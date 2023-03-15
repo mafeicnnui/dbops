@@ -107,7 +107,8 @@
         }
 
         function con_svr(p_svr_id) {
-            if (window.location.host=='ops.zhitbar.cn') {
+            console.log('con_src=',window.location.host)
+            if (window.location.host.indexOf("ops.zhitbar.cn") >=0 ) {
                  window.open($('#webssh_url').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');
              } else {
                  window.open($('#webssh_url2').val()+"/?server_id="+p_svr_id+'&token='+window.localStorage.getItem("token")+'&#fontsize=20');

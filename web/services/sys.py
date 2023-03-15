@@ -6,7 +6,8 @@
 # @Software: PyCharm
 
 import json
-from web.model.t_sys  import save_audit_rule,query_dm,query_rule,query_dm_detail,save_sys_code_type,upd_sys_code_type,del_sys_code
+from web.model.t_sys import save_audit_rule, query_dm, query_rule, query_dm_detail, save_sys_code_type, \
+    upd_sys_code_type, del_sys_code, query_settings, save_sys_setting, upd_sys_setting, del_sys_setting
 from web.model.t_sys  import save_sys_code_detail,upd_sys_code_detail,del_sys_code_detail
 from web.model.t_dmmx import get_sys_dmlx
 from web.utils import base_handler
@@ -97,8 +98,9 @@ class audit_rule_save(base_handler.TokenHandler):
 
 
 class sys_setting(base_handler.TokenHandler):
-   def get(self):
-       self.render("./sys/sys_setting.html")
+   async def get(self):
+       self.render("./sys/sys_setting.html",
+                   sys_code_type= await get_sys_dmlx())
 
 class sys_code(base_handler.TokenHandler):
    async def get(self):
@@ -197,3 +199,41 @@ class sys_query_rule(base_handler.TokenHandler):
         v_json    = json.dumps(v_json)
         self.write({"code": 0, "message": v_json})
 
+
+
+class sys_setting_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        code     = self.get_argument("code")
+        v_list   = await query_settings(code)
+        v_json   = json.dumps(v_list)
+        self.write(v_json)
+
+class sys_setting_add_save(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        code = {}
+        code['key']    = self.get_argument("key")
+        code['value']  = self.get_argument("value")
+        code['desc']   = self.get_argument("desc")
+        code['status'] = self.get_argument("status")
+        result = await save_sys_setting(code)
+        self.write({"code": result['code'], "message": result['message']})
+
+class sys_setting_upd_save(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        code = {}
+        code['key']    = self.get_argument("key")
+        code['value']  = self.get_argument("value")
+        code['desc']   = self.get_argument("desc")
+        code['status'] = self.get_argument("status")
+        result = await upd_sys_setting(code)
+        self.write({"code": result['code'], "message": result['message']})
+
+class sys_setting_del(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        key   = self.get_argument("key")
+        result = await del_sys_setting(key)
+        self.write({"code": result['code'], "message": result['message']})

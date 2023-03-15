@@ -9,13 +9,14 @@ import json
 import tornado.web
 from web.model.t_monitor import query_monitor_index, save_index, upd_index, del_index, query_monitor_log_analyze, \
     query_monitor_templete_type, query_alert, save_alert_task, get_alert_task_by_tag, upd_alert_task, del_alert, \
-    push_alert_task, query_monitor_api, query_monitor_api_log
+    push_alert_task, query_monitor_api, query_monitor_api_log, get_redis_slowlog_hz, get_redis_slowlog_mx, \
+    get_redis_slowlog_dbinfo
 from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get_monitor_indexes_by_type,get_monitor_task_by_tag,query_monitor_sys
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
 from   web.model.t_monitor   import push_monitor_task,run_monitor_task,stop_monitor_task,query_monitor_svr,query_monitor_proj,query_monitor_proj_log
 from   web.model.t_dmmx      import get_dmm_from_dm,get_gather_server,get_templete_names,get_sync_db_server,get_gather_tasks,get_db_moitor_templates
-from   web.utils.common      import get_day_nday_ago,now
+from web.utils.common import get_day_nday_ago, now, DateEncoder
 from   web.model.t_ds        import get_dss
 from   web.utils             import base_handler
 
@@ -467,3 +468,19 @@ class monitoralert_push(base_handler.TokenHandler):
         v_list = push_alert_task(tag, api)
         v_json = json.dumps(v_list)
         self.write(v_json)
+
+class monitor_redis_slowlog(base_handler.BaseHandler):
+   async def get(self):
+       batch_id = self.get_argument("batch_id")
+       dbinfo = await get_redis_slowlog_dbinfo(batch_id)
+       hz = await get_redis_slowlog_hz(batch_id)
+       mx = await get_redis_slowlog_mx(batch_id)
+       print(batch_id)
+       print(hz)
+       print(mx)
+       self.render("./monitor/monitor_redis_slowlog.html",
+           batch_id=batch_id,
+           dbinfo=dbinfo,
+           hz= json.loads(json.dumps(hz,cls=DateEncoder)),
+           mx = json.loads(json.dumps(mx,cls=DateEncoder)),
+       )

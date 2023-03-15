@@ -1,0 +1,82 @@
+<html>
+<head>
+    <title>redis慢日志详情</title>
+    <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+       .xwtable {width: 100%;border-collapse: collapse;border: 1px solid #ccc;}
+       .xwtable thead td {font-size: 12px;color: #333333;
+                          text-align: center;
+                          border: 1px solid #ccc; font-weight:bold;}
+       .xwtable thead th {font-size: 12px;color: #333333;
+                          text-align: center;
+                          border: 1px solid #ccc; font-weight:bold;}
+       .xwtable tbody tr {background: #fff;font-size: 14px;color: #666666;}
+       .xwtable tbody tr.alt-row {background: #f2f7fc;}
+       .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #a88c8c;}
+
+    </style>
+</head>
+
+<body>
+   <div class="row">
+       <div class="col-md-1">
+       </div>
+       <div class="col-md-10">
+           <br>
+           <h4>实例ID:{{dbinfo['ip']}}:{{dbinfo['port']}}</h4>
+           <hr>
+           <h3 align="center">汇总信息</h3>
+           <table class="xwtable">
+               <thread>
+                 <tr>
+                    <td width=25%>命令</td>
+                    <td width=25%>平均耗时</td>
+                    <td width=25%>开始时间</td>
+                    <td width=25%>结束时间</td>
+                 </tr>
+              </thread>
+              <tbody>
+                {% for h in hz %}
+                  <tr>
+                      <td><span >{{h['command']}}</span></td>
+                      <td><span >{{h['avg_duration']}}</span></td>
+                      <td><span >{{h['start_time']}}</span></td>
+                      <td><span >{{h['end_time']}}</span></td>
+                  </tr>
+                {% end %}
+              </tbody>
+           </table>
+           <br>
+           <br>
+           <h3 align="center">明细信息</h3>
+           <table class="xwtable">
+               <thread>
+                 <tr>
+                    <td width=25%>命令</td>
+                    <td width=25%>耗时</td>
+                    <td width=25%>开始时间</td>
+                    <td width=25%>采集时间</td>
+                </tr>
+              </thread>
+              <tbody>
+                {% for h in mx %}
+                  <tr>
+                      <td><span >{{h['command']}}</span></td>
+                      <td><span >{{h['duration']}}</span></td>
+                      <td><span >{{h['start_time']}}</span></td>
+                      <td><span >{{h['create_time']}}</span></td>
+                  </tr>
+                {% end %}
+              </tbody>
+            </table>
+
+       </div>
+       <div class="col-md-1">
+       </div>
+   </div>
+</body>
+
+<script src="{{static_url('assets/js/jquery.min.js')}}"></script>
+<script src="{{static_url('assets/js/bootstrap.min.js')}}"></script>
+
+</html>

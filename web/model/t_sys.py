@@ -37,6 +37,20 @@ def check_code(code):
     result['message'] = '验证通过'
     return result
 
+def check_setting(code):
+    result = {}
+    if code["key"]=="":
+        result['code']='-1'
+        result['message']='键名不能为空！'
+        return result
+    if code["value"]=="":
+        result['code']='-1'
+        result['message']='键值不能为空！'
+        return result
+    result['code'] = '0'
+    result['message'] = '验证通过'
+    return result
+
 async  def save_audit_rule(rule):
     result = check_rule(rule)
     if result['code']=='-1':
@@ -156,3 +170,57 @@ async def query_rule():
     for r in await async_processer.query_list(sql):
         v_dict[r[0]]=r[1]
     return v_dict
+
+
+async def query_settings(p_code):
+    v_where=' '
+    if p_code != '':
+        v_where = " where  (a.key like '%{0}%' or a.value like '%{1}%')".format(p_code,p_code,p_code,p_code)
+    sql = """SELECT a.key, a.value,a.desc,
+                  CASE a.status WHEN '1' THEN '启用'  WHEN '0' THEN '禁用' END  AS flag,
+                  DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s')  AS  create_time,
+                  DATE_FORMAT(a.update_time,'%Y-%m-%d %H:%i:%s')  AS  update_time
+                FROM t_sys_settings a {} ORDER BY a.key,a.create_time""".format(v_where)
+    return await async_processer.query_list(sql)
+
+async def save_sys_setting(code):
+    result = check_setting(code)
+    if result['code']=='-1':
+       return result
+    try:
+        st= """insert into t_sys_settings(`key`,`value`,`desc`,`status`,create_time,update_time) 
+                values('{}','{}','{}','{}',now(),now())""".format(code['key'],code['value'],code['desc'],code['status'])
+        await async_processer.exec_sql(st)
+        return {'code':'0','message':'保存成功!'}
+    except Exception as e:
+        traceback.print_exc()
+        return {'code':'-1','message':'保存失败!'}
+
+async def upd_sys_setting(code):
+    result = check_setting(code)
+    if result['code']=='-1':
+       return result
+    try:
+        st= """update t_sys_settings set  
+                   `value`='{}',
+                   `desc` ='{}',
+                   `status` = '{}',
+                   update_time=now() 
+                where  `key` ='{}'""".format(code['value'],code['desc'],code['status'],code['key'])
+        await async_processer.exec_sql(st)
+        return {'code':'0','message':'更新成功!'}
+    except:
+        traceback.print_exc()
+        return {'code':'-1','message':'更新失败!'}
+
+async def del_sys_setting(key):
+    try:
+        rs = await async_processer.query_one("select count(0) from t_sys_settings where `key`='{}'".format(key))
+        if  rs[0] == 0:
+            return {'code':'-1','message':'键名:`{}`不存在!'}
+        st= "delete from t_sys_settings where `key`  = '{}'".format(key)
+        await async_processer.exec_sql(st)
+        return {'code':'0','message':'删除成功!'}
+    except:
+        traceback.print_exc()
+        return {'code': '-1', 'message': '删除失败!'}
