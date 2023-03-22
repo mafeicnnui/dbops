@@ -21,13 +21,13 @@
            </div>
            <div class="col-md-3">
                  <div class="input-group">
-                     <span class="input-group-addon">项目名称</span>
-                     <select class="form-control select" id="market_id" >
+                    <span class="input-group-addon">项目名称</span>
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id">
                         <option value='' selected = "selected">.....</option>
                         {% for var in dm_proj_type %}
                              <option value={{var[0]}} >{{var[1]}}</option>
                         {% end %}
-                    </select>
+                     </select>
                  </div>
            </div>
            <div class="col-md-2">
@@ -224,6 +224,9 @@
         }
 
         $(document).ready(function() {
+            $('.selectpicker').selectpicker({
+              size: 10
+            });
             $("#query_btn").click();
         });
 
