@@ -552,9 +552,10 @@ async def query_monitor_api():
                     c.dmmc AS market_name,
                     b.server_desc2 as server_desc,
                     api_interface,
-                    api_status,
+                    CASE WHEN TIMESTAMPDIFF(MINUTE,a.update_time,NOW())>=3 THEN 500 ELSE a.api_status END api_status,
                     response_time,
-                    DATE_FORMAT(a.update_time,'%Y-%m-%d %H:%i:%s') AS update_time 
+                    DATE_FORMAT(a.update_time,'%Y-%m-%d %H:%i:%s') AS update_time,
+                    (select dmmc from t_dmmx where dm='48' and dmm=a.market_id) as request_body                    
              FROM t_monitor_api_log a,t_server b ,t_dmmx c
              WHERE a.server_id=b.id AND a.market_id=c.dmm AND c.dm='05'
                AND a.id IN(SELECT MAX(id) FROM t_monitor_api_log GROUP BY market_id,server_id,api_interface)
@@ -815,25 +816,29 @@ async def del_alert(p_task_tag):
         return {'code': '-1', 'message': '删除失败!'}
 
 async def get_redis_slowlog_hz(p_batch_id):
-    sql = """SELECT  * FROM t_monitor_redis_hz_log a
-             where a.batch_id='{0}'
-               AND a.create_time BETWEEN DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND NOW()
-               AND a.command NOT IN(SELECT command FROM t_monitor_redis_whitelist b WHERE a.dbid=b.dbid)         
+    sql = """SELECT concat((@rowNum:=@rowNum+1),'') as "xh",t.* 
+            FROM (SELECT dbid,start_time,end_time,avg_duration,command 
+                  FROM t_monitor_redis_hz_log a,(select (@rowNum:=0)) b
+                  where a.batch_id in({0})                  
+                    AND a.command NOT IN(SELECT command FROM t_monitor_redis_whitelist b 
+                                     WHERE a.dbid=b.dbid and b.status='1')  
+                    GROUP BY dbid,start_time,end_time,avg_duration,command) t      
           """.format(p_batch_id)
     return (await async_processer.query_dict_list(sql))
 
 async def get_redis_slowlog_mx(p_batch_id):
-    sql = """SELECT  dbid,batch_id,start_time,duration,command,MAX(create_time) AS create_time
-             FROM t_monitor_redis_log a 
-             where a.batch_id='{0}'
-               AND a.create_time BETWEEN DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND NOW()
-               AND a.command NOT IN(SELECT command FROM t_monitor_redis_whitelist b WHERE a.dbid=b.dbid)   
-                 GROUP BY dbid,batch_id,start_time,duration,command          
+    sql = """SELECT concat((@rowNum:=@rowNum+1),'') as "xh",t.* 
+            FROM (SELECT dbid,start_time,duration,command,MAX(create_time) AS create_time
+             FROM t_monitor_redis_log a ,(select (@rowNum:=0)) b
+             where a.batch_id in({0})
+                 AND a.command NOT IN(SELECT command FROM t_monitor_redis_whitelist b 
+                                     WHERE a.dbid=b.dbid and b.status='1')  
+                 GROUP BY dbid,start_time,duration,command) t       
           """.format(p_batch_id)
     return (await async_processer.query_dict_list(sql))
 
 async def get_redis_slowlog_dbinfo(p_batch_id):
-    st = """SELECT  dbid FROM t_monitor_redis_log where batch_id='{0}' limit 1""".format(p_batch_id)
+    st = """SELECT  dbid FROM t_monitor_redis_log where batch_id='{0}' limit 1""".format(p_batch_id.split(',')[0])
     dbid =  (await async_processer.query_dict_one(st))['dbid']
     print('dbid=',dbid)
     dbinfo = await get_ds_by_dsid(dbid)

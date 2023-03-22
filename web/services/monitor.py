@@ -471,11 +471,11 @@ class monitoralert_push(base_handler.TokenHandler):
 
 class monitor_redis_slowlog(base_handler.BaseHandler):
    async def get(self):
-       batch_id = self.get_argument("batch_id")
+       batch_id = self.get_query_argument("batch_id")
+       print('batch_id=',batch_id)
        dbinfo = await get_redis_slowlog_dbinfo(batch_id)
        hz = await get_redis_slowlog_hz(batch_id)
        mx = await get_redis_slowlog_mx(batch_id)
-       print(batch_id)
        print(hz)
        print(mx)
        self.render("./monitor/monitor_redis_slowlog.html",

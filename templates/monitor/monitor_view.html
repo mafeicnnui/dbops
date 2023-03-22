@@ -415,7 +415,6 @@
               }
 
              });
-
           }
 
           //获取系统服务监控数据
@@ -758,6 +757,7 @@
                                 { "title": "接口状态","className" : 'table_td_center'},
                                 { "title": "响应时间(毫秒)","className" : 'table_td_center'},
                                 { "title": "更新时间","className" : 'table_td_center'},
+                                { "title": "请求体","visible":false},
                                 { "title": "详情","className" : 'table_td_center'},
                               ],
                               columnDefs: [
@@ -777,12 +777,11 @@
                                         }
                                   },
                                   {
-                                      targets:7,
+                                      targets:8,
                                       render: function (data, type, row, meta) {
-                                            var  market_id    = row[0]
-                                            var  market_name    = row[1]
-                                            var  api_interface    = row[3]
-                                            var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_api_grapha(\''+market_id+'@'+market_name+'@'+api_interface+'\');"/>' +'&nbsp;';
+                                            //var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_api_grapha(\''+JSON.stringify(row)+'\');"/>' +'&nbsp;';
+                                            var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_api_grapha(\''+escape(row)+'\');"/>' +'&nbsp;';
+                                            console.log(JSON.stringify(row))
                                             return msg ;
                                       }
                                   }
@@ -943,13 +942,24 @@
               });
           }
 
-          function show_api_grapha(p_market){
-              p_market_id = p_market.split('@')[0]
-              p_market_name =p_market.split('@')[1]
-              p_api_interface=p_market.split('@')[2]
+          function show_api_grapha(p_row){
+              row = unescape(p_row).split(',')
+              p_market_id = row[0]
+              p_market_name =row[2]
+              p_api_interface=row[3]
+              p_api_request_body=row[7]+','+row[8]
+              p_curl='curl -H "Content-Type: application/json" -X POST -d \''+p_api_request_body+'\''+'&nbsp;&nbsp;'+ p_api_interface
               $('#begin_date').val(get_hour(1));
               $('#end_date').val(get_hour(0));
-              $('#monitor_review_title').text(p_market_name+' - 停简单接口 - ['+p_api_interface+']');
+              $('#monitor_review_title').html(
+                  '<h4>'+p_market_name+'</h4>'+
+                  '接口：<span>'+p_api_interface+'</span><br>'+
+                  '请求体：<span>'+p_api_request_body+'</span><br>'+
+                  'curl命令：<span>'+p_curl+'</span><br>'
+              )
+
+              // $('#monitor_review_title').text(p_market_name)
+
               $('#current_image_hidden').val('api')
               $('#current_market_hidden').val(p_market_id)
               get_contents_from_div_large_api(p_market_id);

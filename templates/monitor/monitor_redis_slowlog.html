@@ -7,12 +7,13 @@
        .xwtable thead td {font-size: 12px;color: #333333;
                           text-align: center;
                           border: 1px solid #ccc; font-weight:bold;}
-       .xwtable thead th {font-size: 12px;color: #333333;
+       .xwtable thead th {font-size: 14px;color: #333333;
                           text-align: center;
                           border: 1px solid #ccc; font-weight:bold;}
-       .xwtable tbody tr {background: #fff;font-size: 14px;color: #666666;}
+       .xwtable thead tr {background: #ded9e1;font-size: 14px;color: #333926;}
+       .xwtable tbody tr {background: #ffffff;font-size: 14px;color: #522c2c;}
        .xwtable tbody tr.alt-row {background: #f2f7fc;}
-       .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #a88c8c;}
+       .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #bcb2b2;}
 
     </style>
 </head>
@@ -27,17 +28,19 @@
            <hr>
            <h3 align="center">汇总信息</h3>
            <table class="xwtable">
-               <thread>
+               <thead>
                  <tr>
-                    <td width=25%>命令</td>
-                    <td width=25%>平均耗时</td>
-                    <td width=25%>开始时间</td>
-                    <td width=25%>结束时间</td>
+                    <th width=12%>序号</th>
+                    <th width=22%>操作命令</th>
+                    <th width=22%>平均耗时</th>
+                    <th width=22%>开始时间</th>
+                    <th width=22%>结束时间</th>
                  </tr>
-              </thread>
+              </thead>
               <tbody>
                 {% for h in hz %}
                   <tr>
+                      <td><span >{{h['xh']}}</span></td>
                       <td><span >{{h['command']}}</span></td>
                       <td><span >{{h['avg_duration']}}</span></td>
                       <td><span >{{h['start_time']}}</span></td>
@@ -50,17 +53,19 @@
            <br>
            <h3 align="center">明细信息</h3>
            <table class="xwtable">
-               <thread>
+               <thead>
                  <tr>
-                    <td width=25%>命令</td>
-                    <td width=25%>耗时</td>
-                    <td width=25%>开始时间</td>
-                    <td width=25%>采集时间</td>
+                    <th width=12%>序号</th>
+                    <th width=22%>操作命令</th>
+                    <th width=22%>耗时</th>
+                    <th width=22%>开始时间</th>
+                    <th width=22%>采集时间</th>
                 </tr>
-              </thread>
+              </thead>
               <tbody>
                 {% for h in mx %}
                   <tr>
+                      <td><span >{{h['xh']}}</span></td>
                       <td><span >{{h['command']}}</span></td>
                       <td><span >{{h['duration']}}</span></td>
                       <td><span >{{h['start_time']}}</span></td>
