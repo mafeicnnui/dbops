@@ -172,7 +172,7 @@ async def check_mysql_proc_exists(ds,tab):
 
 async def query_check_result(user):
     sql = """select xh,obj_name,rule_id,rule_name,rule_value,
-                    case when error!='检测通过!' then
+                    case when instr(error,'检测通过') = 0 then
                        concat("<span style='color:red;'>",error,"</span")
                     else
                        error 
@@ -1584,6 +1584,10 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
         print(r)
     # delete table result
     await del_check_results(p_user)
+
+    # dml affect rows
+    affect_rows  = 0
+
     # check sql
     for rule in rs:
         rule['error'] = format_sql(rule['error'])
@@ -1619,9 +1623,10 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
             if op in('INSERT','UPDATE','DELETE'):
                print('DML最大影响行数...')
                v =  await get_dml_rows(ds,st)
+               affect_rows = v
                if is_number(str(v)):
                    if v > int(rule['rule_value']):
-                      rule['error'] = rule['error'].format(rule['rule_value'])
+                      rule['error'] = rule['error'].format(rule['rule_value'],v)
                       await save_check_results(rule,p_user,st,sxh)
                       res = False
                else:
@@ -1664,7 +1669,7 @@ async def process_single_dml(p_dbid,p_cdb,p_sql,p_user):
 
     if res:
         rule['id'] = '0'
-        rule['error'] = '检测通过!'
+        rule['error'] = '检测通过,影响行数{}行！'.format(affect_rows)
         await save_check_results(rule, p_user, st,sxh)
 
     return res
@@ -2033,6 +2038,9 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
         for r in rs:
             print(r)
 
+        # dml affect rows
+        affect_rows = 0
+
         # 逐个SQL进行检测
         for rule in rs:
             rule['error'] = format_sql(rule['error'])
@@ -2062,9 +2070,10 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
                 if op in ('INSERT', 'UPDATE', 'DELETE'):
                     print('DML最大影响行数...')
                     v = await get_dml_rows(ds, st)
+                    affect_rows = v
                     if is_number(str(v)):
                         if v > int(rule['rule_value']):
-                            rule['error'] = rule['error'].format(rule['rule_value'])
+                            rule['error'] = rule['error'].format(rule['rule_value'],v)
                             await save_check_results(rule, p_user, st, sxh)
                             res = False
                     else:
@@ -2107,7 +2116,7 @@ async def process_multi_dml(p_dbid,p_cdb,p_sql,p_user):
 
         if res:
             rule['id'] = '0'
-            rule['error'] = '检测通过!'
+            rule['error'] = '检测通过,影响行数{}行！'.format(affect_rows)
             await save_check_results(rule, p_user, st, sxh)
 
         rss = rss and res
@@ -2122,7 +2131,7 @@ async def save_check_results(rule,user,psql,sxh):
     print('检查结果：')
     print('-'.ljust(150, '-'))
     obj = get_obj_name(psql)
-    if rule['error'] == '检测通过!':
+    if rule['error'].count('检测通过')>0:
         sql = '''insert into t_sql_audit_rule_err(xh,obj_name,rule_id,rule_name,rule_value,user_id,error) values ('{}','{}','{}','{}','{}','{}','{}')
               '''.format(sxh, obj,'', '', '', user['userid'],rule['error'])
     else:

@@ -30,7 +30,7 @@
              <div class="col-md-2">
                  <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
+                    <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名、库名、表名">
                  </div>
              </div>
              <div class="col-md-2">
@@ -221,7 +221,7 @@
                                         "title":"选择",
                                         "width": "25px",
                                         "render": function(data,type,row){
-                                             return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + row[2] + '")>'
+                                             return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + row[0] + '")>'
                                         }
                                     },
                               ],
@@ -352,17 +352,21 @@
         });
 
         $('#dsupd').on('click', function() {
-             var syncid='';
-             $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  syncid=row[0].innerHTML;
-             });
+             // var syncid='';
+             // $("#example tbody tr td input:checked").each( function() {
+             //      var row=$(($(this).parent().parent().html()));
+             //      console.log('dsupd=',row)
+             //      syncid=row[0].innerHTML;
+             //      console.log('syncid=',syncid)
+             // });
 
+             var syncid = $('#sync_tag_tmp').val()
              $.ajax({
                 url: "/sync/edit",
                 type: "get",
                 datatype: "html",
                 data: {
+                    //sync_id:syncid
                     sync_id:syncid
                 },
                 success: function () {

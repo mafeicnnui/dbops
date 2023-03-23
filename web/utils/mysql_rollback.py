@@ -119,6 +119,7 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
     insEvent = 0
     updEvent = 0
     delEvent = 0
+    result = {}
     message = {}
     try:
         stream = BinLogStreamReader(connection_settings=MYSQL_SETTINGS,
@@ -147,13 +148,18 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                     event = {"schema": binlogevent.schema, "table": binlogevent.table}
 
                     if event['schema'] == wk['db'] and wk['sqltext'].count(event['table'])>0:
+                        if result.get(event['schema'] + '.' + event['table']) is None:
+                            result[event['schema'] + '.' + event['table']] = {}
+
                         if isinstance(binlogevent, DeleteRowsEvent):
                             event["action"] = "delete"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
                             #rollback_statments.append(rsql)
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
-                            delEvent = delEvent + 1
+                            # delEvent = delEvent + 1
+                            result[event['schema']+'.'+event['table']]['delEvent'] \
+                                = result[event['schema']+'.'+event['table']].get('delEvent',0)+1
 
                         elif isinstance(binlogevent, UpdateRowsEvent):
                             event["action"] = "update"
@@ -162,7 +168,9 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
                             #rollback_statments.append(rsql)
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
-                            updEvent = updEvent + 1
+                            # updEvent = updEvent + 1
+                            result[event['schema'] + '.' + event['table']]['updEvent'] \
+                                = result[event['schema'] + '.' + event['table']].get('updEvent', 0) + 1
 
                         elif isinstance(binlogevent, WriteRowsEvent):
                             event["action"] = "insert"
@@ -170,12 +178,19 @@ def get_binlog(p_ds,p_file,p_start_pos,p_end_pos,p_sql_id):
                             sql, rsql = gen_sql(MYSQL_SETTINGS,event)
                             #rollback_statments.append(rsql)
                             cr.execute("""insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(p_sql_id, format_sql(rsql)))
-                            insEvent = insEvent + 1
+                            # insEvent = insEvent + 1
+                            result[event['schema'] + '.' + event['table']]['insEvent'] \
+                                = result[event['schema'] + '.' + event['table']].get('insEvent', 0) + 1
 
-                        message[event['schema']+'.'+event['table']] = {
-                            'insert':insEvent,
-                            'update':updEvent,
-                            'delete':delEvent
+                        # message[event['schema']+'.'+event['table']] = {
+                        #     'insert':insEvent,
+                        #     'update':updEvent,
+                        #     'delete':delEvent
+                        # }
+                        message[event['schema'] + '.' + event['table']] = {
+                            'insert': result[event['schema'] + '.' + event['table']].get('insEvent',0),
+                            'update': result[event['schema'] + '.' + event['table']].get('updEvent',0),
+                            'delete': result[event['schema'] + '.' + event['table']].get('delEvent',0)
                         }
 
             if stream.log_pos + 31 == p_end_pos or stream.log_pos >=p_end_pos:
