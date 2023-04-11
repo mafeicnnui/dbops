@@ -396,9 +396,40 @@ async def check_user(p_user):
         result['message'] = '用户角色不能为空！'
         return result
 
+    if p_user["query_grants"] is None or p_user["query_grants"]=='':
+        result['code'] = '-1'
+        result['message'] = '查询授权不能为空！'
+        return result
+
     if await check_user_exist(p_user["login"] ) > 0:
         result['code'] = '-1'
         result['message'] = '用户名已存在！'
+        return result
+
+    result['code'] = '0'
+    result['message'] = '验证通过'
+    return result
+
+async def check_user_query_grants(p_user):
+    result = {}
+    if p_user["dbid"] == "":
+        result['code'] = '-1'
+        result['message'] = '数据源不能为空！'
+        return result
+
+    if p_user["db"] == "":
+        result['code'] = '-1'
+        result['message'] = '库名不能为空！'
+        return result
+
+    if p_user["tab"] == "":
+        result['code'] = '-1'
+        result['message'] = '表名不能为空！'
+        return result
+
+    if p_user["cols"] == "":
+        result['code'] = '-1'
+        result['message'] = '授权列不能为空！'
         return result
 
     result['code'] = '0'
@@ -426,6 +457,7 @@ async def save_user(p_user):
         privs        = p_user['privs']
         file_path    = p_user['file_path']
         file_name    = p_user['file_name']
+        query_grants = p_user['query_grants']
         print('>>>>>>>>>>>>>>>>>>>>>>>>>.privs:',privs)
         if file_path=='':
            file_path = '/static/assets/images/users'
@@ -436,9 +468,9 @@ async def save_user(p_user):
             else:
                 file_name = 'girl.png'
 
-        sql="""insert into t_user(id,login_name,wkno,name,password,gender,email,phone,project_group,dept,expire_date,status,file_path,file_name,creation_date,creator,last_update_date,updator) 
-                    values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}')
-            """.format(userid,loginname,wkno,username,password,gender,email,phone,proj_group,dept,expire_date,status,file_path,file_name,current_rq(),'DBA',current_rq(),'DBA');
+        sql="""insert into t_user(id,login_name,wkno,name,password,gender,email,phone,project_group,dept,expire_date,status,file_path,file_name,query_grants,creation_date,creator,last_update_date,updator) 
+                    values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')
+            """.format(userid,loginname,wkno,username,password,gender,email,phone,proj_group,dept,expire_date,status,file_path,file_name,query_grants,current_rq(),'DBA',current_rq(),'DBA');
 
         await async_processer.exec_sql(sql)
         await save_user_role(userid,privs)
@@ -567,6 +599,7 @@ async def upd_user(p_user):
         roles       = p_user['roles']
         file_path   = p_user['file_path']
         file_name   = p_user['file_name']
+        query_grants= p_user['query_grants']
 
         if file_path == '':
             file_path = '/static/assets/images/users'
@@ -578,23 +611,24 @@ async def upd_user(p_user):
                 file_name = 'girl.png'
 
         sql="""update t_user 
-                  set  name     ='{0}',
+                  set  name ='{0}',
                        login_name='{1}',
                        password ='{2}',
                        gender   ='{3}',
                        email    ='{4}',
                        phone    ='{5}',
                        dept     ='{6}',
-                       expire_date      ='{7}' ,
-                       status           ='{8}' ,
+                       expire_date ='{7}' ,
+                       status   ='{8}' ,
                        last_update_date ='{9}' ,
                        updator   ='{10}',
                        file_path ='{11}',
                        file_name = '{12}',
                        project_group = '{13}',
-                       wkno          = '{14}'
-                where id='{15}'""".format(username,loginname,password,gender,email,phone,dept,expire_date,status,
-                                          current_rq(),'DBA',file_path,file_name,proj_group,wkno,userid)
+                       wkno          = '{14}',
+                       query_grants =  '{15}'
+                where id='{16}'""".format(username,loginname,password,gender,email,phone,dept,expire_date,status,
+                                          current_rq(),'DBA',file_path,file_name,proj_group,wkno,query_grants,userid)
         await async_processer.exec_sql(sql)
         await upd_user_role(userid,roles)
         result={}
@@ -684,7 +718,6 @@ async def query_session(p_name):
     v_list = await async_processer.query_list(sql)
     return v_list
 
-
 async def kill_session(p_session_id):
      try:
        await kill_session_log(p_session_id)
@@ -692,3 +725,95 @@ async def kill_session(p_session_id):
      except:
        traceback.print_exc()
        return {'code': -1, 'message': 'failure'}
+
+
+async def query_user_grants(p_name):
+    v_where = ''
+    if p_name != "":
+       v_where =  " where binary b.name like '%{0}%' or b.login_name like '%{1}%' ".format(p_name,p_name)
+
+    st ="""SELECT a.id,
+                  b.login_name,
+                  concat(b.name,'(',b.wkno,')') as name,
+                  c.db_desc,
+                  a.schema,
+                  a.table,
+                  a.columns,
+                  DATE_FORMAT(a.update_time,'%Y-%m-%d') AS update_time                   
+            FROM t_user_query_grants a,t_user b,t_db_source c
+            WHERE a.dbid=c.id and a.uid=b.id
+            ORDER BY CONVERT(b.name USING gbk)  asc""".format(v_where)
+    v_list = await async_processer.query_list(st)
+    return v_list
+
+async def get_user_grants(p_id):
+    st ="""SELECT a.id,
+                  a.uid,
+                  a.dbid,
+                  concat(b.id,',',b.db_desc) as db_desc,
+                  a.schema,
+                  a.table,
+                  a.columns,
+                  DATE_FORMAT(a.create_time,'%Y-%m-%d') AS create_time,
+                  DATE_FORMAT(a.update_time,'%Y-%m-%d') AS update_time                   
+            FROM t_user_query_grants a  ,t_db_source b
+            WHERE  a.dbid=b.id and  a.id={}""".format(p_id)
+    print(st)
+    v_list = await async_processer.query_dict_one(st)
+
+    return v_list
+
+async def save_user_query_grants(p_user):
+    result = {}
+    val = await check_user_query_grants(p_user)
+    if val['code'] == '-1':
+        return val
+    try:
+        st = """insert into t_user_query_grants(`uid`,`dbid`,`schema`,`table`,`columns`) values('{userid}','{dbid}','{db}','{tab}','{cols}')""".format(**p_user)
+        await async_processer.exec_sql(st)
+        result={}
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except Exception as e:
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
+
+async def upd_user_query_grants(p_user):
+    result = {}
+    val = await check_user_query_grants(p_user)
+    if val['code'] == '-1':
+        return val
+    try:
+        st = """update t_user_query_grants 
+                    set `uid`='{uid}',
+                        `dbid`='{dbid}',
+                        `schema`='{db}',
+                        `table`='{tab}',
+                        `columns`='{cols}'
+                    where id={id}""".format(**p_user)
+        print('upd_user_query_grants=',st)
+        await async_processer.exec_sql(st)
+        result={}
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
+
+async def del_user_query_grants(p_id):
+    result={}
+    try:
+        sql="delete from t_user_query_grants  where id='{0}'".format(p_id)
+        await async_processer.exec_sql(sql)
+        result={}
+        result['code']='0'
+        result['message']='删除成功！'
+    except :
+        result['code'] = '-1'
+        result['message'] = '删除失败！'
+    return result

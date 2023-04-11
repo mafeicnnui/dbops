@@ -27,9 +27,6 @@
 </head>
 <body>
    <p></p>
-
-
-
    <form class="form-horizontal" role="form" >
         <div class="row">
            <div class="form-group col-md-6">
@@ -183,7 +180,6 @@
                    </div>
                 </div>
           </div>
-
           <div class="row">
                <div class="form-group col-md-6">
                     <div>
@@ -198,11 +194,26 @@
                     </div>
                </div>
           </div>
+          <div class="row">
+               <div class="form-group col-md-6">
+                    <div>
+                        <label class="col-md-2 control-label"><span>*</span>查询授权</label>
+                    </div>
+                   <div class="col-md-10">
+                        <select class="form-control select" id="query_grants" name="query_grants">
+                            {% for var in query_grants %}
+                                <option value={{var[0]}} >{{var[1]}}</option>
+                            {% end %}
+                        </select>
+                   </div>
+                </div>
+          </div>
+
+
           <br>
           <div class="form-group m-b-0">
                 <div class="col-sm-offset-3 col-sm-9">
                     <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-<!--                    <button id="add3" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存3</button>-->
                 </div>
            </div>
            <br>
@@ -273,6 +284,7 @@
                                     privs      : get_privs(),
                                     file_path  : dataSet.file_path,
                                     file_name  : dataSet.file_name,
+                                    query_grants:$('#query_grants').val(),
                                 },
                                 success: function (dataSet) {
                                     if (dataSet.code == 0) {
@@ -309,6 +321,7 @@
                             privs: get_privs(),
                             file_path: '',
                             file_name: '',
+                            query_grants:$('#query_grants').val(),
                         },
                         success: function (dataSet) {
                             if (dataSet.code == 0) {

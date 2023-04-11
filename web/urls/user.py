@@ -7,7 +7,8 @@
 
 from web.services.user import userquery, useradd, useradd_save, useradd_save_uploadImage, userchange, useredit, \
         useredit_save, useredit_del, user_query, projectquery, project_query, projectprivs_save, sessionquery, \
-        session_query,session_kill
+        session_query, session_kill, userquerygrants, user_query_grants, user_query_grants_add_save, \
+        get_user_query_grants, user_query_grants_upd_save, user_query_grants_del
 
 # 功能：用户管理API
 user = [
@@ -26,4 +27,10 @@ user = [
         (r"/user/session", sessionquery),
         (r"/user/_session", session_query),
         (r"/user/_session/kill", session_kill),
+        (r"/user/query/grants", userquerygrants),
+        (r"/user/query/_grants", user_query_grants),
+        (r"/user/query/grants/add/save", user_query_grants_add_save),
+        (r"/get/user/query/grants", get_user_query_grants),
+        (r"/user/query/grants/upd/save", user_query_grants_upd_save),
+        (r"/user/query/grants/del", user_query_grants_del),
 ]

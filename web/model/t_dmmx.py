@@ -45,6 +45,13 @@ async def get_users(p_username):
        sql = """select login_name,concat(name,'(',wkno,')') from t_user where login_name='{}' order by id """.format(p_username)
     return await async_processer.query_list(sql)
 
+async def get_users_by_query_grants(p_username):
+    if p_username=='admin':
+       sql = """select id,concat(name,'(',wkno,')') from t_user order by id """
+    else:
+       sql = """select id,concat(name,'(',wkno,')') from t_user where login_name='{}' order by id """.format(p_username)
+    return await async_processer.query_list(sql)
+
 async def get_sys_dmlx():
     sql = "select dm,mc from t_dmlx where flag='1' order by dm"
     return await async_processer.query_list(sql)

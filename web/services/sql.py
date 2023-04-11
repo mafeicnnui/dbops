@@ -20,7 +20,8 @@ from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, ge
     get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export, get_dss_order_online
 from web.model.t_user          import get_user_by_loginame
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
-    get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo
+    get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo, get_dss_sql_query_grants, \
+    get_dss_by_query_grants, get_tab_columns_by_query_grants
 from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,get_tab_structure,get_tab_keys,get_tab_incr_col,query_ds
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
 from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2
@@ -248,10 +249,25 @@ class get_columns(base_handler.BaseHandler):
         result   = await get_tab_columns(dbid,db_name,tab_name)
         self.write({"code": result['code'], "message": result['message']})
 
+class get_columns_by_query_grants(base_handler.BaseHandler):
+    async def post(self):
+        dbid     = self.get_argument("dbid")
+        db_name  = self.get_argument("db_name")
+        tab_name = self.get_argument("tab_name")
+        result   = await get_tab_columns_by_query_grants(dbid,db_name,tab_name)
+        self.write({"code": result['code'], "message": result['message']})
+
 class get_ds(base_handler.BaseHandler):
     async def post(self):
         dsid   = self.get_argument("dsid")
         result = await query_ds(dsid)
+        self.write({"code": result['code'], "message": result['message']})
+
+class get_ds_by_query_grants(base_handler.BaseHandler):
+    async def post(self):
+        userid = self.get_argument("userid")
+        result = await get_dss_by_query_grants(userid)
+        print(userid,result,type(result))
         self.write({"code": result['code'], "message": result['message']})
 
 class get_keys(base_handler.BaseHandler):

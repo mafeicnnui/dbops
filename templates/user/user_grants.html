@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>查询授权</title>
+    <style>
+        #example{
+            width: 100% !important;
+        }
+      .modal-lg {
+        width:75%;
+        height:65%;
+        margin-left:350px;
+        margin-top:80px;
+        }
+    </style>
+</head>
+<body>
+    <p></p>
+    <div class="col-md-12">
+       <div class="col-md-3 input-group">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" id="username"  class="form-control" placeholder="请输入登陆名">
+            <span class="input-group-btn">
+               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+            </span>
+      </div>
+      <p></p>
+      <div id="div-tab">
+           <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+      </div>
+      <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+           <input  id='grants_add_btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+      </div>
+    </div>
+
+    <!--新增窗口 -->
+    <div id="con-close-add-grants" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-order-prod">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">新增-查询权限</h4>
+        </div>
+        <div class="modal-body">
+           <div class="panel panel-flat">
+                <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">查询人</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_grants_user">
+                                    <option value='' selected = "selected">.....</option>
+                                    {% for var in query_grants_user %}
+                                         <option value={{var[0]}} >{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">数据源</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_grants_dbid">
+                                    <option value='' selected = "selected">.....</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group" >
+                           <div >
+                                <label class="col-md-2 control-label">数据库</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_grants_db">
+                                    <option value=''  selected = "selected">...</option>
+                                 </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">表名称</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_grants_tab">
+                                    <option value=''  selected = "selected">...</option>
+                                 </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">授权列</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <select class="selectpicker" data-live-search="true" multiple data-style="btn-default" id="query_grants_col">
+                                    <option value=''  selected = "selected">...</option>
+                                 </select>
+                           </div>
+                        </div>
+                      </form>
+                </div>
+           </div>
+           <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="query_grants_add_btn" >保存</button>
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+           </div>
+        </div>
+     </div>
+    </div>
+    </div>
+
+    <!--变更窗口 -->
+    <div id="con-close-upd-grants" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg-order-prod">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">查询权限变更窗口</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-flat">
+                    <div class="panel-body">
+                      <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">查询人</label>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="hidden" id="update_grants_id">
+                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="update_grants_user">
+                                    <option value='' selected = "selected">...</option>
+                                    {% for var in query_grants_user %}
+                                         <option value={{var[0]}} >{{var[1]}}</option>
+                                    {% end %}
+                                </select>
+                           </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">数据源：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="update_grants_dbid">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group" >
+                           <div >
+                                <label class="col-md-2 control-label">数据库：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="update_grants_db">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">表名：</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select" id="update_grants_tab">
+                                    <option value='' selected = "selected">...</option>
+                                </select>
+                           </div>
+                        </div>
+                       <div class="form-group">
+                            <div >
+                                <label class="col-md-2 control-label">授权列</label>
+                            </div>
+                            <div class="col-md-10">
+                                 <select class="selectpicker" data-live-search="true" multiple data-style="btn-default" id="update_grants_col">
+                                    <option value=''  selected = "selected">...</option>
+                                 </select>
+                           </div>
+                        </div>
+                      </form>
+                    </div>
+              </div>
+               <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="query_grants_upd_btn">变更</button>
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
+               </div>
+            </div>
+         </div>
+        </div>
+    </div>
+
+    <script>
+
+         function init_query_grants() {
+              $('#query_grants_user').val('')
+              $("#query_grants_dbid").empty();
+              $("#query_grants_dbid").append("<option value=''>...</option>");
+              $("#query_grants_db").empty();
+              $("#query_grants_db").append("<option value=''>...</option>");
+              $("#query_grants_tab").empty();
+              $("#query_grants_tab").append("<option value=''>...</option>");
+              $("#query_grants_col").empty();
+              $("#query_grants_col").append("<option value=''>...</option>");
+              $("#query_grants_user").selectpicker('refresh')
+              $("#query_grants_dbid").selectpicker('refresh')
+              $("#query_grants_db").selectpicker('refresh')
+              $("#query_grants_tab").selectpicker('refresh')
+              $("#query_grants_col").selectpicker('refresh')
+         }
+
+         function init_update_grants() {
+              $('#update_grants_user').val('')
+              $("#update_grants_dbid").empty();
+              $("#update_grants_dbid").append("<option value=''>...</option>");
+              $("#update_grants_db").empty();
+              $("#update_grants_db").append("<option value=''>...</option>");
+              $("#update_grants_tab").empty();
+              $("#update_grants_tab").append("<option value=''>...</option>");
+              $("#update_grants_col").empty();
+              $("#update_grants_col").append("<option value=''>...</option>");
+              $("#update_grants_user").selectpicker('refresh')
+              $("#update_grants_dbid").selectpicker('refresh')
+              $("#update_grants_db").selectpicker('refresh')
+              $("#update_grants_tab").selectpicker('refresh')
+              $("#update_grants_col").selectpicker('refresh')
+         }
+
+         function get_privs(){
+              var tmp='';
+              arr = $('#query_grants_col').val()
+              if (arr.length>0) {
+                 for (let i = 0, len = arr.length; i < len; i++) {
+                   tmp=tmp+','+arr[i];
+                 }
+              } else {
+                  return ''
+              }
+              return tmp.substr(1);
+          }
+
+         function get_upd_privs(){
+              var tmp='';
+              arr = $('#update_grants_col').val()
+              if (arr.length>0) {
+                 for (let i = 0, len = arr.length; i < len; i++) {
+                   tmp=tmp+','+arr[i];
+                 }
+              } else {
+                  return ''
+              }
+              return tmp.substr(1);
+          }
+
+         function show_grants(p_grant_cols){
+             swal("授权列", p_grant_cols, "info")
+         }
+
+         function update_grants(id) {
+            $('#update_grants_id').val(id)
+            init_update_grants()
+            upd_grants_data(id)
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-upd-grants').modal({
+                   keyboard: false,
+                   backdrop:false
+            });
+         }
+
+         function upd_grants_data(p_id) {
+            $.ajax({
+                      url: "/get/user/query/grants",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          id : p_id,
+                      },
+                      success: function (dataSet) {
+                         $('#update_grants_user').val(dataSet['uid'])
+                         $("#update_grants_user").selectpicker('refresh')
+                         $("#update_grants_user").change()
+
+                         $('#update_grants_dbid').val(dataSet['db_desc'])
+                         $("#update_grants_dbid").selectpicker('refresh')
+                         $("#update_grants_dbid").change()
+
+                         $('#update_grants_db').val(dataSet['schema'])
+                         $("#update_grants_db").selectpicker('refresh')
+                         $("#update_grants_db").change()
+
+                         $('#update_grants_tab').val(dataSet['table'])
+                         $("#update_grants_tab").selectpicker('refresh')
+                         $("#update_grants_tab").change()
+
+                         $('#update_grants_col').val(dataSet['columns'].split(','))
+                         $("#update_grants_col").selectpicker('refresh')
+                         $("#update_grants_col").change()
+                      }
+                });
+
+         }
+
+         function delete_grants(id) {
+             swal({
+                title: "确认要删除吗?",
+                text: "查询授权删除影响用户数据查询！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+             }, function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                            url: "/user/query/grants/del",
+                            type: "post",
+                            datatype: "json",
+                            data:{
+                               id : id,
+                            },
+                            success: function (dataSet) {
+                                if (dataSet.code=='0') {
+                                    swal("已注销!", "查询授权已删除!", "success");
+                                    $("#query_btn").click();
+                                } else {
+                                    swal("注销失败!", "查询授权删除失败 - "+dataSet.message+"!", "error");
+                                }
+                            },
+                       });
+
+                } else {
+                    swal("已取消", "查询授权未删除！", "error");
+                }
+            });
+         }
+
+         //新增事件
+         $('#query_grants_user').change(function() {
+            if ($('#query_grants_user').val()!=''){
+                $.ajax({
+                      url: "/get_ds_by_query_grants",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          userid : $('#query_grants_user').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#query_grants_dbid").empty();
+                         $("#query_grants_dbid").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#query_grants_dbid").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#query_grants_dbid").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#query_grants_dbid").empty();
+                $("#query_grants_dbid").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#query_grants_dbid').change(function() {
+            if ($('#query_grants_dbid').val()!=''){
+                $.ajax({
+                      url: "/get_database",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#query_grants_dbid').val().split(',')[0],
+                      },
+                      success: function (dataSet) {
+                         $("#query_grants_db").empty();
+                         $("#query_grants_db").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#query_grants_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#query_grants_db").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#query_grants_dbid").empty();
+                $("#query_grants_dbid").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#query_grants_db').change(function() {
+            if ($('#query_grants_db').val()!=''){
+                $.ajax({
+                      url: "/get_tables",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#query_grants_dbid').val().split(',')[0],
+                          db_name : $('#query_grants_db').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#query_grants_tab").empty();
+                         $("#query_grants_tab").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#query_grants_tab").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#query_grants_tab").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#query_grants_db").empty();
+                $("#query_grants_db").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#query_grants_tab').change(function() {
+            if ($('#query_grants_tab').val()!=''){
+                $.ajax({
+                      url: "/get_columns_by_query_grants",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#query_grants_dbid').val().split(',')[0],
+                          db_name : $('#query_grants_db').val(),
+                          tab_name : $('#query_grants_tab').val()
+                      },
+                      success: function (dataSet) {
+                         $("#query_grants_col").empty();
+                         $("#query_grants_col").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#query_grants_col").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#query_grants_col").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#query_grants_tab").empty();
+                $("#query_grants_tab").append("<option value=''>...</option>");
+            }
+        });
+
+         //更新事件
+         $('#update_grants_user').change(function() {
+            if ($('#update_grants_user').val()!=''){
+                $.ajax({
+                      url: "/get_ds_by_query_grants",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          userid : $('#update_grants_user').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#update_grants_dbid").empty();
+                         $("#update_grants_dbid").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#update_grants_dbid").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#update_grants_dbid").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#update_grants_dbid").empty();
+                $("#update_grants_dbid").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#update_grants_dbid').change(function() {
+            if ($('#update_grants_dbid').val()!=''){
+                $.ajax({
+                      url: "/get_database",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#update_grants_dbid').val().split(',')[0],
+                      },
+                      success: function (dataSet) {
+                         $("#update_grants_db").empty();
+                         $("#update_grants_db").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#update_grants_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#update_grants_db").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#update_grants_db").empty();
+                $("#update_grants_db").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#update_grants_db').change(function() {
+            if ($('#update_grants_db').val()!=''){
+                $.ajax({
+                      url: "/get_tables",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#update_grants_dbid').val().split(',')[0],
+                          db_name : $('#update_grants_db').val(),
+                      },
+                      success: function (dataSet) {
+                         $("#update_grants_tab").empty();
+                         $("#update_grants_tab").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#update_grants_tab").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#update_grants_tab").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#update_grants_tab").empty();
+                $("#update_grants_tab").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#update_grants_tab').change(function() {
+            if ($('#update_grants_tab').val()!=''){
+                $.ajax({
+                      url: "/get_columns_by_query_grants",
+                      type: "post",
+                      datatype: "json",
+                      async:false,
+                      data:{
+                          dbid : $('#update_grants_dbid').val().split(',')[0],
+                          db_name : $('#update_grants_db').val(),
+                          tab_name : $('#update_grants_tab').val()
+                      },
+                      success: function (dataSet) {
+                         $("#update_grants_col").empty();
+                         $("#update_grants_col").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet['message'].length;i++){
+                              var val  = dataSet['message'][i];
+                              var text = dataSet['message'][i];
+                              $("#update_grants_col").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+                         $("#update_grants_col").selectpicker('refresh')
+                      }
+                });
+            } else {
+                $("#update_grants_col").empty();
+                $("#update_grants_col").append("<option value=''>...</option>");
+            }
+        });
+
+         $('#query_grants_upd_btn').click(function(){
+              $.ajax({
+                        url: "/user/query/grants/upd/save",
+                        type: "post",
+                        datatype: "json",
+                        data: {
+                            id    : $('#update_grants_id').val(),
+                            dbid  : $('#update_grants_dbid').val().split(',')[0],
+                            db    : $('#update_grants_db').val(),
+                            tab   : $('#update_grants_tab').val(),
+                            cols  : get_upd_privs(),
+                            uid   : $('#update_grants_user').val(),
+                        },
+                        success: function (dataSet) {
+                            if (dataSet.code == 0) {
+                                swal("更新成功", "", "success")
+                                $("#query_btn").click()
+                            } else {
+                                swal(dataSet.message, "", "error")
+                            }
+                        }
+                    });
+         })
+
+         $('#grants_add_btn').click(function(){
+            init_query_grants()
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-add-grants').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+
+        });
+
+         $('#query_grants_add_btn').click(function(){
+              $.ajax({
+                        url: "/user/query/grants/add/save",
+                        type: "post",
+                        datatype: "json",
+                        data: {
+                            dbid  : $('#query_grants_dbid').val().split(',')[0],
+                            db    : $('#query_grants_db').val(),
+                            tab   : $('#query_grants_tab').val(),
+                            cols  : get_privs(),
+                            uid   : $('#query_grants_user').val(),
+                        },
+                        success: function (dataSet) {
+                            if (dataSet.code == 0) {
+                                swal("保存成功", "", "success")
+                                $("#query_btn").click()
+                            } else {
+                                swal(dataSet.message, "", "error")
+                            }
+                        }
+                    });
+         })
+
+         $("#query_btn").click(function() {
+              $.ajax({
+                  url: "/user/query/_grants",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      qname: $('#username').val()
+                  },
+                  success: function (dataSet) {
+                      $('#example').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          scrollY    :true,
+                          scrollX    :true,
+                          AutoWidth  :true,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 14,
+                          data: dataSet,
+                          columns: [
+                            { "title": "id","visible":false},
+                            { "title": "用户","sWidth":"60px"},
+                            { "title": "姓名","sWidth":"80px" },
+                            { "title": "数据源","sWidth":"30px" },
+                            { "title": "库名","sWidth":"80px" },
+                            { "title": "表名","sWidth":"100px" },
+                            { "title": "授权列","sWidth":"60px"},
+                            { "title": "更新日期","sWidth":"70px"},
+                            {
+                                "title":"操作",
+                                "width": "25px",
+                                "render": function(data,type,row) {
+                                 var grant_update;
+                                 var grant_delete;
+                                 grant_update = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="更新" onclick="update_grants(\''+row[0]+'\');"/>' +'&nbsp;';
+                                 grant_delete = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_grants(\''+row[0]+'\');"/>' +'&nbsp;';
+                                 return grant_update+grant_delete;
+                                }
+                           },
+                          ],
+                          columnDefs: [
+                             {
+                                targets: 6,
+                                render: function(data, type, row, meta){
+                                    grant_show = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看" onclick="show_grants(\''+row[6]+'\');"/>' +'&nbsp;';
+                                    return grant_show
+                                }
+                             }
+                         ],
+                          "language": get_languages()
+                         });
+
+                  },
+             });
+            });
+
+         $(document).keydown(function(event){
+            if (event.keyCode == 13) {
+                $("#query_btn").click();
+            }
+         })
+
+         $(document).ready(function() {
+            $("#query_btn").click();
+            $('.selectpicker').selectpicker({
+              size: 10,
+              noneSelectedText: '请选择' //默认显示内容
+            });
+         });
+
+         $(document).on('click','p.class',function(e) {
+             e.preventDefault()
+         });
+
+   </script>
+</body>
+
+</html>

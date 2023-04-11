@@ -62,6 +62,7 @@ async def query_sync_tab(sync_tag,sync_tab):
              and  instr(a.tab_name,'{}')>0
             order by 1
               """.format(sync_tag,sync_tab)
+    print(sql)
     return await async_processer.query_list(sql)
 
 

@@ -111,8 +111,7 @@
                </div>
             </div>
         </div>
-
-       <div class="row">
+        <div class="row">
            <div class="form-group col-md-6">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_proj_group">*</span>项目组</label>
@@ -205,9 +204,6 @@
                </div>
             </div>
         </div>
-
-
-
         <div class="row">
                <div class="form-group col-md-6">
                     <div>
@@ -223,6 +219,24 @@
                          <input  id="user_roles" type="hidden" value="{{user_roles}}" >
                     </div>
                </div>
+          </div>
+          <div class="row">
+           <div class="form-group col-md-6">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>查询授权</label>
+                </div>
+               <div class="col-md-10">
+                    <select class="form-control select" id="query_grants">
+                       {% for var in query_grants %}
+                           {% if proj_group==var[0] %}
+                              <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
+                           {% else %}
+                              <option value={{var[0]}} >{{var[1]}}</option>
+                           {% end  %}
+                      {% end %}
+                    </select>
+               </div>
+            </div>
           </div>
 
 
@@ -319,6 +333,7 @@
                                     roles      : get_privs(),
                                     file_path  : dataSet.file_path,
                                     file_name  : dataSet.file_name,
+                                    query_grants:$('#query_grants').val(),
                                 },
                                 success: function (dataSet) {
                                     console.log(dataSet.code, dataSet.message);
@@ -372,6 +387,7 @@
                         roles      : get_privs(),
                         file_path  : $('#image_path').val(),
                         file_name  : $('#image_name').val(),
+                        query_grants:$('#query_grants').val(),
                     },
                     success: function (dataSet) {
                         console.log(dataSet.code, dataSet.message);

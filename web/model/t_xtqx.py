@@ -8,7 +8,7 @@
 import traceback
 from web.utils.common import current_rq, get_connection_ds_sqlserver, get_connection_ds_ck
 from web.model.t_user      import get_user_by_loginame,get_user_by_userid,get_user_by_userid_sync
-from web.model.t_ds        import get_ds_by_dsid
+from web.model.t_ds import get_ds_by_dsid, get_dss_sql_query_grants
 from web.model.t_sql import get_mysql_proxy_result_dict, get_sqlserver_proxy_result_dict, get_mysql_proxy_result, \
     get_ck_proxy_result_dict
 from web.utils.mongo_query import mongo_client
@@ -412,6 +412,21 @@ async def get_tab_columns(dbid,db_name,tab_name):
             traceback.print_exc()
             return {'code': -1, 'message': ['获取数据库列名失败!']}
 
+async def get_tab_columns_by_query_grants(dbid,db_name,tab_name):
+    res = {}
+    pds = await get_ds_by_dsid(dbid)
+    sql = """SELECT column_name 
+                         FROM information_schema.columns
+                        WHERE table_schema='{0}'  AND table_name='{1}'
+                          ORDER BY ordinal_position""".format(db_name, tab_name)
+    try:
+        res['code'] = '0'
+        res['message'] = await async_processer.query_list_by_ds(pds,sql)
+        return res
+    except:
+        traceback.print_exc()
+        return {'code': -1, 'message': ['获取数据库列名失败!']}
+
 async def get_tab_keys(dbid,db_name,tab_name):
     res = {}
     pds = await get_ds_by_dsid(dbid)
@@ -439,6 +454,13 @@ async def get_tab_keys(dbid,db_name,tab_name):
 async def query_ds(dsid):
     try:
        return {"code":"0","message":await get_ds_by_dsid(dsid)}
+    except Exception as e:
+       traceback.print_exc()
+       return {"code":"-1","message":"获取数据源信息失败!"}
+
+async def get_dss_by_query_grants(userid):
+    try:
+       return {"code":"0","message":await get_dss_sql_query_grants(userid)}
     except Exception as e:
        traceback.print_exc()
        return {"code":"-1","message":"获取数据源信息失败!"}

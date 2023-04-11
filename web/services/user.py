@@ -10,10 +10,11 @@ import uuid
 import tornado.gen
 from web.model.t_role  import get_roles
 from web.model.t_user import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session, \
-    get_user_roles_n
+    get_user_roles_n, query_user_grants, save_user_query_grants, get_user_grants, upd_user_query_grants, \
+    del_user_query_grants
 from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_proj_privs
-from web.model.t_dmmx  import get_dmm_from_dm
-from web.model.t_ds    import query_project
+from web.model.t_dmmx import get_dmm_from_dm, get_users, get_users_by_query_grants
+from web.model.t_ds import query_project, get_dss_sql_query, get_dss_sql_query_grants
 from web.utils         import base_handler
 
 class userquery(base_handler.TokenHandler):
@@ -36,11 +37,14 @@ class useradd(base_handler.TokenHandler):
         gender = await get_dmm_from_dm('04')
         dept   = await get_dmm_from_dm('01')
         proj_group = await get_dmm_from_dm('18')
+        query_grants = await get_dmm_from_dm('49')
         self.render("./user/user_add.html",
                     roles=roles,
                     gender=gender,
                     dept=dept,
-                    proj_group=proj_group)
+                    proj_group=proj_group,
+                    query_grants=query_grants
+                    )
 
 class useradd_save(base_handler.TokenHandler):
     async def post(self):
@@ -59,6 +63,7 @@ class useradd_save(base_handler.TokenHandler):
         d_user['privs']        = self.get_argument("privs").split(",")
         d_user['file_path']    = self.get_argument("file_path")
         d_user['file_name']    = self.get_argument("file_name")
+        d_user['query_grants'] = self.get_argument("query_grants")
         result = await save_user(d_user)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -90,6 +95,7 @@ class useredit(base_handler.TokenHandler):
         genders = await get_dmm_from_dm('04')
         depts   = await get_dmm_from_dm('01')
         proj_groups = await get_dmm_from_dm('18')
+        query_grants = await get_dmm_from_dm('49')
         self.render("./user/user_edit.html",
                      userid      = d_user['userid'],
                      loginname   = d_user['loginname'],
@@ -110,7 +116,8 @@ class useredit(base_handler.TokenHandler):
                      user_roles  = await get_user_roles_n(userid),
                      genders     = genders,
                      depts       = depts,
-                     proj_groups = proj_groups
+                     proj_groups = proj_groups,
+                     query_grants=query_grants
                     )
 
 class useredit_save(base_handler.TokenHandler):
@@ -133,6 +140,7 @@ class useredit_save(base_handler.TokenHandler):
         d_user['roles']       = self.get_argument("roles").split(",")
         d_user['file_path']   = self.get_argument("file_path")
         d_user['file_name']   = self.get_argument("file_name")
+        d_user['query_grants'] = self.get_argument("query_grants")
         result = await upd_user(d_user)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -194,3 +202,57 @@ class session_kill(base_handler.TokenHandler):
         v_list = await kill_session(session_id)
         v_json = json.dumps(v_list)
         self.write(v_json)
+
+class userquerygrants(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./user/user_grants.html",
+                    query_grants_user = await get_users_by_query_grants(self.username),
+                    )
+
+class user_query_grants(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname = self.get_argument("qname")
+        v_list = await query_user_grants(qname)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_user_query_grants(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id = self.get_argument("id")
+        print('get_user_query_grants=',id)
+        v_list = await get_user_grants(id)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+
+class user_query_grants_add_save(base_handler.TokenHandler):
+    async def post(self):
+        d_user={}
+        d_user['dbid']  = self.get_argument("dbid")
+        d_user['db']    = self.get_argument("db")
+        d_user['tab']   = self.get_argument("tab")
+        d_user['cols']  = self.get_argument("cols")
+        d_user['userid'] = self.get_argument("uid")
+        result = await save_user_query_grants(d_user)
+        self.write({"code": result['code'], "message": result['message']})
+
+class user_query_grants_upd_save(base_handler.TokenHandler):
+    async def post(self):
+        d_user={}
+        d_user['id']    = self.get_argument("id")
+        d_user['dbid']  = self.get_argument("dbid")
+        d_user['db']    = self.get_argument("db")
+        d_user['tab']   = self.get_argument("tab")
+        d_user['cols']  = self.get_argument("cols")
+        d_user['uid']   = self.get_argument("uid")
+        result = await upd_user_query_grants(d_user)
+        self.write({"code": result['code'], "message": result['message']})
+
+class user_query_grants_del(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id  = self.get_argument("id")
+        result = await del_user_query_grants(id)
+        self.write({"code": result['code'], "message": result['message']})
