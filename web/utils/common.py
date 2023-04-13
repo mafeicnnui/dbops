@@ -137,7 +137,6 @@ def get_connection_ds_read_limit_ck(p_ds,p_timeout):
     conn     = connect(database=service, user=user, password=password,host=ip,port=port,connect_timeout=p_timeout)
     return conn
 
-
 def get_connection_ds_write_limit(p_ds,p_timeout):
     ip       = p_ds['ip']
     port     = p_ds['port']

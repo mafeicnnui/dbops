@@ -17,11 +17,12 @@ from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_s
     delete_online_order, audit_online_order, audit_canal_online_order, query_online_ver_desc
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
-    get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export, get_dss_order_online
-from web.model.t_user          import get_user_by_loginame
+    get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export, get_dss_order_online, get_dss_sql_query_tab
+from web.model.t_user import get_user_by_loginame, get_user_by_userid
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
     get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo, get_dss_sql_query_grants, \
-    get_dss_by_query_grants, get_tab_columns_by_query_grants
+    get_dss_by_query_grants, get_tab_columns_by_query_grants, get_tree_by_dbid_proxy_query_grants, \
+    get_tree_by_dbid_query_grants
 from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,get_tab_structure,get_tab_keys,get_tab_incr_col,query_ds
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
 from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2
@@ -36,7 +37,11 @@ from web.model.t_es import get_indexes, query_es, query_es_mapping
 
 class sqlquery(base_handler.TokenHandler):
    async def get(self):
-       self.render("./order/sql_query.html", dss= await get_dss_sql_query(self.username))
+       uesr = await get_user_by_userid(self.userid)
+       if uesr['query_grants'] == '1':
+          self.render("./order/sql_query.html", dss= await get_dss_sql_query(self.username))
+       else:
+          self.render("./order/sql_query.html", dss=await get_dss_sql_query_tab(self.userid))
 
 class sql_query(base_handler.TokenHandler):
    async def post(self):
@@ -46,7 +51,7 @@ class sql_query(base_handler.TokenHandler):
        curdb  = self.get_argument("cur_db")
        print('settings=', self.settings)
        #result = await exe_query(dbid,sql,curdb)
-       result = await exe_query_aio(dbid, sql, curdb,self.settings['event_loop'])
+       result = await exe_query_aio(dbid, sql, curdb,self.settings['event_loop'],self.userid)
        v_dict = {"data": result['data'],"column":result['column'],"status":result['status'],"msg":result['msg']}
        v_json = json.dumps(v_dict,cls=DateEncoder)
        print('v_json=',v_json)
@@ -183,12 +188,20 @@ class get_tree_by_sql(base_handler.TokenHandler):
         dbid   = self.get_argument("dbid")
         msg    = self.get_argument("msg")
         p_ds   = await get_ds_by_dsid(dbid)
+        user   = await get_user_by_userid(self.userid)
+        print('get_tree_by_sql->user=',user)
         result = {}
         if p_ds['db_type'] in('0','8'):
-            if p_ds['proxy_status'] == '1':
-                result = await get_tree_by_dbid_proxy(dbid)
+            if user['query_grants'] == '1':
+                if p_ds['proxy_status'] == '1':
+                    result = await get_tree_by_dbid_proxy(dbid)
+                else:
+                    result = await get_tree_by_dbid(dbid,msg)
             else:
-                result = await get_tree_by_dbid(dbid,msg)
+                if p_ds['proxy_status'] == '1':
+                    result = await get_tree_by_dbid_proxy_query_grants(dbid,msg,self.userid)
+                else:
+                    result = await get_tree_by_dbid_query_grants(dbid,msg,self.userid)
         elif p_ds['db_type'] == '2':
             if p_ds['proxy_status'] == '1':
                 result = await get_tree_by_dbid_mssql_proxy(dbid)

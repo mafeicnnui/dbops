@@ -283,6 +283,15 @@ async def get_dss_sql_query_grants(userid):
         """.format(userid)
     return  await async_processer.query_list(sql)
 
+async def get_dss_sql_query_tab(userid):
+    sql = """select cast(id as char) as id,a.db_desc as name
+               from t_db_source a,t_dmmx b
+               where a.db_type=b.dmm and b.dm='02' and a.status='1'
+                   AND a.id IN(SELECT dbid FROM t_user_query_grants WHERE uid='{0}')
+                   order by a.db_desc
+            """.format(userid)
+    return await async_processer.query_list(sql)
+
 async def get_dss_sql_query_type(p_db_type,p_logon_name):
     d_user = await get_user_by_loginame(p_logon_name)
     sql="""select cast(id as char) as id,a.db_desc as name

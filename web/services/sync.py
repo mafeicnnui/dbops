@@ -147,7 +147,7 @@ class syncedit(base_handler.TokenHandler):
     async def get(self):
         sync_id   = self.get_argument("sync_id")
         print('sync_id=',sync_id)
-        d_sync    = await get_sync_by_syncid(sync_id)
+        d_sync = await get_sync_by_syncid(sync_id)
         if d_sync['sync_ywlx']  == '21':
             self.render("./sync/sync_edit_real.html",
                         sync_id                  =  sync_id,

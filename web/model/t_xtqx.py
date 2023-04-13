@@ -607,6 +607,77 @@ async def get_tree_by_dbid(dbid,msg):
         result['db_url'] = ''
     return result
 
+async def get_tree_by_dbid_query_grants(dbid,msg,userid):
+    try:
+        result = {}
+        p_ds   = await get_ds_by_dsid(dbid)
+
+        sql0   = """select GROUP_CONCAT("'",a.schema,"'") as query_schema
+                     from `t_user_query_grants` a
+                       where a.dbid={} AND uid={}""".format(dbid,userid)
+        rs0 = await async_processer.query_dict_one(sql0)
+
+        sql1   = """select schema_name 
+                    from information_schema.SCHEMATA a
+                      where a.schema_name in({})
+                         and instr(a.schema_name,'{}')>0
+                           order by 1""".format(rs0['query_schema'],msg.lower())
+
+        sql2   = """select table_name 
+                    from information_schema.tables 
+                     where table_schema='{0}' 
+                       and table_name in({1}) order by 1"""
+
+        sql3   = """select GROUP_CONCAT("'",a.table,"'") as query_table
+                     from `t_user_query_grants` a
+                       where a.dbid={} AND a.uid={} and a.schema='{}'"""
+
+        n_tree = []
+        rs1    = await async_processer.query_dict_list_by_ds(p_ds,sql1)
+        for db in rs1:
+            n_parent = {
+                'id'  : db['schema_name'],
+                'text': db['schema_name'],
+                'icon': 'mdi mdi-database',
+            }
+
+            rs3 = await async_processer.query_dict_one(sql3.format(dbid,userid,db['schema_name']))
+
+            rs2 = await async_processer.query_dict_list_by_ds(p_ds,sql2.format(db['schema_name'],rs3['query_table']))
+
+            n_nodes = []
+            for tab in rs2:
+                n_child = {
+                    'id'  : tab['table_name'],
+                    'text': tab['table_name'],
+                    'icon': 'mdi mdi-table-large',
+                }
+                n_nodes.append(n_child)
+            n_parent['nodes']=n_nodes
+            n_tree.append(n_parent)
+
+        if p_ds['db_type'] =='0':
+            db_url ='MySQL://{}:{}/{}'.format(p_ds['ip'],p_ds['port'],p_ds['service'] )
+        elif p_ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] =='2':
+            db_url = 'SQLServer://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        else:
+            db_url =''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc']    = p_ds['db_desc']
+        result['db_url']  = db_url
+
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
 async def get_tree_by_dbid_mongo(dbid):
     try:
         result = {}
@@ -751,6 +822,89 @@ async def get_tree_by_dbid_proxy(dbid):
                 'icon': 'mdi mdi-database',
             }
             ret2 = get_mysql_proxy_result_dict(p_ds, sql2.format(db['schema_name']), p_ds['service'])
+            if ret1['status'] == '1':
+                result['code'] = '-1'
+                result['message'] = '加载失败！'
+                result['desc'] = ''
+                result['db_url'] = ''
+                return result
+            rs2 = ret2['data']
+
+            n_nodes = []
+            for tab in rs2:
+                n_child = {
+                    'id': tab['table_name'],
+                    'text': tab['table_name'],
+                    'icon': 'mdi mdi-table-large',
+                }
+                n_nodes.append(n_child)
+            n_parent['nodes'] = n_nodes
+            n_tree.append(n_parent)
+
+        if p_ds['db_type'] == '0':
+            db_url = 'MySQL://{}:{}/{}'.format(p_ds['ip'], p_ds['port'], p_ds['service'])
+        elif p_ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] == '2':
+            db_url = 'SQLServer://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        else:
+            db_url = ''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc'] = p_ds['db_desc']
+        result['db_url'] = db_url
+
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
+async def get_tree_by_dbid_proxy_query_grants(dbid,msg,userid):
+    try:
+        result = {}
+        p_ds   = await get_ds_by_dsid(dbid)
+        sql0   = """select GROUP_CONCAT("'",a.schema,"'") as query_schema
+                     from `t_user_query_grants` a
+                       where a.dbid={} AND uid={}""".format(dbid, userid)
+        rs0    = await async_processer.query_dict_one(sql0)
+
+        sql1 = """select schema_name 
+                    from information_schema.SCHEMATA a
+                      where a.schema_name in({})
+                         and instr(a.schema_name,'{}')>0
+                           order by 1""".format(rs0['query_schema'], msg.lower())
+
+        sql2 = """select table_name 
+                    from information_schema.tables 
+                     where table_schema='{0}' 
+                       and table_name in({1}) order by 1"""
+
+        sql3 = """select GROUP_CONCAT("'",a.table,"'") as query_table
+                     from `t_user_query_grants` a
+                       where a.dbid={} AND a.uid={} and a.schema='{}'"""
+
+        n_tree = []
+        ret1   = get_mysql_proxy_result_dict(p_ds,sql1,p_ds['service'])
+        if ret1['status'] == '1':
+            result['code'] = '-1'
+            result['message'] = '加载失败！'
+            result['desc'] = ''
+            result['db_url'] = ''
+            return result
+
+        rs1 = ret1['data']
+        for db in rs1:
+            n_parent = {
+                'id': db['schema_name'],
+                'text': db['schema_name'],
+                'icon': 'mdi mdi-database',
+            }
+            rs3 = await async_processer.query_dict_one(sql3.format(dbid, userid, db['schema_name']))
+            ret2 = get_mysql_proxy_result_dict(p_ds, sql2.format(db['schema_name'],rs3['query_table']),p_ds['service'])
             if ret1['status'] == '1':
                 result['code'] = '-1'
                 result['message'] = '加载失败！'

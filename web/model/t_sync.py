@@ -997,7 +997,7 @@ def push_sync_task(p_tag,p_api):
 
     url = 'http://{}/push_script_remote_sync'.format(get_health_api_server(p_api))
     res = requests.post(url, data=data)
-    print('res=',res)
+    print('res=',res,data)
     try:
         jres = res.json()
         print('jres=',jres)

@@ -228,7 +228,7 @@
                <div class="col-md-10">
                     <select class="form-control select" id="query_grants">
                        {% for var in query_grants %}
-                           {% if proj_group==var[0] %}
+                           {% if user_query_grant==var[0] %}
                               <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
                            {% else %}
                               <option value={{var[0]}} >{{var[1]}}</option>

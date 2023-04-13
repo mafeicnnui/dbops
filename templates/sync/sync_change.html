@@ -93,6 +93,7 @@
                   </div>
              </div>
          </div>
+         <input  id="sync_id_tmp" type="hidden"  value= >
          <input  id="sync_tag_tmp" type="hidden"  value= >
          <div class="row">
               <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
@@ -143,7 +144,11 @@
         }
 
         function isSelect(v) {
-           $('#sync_tag_tmp').val(v)
+           r = unescape(v)
+           sync_id=r.split(',')[0]
+           sync_tag=r.split(',')[2]
+           $('#sync_id_tmp').val(sync_id)
+           $('#sync_tag_tmp').val(sync_tag)
            var rec=0;
            $("#example tbody tr td input:checked").each( function() {
               rec=rec+1;
@@ -221,7 +226,7 @@
                                         "title":"选择",
                                         "width": "25px",
                                         "render": function(data,type,row){
-                                             return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + row[0] + '")>'
+                                             return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + escape(row) + '")>'
                                         }
                                     },
                               ],
@@ -360,7 +365,7 @@
              //      console.log('syncid=',syncid)
              // });
 
-             var syncid = $('#sync_tag_tmp').val()
+             var syncid = $('#sync_id_tmp').val()
              $.ajax({
                 url: "/sync/edit",
                 type: "get",

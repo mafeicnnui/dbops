@@ -114,10 +114,11 @@ class useredit(base_handler.TokenHandler):
                      user_image  = d_user['image_path']+'/'+d_user['image_name'],
                      sys_roles   = await get_sys_roles(),
                      user_roles  = await get_user_roles_n(userid),
+                     user_query_grant = d_user['query_grants'],
                      genders     = genders,
                      depts       = depts,
                      proj_groups = proj_groups,
-                     query_grants=query_grants
+                     query_grants= query_grants
                     )
 
 class useredit_save(base_handler.TokenHandler):

@@ -270,7 +270,8 @@ async def get_user_by_userid(p_userid):
                   ifnull(file_path,' ') as image_path,
                   ifnull(file_name,' ') as image_name,
                   project_group,
-                  wkno
+                  wkno,
+                  query_grants
         from t_user where id={0}""".format(p_userid)
     user = await async_processer.query_dict_one(sql)
     user['password'] = await aes_decrypt(user['password'],user['loginname'])
