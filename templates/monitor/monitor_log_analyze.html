@@ -143,8 +143,6 @@
                           end_date   : $('#end_date').val()
                       },
                       success: function (dataSet) {
-                            console.log('dataSet.length=',dataSet['data1'].length)
-
                             if (dataSet['data1'].length==0) {
                                 return
                             }
@@ -159,13 +157,10 @@
                             if  (dataSet['data1'].length>0){
                                 if (count(dataSet['data1'][0][1],'[')>0){
                                      cpu_amount = dataSet['data1'][0][1].replace('[','').replace(']','').split(',').length
-                                     console.log('cpu_amount1=',cpu_amount)
                                 } else if (count(dataSet['data1'][0][1],'{')>0){
                                      cpu_amount = getJsonLength(JSON.parse(dataSet['data1'][0][1]))
-                                     console.log('cpu_amount2=',cpu_amount)
                                 } else {
                                      cpu_amount = dataSet['data1'][0][1].replace('[','').replace(']','').split(',').length
-                                     console.log('cpu_amount3=',cpu_amount)
                                 }
                             }
 
@@ -174,8 +169,6 @@
                                  var options=$('#index_code option:selected');
                                  value=$(options[0]).val();
                                  text =$(options[0]).text();
-                                 console.log('options.value=',value,'text=',text)
-
                                  var childdiv = $('<div id="div_card_box'+i+'" class="card-box">\n' +
                                                   '    <h6  id="div_title_'+i+'" class="header-title m-t-0"><small>'+text+i+'</small></h6>\n' +
                                                   '    <div id="div_cpu_usage_'+i+'" style="height:280px;"></div>' +
@@ -202,7 +195,6 @@
                                          }
                                          keys=keys.substring(0,keys.length-1).split(',')[i]
                                          vals=vals.substring(0,vals.length-1).split(',')[i]
-                                         console.log('keys=',keys,'vals=',vals)
                                          $('#div_title_'+i).html('<small>'+text+':'+keys+'</small>')
 
                                          $barData_cpu_usage[j] = {
@@ -211,7 +203,6 @@
                                          }
                                      } else {
                                          var cpu_usage_tmp = dataSet['data1'][j][1].replace('[', '').replace(']', '').split(',')
-                                         console.log('y=',dataSet['data1'][j][0])
                                          $barData_cpu_usage[j] = {
                                              'y': dataSet['data1'][j][0],
                                              'a': cpu_usage_tmp[i]
@@ -256,13 +247,10 @@
                             if  (dataSet['data1'].length>0){
                                 if (count(dataSet['data1'][0][1],'[')>0){
                                      cpu_amount = dataSet['data1'][0][1].replace('[','').replace(']','').split(',').length
-                                     console.log('cpu_amount1=',cpu_amount)
                                 } else if (count(dataSet['data1'][0][1],'{')>0){
                                      cpu_amount = getJsonLength(JSON.parse(dataSet['data1'][0][1]))
-                                     console.log('cpu_amount2=',cpu_amount)
                                 } else {
                                      cpu_amount = dataSet['data1'][0][1].replace('[','').replace(']','').split(',').length
-                                     console.log('cpu_amount3=',cpu_amount)
                                 }
                             }
 
@@ -271,7 +259,6 @@
                                  var options=$('#index_code option:selected');
                                  value=$(options[0]).val();
                                  text =$(options[0]).text();
-                                 console.log('options.value=',value,'text=',text)
 
                                  var childdiv = $('<div id="div_card_box'+i+'" class="card-box">\n' +
                                                   '    <h6  id="div_title_'+i+'" class="header-title m-t-0"><small>'+text+i+'</small></h6>\n' +
@@ -299,7 +286,6 @@
                                          }
                                          keys=keys.substring(0,keys.length-1).split(',')[i]
                                          vals=vals.substring(0,vals.length-1).split(',')[i]
-                                         console.log('keys=',keys,'vals=',vals)
                                          $('#div_title_'+i).html('<small>'+text+':'+keys+'</small>')
 
                                          $barData_cpu_usage[j] = {
@@ -354,13 +340,10 @@
                             if  (dataSet['data1'].length>0){
                                 if (count(dataSet['data1'][0][1],'[')>0){
                                      cpu_amount = dataSet['data1'][0][1].replace('[','').replace(']','').split(',').length
-                                     console.log('cpu_amount1=',cpu_amount)
                                 } else if (count(dataSet['data1'][0][1],'{')>0){
                                      cpu_amount = getJsonLength(JSON.parse(dataSet['data1'][0][1]))
-                                     console.log('cpu_amount2=',cpu_amount)
                                 } else {
                                      cpu_amount = dataSet['data1'][0][1].replace('[','').replace(']','').split(',').length
-                                     console.log('cpu_amount3=',cpu_amount)
                                 }
                             }
 
@@ -388,7 +371,6 @@
                                          }
                                      } else if (count(dataSet['data1'][0][1],'{')>0){
                                          var cpu_usage_tmp = JSON.parse(dataSet['data1'][j][1])
-                                         console.log('cpu_usage_tmp=',cpu_usage_tmp)
                                          var keys=''
                                          var vals=''
                                          for (key in cpu_usage_tmp) {
@@ -397,7 +379,6 @@
                                          }
                                          keys=keys.substring(0,keys.length-1).split(',')[i]
                                          vals=vals.substring(0,vals.length-1).split(',')[i]
-                                         console.log('keys=',keys,'vals=',vals)
                                          $('#div_title_'+i).html('<small>'+text+':'+keys+'</small>')
 
                                          $barData_cpu_usage[j] = {
@@ -442,7 +423,6 @@
          });
 
          $('#server_id').change(function() {
-            console.log('server_id=',$('#server_id').val());
             if ($('#server_id').val()=='') {
                  $("#db_id").empty();
                  $("#db_id").append("<option value=''>请选择数据源...</option>");

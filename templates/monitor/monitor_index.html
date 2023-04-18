@@ -447,7 +447,6 @@
                                     "title":"选择",
                                     "width": "25px",
                                     "render": function(data,type,row){
-                                         console.log('query=>row=',row)
                                          return '<input type="radio" name="indexid" onclick=isSelect("'+row+'")>'
                                     }
                               },
@@ -456,7 +455,6 @@
                              {
                                 targets: 6,
                                 render: function(data, type, row, meta){
-                                    console.log('row[2]='+row[2]);
                                     if (row[5]=='计算型') {
                                          msg ='最近'+row[6].split('^')[0]+'日平均值的'+row[6].split('^')[1]+'倍'
                                          return msg
@@ -469,7 +467,6 @@
                              {
                                 targets: 7,
                                 render: function(data, type, row, meta){
-                                    console.log('row[7]=',row[7])
                                     if (row[7] !=null ) {
                                         msg =row[7].split('^')[0]+'分钟连续超过'+row[7].split('^')[1]+'次阀值'
                                         return msg
@@ -657,7 +654,6 @@
                   var row=$(($(this).parent().parent().html()));
                   index_code=row[1].innerHTML;
                   index_name=row[2].innerHTML;
-                  console.log("index_code=",index_code,"index_name=",index_name)
              });
 
             swal({

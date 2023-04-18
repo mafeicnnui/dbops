@@ -149,10 +149,10 @@
          <div class="col-md-6">
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>同步主目录</label>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>脚本目录</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="script_base"  type="text" class="form-control" placeholder="请输入同步主目录" value="{{script_base}}">
+                    <input id="script_base"  type="text" class="form-control" placeholder="请输入脚本目录" value="{{script_base}}">
                 </div>
            </div>
          </div>
@@ -201,10 +201,10 @@
          <div class="col-md-6">
            <div class="form-group">
                 <div>
-                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3目录</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3主目录" value="{{python3_home}}">
+                    <input id="python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3目录" value="{{python3_home}}">
                 </div>
            </div>
          </div>
@@ -942,7 +942,6 @@
              set_sync_tabs();
              query_tab_sync();
              init_tab_config();
-
         }
 
         function selectSysAll() {
@@ -1148,7 +1147,6 @@
 
                   },
                   success: function (dataSet) {
-                      console.log('/sync/_query/sync/tabs=',dataSet)
                       if (dataSet=='None') {
                           $('#sync_tables').val('')
                       } else {

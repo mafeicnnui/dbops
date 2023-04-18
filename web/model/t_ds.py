@@ -58,7 +58,7 @@ def check_ds(p_ds,p_flag):
     result['message'] = '验证通过'
     return result
 
-async def query_ds(dsname,market_id,db_env,ds_type):
+async def query_ds(dsname,market_id,db_env,ds_type,ds_status):
     v_where=' and 1=1 '
     if dsname != '':
         v_where = v_where + " and binary concat(a.db_desc,b.dmmc,':/',ip,':',port,'/',service)  like '%{0}%'\n".format(dsname)
@@ -68,6 +68,9 @@ async def query_ds(dsname,market_id,db_env,ds_type):
 
     if db_env != '':
         v_where = v_where + " and a.db_env='{0}'\n".format(db_env)
+
+    if ds_status != '':
+        v_where = v_where + " and a.status='{0}'\n".format(ds_status)
 
     if ds_type == 'backup':
         v_where = v_where + " and a.user='puppet'\n"

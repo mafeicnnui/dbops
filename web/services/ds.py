@@ -24,7 +24,8 @@ class ds_query(base_handler.TokenHandler):
         market_id  = self.get_argument("market_id")
         db_env     = self.get_argument("db_env")
         ds_type    = self.get_argument("ds_type")
-        v_list     = await query_ds(dsname,market_id,db_env,ds_type)
+        ds_status  = self.get_argument("ds_status")
+        v_list     = await query_ds(dsname,market_id,db_env,ds_type,ds_status)
         v_json     = json.dumps(v_list)
         self.write(v_json)
 

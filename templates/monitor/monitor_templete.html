@@ -299,7 +299,6 @@
            options=$('#add_monitor_index option');
            if(options.length>0){
                 for (var i=0;i<options.length;i++){
-                      console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
                       value=$(options[i]).val();
                       text =$(options[i]).text();
                       $('#add_templete_index').append("<option value='"+value+"'>"+text+"</option>");
@@ -359,7 +358,6 @@
            options=$('#upd_monitor_index option');
            if(options.length>0){
                 for (var i=0;i<options.length;i++){
-                      console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
                       value=$(options[i]).val();
                       text =$(options[i]).text();
                       $('#upd_templete_index').append("<option value='"+value+"'>"+text+"</option>");
@@ -451,12 +449,10 @@
 
              $("#monitor_templete_table tbody tr td input:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
-                  console.log("row=",row[0].innerHTML,row[1].innerHTML,row[2].innerHTML)
                   $('#upd_templete_code').val(row[0].innerHTML)
                   $('#upd_templete_name').val(row[1].innerHTML)
 
                   var options=$('#upd_templete_type option');
-                  console.log('options=',options)
                   $("#upd_templete_type").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
@@ -490,10 +486,8 @@
                        },
                       success: function (dataSet) {
                           var  obj = JSON.parse(dataSet)
-                          console.log('upd_monitor_index=', obj);
                           $("#upd_monitor_index").empty();
                            for(i=0;i<obj.length;i++){
-                              console.log(obj[i])
                               value= obj[i][0];
                               text = obj[i][1];
                               $("#upd_monitor_index").append("<option value='"+value+"'>"+text+"</option>");
@@ -513,7 +507,6 @@
                           var  obj = JSON.parse(dataSet)
                           $("#upd_templete_index").empty();
                           for(i=0;i<obj.length;i++){
-                              console.log(obj[i])
                               value= obj[i][0];
                               text = obj[i][1];
                               $("#upd_templete_index").append("<option value='"+value+"'>"+text+"</option>");

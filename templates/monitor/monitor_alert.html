@@ -529,7 +529,6 @@
                     add_alert_task_status        : $('#add_alert_task_status').val(),
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code == 0) {
                         swal("保存成功", "", "success")
                         query_task()
@@ -558,7 +557,6 @@
                     upd_alert_task_status        : $('#upd_alert_task_status').val(),
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
                     if (dataSet.code == 0) {
                         swal("更新成功", "", "success")
                         query_task()
@@ -619,7 +617,6 @@
                   v_tag  = row[0].innerHTML;
                   v_desc = row[1].innerHTML.replace(/&gt;/g,'>');
                   v_api  = row[5].innerHTML;
-                  console.log("v_tag=",v_tag,"v_api=",v_api)
                   $.ajax({
                           url: "/monitor/alert/push",
                           type: "post",

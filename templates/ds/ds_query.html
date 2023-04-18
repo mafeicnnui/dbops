@@ -54,6 +54,16 @@
                 </select>
              </div>
           </div>
+          <div class="col-md-2">
+                 <div class="input-group">
+                     <span class="input-group-addon">任务状态</span>
+                        <select class="form-control select" id="ds_status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </select>
+                 </div>
+           </div>
            <div class="col-md-1">
              <div class="input-group">
                <span class="input-group-btn">
@@ -104,6 +114,7 @@
                       market_id: $('#market_id').val(),
                       db_env   : $('#db_env').val(),
                       ds_type  : $('#ds_type').val(),
+                      ds_status :$('#ds_status').val(),
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -123,7 +134,7 @@
                              { "title": "项目名称" },
                              { "title": "数据源描述" },
                              { "title": "数据源环境" },
-                             { "title": "数据源定义" },
+                             { "title": "数据源定义","visible":false },
                              { "title": "用户"},
                              { "title": "是否启用"},
                              { "title": "更新人"},

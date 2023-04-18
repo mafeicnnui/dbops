@@ -411,7 +411,7 @@ async def check_user(p_user):
     result['message'] = '验证通过'
     return result
 
-async def check_user_query_grants(p_user):
+async def check_user_query_grants(p_user,p_flag='I'):
     result = {}
     if p_user["dbid"] == "":
         result['code'] = '-1'
@@ -432,6 +432,22 @@ async def check_user_query_grants(p_user):
         result['code'] = '-1'
         result['message'] = '授权列不能为空！'
         return result
+    if p_flag=='I':
+        r = await async_processer.query_dict_one(
+            """select count(0) as cnt 
+               from t_user_query_grants
+                where uid={} 
+                  and dbid={} 
+                    and `schema`='{}' 
+                     and `table`='{}'""".format(p_user['userid'],
+                                                p_user['dbid'],
+                                                p_user['db'],
+                                                p_user['tab'])
+            )
+        if r['cnt'] >0:
+            result['code'] = '-1'
+            result['message'] = '表授权信息已存在!'
+            return result
 
     result['code'] = '0'
     result['message'] = '验证通过'
@@ -731,7 +747,11 @@ async def kill_session(p_session_id):
 async def query_user_grants(p_name):
     v_where = ''
     if p_name != "":
-       v_where =  " where binary b.name like '%{0}%' or b.login_name like '%{1}%' ".format(p_name,p_name)
+       v_where = """and( b.name like '%{}%' 
+                       or b.login_name like '%{}%' 
+                         or instr(c.db_desc,'{}')>0 
+                           or instr(a.schema,'{}')>0 
+                             or instr(a.table,'{}')>0)""".format(p_name,p_name,p_name,p_name,p_name)
 
     st ="""SELECT a.id,
                   b.login_name,
@@ -743,6 +763,7 @@ async def query_user_grants(p_name):
                   DATE_FORMAT(a.update_time,'%Y-%m-%d') AS update_time                   
             FROM t_user_query_grants a,t_user b,t_db_source c
             WHERE a.dbid=c.id and a.uid=b.id
+            {}
             ORDER BY CONVERT(b.name USING gbk)  asc""".format(v_where)
     v_list = await async_processer.query_list(st)
     return v_list
@@ -759,9 +780,7 @@ async def get_user_grants(p_id):
                   DATE_FORMAT(a.update_time,'%Y-%m-%d') AS update_time                   
             FROM t_user_query_grants a  ,t_db_source b
             WHERE  a.dbid=b.id and  a.id={}""".format(p_id)
-    print(st)
     v_list = await async_processer.query_dict_one(st)
-
     return v_list
 
 async def save_user_query_grants(p_user):
@@ -783,7 +802,7 @@ async def save_user_query_grants(p_user):
 
 async def upd_user_query_grants(p_user):
     result = {}
-    val = await check_user_query_grants(p_user)
+    val = await check_user_query_grants(p_user,'U')
     if val['code'] == '-1':
         return val
     try:

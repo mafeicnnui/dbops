@@ -209,7 +209,7 @@
              //1366*768(100%)
              if (n_height <= 657)
              {
-                   console.log('1366*768(100%):'+n_height)
+                   // console.log('1366*768(100%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.625);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -237,7 +237,7 @@
               //1366*768(80%)
              if (n_height ==821)
              {
-                   console.log('1366*768(80%):'+n_height)
+                   // console.log('1366*768(80%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.725);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -266,7 +266,7 @@
              //1440*1050(100%)、1680*1050（100%）
              if (n_height==939)
              {
-                   console.log('1440*1050(100%):'+n_height)
+                   // console.log('1440*1050(100%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.725);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -294,7 +294,7 @@
 
              //1440*1050(80%)、1680*1050（100%）
              if (n_height==1174) {
-                   console.log('1440*1050(80%):'+n_height)
+                   // console.log('1440*1050(80%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.8);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -323,7 +323,7 @@
             //1440*900(100%)、1600*900（100%）
              if (n_height == 789 )
              {
-                   console.log('1440*900(80%):'+n_height)
+                   // console.log('1440*900(80%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.71);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -352,7 +352,7 @@
              //1440*900(80%)、1600*900（80%）
              if (n_height == 986 )
              {
-                   console.log('1440*900(80%):'+n_height)
+                   // console.log('1440*900(80%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.75);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -381,7 +381,7 @@
              //1920*1080(100%)
              if (n_height == 969 )
              {
-                   console.log('1920*1080(100%) :'+n_height+'px')
+                   // console.log('1920*1080(100%) :'+n_height+'px')
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.77);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -410,7 +410,7 @@
              //1920*1080(80%)
              if (n_height == 1211 )
              {
-                   console.log('1920*1080(100%):'+n_height)
+                   // console.log('1920*1080(100%):'+n_height)
                    //set div_tree style
                    $("#div-tree-panal").css("height",n_height*0.81);
                    $("#div-tree").css("height",$("#div-tree-panal").height()*0.93);
@@ -553,18 +553,15 @@
                   if (get_db_type()=='6') {
                         $('#div-table').hide()
                         $('#div-result').show()
-                        console.log('mongodb')
                          var editor = ace.edit("div-result")
                          editor.setValue('')
                     } else {
                         $('#div-table').show()
                         $('#div-result').hide()
-                        console.log('mysql')
                     }
               }
 
               function upd_demo(){
-                  console.log('update demo....')
                   if (get_db_type()=='6') {
                        console.log('update demo....false')
                        $('#demo_btn').attr('disabled',false)
@@ -809,7 +806,6 @@
                                 query_status = true
                                 $('#div-table').hide()
                                 $('#div-result').show()
-                                console.log('mongodb')
                                  var editor = ace.edit("div-result")
                                  editor.setValue('')
                                  editor.insert(JSON.stringify(dataSet.data, null, "\t"))
@@ -817,7 +813,6 @@
                                 query_status = false
                                 $('#div-table').show()
                                 $('#div-result').hide()
-                                console.log('mysql')
                                 table=$('#example').DataTable( {
                                    "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                     destroy       : true,
@@ -919,7 +914,6 @@
                           revealResults: true
                       };
                      var results = $('#db_tree').treeview('search', [ pattern, options ]);
-                     console.log('results=',results)
               })
 
               $("#query_btn").click(function() {

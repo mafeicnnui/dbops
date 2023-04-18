@@ -2,6 +2,7 @@
 document.write("<script src='./static/plugins/morris/morris.min.js'></script>");
 document.write("<script src='./static/plugins/toastr/toastr.min.js'></script>");
 document.write("<script src='./static/plugins/echarts/echarts.min.js'></script>");
+// document.write("<script src='./static/assets/js/jquery.min.js'></script>");
 
 //获取当前日期
 function GetDate(format) {
@@ -194,7 +195,6 @@ function topModals() {
         $(this).find('.modal-content').css("margin-top", 50);
       });
  }
-
 
  //画柱状图
 function createBarChart (element, data, xkey, ykeys, labels, lineColors,postUnits) {
@@ -389,7 +389,7 @@ function get_charts_large_label(p_title,p_x_data,p_y_data,p_color,p_x_label,p_y_
                         var valx = param.name;
                         var valy = param.value;
                         var valz = valx.split(':')[0]+'时'+valx.split(':')[1]+'分'
-                        console.log(i,param)
+                        //console.log(i,param)
                         htmlStr=htmlStr+'<span>请求时间&nbsp;&nbsp;:&nbsp;'+valz+'</span><br>'+'<span>响应时长&nbsp;&nbsp;: '+valy+'毫秒</span>'
                   }
                   return htmlStr;
@@ -462,6 +462,25 @@ function format_sql(sql) {
     return res
 }
 
+//获取当前时间前一小时
+function get_hour(n_hours) {
+    var now = new Date;
+    now.setMinutes(now.getMinutes() - n_hours*30);
+    var stime = now.format("yyyy-MM-dd hh:mm");//一个小时前的时间
+    //console.log('get_hour_minus_one_hours=',stime)
+    return stime
+}
+
+//获取当前时间H:M:S
+function get_curr_time() {
+    var date    = new Date();
+    this.hour   = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+    var currentTime = this.hour + "时" + this.minute + "分" + this.second + '秒';
+    return currentTime
+}
+
 String.prototype.format = function () {
     var values = arguments;
     return this.replace(/\{(\d+)\}/g, function (match, index) {
@@ -494,11 +513,20 @@ Date.prototype.format = function(fmt) {
         return fmt;
 }
 
-//获取当前时间前一小时
-function get_hour(n_hours) {
-    var now = new Date;
-    now.setMinutes(now.getMinutes() - n_hours*30);
-    var stime = now.format("yyyy-MM-dd hh:mm");//一个小时前的时间
-    console.log('get_hour_minus_one_hours=',stime)
-    return stime
-}
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        //console.log('this.name=',this.name)
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    //console.log('o=',o)
+    return o;
+};

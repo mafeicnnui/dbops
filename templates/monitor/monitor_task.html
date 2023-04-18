@@ -716,7 +716,6 @@
         $("#add_gather_task_templete_name").change(function () {
             var options=$('#add_gather_task_templete_name option:selected');
             var templete_id   = $(options[0]).val()
-            console.log('add_gather_task_templete_name.templete_id=',templete_id)
             if (templete_id!='' ) {
                 $.ajax({
                       url: "/get/monitor/templete/type",
@@ -849,7 +848,6 @@
                           $('#activeTabInputHidden').val('采集任务')
 
                       } else {
-                          console.log('monitor')
                           $('#upd_gather_task_tab').hide()
                           $('#upd_gather_task').hide()
                           $('#upd_monitor_task_tab').show()
@@ -886,12 +884,10 @@
             var activeTab = $(e.target).text();
             var previousTab = $(e.relatedTarget).text();
             $('#activeTabInputHidden').val(activeTab)
-            console.log(activeTab, previousTab, $('#activeTabInputHidden').val())
         })
 
         $('#task_save_btn').click(function() {
             activeTab=$('#activeTabInputHidden').val()
-            console.log('task_save_btn=>',activeTab)
             if (activeTab == '采集任务') {
                 $.ajax({
                         url: "/monitor/task/add/save/gather",
@@ -911,7 +907,6 @@
                             add_gather_task_status        : $('#add_gather_task_status').val(),
                         },
                         success: function (dataSet) {
-                            console.log(dataSet.code, dataSet.message);
                             if (dataSet.code == 0) {
                                 swal("保存成功", "", "success")
                                 query_task()
@@ -942,7 +937,6 @@
                         add_monitor_task_status       : $('#add_monitor_task_status').val(),
                     },
                     success: function (dataSet) {
-                        console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("保存成功", "", "success")
                             query_task()
@@ -956,7 +950,6 @@
 
         $('#task_upd_btn').click(function(){
             activeTab=$('#activeTabInputHidden').val()
-            console.log('task_save_btn=>',activeTab)
             if (activeTab == '采集任务') {
                 $.ajax({
                         url: "/monitor/task/edit/save/gather",
@@ -976,7 +969,6 @@
                             upd_gather_task_status        : $('#upd_gather_task_status').val(),
                         },
                         success: function (dataSet) {
-                            console.log(dataSet.code, dataSet.message);
                             if (dataSet.code == 0) {
                                 swal("更新成功", "", "success")
                                 query_task()
@@ -1008,7 +1000,6 @@
                         upd_monitor_task_tag_old      : $('#upd_task_tag_hidden').val()
                     },
                     success: function (dataSet) {
-                        console.log(dataSet.code, dataSet.message);
                         if (dataSet.code == 0) {
                             swal("更新成功", "", "success")
                             query_task()
@@ -1027,7 +1018,6 @@
                   var row=$(($(this).parent().parent().html()));
                   task_tag=row[0].innerHTML;
                   task_desc=row[1].innerHTML;
-                  console.log("task_tag=",task_tag,"task_desc=",task_desc)
              });
 
             swal({
@@ -1071,7 +1061,6 @@
                   v_tag  = row[0].innerHTML;
                   v_desc = row[1].innerHTML.replace(/&gt;/g,'>');
                   v_api  = row[5].innerHTML;
-                  console.log("v_tag=",v_tag,"v_api=",v_api)
                   $.ajax({
                           url: "/monitor/task/push",
                           type: "post",

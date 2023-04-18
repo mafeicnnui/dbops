@@ -324,7 +324,6 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
     # handle the trailing semicolon
     p_sql = p_sql[0:-1] if p_sql[-1] == ';' else p_sql
     print('get_query_tables>>>',get_query_tables(p_sql),type(get_query_tables(p_sql)))
-
     print('get_query_columns>>>',get_query_columns(p_sql),type(get_query_columns(p_sql)))
     query_tables = get_query_tables(p_sql)
     query_tables = set([ i if i.count('.')>0 else '{}.{}'.format(curdb,i)  for i in query_tables])
@@ -349,7 +348,7 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
     if len(query_tables.difference(user_query_grants_table)) >0:
        print('查询表权限不足,缺表以下表查询权限:',query_tables.difference(user_query_grants_table))
        result['status'] = '1'
-       result['msg'] = '查询表权限不足,缺表以下表查询权限:{}'.format(query_tables.difference(user_query_grants_table))
+       result['msg'] = '查询表权限不足,缺少以下表查询权限:{}'.format(list(query_tables.difference(user_query_grants_table)))
        result['data'] = ''
        result['column'] = ''
        return result
@@ -357,7 +356,7 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
     if len(query_columns.difference(user_query_grants_column)) > 0:
         print('查询列权限不足,缺表以下列查询权限:', query_columns.difference(user_query_grants_column))
         result['status'] = '1'
-        result['msg'] = '查询列权限不足,缺表以下列查询权限:{}'.format(query_columns.difference(user_query_grants_column))
+        result['msg'] = '查询列权限不足,缺少以下列查询权限:{}'.format(list(query_columns.difference(user_query_grants_column)))
         result['data'] = ''
         result['column'] = ''
         return result
@@ -671,17 +670,17 @@ async def get_mysql_proxy_result_query_grants(p_ds,p_sql,curdb,p_event_loop,p_us
     print('user_query_grants_column=', user_query_grants_column)
 
     if len(query_tables.difference(user_query_grants_table)) > 0:
-        print('查询表权限不足,缺表以下表查询权限:', query_tables.difference(user_query_grants_table))
+        print('查询表权限不足,缺少以下表查询权限:', query_tables.difference(user_query_grants_table))
         result['status'] = '1'
-        result['msg'] = '查询表权限不足,缺表以下表查询权限:{}'.format(query_tables.difference(user_query_grants_table))
+        result['msg'] = '查询表权限不足,缺少以下表查询权限:{}'.format(list(query_tables.difference(user_query_grants_table)))
         result['data'] = ''
         result['column'] = ''
         return result
 
     if len(query_columns.difference(user_query_grants_column)) > 0:
-        print('查询列权限不足,缺表以下列查询权限:', query_columns.difference(user_query_grants_column))
+        print('查询列权限不足,缺少以下列查询权限:', query_columns.difference(user_query_grants_column))
         result['status'] = '1'
-        result['msg'] = '查询列权限不足,缺表以下列查询权限:{}'.format(query_columns.difference(user_query_grants_column))
+        result['msg'] = '查询列权限不足,缺少以下列查询权限:{}'.format(list(query_columns.difference(user_query_grants_column)))
         result['data'] = ''
         result['column'] = ''
         return result

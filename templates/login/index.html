@@ -683,25 +683,6 @@
         <script>
             var tabStatus = new Array;
 
-            $.fn.serializeObject = function()
-            {
-                var o = {};
-                var a = this.serializeArray();
-                $.each(a, function() {
-                    console.log('this.name=',this.name)
-                    if (o[this.name] !== undefined) {
-                        if (!o[this.name].push) {
-                            o[this.name] = [o[this.name]];
-                        }
-                        o[this.name].push(this.value || '');
-                    } else {
-                        o[this.name] = this.value || '';
-                    }
-                });
-                console.log('o=',o)
-                return o;
-            };
-
             function userinfo() {
                $('#con-userinfo-modal').modal({
                   keyboard: false,
@@ -750,15 +731,6 @@
                    tmp=tmp+','+val;
                  });
                  return tmp.substr(1);
-            }
-
-            function get_curr_time() {
-                var date    = new Date();
-                this.hour   = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-                this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-                this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-                var currentTime = this.hour + "时" + this.minute + "分" + this.second + '秒';
-                return currentTime
             }
 
             function updateTime() {
@@ -920,7 +892,7 @@
                          id = $(e.target).attr('id')
                          url = '/'+id.replace(/_/g,'/')
                          $('#main-container-div').load(url);
-                         refresh_token ();
+                         //refresh_token ();
                       })
 
                       $('#'+'close_'+tabId).click(function(){
@@ -969,10 +941,10 @@
             $(document).ajaxStart(function() {
                 start_Loader('main-container-div')
             }).ajaxComplete(function( event, request, settings ) {
-                if (! is_white_list(settings['url'])) {
-                     console.log('flush token!')
-                     refresh_token()
-                }
+                // if (! is_white_list(settings['url'])) {
+                //      console.log('flush token!')
+                //      //refresh_token()
+                // }
             }).ajaxStop(function() {
                 end_Loader('main-container-div')
             }).ajaxError(function( event, request,options ) {

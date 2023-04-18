@@ -103,11 +103,11 @@
                                     <label for="inlineRadio6">项目</label>
                                 </div>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-2">
                                   <span class="label text-danger">平台组&nbsp;</span>
                                   <div class="radio radio-inline">
                                     <input type="radio" id="inlineRadio25" value="platform-prod" name="radioInline_sys" checked>
-                                    <label for="inlineRadio31">生产</label>
+                                    <label for="inlineRadio25">生产</label>
                                   </div>
                             </div>
                             <div class="col-md-2">
@@ -157,7 +157,7 @@
                                     <label for="inlineRadio6">项目</label>
                                 </div>
                           </div>
-                          <div class="col-md-1">
+                          <div class="col-md-2">
                               <span class="label text-danger">平台组&nbsp;</span>
                               <div class="radio radio-inline">
                                 <input type="radio" id="inlineRadio55" value="platform-prod" name="radioInline_svr" checked>
@@ -692,7 +692,7 @@
 
                  if (dataSet.warning.length>0) {
                      for (i=0;i<dataSet.warning.length;i++) {
-                         console.log('dataSet.warning.mysql=',dataSet.warning[i][1],dataSet.warning[i][2])
+                         //console.log('dataSet.warning.mysql=',dataSet.warning[i][1],dataSet.warning[i][2])
                          if (dataSet.warning[i][1]=='0') {
                              showtips('error',dataSet.warning[i][0],'MySQL(项目)数据库服务异常!');
                          }
@@ -753,7 +753,7 @@
                                 { "title": "项目编码","width":"10%"},
                                 { "title": "项目名称"},
                                 { "title": "采集服务器"},
-                                { "title": "接口地址"},
+                                { "title": "接口地址","visible":false},
                                 { "title": "接口状态","className" : 'table_td_center'},
                                 { "title": "响应时间(毫秒)","className" : 'table_td_center'},
                                 { "title": "更新时间","className" : 'table_td_center'},
@@ -781,7 +781,7 @@
                                       render: function (data, type, row, meta) {
                                             //var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_api_grapha(\''+JSON.stringify(row)+'\');"/>' +'&nbsp;';
                                             var  msg ='&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="查看历史" onclick="show_api_grapha(\''+escape(row)+'\');"/>' +'&nbsp;';
-                                            console.log(JSON.stringify(row))
+                                            //console.log(JSON.stringify(row))
                                             return msg ;
                                       }
                                   }
@@ -800,7 +800,7 @@
                   type: "post",
                   datatype: "json",
                   success: function (dataSet) {
-                     console.log( 'get_proj_monitor=',dataSet.data)
+                     //console.log( 'get_proj_monitor=',dataSet.data)
                      $('#tab-proj-monitor').DataTable( {
                               "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
                               "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',

@@ -51,6 +51,16 @@
                 </select>
              </div>
           </div>
+          <div class="col-md-2">
+                 <div class="input-group">
+                     <span class="input-group-addon">任务状态</span>
+                        <select class="form-control select" id="ds_status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </select>
+                 </div>
+           </div>
            <div class="col-md-1">
              <div class="input-group">
                 <span class="input-group-btn">
@@ -99,6 +109,7 @@
                       market_id: $('#market_id').val(),
                       db_env   : $('#db_env').val(),
                       ds_type  : $('#ds_type').val(),
+                      ds_status :$('#ds_status').val(),
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -118,7 +129,7 @@
                                  { "title": "项目名称" },
                                  { "title": "数据源描述" },
                                  { "title": "数据源环境" },
-                                 { "title": "数据源定义" },
+                                 { "title": "数据源定义","visible":false },
                                  { "title": "用户"},
                                  { "title": "是否启用"},
                                  { "title": "更新人"},
@@ -129,11 +140,12 @@
                                 {
                                     targets: 9,
                                     render: function(data, type, row, meta){
+                                        var test_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="测试" onclick="test_btn(\''+row+'\');"/>' +'&nbsp;'
                                         var change_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="change_btn(\''+row+'\');"/>' +'&nbsp;'
                                         var delete_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_btn(\''+row+'\');"/>' +'&nbsp;'
                                         var clone_btn    = '<input class="btn btn-xs btn-primary"  type="button"  value="克隆" onclick="clone_btn(\''+row+'\');"/>' +'&nbsp;'
                                         var console_btn  = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台" onclick="console_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        return change_btn+clone_btn+delete_btn+console_btn
+                                        return test_btn+change_btn+clone_btn+delete_btn+console_btn
                                     }
                                  }
                              ],
@@ -156,6 +168,27 @@
                    $('#main-container-div').load("/ds/edit?dsid="+dsid);
                 },
              })
+        }
+
+        function test_btn(p_ds_row) {
+            var dsid  = p_ds_row.split(',')[0]
+            $.ajax({
+                url: "/ds/check/valid",
+                type: "post",
+                datatype: "json",
+                data: {
+                    id: dsid
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("数据源测试通过!", "", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("数据源测试失败!", dataSet.message + "!", "error");
+                    }
+                    $('#dstest').attr("disabled", false);
+                },
+            });
         }
 
         function delete_btn(p_ds_row) {

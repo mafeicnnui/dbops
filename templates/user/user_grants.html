@@ -20,7 +20,7 @@
     <div class="col-md-12">
        <div class="col-md-3 input-group">
             <span class="input-group-addon"><i class="fa fa-user"></i></span>
-            <input type="text" id="username"  class="form-control" placeholder="请输入登陆名">
+            <input type="text" id="qname"  class="form-control" placeholder="请输入用户、姓名、数据源、库名、表名">
             <span class="input-group-btn">
                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
             </span>
@@ -628,7 +628,7 @@
                   type: "post",
                   datatype: "json",
                   data:{
-                      qname: $('#username').val()
+                      qname: $('#qname').val()
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
