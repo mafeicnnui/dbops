@@ -29,10 +29,10 @@
     <p></p>
     <div class="row">
         <div class="col-md-12">
-           <div class="col-md-3">
+           <div class="col-md-2">
                <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+                    <input type="text" id="name"  class="form-control" placeholder="请输入库名、SQL关键字">
                </div>
             </div>
             <div class="col-md-3">
@@ -46,7 +46,7 @@
                        </select>
                  </div>
             </div>
-             <div class="col-md-3">
+             <div class="col-md-2">
                  <div class="input-group">
                     <span class="input-group-addon">发布人</span>
                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
@@ -56,6 +56,12 @@
                             {% end %}
                        </select>
                  </div>
+             </div>
+             <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon">发布原因</span>
+                    <input type="text" id="reason"  class="form-control" placeholder="请输入发布原因">
+               </div>
              </div>
 
              <div class="col-md-1">
@@ -98,15 +104,19 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <label>运行库 &nbsp;&nbsp;：</label>
+                    <label>运行实例：</label>
                     <span id ='run_db_detail' style="color:red"></span>
                 </div>
+                <div class="row">
+                    <label>发布原因：</label>
+                    <span id ='reason_detail'></span>
+                </div>
                  <div class="row">
-                   <h5>执行时间：</h5>
+                   <label>执行时间：</label>
                    <div id ='run_time_detail' style="color:red"></div>
                 </div>
                 <div class="row">
-                   <h5>执行语句：</h5>
+                   <label>执行语句：</label>
                    <div id='ace-editor' class="col-md-12"></div>
                 </div>
                 <br>
@@ -168,7 +178,8 @@
                   data:{
                       qname:name,
                       dsid:dsid,
-                      creater:creater
+                      creater:creater,
+                      reason:$('#reason').val()
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -190,7 +201,7 @@
                              { "title": "数据库环境" },
                              { "title": "运行库" },
                              { "title": "发布人" },
-                             { "title": "发布时间" },
+                             { "title": "发布时间","visible":false},
                              { "title": "审核人"},
                              { "title": "审核时间"},
                              { "title": "操作"},
@@ -237,9 +248,11 @@
       });
 
      function showSql(row){
-        console.log('slowlog.....')
+        // console.log('slowlog.....')
         id = row.split(',')[0]
         db = row.split(',')[1]
+        console.log('id=',id)
+        console.log('db=',db)
         $('#order_title').text('运行详情[编号:'+id+',库:'+db+']')
         $.ajax({
                 url: "/sql/audit/detail",
@@ -257,6 +270,7 @@
                     } else {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
                     }
+                    $('#reason_detail').text(dataSet.message.reason)
 
                     var editor = ace.edit("ace-editor");
                     editor.setValue('')
@@ -270,7 +284,7 @@
                         var editor3 = ace.edit("ace-editor-rollback");
                         editor3.setValue('')
                         let rollback = ''
-                        console.log(dataSet.message.rollback.length)
+                        // console.log(dataSet.message.rollback.length)
                         for(i=0;i<dataSet.message.rollback.length;i++) {
                             rollback = rollback +dataSet.message.rollback[i].rollback_statement+'\n'
                         }

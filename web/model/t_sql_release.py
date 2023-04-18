@@ -51,11 +51,14 @@ def get_sql_by_sqlid_sync(p_sql_id):
     rs = sync_processer.query_one(sql)
     return rs[0]
 
-async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username):
+async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username,p_reason):
     print('p_creator=',p_creator,'p_userid',p_username)
     v_where = ''
     if p_name != '':
-       v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
+        v_where = v_where + " and (a.sqltext like '%{}%' or a.db like '%{}%')\n".format(p_name,p_name,p_name)
+
+    if p_reason != '':
+        v_where = v_where + " and a.reason like '%{}%'\n".format(p_reason)
 
     if p_dsid != '':
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)
@@ -101,10 +104,14 @@ async def query_audit(p_name,p_dsid,p_creator,p_userid,p_username):
     print(sql)
     return await async_processer.query_list(sql)
 
-async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
+async def query_run(p_name,p_dsid,p_creator,p_userid,p_username,p_reason):
     v_where = ''
     if p_name != '':
-       v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
+        v_where = v_where + " and (a.sqltext like '%{}%' or a.db like '%{}%')\n".format(p_name, p_name, p_name)
+
+    if p_reason != '':
+        v_where = v_where + " and a.reason like '%{}%'\n".format(p_reason)
+
     if p_dsid != '':
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)
     else:
@@ -148,7 +155,7 @@ async def query_run(p_name,p_dsid,p_creator,p_userid,p_username):
           """.format(v_where)
     return await async_processer.query_list(sql)
 
-async def query_order(p_name,p_dsid,p_creator,p_username):
+async def query_order(p_name,p_dsid,p_creator,p_username,p_reason):
     v_where=''
     if p_username != 'admin':
         if p_creator != '':
@@ -160,7 +167,10 @@ async def query_order(p_name,p_dsid,p_creator,p_username):
             v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
 
     if p_name != '':
-       v_where = v_where + " and a.sqltext like '%{0}%'\n".format(p_name)
+        v_where = v_where + " and (a.sqltext like '%{}%' or a.db like '%{}%')\n".format(p_name, p_name, p_name)
+
+    if p_reason != '':
+        v_where = v_where + " and a.reason like '%{}%'\n".format(p_reason)
 
     if p_dsid != '':
         v_where = v_where + " and a.dbid='{0}'\n".format(p_dsid)

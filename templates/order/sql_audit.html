@@ -14,17 +14,15 @@
             vertical-align: middle!important;
         }
     </style>
-
 </head>
-
 <body>
     <p></p>
     <div class="row">
         <div class="col-md-12">
-           <div class="col-md-3">
+           <div class="col-md-2">
                <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+                    <input type="text" id="name"  class="form-control" placeholder="请输入库名、SQL关键字">
                </div>
             </div>
             <div class="col-md-3">
@@ -38,7 +36,7 @@
                        </select>
                  </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                  <div class="input-group">
                     <span class="input-group-addon">发布人</span>
                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
@@ -48,6 +46,12 @@
                             {% end %}
                        </select>
                  </div>
+             </div>
+             <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon">发布原因</span>
+                    <input type="text" id="reason"  class="form-control" placeholder="请输入发布原因">
+               </div>
              </div>
 
              <div class="col-md-1">
@@ -161,7 +165,8 @@
                   data:{
                       qname:name,
                       dsid:dsid,
-                      creater:creater
+                      creater:creater,
+                      reason:$('#reason').val()
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -181,7 +186,7 @@
                          { "title": "工单状态" },
                          { "title": "工单类型" },
                          { "title": "数据库环境"},
-                         { "title": "运行库" },
+                         { "title": "运行库","visible":false },
                          { "title": "发布人" },
                          { "title": "发布时间"},
                          { "title": "审核人"},
@@ -291,7 +296,7 @@
                     message : $('#audit_message').val()
                 },
                 success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
+                    // console.log(dataSet.code, dataSet.message);
                     if (dataSet.code == '-1') {
                        $('#auditSql').removeAttr("disabled");
                     }
@@ -302,7 +307,7 @@
     });
 
     $('#db_source').change(function() {
-        console.log('db_source=',$('#db_source').val());
+        // console.log('db_source=',$('#db_source').val());
         if ($('#db_source').val()!=''){
             $.ajax({
                   url: "/get_database",

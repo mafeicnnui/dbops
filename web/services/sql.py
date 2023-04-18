@@ -160,7 +160,8 @@ class sql_audit_query(base_handler.TokenHandler):
         qname   = self.get_argument("qname")
         dsid    = self.get_argument("dsid")
         creater = self.get_argument("creater")
-        v_list  = await query_audit(qname,dsid,creater,self.userid,self.username)
+        reason  = self.get_argument("reason")
+        v_list  = await query_audit(qname,dsid,creater,self.userid,self.username,reason)
         v_json  = json.dumps(v_list)
         self.write(v_json)
 
@@ -170,7 +171,8 @@ class sql_run_query(base_handler.TokenHandler):
         qname  = self.get_argument("qname")
         dsid   = self.get_argument("dsid")
         creater= self.get_argument("creater")
-        v_list = await query_run(qname,dsid,creater,self.userid,self.username)
+        reason = self.get_argument("reason")
+        v_list = await query_run(qname,dsid,creater,self.userid,self.username,reason)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -331,7 +333,8 @@ class order_query(base_handler.TokenHandler):
         qname  = self.get_argument("qname")
         dsid   = self.get_argument("dsid")
         creater = self.get_argument("creater")
-        v_list = await query_order(qname,dsid,creater,self.username)
+        reason  = self.get_argument("reason")
+        v_list = await query_order(qname,dsid,creater,self.username,reason)
         v_json = json.dumps(v_list)
         self.write(v_json)
 

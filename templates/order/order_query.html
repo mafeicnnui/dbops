@@ -80,7 +80,7 @@
            <div class="col-md-2">
                <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+                    <input type="text" id="name"  class="form-control" placeholder="请输入库名、SQL关键字">
                </div>
             </div>
             <div class="col-md-3">
@@ -94,7 +94,7 @@
                        </select>
                  </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                  <div class="input-group">
                      <span class="input-group-addon">版本号</span>
                        <select class="form-control select" id="db_online_ver">
@@ -116,14 +116,20 @@
                        </select>
                  </div>
              </div>
+             <div class="col-md-2">
+               <div class="input-group">
+                    <span class="input-group-addon">发布原因</span>
+                    <input type="text" id="reason"  class="form-control" placeholder="请输入发布原因">
+               </div>
+             </div>
              <div class="col-md-1">
                <div class="input-group">
                     <span class="input-group-btn">
                        <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
                     </span>
-                    <span class="input-group-btn">
-                       <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>
-                    </span>
+<!--                    <span class="input-group-btn">-->
+<!--                       <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>-->
+<!--                    </span>-->
                </div>
             </div>
         </div>
@@ -191,8 +197,12 @@
             <div class="modal-body">
                  <div class="row">
                     <div class="row">
-                        <label>运行库 &nbsp;&nbsp;：</label>
+                        <label>运行实例：</label>
                         <span id ='run_db_detail' style="color:red"></span>
+                   </div>
+                   <div class="row">
+                        <label>发布原因：</label>
+                        <span id ='reason_detail'></span>
                    </div>
                     <div  class="tab-pane active">
                        <div class="row">
@@ -969,6 +979,7 @@
                   qname : $("#name").val(),
                   dsid  : $("#db_audit_source").val(),
                   creater: $("#sql_creater").val(),
+                  reason : $('#reason').val()
               },
               success: function (dataSet) {
                   $('#tab-sql').DataTable( {
@@ -991,8 +1002,8 @@
                          { "title": "数据库环境" },
                          { "title": "发布人" },
                          { "title": "发布时间" },
-                         { "title": "审核人"},
-                         { "title": "审核时间"},
+                         { "title": "审核人","visible":false},
+                         { "title": "审核时间","visible":false},
                          { "title": "错误","visible":false},
                          { "title": "操作"},
                        ],
@@ -1121,7 +1132,7 @@
                          { "title": "工单状态" },
                          { "title": "发布人" },
                          { "title": "发布时间" },
-                         { "title": "最近更新时间" },
+                         { "title": "最近更新时间","visible":false },
                          { "title": "审核时间"},
                          { "title": "登陆用户","visible":false},
                          { "title": "操作"},
@@ -1337,6 +1348,7 @@
                     } else {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
                     }
+                    $('#reason_detail').text(dataSet.message.reason)
                     $('#run_time_detail').text(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
