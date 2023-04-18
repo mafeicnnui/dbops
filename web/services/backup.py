@@ -26,7 +26,8 @@ class backup_query(base_handler.TokenHandler):
         tagname     = self.get_argument("tagname")
         db_env      = self.get_argument("db_env")
         db_type     = self.get_argument("db_type")
-        v_list      = await query_backup(tagname,db_env,db_type)
+        db_status   = self.get_argument("db_status")
+        v_list      = await query_backup(tagname,db_env,db_type,db_status)
         v_json      = json.dumps(v_list)
         self.write(v_json)
 

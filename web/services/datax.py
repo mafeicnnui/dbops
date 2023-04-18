@@ -32,7 +32,8 @@ class sync_datax_query(base_handler.TokenHandler):
         sync_ywlx  = self.get_argument("sync_ywlx")
         sync_type  = self.get_argument("sync_type")
         sync_env   = self.get_argument("sync_env")
-        v_list     = await query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env)
+        sync_status = self.get_argument("sync_status")
+        v_list     = await query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env,sync_status)
         v_json     = json.dumps(v_list)
         self.write(v_json)
 
@@ -149,10 +150,8 @@ class syncchange_datax(base_handler.TokenHandler):
 
 class syncedit_datax(base_handler.TokenHandler):
     async def get(self):
-        sync_id   = self.get_argument("sync_id")
-        d_sync    = await query_datax_by_id(sync_id)
-        print('d_sync=',d_sync)
-        print('d_sync_dm=',await get_dmm_from_dm('02'))
+        sync_id = self.get_argument("sync_id")
+        d_sync  = await query_datax_by_id(sync_id)
         self.render("./datax/sync_datax_edit.html",
                     sync_id              = sync_id,
                     sync_server          = await get_sync_server(),
@@ -191,14 +190,14 @@ class syncedit_datax(base_handler.TokenHandler):
                     python3_home         = d_sync['python3_home'],
                     db_server_doris      = await get_datax_sync_db_server_doris(),
                     db_doris             = d_sync['doris_id'],
-                    dm_doris_db_names    = await get_datax_sync_db_names_doris(d_sync['doris_id']),
-                    doris_db_name        = d_sync['doris_db_name'],
-                    doris_tab_name       = d_sync['doris_tab_name'],
-                    doris_batch_size     = d_sync['doris_batch_size'],
-                    doris_jvm            = d_sync['doris_jvm'],
-                    doris_tab_config     = d_sync['doris_tab_config'],
+                    dm_doris_db_names    = [] if d_sync['doris_id']=='' else await get_datax_sync_db_names_doris(d_sync['doris_id']),
+                    doris_db_name        = '' if d_sync['doris_db_name'] == '' else  d_sync['doris_db_name'],
+                    doris_tab_name       = '' if d_sync['doris_tab_name']=='' else d_sync['doris_tab_name'],
+                    doris_batch_size     = '' if d_sync['doris_batch_size']=='' else d_sync['doris_batch_size'],
+                    doris_jvm            = '' if d_sync['doris_jvm']=='' else d_sync['doris_jvm'],
+                    doris_tab_config     = '' if d_sync['doris_tab_config']=='' else  d_sync['doris_tab_config'],
                     dm_sync_doris_type   = await get_dmm_from_dm('44'),
-                    doris_sync_type      = d_sync['doris_sync_type'],
+                    doris_sync_type      = '' if d_sync['doris_sync_type']=='' else d_sync['doris_sync_type'],
 
         )
 

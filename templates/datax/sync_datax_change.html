@@ -90,7 +90,16 @@
                 </select>
              </div>
          </div>
-
+         <div class="col-md-2">
+                 <div class="input-group">
+                     <span class="input-group-addon">任务状态</span>
+                        <select class="form-control select" id="sync_status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </select>
+                 </div>
+         </div>
          <div class="col-md-1">
              <div class="input-group">
               <span class="input-group-btn">
@@ -108,7 +117,7 @@
              </div>
          </div>
         <input  id="sync_tag_tmp" type="hidden"  value= >
-         <div class="row">
+        <div class="row">
               <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
                    <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
                    <input  id='dsdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
@@ -119,10 +128,8 @@
                    <input  id='clone' type='button' class="btn waves-effect waves-light btn-primary"  value="克隆"/>
              </div>
          </div>
-         <div id='scrDiv' class='divBG'>
-             <div id='spinDiv' class='PopUp'></div>
-         </div>
     </div>
+    <span>&nbsp;</span>
 
     <!--远程任务详情 -->
     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
@@ -199,7 +206,8 @@
                       sync_tag   : $('#tagname').val(),
                       sync_ywlx  : $('#sync_ywlx').val(),
                       sync_type  : $('#sync_type').val(),
-                      sync_env   : $('#sync_env').val()
+                      sync_env   : $('#sync_env').val(),
+                      sync_status : $('#sync_status').val(),
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -219,7 +227,7 @@
                             { "title": "同步标识号"},
                             { "title": "同步标识号","visible":false},
                             { "title": "任务描述"},
-                            { "title": "同步服务器" },
+                            { "title": "同步服务器","visible":false },
                             { "title": "同步方向" },
                             { "title": "运行时间" },
                             { "title": "接口服务器"},

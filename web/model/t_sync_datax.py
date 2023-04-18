@@ -66,7 +66,7 @@ def get_mysql_columns_doris(p_sync):
        v=v+'''"{}",'''.format(i)
     return v[0:-1]
 
-async def query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env):
+async def query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env,sync_status):
     v_where=' and  1=1 '
     if sync_tag != '':
         v_where = v_where + " and a.sync_tag like '%{0}%'\n".format(sync_tag)
@@ -74,6 +74,8 @@ async def query_datax_sync(sync_tag,sync_ywlx,sync_type,sync_env):
         v_where = v_where + " and a.sync_ywlx='{0}'\n".format(sync_ywlx)
     if sync_type != '':
         v_where = v_where + " and a.sync_type='{0}'\n".format(sync_type)
+    if sync_status != '':
+        v_where = v_where + " and a.status='{0}'\n".format(sync_status)
     if sync_env == 'prod':
         v_where = v_where + " and a.zk_hosts='192.168.100.63:2181,192.168.100.64:2181,192.168.100.69:2181'\n"
     elif sync_env == "dev":

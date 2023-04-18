@@ -17,14 +17,14 @@
         }
 
         .modal-lg-templete {
-            width:60%;
-            height:80%;
-            margin-left:400px;
-            margin-top:10px;
+            width:70%;
+            height:50%;
+            margin-left:300px;
+            margin-top:80px;
         }
 
         #ace-editor-full,#ace-editor-incr{
-           height:600px;
+           height:400px;
            overflow-x:auto;
            overflow-y:auto;
        }
@@ -79,7 +79,16 @@
                 </select>
              </div>
          </div>
-
+         <div class="col-md-2">
+                 <div class="input-group">
+                     <span class="input-group-addon">任务状态</span>
+                        <select class="form-control select" id="sync_status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </select>
+                 </div>
+         </div>
          <div class="col-md-1">
              <div class="input-group">
               <span class="input-group-btn">
@@ -572,7 +581,8 @@
                       sync_tag   : $('#tagname').val(),
                       sync_ywlx  : $('#sync_ywlx').val(),
                       sync_type  : $('#sync_type').val(),
-                      sync_env   : $('#sync_env').val()
+                      sync_env   : $('#sync_env').val(),
+                      sync_status : $('#sync_status').val(),
                   },
                   success: function (dataSet) {
                       $('#example').DataTable( {
@@ -591,7 +601,7 @@
                         { "title": "同步标识号"},
                         { "title": "同步标识号","visible":false},
                         { "title": "任务描述"},
-                        { "title": "同步服务器" },
+                        { "title": "同步服务器","visible":false },
                         { "title": "同步方向" },
                         { "title": "运行时间" },
                         { "title": "接口服务器"},

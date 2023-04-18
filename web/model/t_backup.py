@@ -10,14 +10,16 @@ import traceback
 from web.utils.common  import format_sql
 from web.utils.mysql_async  import async_processer
 
-async def query_backup(tagname,db_env,db_type):
+async def query_backup(tagname,db_env,db_type,db_status):
     v_where = ' and 1=1 '
     if  tagname!='':
        v_where=v_where+" and a.db_tag='{0}'\n".format(tagname)
     if db_env != '':
         v_where =v_where+ " and c.db_env='{0}'\n".format(db_env)
     if db_type != '':
-        v_where =v_where+ " and c.db_type='{0}'\n".format(db_type)
+        v_where =v_where+ " and c.db_type='{0}'\n   ".format(db_type)
+    if db_status != '':
+        v_where =v_where+ " and a.status='{0}'\n".format(db_status)
     sql = """SELECT
                   a.id,a.comments,a.db_tag,a.expire,a.run_time,
                   concat(b.server_ip,':',b.server_port),a.api_server,

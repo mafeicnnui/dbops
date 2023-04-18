@@ -19,37 +19,20 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="update table-level query grants">
-      <change afterPath="$PROJECT_DIR$/static/plugins/bootstrap-sweetalert/sweet-alert.min.js.bak" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="ui page optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/plugins/bootstrap-sweetalert/sweet-alert.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/plugins/bootstrap-sweetalert/sweet-alert.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/backup/backup_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_create.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ds/ds_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/ds/ds_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/menu/menu_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_alert.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_alert.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_templete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_templete.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_add_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_add_real.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/sync/sync_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_grants.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_grants.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_ds.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/ds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sync_datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync_datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/datax.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -759,14 +742,8 @@
       <workItem from="1681349770970" duration="12258000" />
       <workItem from="1681450658153" duration="5719000" />
       <workItem from="1681693444981" duration="783000" />
-      <workItem from="1681779616989" duration="8367000" />
-    </task>
-    <task id="LOCAL-00213" summary="requirements.txt update">
-      <created>1672821328710</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1672821328710</updated>
+      <workItem from="1681779616989" duration="9575000" />
+      <workItem from="1681796574763" duration="3025000" />
     </task>
     <task id="LOCAL-00214" summary="README.md update">
       <created>1672821385405</created>
@@ -1104,7 +1081,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681366810137</updated>
     </task>
-    <option name="localTasksCounter" value="262" />
+    <task id="LOCAL-00262" summary="ui page optimize">
+      <created>1681788347800</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1681788347800</updated>
+    </task>
+    <option name="localTasksCounter" value="263" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1123,7 +1107,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="role code optimize" />
     <MESSAGE value="requirements.txt update" />
     <MESSAGE value="sql README.md update" />
     <MESSAGE value="bbgl update" />
@@ -1148,13 +1131,14 @@
     <MESSAGE value="sys settings ui optimize" />
     <MESSAGE value="support table-level query permission" />
     <MESSAGE value="update table-level query grants" />
-    <option name="LAST_COMMIT_MESSAGE" value="update table-level query grants" />
+    <MESSAGE value="ui page optimize" />
+    <option name="LAST_COMMIT_MESSAGE" value="ui page optimize" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="69" y="0" width="1014" height="824" key="#Deployment" timestamp="1681779812458">
+    <state x="69" y="0" width="1014" height="824" key="#Deployment" timestamp="1681797020258">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="69" y="0" width="1014" height="824" key="#Deployment/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681779812458" />
+    <state x="69" y="0" width="1014" height="824" key="#Deployment/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681797020258" />
     <state x="86" y="192" width="1427" height="848" key="#Deployment/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410407090" />
     <state x="2006" y="37" width="1149" height="683" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562874339" />
     <state x="462" y="196" width="804" height="620" key="#Notifications" timestamp="1681349112172">
@@ -1162,10 +1146,10 @@
     </state>
     <state x="462" y="196" key="#Notifications/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681349112172" />
     <state x="577" y="247" width="804" height="620" key="#Notifications/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678270542678" />
-    <state x="240" y="0" key="#SSH_Configurations" timestamp="1681779811164">
+    <state x="240" y="0" key="#SSH_Configurations" timestamp="1681797019124">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="240" y="0" key="#SSH_Configurations/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681779811164" />
+    <state x="240" y="0" key="#SSH_Configurations/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681797019124" />
     <state x="300" y="155" key="#SSH_Configurations/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410405521" />
     <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562873353" />
     <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1681348603908">
@@ -1176,60 +1160,60 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2660" y="95" key="FileChooserDialogImpl/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677460848216" />
-    <state width="1483" height="94" key="GridCell.Tab.0.bottom" timestamp="1681786106154">
+    <state width="1483" height="138" key="GridCell.Tab.0.bottom" timestamp="1681799529424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="94" key="GridCell.Tab.0.bottom/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681786106154" />
+    <state width="1483" height="138" key="GridCell.Tab.0.bottom/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681799529424" />
     <state width="1867" height="294" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634497" />
-    <state width="1483" height="94" key="GridCell.Tab.0.center" timestamp="1681786106154">
+    <state width="1483" height="138" key="GridCell.Tab.0.center" timestamp="1681799529424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="94" key="GridCell.Tab.0.center/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681786106154" />
+    <state width="1483" height="138" key="GridCell.Tab.0.center/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681799529424" />
     <state width="1867" height="294" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634496" />
-    <state width="1483" height="94" key="GridCell.Tab.0.left" timestamp="1681786106154">
+    <state width="1483" height="138" key="GridCell.Tab.0.left" timestamp="1681799529424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="94" key="GridCell.Tab.0.left/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681786106154" />
+    <state width="1483" height="138" key="GridCell.Tab.0.left/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681799529424" />
     <state width="1867" height="294" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634496" />
-    <state width="1483" height="94" key="GridCell.Tab.0.right" timestamp="1681786106154">
+    <state width="1483" height="138" key="GridCell.Tab.0.right" timestamp="1681799529424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="94" key="GridCell.Tab.0.right/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681786106154" />
+    <state width="1483" height="138" key="GridCell.Tab.0.right/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681799529424" />
     <state width="1867" height="294" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634497" />
     <state x="246" y="81" key="IDE.errors.dialog" timestamp="1679558534091">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="246" y="81" key="IDE.errors.dialog/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1679558534091" />
-    <state x="340" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1681779821034">
+    <state x="340" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1681797023519">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="340" y="0" width="1139" height="824" key="SettingsEditor/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681779821034" />
+    <state x="340" y="0" width="1139" height="824" key="SettingsEditor/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681797023519" />
     <state x="486" y="155" key="SettingsEditor/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410410425" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562877422" />
-    <state x="346" y="45" key="Vcs.Push.Dialog.v2" timestamp="1681366815081">
+    <state x="346" y="45" key="Vcs.Push.Dialog.v2" timestamp="1681788355659">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="346" y="45" key="Vcs.Push.Dialog.v2/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681366815081" />
+    <state x="346" y="45" key="Vcs.Push.Dialog.v2/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681788355659" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678272075090" />
     <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1676514489872" />
-    <state x="255" y="68" width="1171" height="700" key="find.popup" timestamp="1681787819789">
+    <state x="255" y="68" width="1171" height="700" key="find.popup" timestamp="1681799464345">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="255" y="68" width="1171" height="700" key="find.popup/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681787819789" />
+    <state x="255" y="68" width="1171" height="700" key="find.popup/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681799464345" />
     <state x="229" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678418126160" />
     <state x="2149" y="62" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677489218851" />
     <state x="475" y="289" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1681198767615">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="475" y="289" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681198767615" />
-    <state x="69" y="293" key="publish.login" timestamp="1681454557387">
+    <state x="69" y="293" key="publish.login" timestamp="1681797000652">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="69" y="293" key="publish.login/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681454557387" />
+    <state x="69" y="293" key="publish.login/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681797000652" />
     <state x="86" y="370" key="publish.login/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678432793944" />
     <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576941244" />
     <state x="498" y="178" width="840" height="538" key="search.everywhere.popup" timestamp="1681263673144">
@@ -1251,7 +1235,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1681783743384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1681799529417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>
