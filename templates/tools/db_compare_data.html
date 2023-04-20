@@ -161,7 +161,8 @@
                       async:false,
                       data:{
                           dbid : $('#sour_db_server').val(),
-                          msg:''
+                          msg:'',
+                          flag:'compare'
                       },
                       success: function (dataSet) {
                          console.log('dataSet=',dataSet)
@@ -217,7 +218,8 @@
                       async:false,
                       data:{
                           dbid : $('#desc_db_server').val(),
-                          msg:''
+                          msg:'',
+                          flag:'compare'
                       },
                       success: function (dataSet) {
                          $("#desc_schema").empty();

@@ -328,7 +328,10 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
     query_tables = get_query_tables(p_sql)
     query_tables = set([ i if i.count('.')>0 else '{}.{}'.format(curdb,i)  for i in query_tables])
     print('query_tables=',query_tables)
-    query_columns = set(get_query_columns(p_sql.replace('`','')))
+    print('p_sql.replace=',p_sql.replace('`',''))
+    query_columns = get_query_columns(p_sql)
+    query_columns = set([i.replace('`','') for i in query_columns])
+    print('query_columns1=', query_columns)
     query_columns = set([ i.split('.')[1] if i.count('.')>0 else i  for i in query_columns])
     print('query_columns2=', query_columns)
     st = """select concat(a.schema,'.',a.table) as table_name,a.columns as column_name from puppet.`t_user_query_grants` a where a.dbid={} AND uid={}""".format(p_ds['dsid'], p_userid)
@@ -951,7 +954,7 @@ async def exe_query_aio(p_dbid,p_sql,curdb,p_event_loop,p_userid):
             if p_ds['proxy_status'] == '1':
                result = await get_mysql_proxy_result_query_grants(p_ds,p_sql,curdb,p_event_loop,p_userid)
             else:
-               print('get_mysql_result_aiomysql')
+               print('get_mysql_result_aio_query_grants')
                result = await get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_userid)
 
     # 查询 SQLServer 数据源

@@ -942,7 +942,8 @@
                             datatype:"json",
                             data: {
                                  dbid  :  $('#db_source').val(),
-                                 msg   :  $('#filter_db').val()
+                                 msg   :  $('#filter_db').val(),
+                                 flag  : 'release',
                             },
                             success: function (dataSet) {
                                 if (dataSet.url.length>30) {

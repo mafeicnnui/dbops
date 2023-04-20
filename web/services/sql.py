@@ -189,6 +189,7 @@ class get_tree_by_sql(base_handler.TokenHandler):
     async def post(self):
         dbid   = self.get_argument("dbid")
         msg    = self.get_argument("msg")
+        flag   = self.get_argument("flag")
         p_ds   = await get_ds_by_dsid(dbid)
         user   = await get_user_by_userid(self.userid)
         print('get_tree_by_sql->user=',user)
@@ -200,10 +201,16 @@ class get_tree_by_sql(base_handler.TokenHandler):
                 else:
                     result = await get_tree_by_dbid(dbid,msg)
             else:
-                if p_ds['proxy_status'] == '1':
-                    result = await get_tree_by_dbid_proxy_query_grants(dbid,msg,self.userid)
+                if  flag == 'query':
+                    if p_ds['proxy_status'] == '1':
+                        result = await get_tree_by_dbid_proxy_query_grants(dbid,msg,self.userid)
+                    else:
+                        result = await get_tree_by_dbid_query_grants(dbid,msg,self.userid)
                 else:
-                    result = await get_tree_by_dbid_query_grants(dbid,msg,self.userid)
+                    if p_ds['proxy_status'] == '1':
+                        result = await get_tree_by_dbid_proxy(dbid)
+                    else:
+                        result = await get_tree_by_dbid(dbid, msg)
         elif p_ds['db_type'] == '2':
             if p_ds['proxy_status'] == '1':
                 result = await get_tree_by_dbid_mssql_proxy(dbid)
