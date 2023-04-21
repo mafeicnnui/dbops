@@ -5,9 +5,11 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.dbtools      import dict_gen,redis_migrate,db_compare,_db_compare,_db_compare_detail,_db_compare_statement,\
-        _db_compare_gen_statement,_db_compare_idx,_db_compare_detail_idx,_db_compare_statement_idx,\
-        db_compare_data,_db_compare_data,db_dict,_db_dict,_db_dict_exp
+from web.services.dbtools import dict_gen, redis_migrate, db_compare, _db_compare, _db_compare_detail, \
+        _db_compare_statement, \
+        _db_compare_gen_statement, _db_compare_idx, _db_compare_detail_idx, _db_compare_statement_idx, \
+        db_compare_data, _db_compare_data, db_dict, _db_dict, _db_dict_exp, db_cipher, db_cipher_encrypt, \
+        db_cipher_decrypt
 
 tools = [
         (r"/dict/gen", dict_gen),
@@ -25,5 +27,9 @@ tools = [
         (r"/dbtools/dict", db_dict),
         (r"/dbtools/_dict", _db_dict),
         (r"/dbtools/_dict_exp", _db_dict_exp),
+        (r"/dbtools/cipher", db_cipher),
+        (r"/dbtools/cipher/encrypt", db_cipher_encrypt),
+        (r"/dbtools/cipher/decrypt", db_cipher_decrypt),
+
 
 ]

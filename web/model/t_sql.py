@@ -11,14 +11,17 @@ import datetime
 import pymysql
 import requests
 import traceback
-from web.model.t_ds   import get_ds_by_dsid
+
+from web.model.t_ds import get_ds_by_dsid, db_decrypt
 from web.model.t_user import get_user_by_userid
 from web.utils.common import get_connection_ds_sqlserver, get_connection_ds_read_limit, get_seconds, \
-    get_connection_ds_read_limit_ck, get_connection_ds_read_limit_aiomysql, get_connection_ds_read_limit_aiomysql_dict
+     get_connection_ds_read_limit_ck, get_connection_ds_read_limit_aiomysql, get_connection_ds_read_limit_aiomysql_dict
 from web.utils.common import exception_info_mysql,format_mysql_error
 from web.model.t_sql_check import get_audit_rule
 from web.utils.mongo_query import mongo_client
 from sql_metadata import get_query_columns, get_query_tables, get_query_table_aliases
+
+from web.utils.mysql_async import async_processer
 
 
 def check_sql(p_dbid,p_sql,curdb):
@@ -254,6 +257,11 @@ async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
                 i_sensitive.append(i)
             columns.append({"title": desc[i][0]})
 
+        # get decrypt column
+        c_decrypt = (await async_processer.query_one(
+            "select `value` from t_sys_settings where `key`='DECRYPT_COLUMNS'"))[0].split(',')
+        print('c_decrypt=', c_decrypt)
+
         #process data
         for i in rs:
             tmp = []
@@ -263,6 +271,9 @@ async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
                 else:
                    if j in  i_sensitive:
                        tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
+                   elif desc[j][0] in c_decrypt:
+                       print('env=', p_ds['db_env'], str(i[j]))
+                       tmp.append(await db_decrypt(p_ds['db_env'], str(i[j])))
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)
@@ -383,6 +394,7 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
         rs = await cr.fetchall()
         # get sensitive column
         c_sensitive = (await get_audit_rule('switch_sensitive_columns'))['rule_value'].split(',')
+        print('c_sensitive=',c_sensitive)
         # process desc
         i_sensitive = []
         desc = cr.description
@@ -391,6 +403,11 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
                 i_sensitive.append(i)
             columns.append({"title": desc[i][0]})
 
+        # get decrypt column
+        c_decrypt = (await async_processer.query_one(
+                       "select `value` from t_sys_settings where `key`='DECRYPT_COLUMNS'"))[0].split(',')
+        print('c_decrypt=',c_decrypt)
+
         #process data
         for i in rs:
             tmp = []
@@ -398,8 +415,12 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
                 if i[j] is None:
                    tmp.append('')
                 else:
-                   if j in  i_sensitive:
+                   print('desc[j]=',desc[j])
+                   if j in i_sensitive:
                        tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
+                   elif desc[j][0] in c_decrypt:
+                       print('env=',p_ds['db_env'],str(i[j]))
+                       tmp.append(await db_decrypt(p_ds['db_env'],str(i[j])))
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)

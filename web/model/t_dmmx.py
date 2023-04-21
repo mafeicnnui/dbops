@@ -13,6 +13,10 @@ async def get_dmm_from_dm(p_dm):
     sql = "select dmm,dmmc from t_dmmx where dm='{0}'".format(p_dm)
     return await async_processer.query_list(sql)
 
+async def get_dmm_from_dm_cipher(p_dm):
+    sql = "select dmm,dmmc from t_dmmx where dm='{0}' and dmm in('1','2','3','4')".format(p_dm)
+    return await async_processer.query_list(sql)
+
 async def get_dmm_from_dm2(p_dm,p_dmm):
     sql = "select dmm,dmmc from t_dmmx where dm='{0}' and instr('{1}',dmm)>0".format(p_dm,p_dmm)
     return await async_processer.query_list(sql)

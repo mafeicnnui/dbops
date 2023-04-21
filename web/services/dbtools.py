@@ -11,8 +11,11 @@ from   web.model.t_archive import query_archive_detail
 from web.model.t_db_tools import db_stru_compare, db_stru_compare_detail, db_stru_compare_statement, \
     db_stru_batch_gen_statement, db_stru_compare_idx, db_stru_compare_detail_idx, db_stru_compare_statement_idx, \
     db_stru_compare_data, db_gen_dict, exp_dict
-from web.model.t_dmmx import get_sync_db_mysql_server, get_datax_sync_db_server_doris, get_compare_db_server
+from web.model.t_dmmx import get_sync_db_mysql_server, get_datax_sync_db_server_doris, get_compare_db_server, \
+    get_dmm_from_dm, get_dmm_from_dm_cipher
+from web.model.t_ds import db_decrypt, db_encrypt
 from web.utils import base_handler
+
 
 class dict_gen(base_handler.TokenHandler):
     @tornado.web.authenticated
@@ -163,3 +166,30 @@ class _db_dict_exp(base_handler.TokenHandler):
         static_path = self.get_template_path().replace("templates", "static")
         v_list = await exp_dict(static_path,db_server, db_schema)
         self.write({"code": 0, "message": v_list})
+
+
+
+class db_cipher(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./tools/db_cipher.html",
+                    dm_env_type  = await get_dmm_from_dm_cipher('03'),
+                    )
+
+class db_cipher_encrypt(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_env  = self.get_argument("db_env")
+        plain_text  = self.get_argument("plain_text")
+        print(db_env,plain_text)
+        v_list     = await db_encrypt(db_env,plain_text)
+        self.write({"code": 0, "message": v_list})
+
+
+class db_cipher_decrypt(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        db_env = self.get_argument("db_env")
+        cipher_text = self.get_argument("cipher_text")
+        print(db_env, cipher_text)
+        ret = await db_decrypt(db_env,cipher_text)
+        self.write({"code": 0, "message": ret})

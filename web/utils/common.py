@@ -20,7 +20,6 @@ import sqlparse
 import re
 import requests
 import decimal
-
 from email.mime.text import MIMEText
 from elasticsearch import Elasticsearch
 from web.utils.mysql_async import async_processer
