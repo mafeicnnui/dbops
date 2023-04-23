@@ -77,7 +77,7 @@
                                     <div id='ace_cipher_text2'></div>
                                 </div>
                                 <div class="col-md-1 align=left">
-                                    <button type="button"  id='decrypt_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-locked"></i></button>
+                                    <button type="button"  id='decrypt_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-unlocked"></i></button>
                                 </div>
                             </div>
                          </div>
@@ -129,8 +129,19 @@
             editor.insert(p_value);
         }
 
+        function check_valid(){
+          if ($('#db_env').val()=='') {
+              swal("提示", "数据库环境不能为空!", "error");
+              return false
+          }
+          return true
+        }
+
         $('#encrypt_btn').on('click',function () {
-             $.ajax({
+            if (! check_valid()) {
+                return
+            }
+            $.ajax({
                  url: "/dbtools/cipher/encrypt",
                  type: "post",
                  datatype: "json",
@@ -145,7 +156,10 @@
          })
 
         $('#decrypt_btn').on('click',function () {
-             $.ajax({
+            if (! check_valid()) {
+                return
+            }
+            $.ajax({
                  url: "/dbtools/cipher/decrypt",
                  type: "post",
                  datatype: "json",
