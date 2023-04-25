@@ -93,8 +93,10 @@
                   </div>
              </div>
          </div>
-         <input  id="sync_id_tmp" type="hidden"  value= >
-         <input  id="sync_tag_tmp" type="hidden"  value= >
+         <input  id="sync_id_tmp"   type="hidden">
+         <input  id="sync_tag_tmp"  type="hidden">
+         <input  id="sync_desc_tmp" type="hidden">
+         <input  id="sync_api_tmp"  type="hidden">
          <div class="row">
               <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
                    <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary"  value="变更"/>
@@ -145,8 +147,13 @@
            r = unescape(v)
            sync_id=r.split(',')[0]
            sync_tag=r.split(',')[2]
+           sync_desc=r.split(',')[3]
+           sync_api=r.split(',')[7]
+
            $('#sync_id_tmp').val(sync_id)
            $('#sync_tag_tmp').val(sync_tag)
+           $('#sync_desc_tmp').val(sync_desc)
+           $('#sync_api_tmp').val(sync_api)
            var rec=0;
            $("#example tbody tr td input:checked").each( function() {
               rec=rec+1;
@@ -241,8 +248,11 @@
               $("#example tbody tr td input:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
                   v_tag=$('#sync_tag_tmp').val()
-                  v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
-                  v_api=row[7].innerHTML;
+                  // v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
+                  // v_api=row[7].innerHTML;
+                  v_desc=$('#sync_desc_tmp').val()
+                  v_api=$('#sync_api_tmp').val()
+
                   $.ajax({
                           url: "/sync/edit/push",
                           type: "post",

@@ -978,7 +978,7 @@ def get_health_api_server(api_servers):
     for api in api_servers.split(','):
         req = 'http://{}/health'.format(api)
         try:
-          res = requests.head(req,timeout=1)
+          res = requests.head(req,timeout=3)
           api_status[api] = res.status_code
         except:
           api_status[api] = 500
@@ -996,6 +996,7 @@ def push_sync_task(p_tag,p_api):
     }
 
     url = 'http://{}/push_script_remote_sync'.format(get_health_api_server(p_api))
+    print('url=',url)
     res = requests.post(url, data=data)
     print('res=',res,data)
     try:

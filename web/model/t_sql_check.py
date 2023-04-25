@@ -1532,14 +1532,18 @@ async def get_dml_rows(p_ds,p_sql):
            return rs[0]
         elif op in('UPDATE'):
            if p_sql.upper().find('WHERE')>=0:
+               # print('>>>>>>>>>>>',re.split(r'\s+', p_sql))
                tb = re.split(r'\s+', p_sql)[1]
                if re.split(r'\s+', p_sql)[2].upper()!='SET':
-                  tb = tb +' '+ re.split(r'\s+', p_sql)[2]
+                  if re.split(r'\s+', p_sql)[2].upper() == 'AS':
+                      tb = tb +' '+ re.split(r'\s+', p_sql)[2]+' '+re.split(r'\s+', p_sql)[3]
+                  else:
+                      tb = tb +' '+ re.split(r'\s+', p_sql)[2]
                vv = p_sql[p_sql.upper().find('WHERE'):]
                st = """select count(0) from {0} {1}""".format(tb,vv)
-               # print('tb=',tb)
-               # print('vv=',vv)
-               # print('st=',st)
+               print('tb=',tb)
+               print('vv=',vv)
+               print('st=',st)
            else:
                st = """select count(0) from {0}""". \
                    format(p_sql[6:p_sql.upper().find('SET')-1].strip())
