@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <style>
-        #ace_plain_text,#ace_cipher_text,#ace_plain_text2,#ace_cipher_text2{
-           height:200px;
+        #ace_plain_text,#ace_cipher_text{
+           height:400px;
         }
     </style>
 </head>
@@ -23,83 +23,24 @@
              </div>
          </div>
       </div>
-     <p></p>
+     <hr>
 
-     <div class="panel panel-default">
-        <div class="panel-body">
-            <ul class="nav nav-pills m-b-30 pull-left">
-                <li id='id_encrypt' class="active">
-                    <a href="#encrypt" data-toggle="tab" aria-expanded="true">数据加密</a>
-                </li>
-                <li id='id_decrypt' class="">
-                    <a href="#decrypt" data-toggle="tab" aria-expanded="false">数据解密</a>
-                </li>
-            </ul>
-            <div class="tab-content br-n pn">
-                <div id="encrypt" class="tab-pane active">
-                    <div class="row"></div>
-                    <div class="row">
-                        <div class="row">
-                           <div class="col-md-12">
-                                <div class="col-md-1" align="right">
-                                    <label><span>明文</span></label>
-                                </div>
-                                <div class="col-md-9">
-                                    <div id='ace_plain_text'></div>
-                                </div>
-                                <div class="col-md-1 align=left">
-                                    <button type="button"  id='encrypt_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-locked"></i></button>
-                                </div>
-                            </div>
-                         </div>
-                         <br>
-                         <div class="row">
-                           <div class="col-md-12">
-                                <div class="col-md-1" align="right">
-                                    <label><span>密文</span></label>
-                                </div>
-                                <div class="col-md-9">
-                                    <div id='ace_cipher_text'></div>
-                                </div>
-                            </div>
-                         </div>
-                    </div>
-                </div>
-                <div id="decrypt" class="tab-pane">
-                    <div class="row"></div>
-                    <div class="row">
-                        <div class="row">
-                           <div class="col-md-12">
-                                <div class="col-md-1" align="right">
-                                    <label><span>密文</span></label>
-                                </div>
-                                <div class="col-md-9">
-                                    <div id='ace_cipher_text2'></div>
-                                </div>
-                                <div class="col-md-1 align=left">
-                                    <button type="button"  id='decrypt_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-unlocked"></i></button>
-                                </div>
-                            </div>
-                         </div>
-                         <br>
-                         <div class="row">
-                           <div class="col-md-12">
-                                <div class="col-md-1" align="right">
-                                    <label><span>明文</span></label>
-                                </div>
-                                <div class="col-md-9">
-                                    <div id='ace_plain_text2'></div>
-                                </div>
-                            </div>
-                         </div>
-                    </div>
-                </div>
-            </div>
+     <div class="row">
+        <div class="col-md-5">
+            <div id='ace_plain_text'></div>
+        </div>
+        <div class="col-md-1">
+            <br><br><br><br><br><br>
+            <button type="button"  id='encrypt_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-locked"></i>&nbsp;&nbsp;加密&nbsp;=></button>
+            <hr>
+            <button type="button"  id='decrypt_btn' class="btn waves-effect waves-light btn-primary"><=&nbsp;&nbsp;解密&nbsp;<i class="ion-unlocked"></i></button>
+        </div>
+        <div class="col-md-5">
+            <div id='ace_cipher_text'></div>
         </div>
      </div>
 
      <script>
-
         function set_editor(p_editor,p_readonly) {
               var editor = ace.edit(p_editor);
               editor.setTheme("ace/theme/xcode");
@@ -165,10 +106,10 @@
                  datatype: "json",
                  data: {
                      db_env: $('#db_env').val(),
-                     cipher_text: get_value('ace_cipher_text2'),
+                     cipher_text: get_value('ace_cipher_text'),
                  },
                  success: function (dataSet) {
-                     set_value('ace_plain_text2',dataSet['message'])
+                     set_value('ace_plain_text',dataSet['message'])
                  },
              })
          })
@@ -176,8 +117,6 @@
         $(document).ready(function() {
             set_editor('ace_plain_text',false);
             set_editor('ace_cipher_text',true);
-            set_editor('ace_plain_text2',true);
-            set_editor('ace_cipher_text2',false);
         });
 
    </script>

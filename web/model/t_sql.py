@@ -206,7 +206,13 @@ async def get_mysql_result(p_ds,p_sql,curdb):
         result['column'] = ''
         return result
 
-async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
+def is_encrypt(col,encrypt_set):
+    for enc in encrypt_set:
+       if col[-len(enc):] == enc:
+         return True
+    return False
+
+async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop,p_userid):
     result   = {}
     columns  = []
     data     = []
@@ -271,9 +277,10 @@ async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop):
                 else:
                    if j in  i_sensitive:
                        tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
-                   elif desc[j][0] in c_decrypt:
+                   #elif desc[j][0][-7:] in c_decrypt:
+                   elif is_encrypt(desc[j][0],c_decrypt):
                        print('env=', p_ds['db_env'], str(i[j]))
-                       tmp.append(await db_decrypt(p_ds['db_env'], str(i[j])))
+                       tmp.append(await db_decrypt(p_ds['db_env'], str(i[j]),p_userid))
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)
@@ -415,12 +422,13 @@ async def get_mysql_result_aio_query_grants(p_ds,p_sql,curdb,p_event_loop,p_user
                 if i[j] is None:
                    tmp.append('')
                 else:
-                   print('desc[j]=',desc[j])
+                   #print('desc[j]=',desc[j])
                    if j in i_sensitive:
                        tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
-                   elif desc[j][0] in c_decrypt:
+                   #elif desc[j][0][-7:] in c_decrypt:
+                   elif is_encrypt(desc[j][0], c_decrypt):
                        print('env=',p_ds['db_env'],str(i[j]))
-                       tmp.append(await db_decrypt(p_ds['db_env'],str(i[j])))
+                       tmp.append(await db_decrypt(p_ds['db_env'],str(i[j]),p_userid))
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)
@@ -970,7 +978,7 @@ async def exe_query_aio(p_dbid,p_sql,curdb,p_event_loop,p_userid):
                result = get_mysql_proxy_result(p_ds,p_sql,curdb)
             else:
                print('get_mysql_result_aiomysql')
-               result = await get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop)
+               result = await get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop,p_userid)
         else:
             if p_ds['proxy_status'] == '1':
                result = await get_mysql_proxy_result_query_grants(p_ds,p_sql,curdb,p_event_loop,p_userid)
