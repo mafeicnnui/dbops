@@ -136,11 +136,12 @@ class async_processer:
     async def exec_sql_by_ds_multi(p_ds,p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
                                user=p_ds['user'], password=p_ds['password'],
-                               db=p_ds['service'], autocommit=False) as pool:
+                               db=p_ds['service'], autocommit=True) as pool:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
-                  await cur.fetchone()
+                  #await cur.fetchone()
                   for st in reReplace(p_sql):
+                       print('>>>>>>>>>>>>>>>>>:::',st)
                        await cur.execute(st)
                 await conn.commit()
 
