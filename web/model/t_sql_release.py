@@ -26,7 +26,7 @@ from web.model.t_user           import get_user_by_userid,get_user_by_loginame_s
 from web.utils.mysql_async      import async_processer
 from web.utils.mysql_sync       import sync_processer
 from web.utils.mysql_rollback   import write_rollback,delete_rollback
-from web.model.t_sql_check      import reReplace,check_statement_count
+from web.model.t_sql_check      import check_statement_count
 
 async def get_sqlid():
     sql="select ifnull(max(id),0)+1 from t_sql_release"

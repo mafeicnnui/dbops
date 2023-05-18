@@ -52,21 +52,26 @@
                         bbdm : $('#bbdm').val(),
                     },
                     success: function (filter) {
-                      // console.log('filter=',filter)
-                      var notnull_filter =''
-                      var rq_range_filter=''
-                      for (i=0;i<filter.length;i++){
-                          if (filter[i].is_null=='Y') {
-                              notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
+                      console.log('filter=',filter)
+                      if(filter.length>0) {
+                          var notnull_filter =''
+                          var rq_range_filter=''
+                          for (i=0;i<filter.length;i++){
+                              if (filter[i].is_null=='Y') {
+                                  notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
+                              }
+                              if (filter[i].is_range=='Y') {
+                                  rq_range_filter = rq_range_filter +filter[i].filter_code+'#'+filter[i].filter_name+'#'+filter[i].rq_range+','
+                              }
                           }
-                          if (filter[i].is_range=='Y') {
-                              rq_range_filter = rq_range_filter +filter[i].filter_code+'#'+filter[i].filter_name+'#'+filter[i].rq_range+','
-                          }
+                          // console.log('notnull_filter=',notnull_filter.slice(0,-1))
+                          // console.log('rq_range_filter=',rq_range_filter.slice(0,-1))
+                          $('#notnull_filter').val(notnull_filter.slice(0,-1))
+                          $('#rq_range_filter').val(rq_range_filter.slice(0,-1))
+                      } else {
+                          $('#notnull_filter').val('')
+                          $('#rq_range_filter').val('')
                       }
-                      // console.log('notnull_filter=',notnull_filter.slice(0,-1))
-                      // console.log('rq_range_filter=',rq_range_filter.slice(0,-1))
-                      $('#notnull_filter').val(notnull_filter.slice(0,-1))
-                      $('#rq_range_filter').val(rq_range_filter.slice(0,-1))
                    },
                 });
           }
@@ -293,18 +298,20 @@
                    var rq_range2 = $('#rq_range_filter').val().split(',')
                    console.log('rq_range=',rq_range)
                    console.log('rq_range2=',rq_range2)
-                   for( var i in rq_range2) {
-                       var c = rq_range2[i].split('#')[0]
-                       var n = rq_range2[i].split('#')[1]
-                       var d = rq_range2[i].split('#')[2]
-                       console.log(c,n,d)
-                       var rqq = $('#'+c+'_begin').val()
-                       var rqz = $('#'+c+'_end').val()
-                       console.log('rqq=',rqq,'rqz=',rqz)
-                       if (rqq != undefined && rqz != undefined){
-                            if (GetDateDiff(rqq, rqz, "day")>parseInt(d)) {
-                                showtips('error',n+'查询范围不能超过'+d+'天');
-                                return false;
+                   if (rq_range!='') {
+                       for( var i in rq_range2) {
+                           var c = rq_range2[i].split('#')[0]
+                           var n = rq_range2[i].split('#')[1]
+                           var d = rq_range2[i].split('#')[2]
+                           console.log(c,n,d)
+                           var rqq = $('#'+c+'_begin').val()
+                           var rqz = $('#'+c+'_end').val()
+                           console.log('rqq=',rqq,'rqz=',rqz)
+                           if (rqq != undefined && rqz != undefined){
+                                if (GetDateDiff(rqq, rqz, "day")>parseInt(d)) {
+                                    showtips('error',n+'查询范围不能超过'+d+'天');
+                                    return false;
+                               }
                            }
                        }
                    }
@@ -325,6 +332,8 @@
                             param  :  JSON.stringify(obj),
                         },
                         success: function (dataSet) {
+                            console.log('>>>>>>>>>>>>>>',dataSet)
+
                             if (dataSet.status=="1") {
                                 showtips('error',dataSet.msg);
                             } else {

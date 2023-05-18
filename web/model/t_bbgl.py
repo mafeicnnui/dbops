@@ -169,19 +169,26 @@ async def query_bbgl_data(bbdm,param):
 
          print('param=',param)
 
-         # 2. 预处理
+         # 2.预处理
          if preprocess != []:
-             #3. 获取预处理脚本，替换变量为实参
+             #3.获取预处理脚本，替换变量为实参
              for s in preprocess:
                  s['replace_statement'] = s['statement']
                  for key,value in param.items():
                      s['replace_statement']= s['replace_statement'].replace('$$'+key+'$$',value)
 
-             #4. 执行预处理代码
+             #4.执行预处理代码
              start_time = datetime.datetime.now()
-             for s in preprocess:
-                 print('---->',s['replace_statement'])
-                 await async_processer.exec_sql_by_ds(ds,s['replace_statement'])
+             # for s in preprocess:
+             #     print('---->',s['replace_statement'])
+                 #await async_processer.exec_sql_by_ds(ds,s['replace_statement'])
+
+             # 2023.5.6 optimize pre sql one session execute
+             batch_pre_statement = '\n'.join([ s['replace_statement'] if s['replace_statement'][-1]==';' else s['replace_statement']+';' for s in  preprocess])
+             print('batch_pre_statement=',batch_pre_statement)
+             await async_processer.exec_sql_by_ds_multi(ds,batch_pre_statement)
+
+
              preProcessTime = get_seconds(start_time)
          else:
              preProcessTime = 0
@@ -194,6 +201,7 @@ async def query_bbgl_data(bbdm,param):
          # 执行查询
          print('replace_statement=',cfg['replace_statement'])
          result = await exe_query_exp(cfg['dsid'],cfg['replace_statement'],cfg['db'])
+
 
          # 替换表头
          if headers !=[]:

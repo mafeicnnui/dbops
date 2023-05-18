@@ -136,11 +136,12 @@ class async_processer:
     async def exec_sql_by_ds_multi(p_ds,p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
                                user=p_ds['user'], password=p_ds['password'],
-                               db=p_ds['service'], autocommit=False) as pool:
+                               db=p_ds['service'], autocommit=True) as pool:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
-                  await cur.fetchone()
+                  #await cur.fetchone()
                   for st in reReplace(p_sql):
+                       print('>>>>>>>>>>>>>>>>>:::',st)
                        await cur.execute(st)
                 await conn.commit()
 
@@ -216,41 +217,51 @@ def preProcesses(matched):
     value = matched.group(0)
     return value.replace(';','^^^')
 
+def preProcesses2(matched):
+    value = matched.group(0)
+    return value.replace(';',',')
+
 def reReplace(p_sql):
     p_sql_pre=p_sql
-    pattern0 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
-    if pattern0.findall(p_sql) != []:
+    pattern1 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
+    if pattern1.findall(p_sql) != []:
        logging.info('一: 将comment中的;替换为^^^ ...')
-       p_sql_pre = re.sub(pattern0,preProcesses,p_sql)
+       p_sql_pre = re.sub(pattern1,preProcesses,p_sql)
        logging.info(('1:',str(p_sql_pre)))
 
-    pattern1 = re.compile(r'(\s*\)\s*;\s*)')
-    if pattern1.findall(p_sql_pre)!=[]:
+    pattern2 = re.compile(r'(\s*\)\s*;\s*)')
+    if pattern2.findall(p_sql_pre)!=[]:
        logging.info('二: 将);替换为)$$$ ...')
-       p_sql_pre = re.sub(pattern1, ')$$$', p_sql_pre)
+       p_sql_pre = re.sub(pattern2, ')$$$', p_sql_pre)
        logging.info(('2:', str(p_sql_pre)))
 
-    pattern2 = re.compile(r'(\s*\'\s*;\s*)')
-    if pattern2.findall(p_sql_pre) != []:
+    pattern3 = re.compile(r'(\s*\'\s*;\s*)')
+    if pattern3.findall(p_sql_pre) != []:
        logging.info('三: 将\';替换为\'$$$ ...')
-       p_sql_pre = re.sub(pattern2, "'$$$", p_sql_pre)
+       p_sql_pre = re.sub(pattern3, "'$$$", p_sql_pre)
        logging.info(('3:', str(p_sql_pre)))
 
-    pattern3 = re.compile(r'(\s*;\s*)')
-    if pattern3.findall(p_sql_pre) != []:
-        logging.info('四: 将;替换为$$$')
-        p_sql_pre = re.sub(pattern3, "$$$\n", p_sql_pre)
-        logging.info(('4:', str(p_sql_pre)))
+    pattern4 = re.compile(r'(comment\s*\'.*;.*\')')
+    if pattern4.findall(p_sql_pre) != []:
+       logging.info('四: 将comment中的;替换为, ...')
+       p_sql_pre = re.sub(pattern4, preProcesses2, p_sql_pre)
+       logging.info(('4:', str(p_sql_pre)))
 
-    logging.info('五: 通过$$$将p_sql_pre处理为列表...')
+    pattern5 = re.compile(r'(\s*;\s*)')
+    if pattern5.findall(p_sql_pre) != []:
+        logging.info('五: 将;替换为$$$')
+        p_sql_pre = re.sub(pattern5, "$$$\n", p_sql_pre)
+        logging.info(('5:', str(p_sql_pre)))
+
+    logging.info('六: 通过$$$将p_sql_pre处理为列表...')
     p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
-    logging.info(('5=', str(p_sql_pre)))
-    logging.info(('5-len=', len(p_sql_pre)))
-
-    logging.info(('六: 将列表中每个语句comment中的^^^替为;...'))
-    p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
     logging.info(('6=', str(p_sql_pre)))
     logging.info(('6-len=', len(p_sql_pre)))
+
+    logging.info(('七: 将列表中每个语句comment中的^^^替为;...'))
+    p_sql_pre = [i.replace('^^^', ';') for i in p_sql_pre]
+    logging.info(('7=', str(p_sql_pre)))
+    logging.info(('7-len=', len(p_sql_pre)))
 
     if len(p_sql_pre) == 1:
        return [p_sql]
