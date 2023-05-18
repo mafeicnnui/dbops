@@ -6,11 +6,26 @@
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
       </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:main" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="sql release bug fix">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="bug fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/tools/db_cipher.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_cipher.html" afterDir="false" />
     </list>
@@ -40,7 +55,28 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="main" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="cfb524e9-5aae-4d92-8634-a4d6e0b8bf0b" />
   </component>
   <component name="ProjectId" id="1oF2HmTSwLtYDb2uaD3lgs00joD" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -136,6 +172,8 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Shell Script.start_schedule.sh" />
+        <item itemvalue="Shell Script.start_schedule.sh" />
         <item itemvalue="Shell Script.start_schedule.sh" />
       </list>
     </recent_temporary>
@@ -747,14 +785,9 @@
       <workItem from="1684286086504" duration="34000" />
       <workItem from="1684312597710" duration="3460000" />
       <workItem from="1684376122940" duration="526000" />
-      <workItem from="1684395443899" duration="156000" />
-    </task>
-    <task id="LOCAL-00224" summary="README.md update">
-      <created>1672904376318</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1672904376318</updated>
+      <workItem from="1684395443899" duration="950000" />
+      <workItem from="1684396437403" duration="71000" />
+      <workItem from="1684396520670" duration="1851000" />
     </task>
     <task id="LOCAL-00225" summary="README.md update">
       <created>1672905598273</created>
@@ -1092,7 +1125,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684316619018</updated>
     </task>
-    <option name="localTasksCounter" value="273" />
+    <task id="LOCAL-00273" summary="bug fix">
+      <created>1684395614892</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1684395614892</updated>
+    </task>
+    <option name="localTasksCounter" value="274" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1103,7 +1143,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -1111,7 +1163,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="synx fix" />
     <MESSAGE value="index fix" />
     <MESSAGE value="README.md &amp; sql update" />
     <MESSAGE value="add logon font" />
@@ -1136,7 +1187,8 @@
     <MESSAGE value="data cipher" />
     <MESSAGE value="ui optimize" />
     <MESSAGE value="sql release bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="sql release bug fix" />
+    <MESSAGE value="bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fix" />
   </component>
   <component name="WindowStateProjectService">
     <state x="69" y="0" width="1014" height="824" key="#Deployment" timestamp="1684395590431">
@@ -1170,11 +1222,15 @@
       <screen x="1920" y="-180" width="1920" height="1040" />
     </state>
     <state x="2660" y="95" key="FileChooserDialogImpl/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677460848216" />
-    <state x="575" y="316" key="Github.Dialog.Accounts.Choose" timestamp="1684316638867">
+    <state width="470" height="257" key="Git.Branch.Popup" timestamp="1684398366601">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="470" height="257" key="Git.Branch.Popup/0.0.1536.824@0.0.1536.824" timestamp="1684398366601" />
+    <state x="938" y="503" key="Github.Dialog.Accounts.Choose" timestamp="1684396825877">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683703888442" />
-    <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1684316638867" />
+    <state x="938" y="503" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1684396825877" />
     <state width="1483" height="161" key="GridCell.Tab.0.bottom" timestamp="1684316993099">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1214,11 +1270,15 @@
     <state x="47" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1684395594095" />
     <state x="486" y="155" key="SettingsEditor/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410410425" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562877422" />
-    <state x="346" y="45" key="Vcs.Push.Dialog.v2" timestamp="1684316626279">
+    <state x="93" y="93" width="1350" height="638" key="ShowDiffWithBranchDialog" timestamp="1684397971385">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="93" y="93" width="1350" height="638" key="ShowDiffWithBranchDialog/0.0.1536.824@0.0.1536.824" timestamp="1684397971385" />
+    <state x="403" y="42" key="Vcs.Push.Dialog.v2" timestamp="1684397406920">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="346" y="45" key="Vcs.Push.Dialog.v2/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683703873479" />
-    <state x="346" y="45" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1684316626279" />
+    <state x="403" y="42" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1684397406920" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678272075090" />
     <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1676514489872" />
     <state x="54" y="124" width="1171" height="700" key="find.popup" timestamp="1684314922727">
@@ -1228,10 +1288,19 @@
     <state x="54" y="124" width="1171" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1684314922727" />
     <state x="229" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678418126160" />
     <state x="2149" y="62" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677489218851" />
-    <state x="475" y="289" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1683703867580">
+    <state x="494" y="150" key="git4idea.merge.GitMergeDialog" timestamp="1684397522636">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="494" y="150" key="git4idea.merge.GitMergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1684397522636" />
+    <state x="496" y="453" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1684396923751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="475" y="289" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683703867580" />
+    <state x="496" y="453" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1536.824@0.0.1536.824" timestamp="1684396923751" />
+    <state x="549" y="212" key="git4idea.ui.GitTagDialog" timestamp="1684397459599">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="212" key="git4idea.ui.GitTagDialog/0.0.1536.824@0.0.1536.824" timestamp="1684397459599" />
     <state x="69" y="293" key="publish.login" timestamp="1684395563960">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
