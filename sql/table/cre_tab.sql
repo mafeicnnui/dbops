@@ -1714,6 +1714,24 @@ CREATE TABLE `t_user` (
   KEY `idx_login_name_n1` (`login_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8;
 
+/*Table structure for table `t_user` */
+
+DROP TABLE IF EXISTS `t_user_query_grants`;
+
+CREATE TABLE `t_user_query_grants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `dbid` varchar(11) NOT NULL COMMENT '源数据库ID',
+  `schema` varchar(100) NOT NULL COMMENT '查询数据库名',
+  `table` varchar(100) NOT NULL COMMENT '查询表名',
+  `columns` varchar(500) NOT NULL COMMENT '查询列',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_uk` (`uid`,`dbid`,`schema`,`table`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8
+
+
 /*Table structure for table `t_user_proj_privs` */
 
 DROP TABLE IF EXISTS `t_user_proj_privs`;
