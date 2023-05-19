@@ -26,5 +26,6 @@
         --name easebase \
         -p 8081:8081 \
         -p 8080:8080 \
-        -v /home/dbops/config.json:/opt/config/config.json:ro \
+        -v /root/dbops/config.json:/opt/dbops/config/config.json:ro \
+        -v /root/dbops/config.json:/opt/dbapi/config/config.json:ro \
         -d mafeicnnui/easebase:1.0
