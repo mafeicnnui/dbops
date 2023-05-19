@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.24 (64 bit)
 MySQL - 5.6.44-log : Database - puppet
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -1708,6 +1709,7 @@ CREATE TABLE `t_user` (
   `login_name` varchar(20) DEFAULT NULL COMMENT '登陆名',
   `file_path` varchar(200) DEFAULT NULL COMMENT '图标路径',
   `file_name` varchar(100) DEFAULT NULL COMMENT '图标名称',
+  `query_grants` varchar(1) DEFAULT '1' COMMENT '查询授权(1-实例，2-表)',
   PRIMARY KEY (`id`),
   KEY `idx_login_name_n1` (`login_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8;

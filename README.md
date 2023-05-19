@@ -255,35 +255,11 @@
 
 ## 六、docker部署 
 
-### 6.1 获取镜像
-
-    docker pull mafeicnnui/dbops:2.0
-
-### 6.2 配置数据源
-
-    mkdir /home/dbops
-    vi config.json 
-    {
-        "db_ip"        : "192.168.1.100”,
-        "db_port"      : "3306",
-        "db_user"      : "puppet",
-        "db_pass"      : "Abcd@1234",
-        "db_service"   : "puppet",
-        "db_charset"   : "utf8"
-    }
-
-
-### 6.3 运行容器
-
-    docker run \
-       --name dbops \
-       -p 8080:8080 \
-       -v /home/dbops/config.json:/opt/dbops/config/config.json:ro \
-       -d mafeicnnui/dbops:2.3
+    详见 docker/README.md
     
 ### 6.4 访问 easebase
     
-    http://IP:8081
+    http://x.x.x.x:8081
     user:admin/admin
 
 ## 七、联系方式

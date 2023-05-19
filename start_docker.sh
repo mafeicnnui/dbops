@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export WORKDIR=`pwd`
+export WORKDIR='/opt/dbops'
 export PYTHONUNBUFFERED="1"
 export PYTHONPATH=${WORKDIR}
 echo "Starting dbops Server..."
