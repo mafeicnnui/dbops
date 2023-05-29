@@ -25,9 +25,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="bug fix">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="Complete documentation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tools/db_cipher.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_cipher.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_release.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -787,35 +788,20 @@
       <workItem from="1684376122940" duration="526000" />
       <workItem from="1684395443899" duration="950000" />
       <workItem from="1684396437403" duration="71000" />
-      <workItem from="1684396520670" duration="1851000" />
-    </task>
-    <task id="LOCAL-00225" summary="README.md update">
-      <created>1672905598273</created>
-      <option name="number" value="00225" />
-      <option name="presentableId" value="LOCAL-00225" />
-      <option name="project" value="LOCAL" />
-      <updated>1672905598273</updated>
-    </task>
-    <task id="LOCAL-00226" summary="bbgl update">
-      <created>1672987371900</created>
-      <option name="number" value="00226" />
-      <option name="presentableId" value="LOCAL-00226" />
-      <option name="project" value="LOCAL" />
-      <updated>1672987371901</updated>
-    </task>
-    <task id="LOCAL-00227" summary="synx fix">
-      <created>1672987389993</created>
-      <option name="number" value="00227" />
-      <option name="presentableId" value="LOCAL-00227" />
-      <option name="project" value="LOCAL" />
-      <updated>1672987389993</updated>
-    </task>
-    <task id="LOCAL-00228" summary="index fix">
-      <created>1672987407850</created>
-      <option name="number" value="00228" />
-      <option name="presentableId" value="LOCAL-00228" />
-      <option name="project" value="LOCAL" />
-      <updated>1672987407850</updated>
+      <workItem from="1684396520670" duration="1938000" />
+      <workItem from="1684398494239" duration="565000" />
+      <workItem from="1684399187833" duration="1293000" />
+      <workItem from="1684400520262" duration="605000" />
+      <workItem from="1684404085253" duration="2182000" />
+      <workItem from="1684465784522" duration="1802000" />
+      <workItem from="1684481479887" duration="5279000" />
+      <workItem from="1684487827508" duration="457000" />
+      <workItem from="1684718815660" duration="191000" />
+      <workItem from="1684895986670" duration="5637000" />
+      <workItem from="1684977583018" duration="32000" />
+      <workItem from="1684986228922" duration="346000" />
+      <workItem from="1685003404783" duration="636000" />
+      <workItem from="1685064061647" duration="152000" />
     </task>
     <task id="LOCAL-00229" summary="README.md update">
       <created>1672987418502</created>
@@ -1132,7 +1118,35 @@
       <option name="project" value="LOCAL" />
       <updated>1684395614892</updated>
     </task>
-    <option name="localTasksCounter" value="274" />
+    <task id="LOCAL-00274" summary="bug fix">
+      <created>1684398400025</created>
+      <option name="number" value="00274" />
+      <option name="presentableId" value="LOCAL-00274" />
+      <option name="project" value="LOCAL" />
+      <updated>1684398400026</updated>
+    </task>
+    <task id="LOCAL-00275" summary="Complete documentation">
+      <created>1684485052526</created>
+      <option name="number" value="00275" />
+      <option name="presentableId" value="LOCAL-00275" />
+      <option name="project" value="LOCAL" />
+      <updated>1684485052527</updated>
+    </task>
+    <task id="LOCAL-00276" summary="Complete documentation">
+      <created>1684485248248</created>
+      <option name="number" value="00276" />
+      <option name="presentableId" value="LOCAL-00276" />
+      <option name="project" value="LOCAL" />
+      <updated>1684485248248</updated>
+    </task>
+    <task id="LOCAL-00277" summary="Complete documentation">
+      <created>1684485522889</created>
+      <option name="number" value="00277" />
+      <option name="presentableId" value="LOCAL-00277" />
+      <option name="project" value="LOCAL" />
+      <updated>1684485522890</updated>
+    </task>
+    <option name="localTasksCounter" value="278" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1163,7 +1177,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="index fix" />
     <MESSAGE value="README.md &amp; sql update" />
     <MESSAGE value="add logon font" />
     <MESSAGE value="main page optimize" />
@@ -1188,26 +1201,28 @@
     <MESSAGE value="ui optimize" />
     <MESSAGE value="sql release bug fix" />
     <MESSAGE value="bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="bug fix" />
+    <MESSAGE value="Complete documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Complete documentation" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="69" y="0" width="1014" height="824" key="#Deployment" timestamp="1684395590431">
+    <state x="69" y="0" width="1014" height="824" key="#Deployment" timestamp="1684896067595">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="69" y="0" width="1014" height="824" key="#Deployment/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683340784509" />
-    <state x="69" y="0" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1684395590431" />
+    <state x="69" y="0" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1684896067595" />
     <state x="86" y="192" width="1427" height="848" key="#Deployment/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410407090" />
     <state x="2006" y="37" width="1149" height="683" key="#Deployment/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562874339" />
-    <state x="462" y="196" width="804" height="620" key="#Notifications" timestamp="1681349112172">
+    <state x="604" y="76" width="804" height="620" key="#Notifications" timestamp="1684398534283">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="462" y="196" key="#Notifications/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681349112172" />
+    <state x="604" y="76" key="#Notifications/0.0.1536.824@0.0.1536.824" timestamp="1684398534283" />
     <state x="577" y="247" width="804" height="620" key="#Notifications/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678270542678" />
-    <state x="240" y="0" key="#SSH_Configurations" timestamp="1684395589487">
+    <state x="240" y="0" key="#SSH_Configurations" timestamp="1684896065918">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="240" y="0" key="#SSH_Configurations/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683340783610" />
-    <state x="240" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1684395589487" />
+    <state x="240" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1684896065918" />
     <state x="300" y="155" key="#SSH_Configurations/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410405521" />
     <state x="2220" y="111" key="#SSH_Configurations/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562873353" />
     <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1681348603908">
@@ -1226,72 +1241,72 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="470" height="257" key="Git.Branch.Popup/0.0.1536.824@0.0.1536.824" timestamp="1684398366601" />
-    <state x="938" y="503" key="Github.Dialog.Accounts.Choose" timestamp="1684396825877">
+    <state x="938" y="503" key="Github.Dialog.Accounts.Choose" timestamp="1684485092258">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683703888442" />
-    <state x="938" y="503" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1684396825877" />
-    <state width="1483" height="161" key="GridCell.Tab.0.bottom" timestamp="1684316993099">
+    <state x="938" y="503" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1684485092258" />
+    <state width="1483" height="200" key="GridCell.Tab.0.bottom" timestamp="1684909276558">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1483" height="3" key="GridCell.Tab.0.bottom/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683361092997" />
-    <state width="1483" height="161" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1684316993099" />
+    <state width="1483" height="200" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1684909276558" />
     <state width="1867" height="294" key="GridCell.Tab.0.bottom/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634497" />
-    <state width="1483" height="161" key="GridCell.Tab.0.center" timestamp="1684316993099">
+    <state width="1483" height="200" key="GridCell.Tab.0.center" timestamp="1684909276558">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1483" height="3" key="GridCell.Tab.0.center/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683361092997" />
-    <state width="1483" height="161" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1684316993099" />
+    <state width="1483" height="200" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1684909276558" />
     <state width="1867" height="294" key="GridCell.Tab.0.center/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634496" />
-    <state width="1483" height="161" key="GridCell.Tab.0.left" timestamp="1684316993099">
+    <state width="1483" height="200" key="GridCell.Tab.0.left" timestamp="1684909276557">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1483" height="3" key="GridCell.Tab.0.left/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683361092997" />
-    <state width="1483" height="161" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1684316993099" />
+    <state width="1483" height="200" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1684909276557" />
     <state width="1867" height="294" key="GridCell.Tab.0.left/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634496" />
-    <state width="1483" height="161" key="GridCell.Tab.0.right" timestamp="1684316993099">
+    <state width="1483" height="200" key="GridCell.Tab.0.right" timestamp="1684909276558">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1483" height="3" key="GridCell.Tab.0.right/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683361092997" />
-    <state width="1483" height="161" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1684316993099" />
+    <state width="1483" height="200" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1684909276558" />
     <state width="1867" height="294" key="GridCell.Tab.0.right/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678441779639" />
     <state width="1877" height="2" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576634497" />
     <state x="246" y="81" key="IDE.errors.dialog" timestamp="1679558534091">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="246" y="81" key="IDE.errors.dialog/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1679558534091" />
-    <state x="47" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1684395594095">
+    <state x="47" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1684896071230">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="47" y="0" width="1139" height="824" key="SettingsEditor/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683340787279" />
-    <state x="47" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1684395594095" />
+    <state x="47" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1684896071230" />
     <state x="486" y="155" key="SettingsEditor/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678410410425" />
     <state x="2240" y="-2" key="SettingsEditor/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677562877422" />
     <state x="93" y="93" width="1350" height="638" key="ShowDiffWithBranchDialog" timestamp="1684397971385">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="ShowDiffWithBranchDialog/0.0.1536.824@0.0.1536.824" timestamp="1684397971385" />
-    <state x="403" y="42" key="Vcs.Push.Dialog.v2" timestamp="1684397406920">
+    <state x="403" y="42" key="Vcs.Push.Dialog.v2" timestamp="1684485527957">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="346" y="45" key="Vcs.Push.Dialog.v2/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683703873479" />
-    <state x="403" y="42" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1684397406920" />
+    <state x="403" y="42" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1684485527957" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678272075090" />
     <state x="2472" y="72" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1676514489872" />
-    <state x="54" y="124" width="1171" height="700" key="find.popup" timestamp="1684314922727">
+    <state x="54" y="124" width="1171" height="700" key="find.popup" timestamp="1684897016360">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="355" y="8" width="1171" height="700" key="find.popup/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683342586842" />
-    <state x="54" y="124" width="1171" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1684314922727" />
+    <state x="54" y="124" width="1171" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1684897016360" />
     <state x="229" y="242" width="1178" height="798" key="find.popup/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678418126160" />
     <state x="2149" y="62" width="1178" height="798" key="find.popup/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677489218851" />
-    <state x="494" y="150" key="git4idea.merge.GitMergeDialog" timestamp="1684397522636">
+    <state x="494" y="150" key="git4idea.merge.GitMergeDialog" timestamp="1684487069952">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="494" y="150" key="git4idea.merge.GitMergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1684397522636" />
+    <state x="494" y="150" key="git4idea.merge.GitMergeDialog/0.0.1536.824@0.0.1536.824" timestamp="1684487069952" />
     <state x="496" y="453" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1684396923751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1301,17 +1316,18 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="212" key="git4idea.ui.GitTagDialog/0.0.1536.824@0.0.1536.824" timestamp="1684397459599" />
-    <state x="69" y="293" key="publish.login" timestamp="1684395563960">
+    <state x="69" y="293" key="publish.login" timestamp="1684899785552">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="69" y="293" key="publish.login/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1683787538028" />
-    <state x="69" y="293" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1684395563960" />
+    <state x="69" y="293" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1684899785552" />
     <state x="86" y="370" key="publish.login/0.0.1920.1040/-1920.-425.1920.1040@0.0.1920.1040" timestamp="1678432793944" />
     <state x="2006" y="190" key="publish.login/0.0.1920.1040/1920.-180.1920.1040@1920.-180.1920.1040" timestamp="1677576941244" />
-    <state x="498" y="178" width="840" height="538" key="search.everywhere.popup" timestamp="1681263673144">
+    <state x="498" y="178" width="840" height="538" key="search.everywhere.popup" timestamp="1684481815347">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="498" y="178" width="840" height="538" key="search.everywhere.popup/0.0.1536.824/-1920.-425.1920.1040@0.0.1536.824" timestamp="1681263673144" />
+    <state x="498" y="178" width="840" height="538" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1684481815347" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1327,7 +1343,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1684314603391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1684896078172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

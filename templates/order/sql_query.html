@@ -563,7 +563,7 @@
 
               function upd_demo(){
                   if (get_db_type()=='6') {
-                       console.log('update demo....false')
+                       //console.log('update demo....false')
                        $('#demo_btn').attr('disabled',false)
                     } else {
                        $('#demo_btn').attr('disabled',true)
@@ -584,7 +584,7 @@
                    $("#curr_db").selectpicker('refresh')
               }
 
-              function refresh_tree() {
+              function refresh_tree(is_flush_curr_db=true) {
                   var db_type = ''
                   var db_source = ''
                   if ($('#db_source').val() != '') {
@@ -603,6 +603,11 @@
                           },
                       });
 
+                      var msg = $('#filter_db').val();
+                      if (msg == '') {
+                          msg = $('#curr_db').val();
+                      }
+
                       if ($('#db_source').val()!='') {
                          $.ajax({
                             url     :"/get_tree",
@@ -610,10 +615,11 @@
                             datatype:"json",
                             data: {
                                 dbid : $('#db_source').val(),
-                                msg  : $('#filter_db').val(),
-                                flag  : 'query',
+                                msg  : msg,
+                                flag : 'query',
                             },
                             success: function (dataSet) {
+
                                 if (dataSet.url.length>30) {
                                     $('#db_title').html(dataSet.url.slice(1,30)+'.../');
                                 } else {
@@ -680,7 +686,9 @@
                                 });
 
                                 //加载数据库列表
-                                upd_curr_db(dataSet)
+                                if (is_flush_curr_db) {
+                                    upd_curr_db(dataSet)
+                                }
 
                                 //更新结果div
                                 upd_result()
@@ -873,16 +881,22 @@
                   editor.setHighlightActiveLine(true);
               }
 
-              $("#filter_db").on('compositionstart',function() {
-                  lock = true;
-              });
-
-              $("#filter_db").on('compositionend',function() {
-                  lock = false;
-              });
+              // $("#filter_db").on('compositionstart',function() {
+              //     lock = true;
+              // });
+              //
+              // $("#filter_db").on('compositionend',function() {
+              //     lock = false;
+              // });
 
               $("#filter_db").bind("input propertychange",function(){
-                if (!lock) refresh_tree();
+                 console.log('lock=',lock);
+                // if (!lock) refresh_tree();
+                refresh_tree();
+              });
+
+              $('#curr_db').change(function() {
+                  refresh_tree(false);
               });
 
               $("#db_source").on("changed.bs.select",function(){
