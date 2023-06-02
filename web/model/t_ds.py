@@ -840,21 +840,17 @@ async def db_encrypt(p_env,p_plain,p_userid):
     if p_env in ('1', '2', '3', '4'):
        ss_agent_dsid=228
        ss_agent_ds =  await get_ds_by_dsid_by_cdb(ss_agent_dsid,'encrypt_db')
-       print('db_encrypt ds =',ss_agent_ds)
-       st = """UPDATE t_cipher SET dev_plain='{}' WHERE id={}""".format(p_plain,p_userid)
+       st = """UPDATE t_cipher SET dev='{}' WHERE id={}""".format(p_plain,p_userid)
        await async_processer.exec_sql_by_ds(ss_agent_ds, st)
        rs = await async_processer.query_dict_one('select dev_cipher from t_cipher where id={}'.format(p_userid))
-       print('db_encrypt rs=',rs)
        return rs['dev_cipher']
 
 
 async def db_decrypt(p_env,p_cipher,p_userid):
     if p_env in('1','2','3','4') :
-        st = """UPDATE t_cipher SET dev_cipher='{}' WHERE id={}""".format(p_cipher,p_userid)
-        await async_processer.exec_sql(st)
         ss_agent_dsid = 228
         ss_agent_ds = await get_ds_by_dsid_by_cdb(ss_agent_dsid, 'encrypt_db')
-        print('db_encrypt ds =', ss_agent_ds)
-        rs = await async_processer.query_dict_one_by_ds(ss_agent_ds,'select dev_plain from t_cipher where id={}'.format(p_userid))
-        print('db_decrypt rs=', rs)
-        return rs['dev_plain']
+        st = """UPDATE t_cipher SET dev_cipher='{}' WHERE id={}""".format(p_cipher,p_userid)
+        await async_processer.exec_sql_by_ds(ss_agent_ds,st)
+        rs = await async_processer.query_dict_one_by_ds(ss_agent_ds,'select dev from t_cipher where id={}'.format(p_userid))
+        return rs['dev']

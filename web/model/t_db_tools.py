@@ -114,6 +114,7 @@ async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_s
             await async_processer.exec_sql(st)
 
     for s in dres:
+        print('show index from {}'.format(s['table_name']))
         rs = await async_processer.query_dict_list_by_ds(dds, 'show index from {}'.format(s['table_name']))
         for r in rs:
             st = """insert into t_db_compare_idx
@@ -145,7 +146,7 @@ async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_s
 
 def get_sync_sql(sres,dres,desc_schema=''):
     if dres is None:
-        st = """ALTER TABLE `{}`.`{}` ADD `{}` `{}` {} {} {} {} {};
+        st = """ALTER TABLE `{}`.`{}` ADD `{}` {} {} {} {} {} {};
              """.format(desc_schema,
                     sres['table_name'],
                     sres['column_name'],
@@ -153,7 +154,7 @@ def get_sync_sql(sres,dres,desc_schema=''):
                     ' CHARSET ' + sres['character_set_name']  if sres['character_set_name'] is not None and sres['character_set_name'] != '' else '',
                     'COLLATE ' + sres['collation_name'] if sres['collation_name'] is not None and sres['collation_name'] != '' else '',
                     'DEFAULT ' + sres['column_default'] if sres['column_default'] is not None and sres['column_default'] != '' else '',
-                    'NOT NULL '  if sres['is_nullable'] == 'YES' is not None else '',
+                    'NULL '  if sres['is_nullable'] == 'YES'  else 'NOT NULL',
                     "COMMENT '"+sres['column_comment']+"'" if sres['column_comment'] is not None and sres['column_comment'] != '' else '')
 
     else:
@@ -169,7 +170,7 @@ def get_sync_sql(sres,dres,desc_schema=''):
                                     if sres['collation_name'] is not None and sres['collation_name'] !='' else '',
                         'DEFAULT ' + sres['column_default']
                                     if sres['column_default'] is not None and sres['column_default'] !='' else '',
-                        'NOT NULL ' if sres['is_nullable'] == 'YES' is not None else '',
+                        'NULL ' if sres['is_nullable'] == 'YES'  else 'NOT NULL',
                         "COMMENT '{}'".format(sres['column_comment'])
                                     if sres['column_comment'] is not None and sres['column_comment'] !=''  else '')
     return st

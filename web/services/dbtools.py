@@ -180,7 +180,6 @@ class db_cipher_encrypt(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         db_env  = self.get_argument("db_env")
         plain_text  = self.get_argument("plain_text")
-        print('db_cipher_encrypt=',db_env,plain_text,self.userid)
         v_list     = await db_encrypt(db_env,plain_text,self.userid)
         self.write({"code": 0, "message": v_list})
 
@@ -190,6 +189,5 @@ class db_cipher_decrypt(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         db_env = self.get_argument("db_env")
         cipher_text = self.get_argument("cipher_text")
-        print(db_env, cipher_text)
         ret = await db_decrypt(db_env,cipher_text,self.userid)
         self.write({"code": 0, "message": ret})
