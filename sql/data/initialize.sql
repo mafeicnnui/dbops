@@ -19,7 +19,7 @@ insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('21','WEBRDP_
 insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('22','WEBSSH_URL2','http://10.2.39.18:65483','webssh服务内网地址');
 insert into `t_sys_settings` (`id`, `key`, `value`, `desc`) values('23','TOKEN_EXPIRE_TIME','30','token过期时间(分钟)');
 
-INSERT  INTO `t_user`(`id`,`name`,`wkno`,`gender`,`email`,`phone`,`project_group`,`dept`,`expire_date`,`password`,`status`,`creation_date`,`creator`,`last_update_date`,`updator`,`login_name`,`file_path`,`file_name`) VALUES (1,'管理员','190343','1','190343@lifeat.cn','00000000000','1','03','2021-05-30','47508EE611CC14EFB8C805158601FE09','1','2018-08-27','DBA','2020-12-03','DBA','admin','/static/assets/images/users','93d64232-3a5f-11ea-bb2b-000c29cd7d70_admin.jpg');
+INSERT  INTO `t_user`(`id`,`name`,`wkno`,`gender`,`email`,`phone`,`project_group`,`dept`,`expire_date`,`password`,`status`,`creation_date`,`creator`,`last_update_date`,`updator`,`login_name`,`file_path`,`file_name`) VALUES (1,'管理员','190343','1','190343@lifeat.cn','00000000000','1','03','2030-12-31','47508EE611CC14EFB8C805158601FE09','1','2018-08-27','DBA','2020-12-03','DBA','admin','/static/assets/images/users','93d64232-3a5f-11ea-bb2b-000c29cd7d70_admin.jpg');
 INSERT  INTO `t_user_role`(`id`,`user_id`,`role_id`) VALUES (1,1,1);
 INSERT  INTO `t_role`(`id`,`name`,`status`,`creation_date`,`creator`,`last_update_date`,`updator`) VALUES (1,'数据库管理员','1','2020-04-07','DBA','2022-10-17','DBA');
 

@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.24 (64 bit)
 MySQL - 5.6.44-log : Database - puppet
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -1708,9 +1709,28 @@ CREATE TABLE `t_user` (
   `login_name` varchar(20) DEFAULT NULL COMMENT '登陆名',
   `file_path` varchar(200) DEFAULT NULL COMMENT '图标路径',
   `file_name` varchar(100) DEFAULT NULL COMMENT '图标名称',
+  `query_grants` varchar(1) DEFAULT '1' COMMENT '查询授权(1-实例，2-表)',
   PRIMARY KEY (`id`),
   KEY `idx_login_name_n1` (`login_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8;
+
+/*Table structure for table `t_user` */
+
+DROP TABLE IF EXISTS `t_user_query_grants`;
+
+CREATE TABLE `t_user_query_grants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `dbid` varchar(11) NOT NULL COMMENT '源数据库ID',
+  `schema` varchar(100) NOT NULL COMMENT '查询数据库名',
+  `table` varchar(100) NOT NULL COMMENT '查询表名',
+  `columns` varchar(500) NOT NULL COMMENT '查询列',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_uk` (`uid`,`dbid`,`schema`,`table`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8
+
 
 /*Table structure for table `t_user_proj_privs` */
 

@@ -3,6 +3,7 @@
 
 一、切换数据库
 
+    CREATE DATABASE `puppet` default CHARACTER SET utf8mb4;
     use puppet
     
 二、创建表
@@ -25,9 +26,14 @@
     .\sql\data\initialize.sql
 
 四、创建账号
-                        
-    grant all privileges on *.* to 'puppet'@'%' identified by 'Puppet@123'    
 
+    mysql 5.6/5.7:                    
+     grant all privileges on *.* to 'puppet'@'%' identified by 'Puppet@123'    
+     
+    mysql 8.0:
+     create user 'puppet'@'%' identified by 'Puppet@123';
+     grant all privileges on *.* to 'puppet'@'%';
+   
 
 五、定时任务
                         
@@ -36,3 +42,15 @@
     0 */1 * * *  /dbops/crontab/proc_clear_log.sh &>>/tmp/proc_clear_log.log
     0 0 15 * *   /dbops/crontab/proc_trunc_log.sh &>>/tmp/proc_trunc_log.log
  
+六、执行SQL
+
+    cd dbops/sql
+    mysql -uroot -p123456 -h10.16.44.89 -e 'create database if not exists `puppet` default character set utf8mb4'
+    mysql -uroot -p123456 -h10.16.44.89 puppet < table/cre_tab.sql
+    mysql -uroot -p123456 -h10.16.44.89 puppet < view/cre_view.sql
+    mysql -uroot -p123456 -h10.16.44.89 puppet < proc/proc_clear_log.sql
+    mysql -uroot -p123456 -h10.16.44.89 puppet < proc/proc_tj_service.sql
+    mysql -uroot -p123456 -h10.16.44.89 puppet < proc/proc_tj_sync_monitor.sql
+    mysql -uroot -p123456 -h10.16.44.89 puppet < proc/proc_trunc_log.sql
+    mysql -uroot -p123456 -h10.16.44.89 puppet < data/initialize.sql
+   
