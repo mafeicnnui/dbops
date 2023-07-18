@@ -10,7 +10,7 @@
 
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;平台由dbops WEB服务+dbapi接口服务+客户端（备份客户端、同步客户端、传输客户端、归档客户端）组成，dbops服务负责做元数据增、删、查、改、及图表展示，api接口服务为各种客户端提供数据交换。  
    
-   ![平台架构](https://github.com/mafeicnnui/dbops/blob/master/static/doc/images/framework.png)
+   ![平台架构](https://gitee.com/mafeicnnui/csdn-blog-gallery/raw/master/framework.png)
    
 
 ## 三、功能概述
@@ -202,7 +202,7 @@
         "db_ip"        : "192.168.1.100",
         "db_port"      : "3306",
         "db_user"      : "puppet",
-        "db_pass"      : "12345678",
+        "db_pass"      : "xxxxxx",
         "db_service"   : "puppet",
         "db_charset"   : "utf8"
     }

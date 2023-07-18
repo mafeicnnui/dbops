@@ -14,7 +14,8 @@ from web.model.t_sql_check     import query_check_result
 from web.model.t_sql_release import upd_sql, exe_sql, upd_sql_run_status, save_sql, query_audit, query_run, query_order, \
     query_audit_sql, check_sql, format_sql, get_sql_release, get_order_xh, check_order_xh, update_order, query_rollback, \
     exp_rollback, save_order_prod, get_prod_order_number, query_online_order, query_online_detail, update_order_prod, \
-    delete_online_order, audit_online_order, audit_canal_online_order, query_online_ver_desc
+    delete_online_order, audit_online_order, audit_canal_online_order, query_online_ver_desc, upd_sql_canal, \
+    upd_sql_contents
 from web.model.t_sql_release   import query_order_no,save_order,delete_order,query_wtd,query_wtd_detail,release_order,get_order_attachment_number,upd_order,delete_wtd,exp_sql_xls,exp_sql_pdf
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
     get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export, get_dss_order_online, get_dss_sql_query_tab
@@ -27,7 +28,7 @@ from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,g
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
 from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2
 from web.model.t_ds            import get_ds_by_dsid
-from web.utils.common          import DateEncoder,get_server
+from web.utils.common import DateEncoder, get_server, dict2num
 from web.utils                 import base_handler
 from web.model.t_sql_export import exp_data, query_export, delete_export, save_exp_sql, export_query, update_exp_sql, \
     upd_exp_sql, query_exp_audit, del_export, get_download, export_data, query_exp_task
@@ -92,6 +93,15 @@ class sql_release(base_handler.TokenHandler):
        result     = await save_sql(dbid,cdb,sql,desc,user,type,time,self.username,self.request.host,reason)
        self.write({"code": result['code'], "message": result['message']})
 
+class sql_update(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id    = self.get_argument("id")
+       sqltext = self.get_argument("sqltext")
+       run_time = self.get_argument("run_time")
+       res   = await upd_sql_contents(id,sqltext,run_time)
+       self.write(res)
+
 class sql_check(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -136,6 +146,14 @@ class sql_audit(base_handler.TokenHandler):
        user     = await get_user_by_loginame(self.username)
        result   = await upd_sql(sqlid,user,status,message,self.request.host)
        self.write({"code": result['code'], "message": result['message']})
+
+class sql_audit_canal(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       id    = self.get_argument("id")
+       user  = await get_user_by_loginame(self.username)
+       res   = await upd_sql_canal(id,user)
+       self.write(res)
 
 class sqlrun(base_handler.TokenHandler):
    async def get(self):
@@ -722,15 +740,26 @@ class es_query(base_handler.TokenHandler):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
        dbid   = self.get_argument("dbid")
        index_name  = self.get_argument("index_name")
+       idx_doc = self.get_argument("idx_doc")
        body = self.get_argument("body")
-       result = await query_es(dbid,index_name,body)
+       result = await query_es(dbid,index_name,idx_doc,body)
+       dict2num(result)
+       print('result2=',result)
        v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
        v_json = json.dumps(v_dict,
                   cls=DateEncoder,
                   ensure_ascii=False,
                   indent=4,
                   separators=(',', ':')) + '\n'
-       self.write(v_json)
+
+       print(v_dict)
+       self.write(v_dict)
+
+
+class es_query_test_number(base_handler.BaseHandler):
+   async def get(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       self.write({'mId':620863393531863040})
 
 class es_query_mapping(base_handler.TokenHandler):
    async def post(self):
@@ -739,6 +768,23 @@ class es_query_mapping(base_handler.TokenHandler):
        index_name  = self.get_argument("index_name")
        result = await query_es_mapping(dbid,index_name)
        v_dict = {"code":result['code'],"data": result['data'],'message':result['message']}
+       v_json = json.dumps(v_dict,
+                  cls=DateEncoder,
+                  ensure_ascii=False,
+                  indent=4,
+                  separators=(',', ':')) + '\n'
+       self.write(v_json)
+
+class es_query_docs(base_handler.TokenHandler):
+   async def post(self):
+       self.set_header("Content-Type", "application/json; charset=UTF-8")
+       dbid   = self.get_argument("dbid")
+       index_name  = self.get_argument("index_name")
+       map = await query_es_mapping(dbid,index_name)
+       docs=[]
+       for k in map.get('data').get(index_name).get('mappings').keys():
+           docs.append(k)
+       v_dict = {"code":map['code'],"data": docs,'message':map['message']}
        v_json = json.dumps(v_dict,
                   cls=DateEncoder,
                   ensure_ascii=False,

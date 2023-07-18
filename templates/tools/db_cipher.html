@@ -5,6 +5,8 @@
     <style>
         #ace_plain_text,#ace_cipher_text{
            height:400px;
+           width:500px;
+           word-wrap: break-word;
         }
     </style>
 </head>
@@ -91,10 +93,14 @@
                      plain_text: get_value('ace_plain_text'),
                  },
                  success: function (dataSet) {
-                     set_value('ace_cipher_text',dataSet['message'])
+                     if (dataSet.code == -1) {
+                         swal("提示", dataSet.message, "error");
+                     } else {
+                         set_value('ace_cipher_text',dataSet['message'])
+                     }
                  },
              })
-         })
+        })
 
         $('#decrypt_btn').on('click',function () {
             if (! check_valid()) {
@@ -109,7 +115,11 @@
                      cipher_text: get_value('ace_cipher_text'),
                  },
                  success: function (dataSet) {
-                     set_value('ace_plain_text',dataSet['message'])
+                     if (dataSet.code == -1) {
+                         swal("提示", dataSet.message, "error");
+                     } else {
+                         set_value('ace_plain_text',dataSet['message'])
+                     }
                  },
              })
          })

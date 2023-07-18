@@ -7,6 +7,9 @@
             display:none;
             height:60%;
         }
+        #ace-editor {
+            height:200px;
+        }
         .modal-lg-demo {
             width :60%;
             height:30%;
@@ -21,9 +24,9 @@
            <div class="col-md-3">
                 <div class="form-group">
                     <div>
-                        <label class="col-md-3 control-label">数据源：</label>
+                        <label class="col-md-3 control-label">数据源</label>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                          <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
                             <option value='' selected = "selected">...</option>
                             {% for var in dss %}
@@ -34,19 +37,33 @@
                 </div>
            </div>
            <div  class="col-md-3">
-                <div class="col-md-1">
-                    <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ti-layout-menu-v"></i></i></button>
-                </div>
-                <div class="col-md-11">
-                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="curr_db">
+               <div class="form-group">
+                    <div>
+                       <label class="col-md-3 control-label">索引</label>
+                    </div>
+                    <div class="col-md-9">
+                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="idx_name">
                           <option value='' selected = "selected">...</option>
-                      </select>
-                </div>
+                       </select>
+                    </div>
+               </div>
             </div>
-            <div class="col-md-2">
+           <div  class="col-md-2">
+               <div class="form-group">
+                    <div>
+                       <label class="col-md-3 control-label">文档</label>
+                    </div>
+                    <div class="col-md-9">
+                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="idx_doc">
+                          <option value='' selected = "selected">...</option>
+                       </select>
+                    </div>
+               </div>
+            </div>
+           <div class="col-md-2">
                 <div class="form-group">
                     <div>
-                        <label class="col-md-3 control-label">类型：</label>
+                        <label class="col-md-4 control-label">类型：</label>
                     </div>
                     <div class="col-md-8">
                          <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_type">
@@ -56,7 +73,7 @@
                    </div>
                 </div>
            </div>
-            <div  class="col-md-3">
+           <div  class="col-md-2">
                 <div class="form-group">
                       <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
                       <button type="button" id='demo_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="示例" data-original-title="示例"><i class="mdi mdi-help"></i></button>
@@ -462,14 +479,13 @@
                   $.ajax({
                         url     : "/es/_query",
                         type    : "post",
-                        datatype: "text",
                         data: {
                             dbid  :  $('#db_source').val(),
-                            index_name :  $('#curr_db').val(),
+                            index_name :  $('#idx_name').val(),
+                            idx_doc :  $('#idx_doc').val(),
                             body:sql
                         },
                         success: function (dataSet) {
-                           console.log('dataSet1=',dataSet)
                            var editor = ace.edit("div-table")
                            editor.setValue('')
                            editor.insert(JSON.stringify(dataSet.data, null, "\t"))
@@ -479,10 +495,10 @@
                      $.ajax({
                         url     : "/es/_query/mapping",
                         type    : "post",
-                        datatype: "text",
+                       // datatype: "text",
                         data: {
                             dbid  :  $('#db_source').val(),
-                            index_name :  $('#curr_db').val(),
+                            index_name :  $('#idx_name').val(),
                         },
                         success: function (dataSet) {
                            var editor = ace.edit("div-mapping")
@@ -494,15 +510,26 @@
 
           }
 
-        function upd_curr_db(dataSet){
-               $("#curr_db").empty();
-               $("#curr_db").append("<option value=''>...</option>");
+        function upd_idx_name(dataSet){
+               $("#idx_name").empty();
+               $("#idx_name").append("<option value=''>...</option>");
                 for (i=0;i<dataSet['data'].length;i++){
                    var val  = dataSet['data'][i];
                    var text = dataSet['data'][i];
-                   $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                   $("#idx_name").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
                }
-               $("#curr_db").selectpicker('refresh')
+               $("#idx_name").selectpicker('refresh')
+        }
+
+        function upd_idx_doc(dataSet){
+               $("#idx_doc").empty();
+               $("#idx_doc").append("<option value=''>...</option>");
+                for (i=0;i<dataSet['data'].length;i++){
+                   var val  = dataSet['data'][i];
+                   var text = dataSet['data'][i];
+                   $("#idx_doc").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+               }
+               $("#idx_doc").selectpicker('refresh')
         }
 
         $("#query_btn").click(function() {
@@ -517,8 +544,13 @@
                    showtips('info','请选择数据源!');
                    return false;
                 }
-                if($('#curr_db').val()=='') {
+                if($('#idx_name').val()=='') {
                    showtips('info','请选择索引!');
+                   return false;
+                }
+
+                if($('#idx_doc').val()=='') {
+                   showtips('info','请选择文档!');
                    return false;
                 }
 
@@ -577,7 +609,23 @@
                     },
                     success: function (dataSet) {
                         console.log('dataset=',dataSet)
-                        upd_curr_db(dataSet)
+                        upd_idx_name(dataSet)
+                    }
+               });
+        });
+
+        $("#idx_name").on("changed.bs.select",function(){
+               $.ajax({
+                    url     :"/es/_query/docs",
+                    type    :"post",
+                    datatype:"json",
+                    data: {
+                        dbid : $('#db_source').val(),
+                        index_name : $('#idx_name').val(),
+                    },
+                    success: function (dataSet) {
+                        console.log('idx_name dataset=',dataSet)
+                        upd_idx_doc(dataSet)
                     }
                });
         });
@@ -592,7 +640,8 @@
               set_editor_result("div-mapping")
               set_editor("ace-editor-demo")
               $("#db_source").selectpicker('refresh')
-              $("#curr_db").selectpicker('refresh')
+              $("#idx_name").selectpicker('refresh')
+              $("#idx_doc").selectpicker('refresh')
               $("#query_type").selectpicker('refresh')
               set_styles()
         });

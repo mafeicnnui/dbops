@@ -656,6 +656,10 @@ class DateEncoder(json.JSONEncoder):
             return obj.strftime("%Y-%m-%d")
         elif isinstance(obj, decimal.Decimal):
             return str(obj)
+        elif isinstance(obj, int):
+            return str(obj)
+        elif isinstance(obj, float):
+            return str(obj)
         else:
             return json.JSONEncoder.default(self, obj)
 
@@ -750,3 +754,17 @@ async def get_audit_rule(p_key):
 def get_seconds(b):
     a=datetime.datetime.now()
     return int((a-b).total_seconds())
+
+def dict2num(now_dict):
+   for key, value in now_dict.items():
+      if isinstance(value, dict):
+           dict2num(value)
+      elif  isinstance(value, list):
+          for dic in value:
+              dict2num(dic)
+      elif (isinstance(value, int)
+             or isinstance(value, float)
+                or isinstance(value, decimal.Decimal)) and len(str(now_dict[key]))>16 :
+           now_dict[key]=str(value)
+      else:
+           pass

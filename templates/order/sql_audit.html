@@ -199,15 +199,24 @@
                             render: function(data, type, row, meta){
                                  var id=row[0]
                                  var status=row[2]
+                                 var audit_btn=''
+                                 var canal_audit_btn=''
                                  if (status=='已发布') {
-                                    msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="show_audit(\''+id+','+status+'\');"/>' +'&nbsp;'
-                                    return msg;
+                                    audit_btn ='&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="审核" onclick="show_audit(\''+id+','+status+'\');"/>' +'&nbsp;'
                                  } else {
-                                    msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary disabled"  type="button"  value="审核" onclick="show_audit(\''+id+','+status+'\');"/>' +'&nbsp;'
-                                    return msg;
+                                    audit_btn ='&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary disabled"  type="button"  value="审核" onclick="show_audit(\''+id+','+status+'\');"/>' +'&nbsp;'
                                  }
+
+                                 if (status=='已审核' || status=='执行失败') {
+                                    canal_audit_btn ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary"  type="button"  value="取消审核" onclick="show_canal_audit(\''+id+'\');"/>' +'&nbsp;'
+                                 } else {
+                                    canal_audit_btn ='&nbsp;'+
+                                          '<input class="btn btn-xs btn-primary disabled"  type="button"  value="取消审核" onclick="show_canal_audit(\''+id+'\');"/>' +'&nbsp;'
+                                 }
+                                 return audit_btn+canal_audit_btn;
                             }
                          }
                         ],
@@ -272,7 +281,7 @@
                     if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
-                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+ataSet.message.ds.url)
+                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
                     }
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
@@ -282,6 +291,50 @@
                     })
                 },
         });
+    }
+
+      function show_canal_audit(id){
+           $.ajax({
+                url      : "/sql/audit/detail",
+                type     : "post",
+                datatype : "json",
+                async    : false,
+                data     : {
+                    id: id
+                },
+                success: function (dataSet) {
+                   swal({
+                        title: "确认要取消审核吗?",
+                        text: "工单["+dataSet.message.message+"]取消审核了！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "是, 取消!",
+                        cancelButtonText:  "否, 撤销!",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                     }, function (isConfirm) {
+                            if (isConfirm) {
+                                $.ajax({
+                                        url: "/sql/_audit/canal",
+                                        type: "post",
+                                        datatype: "json",
+                                        data:{
+                                            id : dataSet.message.id,
+                                        },
+                                        success: function (dataSet) {
+                                            swal(dataSet.message);
+                                            $("#query_btn").click();
+                                        },
+                                 });
+
+                            } else {
+                                swal("已取消", "工单["+dataSet.message.message+"]未取消审核！", "error");
+                            }
+                     });
+
+                },
+           });
     }
 
     $('#auditSql').click(function(){

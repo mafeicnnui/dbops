@@ -47,18 +47,15 @@ async def get_indexes(p_dbid):
         traceback.print_exc()
         return {'code':-1,'data':[],'message':traceback.format_exc()}
 
-async def query_es(p_dbid,p_idx_name,p_body):
+async def query_es(p_dbid,p_idx_name,p_idx_doc,p_body):
     try:
         ds = await  get_ds_by_dsid(p_dbid)
         if ds['password'] != '':
             es = get_ds_es_auth_https(ds['ip'], ds['port'], ds['user'], ds['password'])
         else:
             es = get_ds_es(ds['ip'], ds['port'])
-        print('body=',json.loads(p_body))
-        res = es.search(index=p_idx_name,doc_type="_doc",body=json.loads(p_body),size=200)
-        print('res=',res)
-        res2 = es.indices.get_mapping(index=p_idx_name)
-        print('res2=',res2)
+        #res = es.search(index=p_idx_name,doc_type="_doc",body=json.loads(p_body),size=200)
+        res = es.search(index=p_idx_name, doc_type=p_idx_doc, body=json.loads(p_body), size=200)
         return {'code':0,'data':res,'message':''}
     except:
         traceback.print_exc()

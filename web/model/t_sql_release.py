@@ -420,7 +420,7 @@ async def check_order_xh(p_message):
 
 async def query_audit_sql(id):
     res = {}
-    st = """select a.sqltext,a.error,a.run_time,a.db,a.dbid,a.run_result,reason from t_sql_release a where a.id={0}""".format(id)
+    st = """select a.id,a.message,a.sqltext,a.error,a.run_time,a.db,a.dbid,a.run_result,reason from t_sql_release a where a.id={0}""".format(id)
     rs = await async_processer.query_dict_one(st)
     st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(id)
     rs['rollback'] =  await async_processer.query_dict_list(st)
@@ -664,6 +664,46 @@ async def upd_sql(p_sqlid,p_user,p_status,p_message,p_host):
         traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '审核异常!'
+        return result
+
+async def upd_sql_canal(p_id,p_user):
+    result={}
+    try:
+        sql="""update t_sql_release 
+                  set  status ='0' ,
+                       last_update_date =now(),
+                       updator='{}',
+                       audit_date =null ,
+                       auditor=null,
+                       audit_message=null,
+                       error=null
+                where id='{}'""".format(p_user['login_name'],p_id)
+        await async_processer.exec_sql(sql)
+        result['code']='0'
+        result['message']='取消审核成功!'
+        return result
+    except :
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '取消审核异常!'
+        return result
+
+async def upd_sql_contents(p_id,p_contents,p_run_time):
+    result={}
+    try:
+        st="""update t_sql_release 
+                set  sqltext ='{}',
+                     run_time='{}' 
+                where id='{}'""".format(fmt_sql(p_contents),p_run_time,p_id)
+        print('upd_sql_contents=',st)
+        await async_processer.exec_sql(st)
+        result['code']='0'
+        result['message']='更新成功!'
+        return result
+    except :
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '更新失败!'
         return result
 
 async def upd_sql_run_status(p_sqlid,p_user):

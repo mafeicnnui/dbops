@@ -447,16 +447,27 @@
             <div class="modal-body">
                  <div class="row">
                     <div  class="tab-pane">
-                        <div class="row">
-                            <span>执行时间：<i class="ion-android-alarm"></i></span>
-                            <input id="run_time_change"  type="text" class="form-control datetimepicker"  readonly style="color:red" >
-                        </div>
-                    </div>
-                    <div id="release_template_edit" class="tab-pane active">
-                         <div class="row">
-                            <h5>执行语句：</h5>
-                            <div id='ace-editor-change' class="col-md-12"></div>
-                         </div>
+                        <form class="form-horizontal" role="form">
+                            <div class="col-md-8">
+                                <div>
+                                    <label class="col-md-2 control-label">定时工单:<i class="ion-android-alarm"></i></label>
+                                </div>
+                                <div class="col-md-8">
+                                   <span class="input-group-btn">
+                                      <input  id="run_time_change"  type="text" class="form-control datetimepicker"  readonly >
+                                   </span>
+                                </div>
+                                <div>
+                                   <label class="col-md-1 control-label"><i id='clear_run_time_btn' class="mdi mdi-refresh"></i></label>
+                                </div>
+                           </div>
+                           <div class="col-md-12">
+                                <div id="release_template_edit" class="tab-pane active">
+                                    <hr>
+                                    <div id='ace-editor-change' class="col-md-12"></div>
+                                </div>
+                             </div>
+                        </form>
                     </div>
                  </div>
              </div>
@@ -968,6 +979,8 @@
 
 </body>
 
+<script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+
 <script>
 
     function query_order(){
@@ -1017,7 +1030,7 @@
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="日志" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="日志下载" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
                                  return msg;
                             }
                          }
@@ -1390,7 +1403,7 @@
                 datatype: "json",
                 data:{id: row},
                 success: function (dataSet) {
-                    setEditor2('ace-editor-change',format_sql(dataSet.message.sqltext))
+                    setEditor('ace-editor-change',format_sql(dataSet.message.sqltext))
                     $('#run_time_change').val(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
@@ -2427,22 +2440,33 @@
     })
 
     $('#order_change_btn').click(function(){
+         var editor = ace.edit("ace-editor-change");
+         var v_sql=editor.session.getTextRange(editor.getSelectionRange())
+         if(v_sql=='') {
+            v_sql = editor.session.getValue()
+         }
          $.ajax({
-                url : "/order/_update",
+                url : "/sql/_update",
                 type: "post",
                 datatype: "json",
                 data:{
-                    release_id: $('#order_edit_xh').val(),
-                    run_time:$('#run_time_change').val()
+                    id: $('#order_edit_xh').val(),
+                    run_time:$('#run_time_change').val(),
+                    sqltext:v_sql
                 },
                 success: function (dataSet) {
                     if (dataSet.code == 0) {
                         swal("更新成功", "", "success")
+                        $("#query_btn").click()
                     } else {
                         swal(dataSet.message, "", "error")
                     }
                 }
           });
+    });
+
+    $('#clear_run_time_btn').click(function(){
+        $('#run_time_change').val('')
     });
 
     $(document).ready(function() {

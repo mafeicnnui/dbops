@@ -6,11 +6,12 @@
 # @Software: PyCharm
 
 from web.services.sql import sqlquery, sql_query, sqlrelease, sql_check, sql_format, sql_check_result, sql_exp_task, \
-        _sql_exp_task, es_query_mapping, redisquery, redis_query, redis_db
+        _sql_exp_task, es_query_mapping, redisquery, redis_query, redis_db, sql_audit_canal, sql_update, \
+        es_query_test_number
 from web.services.sql    import sql_release,sqlaudit,sql_audit,sqlrun,sql_run,sql_audit_query,sql_audit_detail,sql_run_query
 from web.services.sql    import get_tree_by_sql,query_sql_release,sql_detail,sql_exp_xls,sql_exp_pdf,sql_rollback_exp
 from web.services.sql    import sql_exp_query,_sql_exp_query,_sql_exp_save,_sql_exp_update,_sql_exp_delete,_sql_exp_export,_sql_exp_detail
-from web.services.sql    import expaudit,exp_audit,exp_detail,exp_audit_query,exp_export_data,exp_download,exp_export_data_delete,es_query,esquery,es_index
+from web.services.sql    import expaudit,exp_audit,exp_detail,exp_audit_query,exp_export_data,exp_download,exp_export_data_delete,es_query,esquery,es_index,es_query_docs
 
 sql = [
         (r"/sql/query", sqlquery),
@@ -18,10 +19,12 @@ sql = [
         (r"/sql/detail", sql_detail),
         (r"/sql/release", sqlrelease),
         (r"/sql/_release", sql_release),
+        (r"/sql/_update", sql_update),
         (r"/sql/_check", sql_check),
         (r"/sql/_check/result", sql_check_result),
         (r"/sql/audit", sqlaudit),
         (r"/sql/_audit", sql_audit),
+        (r"/sql/_audit/canal", sql_audit_canal),
         (r"/sql/audit/query", sql_audit_query),
         (r"/sql/audit/detail", sql_audit_detail),
         (r"/sql/_format", sql_format),
@@ -53,7 +56,9 @@ sql = [
 
         (r"/es/query", esquery),
         (r"/es/_query", es_query),
+        (r"/es/_query/test_number", es_query_test_number),
         (r"/es/_query/mapping", es_query_mapping),
+        (r"/es/_query/docs", es_query_docs),
         (r"/es/_index", es_index),
 
         (r"/redis/query", redisquery),
