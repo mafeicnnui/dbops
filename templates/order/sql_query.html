@@ -605,18 +605,20 @@
 
               }
 
-              function getCompletions() {
+              function getCompletions(p_selectNode) {
+                    var currdb = $('#curr_db').val();
+                    if (currdb == '') currdb = p_selectNode;
                     $.ajax({
                         url     :"/get_tables",
                         type    :"post",
                         datatype:"json",
                         data: {
                             dbid : $('#db_source').val(),
-                            db_name : $('#curr_db').val(),
+                            db_name : currdb,
                         },
                         success: function (dataSet) {
                             if (dataSet['code'] ='0' ) {
-                                console.log('get_tables=',dataSet['message'])
+                                console.log('get_tables=',dataSet['message'],$('#db_source').val(),$('#curr_db').val())
                                 var table_list=[]
                                 for(i=0;i<dataSet['message'].length;i++) {
                                     table_list[i]={
@@ -647,10 +649,10 @@
                   if (p_sql.indexOf('from ')>0) {
                           console.log('spllit=',p_sql.split('from '))
                           if (p_sql.split('from ')[1].indexOf(' ')>0) {
-                              console.log('spllit2=',p_sql.split('from ')[1].split(' ')[0])
+                              console.log('spllit22222222222222222=',p_sql.split('from ')[1].split(' ')[0])
                               return p_sql.split('from ')[1].split(' ')[0];
                           } else {
-                              console.log('spllit1=',p_sql.split('from ')[1])
+                              console.log('spllit12222222222222=',p_sql.split('from ')[1])
                               return p_sql.split('from ')[1];
                           }
                   } else {
@@ -670,10 +672,9 @@
                         },
                         success: function (dataSet) {
                             if (dataSet['code'] ='0' ) {
-                                console.log('get_columns=',dataSet['message'])
                                 var columns_list=[]
                                 for(i=0;i<dataSet['message'].length;i++) {
-                                    table_list[i]={
+                                    columns_list[i]={
                                          name : dataSet['message'][i][0],
                                          value : dataSet['message'][i][0],
                                          caption: dataSet['message'][i][0],
@@ -682,14 +683,13 @@
                                          score : 1000+i
                                     }
                                 }
-                                console.log('columns_list=',columns_list)
+                                var editor = ace.edit('ace-editor');
                                 var languageTools = ace.require("ace/ext/language_tools");
                                 languageTools.addCompleter({
                                 getCompletions: function(editor, session, pos, prefix, callback) {
                                     callback(null,  columns_list);
                                   }
                                 });
-
                             } else {
                                 console.log('get_columns error =',dataSet['message'])
                             }
@@ -763,10 +763,12 @@
 
                                     if (data.parentId === undefined) {
                                          upd_curr_db_select(curNode.text)
+                                         getCompletions(curNode.text);
                                     } else {
                                         upd_curr_db_select(parNode.text)
+                                        getCompletions(parNode.text);
                                     }
-                                    getCompletions();
+
                                 });
 
                                 $('#db_tree').on('nodeUnselected', function(event, data) {
@@ -981,6 +983,11 @@
                      enableLiveAutocompletion: true,
                      //wrapBehavioursEnabled:false
                   });
+
+                  editor.on("change", function(e){
+                    　editor.execCommand("startAutocomplete");
+                  });
+
                   editor.getSession().on('change', function(e) {
                       if($('#db_source').val()=='') {
                            return false;
@@ -989,9 +996,9 @@
                       if(v_sql=='') {
                          v_sql=editor.session.getValue()
                       }
-                       console.log('v_sql=',v_sql)
                       var table_name = getTableName(v_sql)
-                      if (table_name !=null) {
+                      console.log('table_name=',table_name)
+                      if ( table_name ) {
                           //getCompletionsColumns(table_name)
                       }
                   });
@@ -1012,14 +1019,12 @@
               }
 
               $("#filter_db").bind("input propertychange",function(){
-                 console.log('lock=',lock);
-                // if (!lock) refresh_tree();
                 refresh_tree();
               });
 
               $('#curr_db').change(function() {
                   refresh_tree(false);
-                  getCompletions();
+                  getCompletions('');
               });
 
               $("#db_source").on("changed.bs.select",function(){

@@ -688,9 +688,25 @@ async def upd_sql_canal(p_id,p_user):
         result['message'] = '取消审核异常!'
         return result
 
-async def upd_sql_contents(p_id,p_contents,p_run_time):
+async def upd_sql_contents(p_id,p_contents,p_run_time,p_user):
     result={}
     try:
+        res= await get_sql_release(p_id)
+        print('res=',res)
+        ds = await get_ds_by_dsid(res['dbid'])
+        if ds['db_type'] == '0':
+            print('check_mysql_ddl..')
+            val = await check_mysql_ddl(res['dbid'],
+                                  res['db'],
+                                  p_contents,
+                                  p_user,
+                                  res['type'])
+            print('val=',val)
+            if val == False:
+                result['code'] = '1'
+                result['message'] = '检测失败!'
+                return result
+
         st="""update t_sql_release 
                 set  sqltext ='{}',
                      run_time='{}' 

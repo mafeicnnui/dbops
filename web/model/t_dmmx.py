@@ -13,6 +13,14 @@ async def get_dmm_from_dm(p_dm):
     sql = "select dmm,dmmc from t_dmmx where dm='{0}'".format(p_dm)
     return await async_processer.query_list(sql)
 
+async def get_dmm_from_dm_dic(p_dm):
+    sql = """SELECT dmm,dmmc FROM t_dmmx t  
+             WHERE t.dm='{}' AND EXISTS(SELECT 1 FROM t_dict_group g 
+                                        WHERE g.dm=t.dm AND  INSTR(g.dmm ,t.dmm)>0)
+          """.format(p_dm)
+    print(sql)
+    return await async_processer.query_list(sql)
+
 async def get_dmm_from_dm_cipher(p_dm):
     sql = "select dmm,dmmc from t_dmmx where dm='{0}' and dmm in('1','2','3','4')".format(p_dm)
     return await async_processer.query_list(sql)
@@ -58,6 +66,10 @@ async def get_users_by_query_grants(p_username):
 
 async def get_sys_dmlx():
     sql = "select dm,mc from t_dmlx where flag='1' order by dm"
+    return await async_processer.query_list(sql)
+
+async def get_sys_dmlx_dic():
+    sql = "select dm,mc from t_dmlx where flag='1' and dm in(select dm from t_dict_group) order by dm"
     return await async_processer.query_list(sql)
 
 async def get_sys_dmlx_from_dm(p_dm):
@@ -185,7 +197,7 @@ async def get_sync_db_mysql_server():
 
 
 async def get_db_moitor_templates():
-    sql = """SELECT t.id,t.name FROM t_monitor_templete t WHERE t.type='2' AND t.name LIKE '%监控%';"""
+    sql = """SELECT t.id,t.name FROM t_monitor_templete t"""
     return await async_processer.query_list(sql)
 
 

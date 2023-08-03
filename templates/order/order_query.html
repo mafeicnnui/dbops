@@ -2,6 +2,10 @@
 <head>
     <title>工单查询</title>
     <style>
+       #example{
+            width: 100% !important;
+       }
+
        .modal-lg-templete {
             width:60%;
             height:20%;
@@ -22,7 +26,7 @@
            height:80px;
         }
         #ace-editor-change{
-           height:280px;
+           height:250px;
         }
 
         .modal-lg-order {
@@ -127,16 +131,13 @@
                     <span class="input-group-btn">
                        <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
                     </span>
-<!--                    <span class="input-group-btn">-->
-<!--                       <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>-->
-<!--                    </span>-->
                </div>
             </div>
         </div>
      </div>
     <br>
      <!--当前用户ID -->
-     <input  id="curr_userid" type="hidden" >
+     <input id="curr_userid" type="hidden" >
 
      <!--工单情况 -->
      <div class="panel panel-default">
@@ -314,7 +315,7 @@
                                 <input type="file" name="order_files[]" id="file_order"  multiple="multiple">
                             </div>
                        </div>
-                       <div class="form-group">
+                        <div class="form-group">
                             <div>
                                 <label class="col-md-3 control-label" >问题描述：</label>
                             </div>
@@ -322,17 +323,16 @@
                                 <textarea class="form-control"  rows="3" style="min-width: 90%" id="order_desc"></textarea>
                            </div>
                        </div>
-                   </form>
-
-                </div>
-            </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="order_save_btn" >保存</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                       </form>
                     </div>
                </div>
             </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="order_save_btn" >保存</button>
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+             </div>
          </div>
       </div>
      </div>
@@ -340,146 +340,176 @@
      <!--工单详情窗口 -->
      <div id="con-close-modal5" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
        <div class="modal-dialog modal-lg-order">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">工单详情</h4>
-            </div>
-            <div class="modal-body">
-               <div class="panel panel-flat">
-                    <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" >工单编号：</label>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">工单详情</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="panel panel-flat">
+                        <div class="panel-body">
+                          <form class="form-horizontal" role="form">
+                            <div class="form-group" >
+                                <div>
+                                    <label class="col-md-3 control-label" >工单编号：</label>
+                                </div>
+                                <div class="col-md-8" >
+                                    <input type="text" id="order_number_detail"  readonly class="form-control">
+                               </div>
                             </div>
-                            <div class="col-md-8" >
-                                <input type="text" id="order_number_detail"  readonly class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label">工单环境：</label>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label">工单环境：</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control select" id="order_env_detail">
+                                        <option value='' selected = "selected">...</option>
+                                    </select>
+                               </div>
                             </div>
-                            <div class="col-md-8">
-                                <select class="form-control select" id="order_env_detail">
-                                    <option value='' selected = "selected">...</option>
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label">工单类型：</label>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label">工单类型：</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control select" id="order_type_detail">
+                                        <option value='' selected = "selected">...</option>
+                                    </select>
+                               </div>
                             </div>
-                            <div class="col-md-8">
-                                <select class="form-control select" id="order_type_detail">
-                                    <option value='' selected = "selected">...</option>
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label">工单状态：</label>
+                            <div class="form-group">
+                                <div >
+                                    <label class="col-md-3 control-label">工单状态：</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control select" id="order_status_detail">
+                                        <option value='' selected = "selected">...</option>
+                                    </select>
+                               </div>
                             </div>
-                            <div class="col-md-8">
-                                <select class="form-control select" id="order_status_detail">
-                                    <option value='' selected = "selected">...</option>
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-3 control-label" >处理人员：</label>
-                            </div>
-                            <div class="col-md-8" >
-                                 <select class="form-control select" id="order_handle_detail">
-                                    <option value='' selected = "selected">...</option>
-                                </select>
-                           </div>
-                       </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-3 control-label" >工单附件：</label>
-                            </div>
-                            <div class="col-md-8" id="order_attachment_detail">
-                                <input type="file" disabled name="order_files_detail[]" id="file_order_detail"  multiple="multiple">
-                            </div>
-                             <div class="col-md-1">
-                               <div class="form-group">
-                                    <div>
-                                        <span class="input-group-btn">
-                                           <button type="button" id='order_attach_detail' class="btn btn-icon waves-effect btn-default m-b-5"><i class="ion-images"></i></button>
-                                        </span>
-                                    </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label" >处理人员：</label>
+                                </div>
+                                <div class="col-md-8" >
+                                     <select class="form-control select" id="order_handle_detail">
+                                        <option value='' selected = "selected">...</option>
+                                    </select>
                                </div>
                            </div>
-                       </div>
-                       <div class="form-group">
-                            <div>
-                                <label class="col-md-3 control-label" >问题描述：</label>
-                            </div>
-                            <div class="col-md-8" >
-                                <textarea class="form-control" readonly rows="3" style="min-width: 90%" id="order_desc_detail"></textarea>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label" >工单附件：</label>
+                                </div>
+                                <div class="col-md-8" id="order_attachment_detail">
+                                    <input type="file" disabled name="order_files_detail[]" id="file_order_detail"  multiple="multiple">
+                                </div>
+                                 <div class="col-md-1">
+                                   <div class="form-group">
+                                        <div>
+                                            <span class="input-group-btn">
+                                               <button type="button" id='order_attach_detail' class="btn btn-icon waves-effect btn-default m-b-5"><i class="ion-images"></i></button>
+                                            </span>
+                                        </div>
+                                   </div>
+                               </div>
                            </div>
-                       </div>
-                   </form>
-
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label" >问题描述：</label>
+                                </div>
+                                <div class="col-md-8" >
+                                    <textarea class="form-control" readonly rows="3" style="min-width: 90%" id="order_desc_detail"></textarea>
+                               </div>
+                           </div>
+                       </form>
+                        </div>
+                   </div>
                 </div>
+                <div class="modal-footer">
+                        <div class="col-sm-offset-3 col-sm-4">
+                           <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        </div>
+                 </div>
             </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
-               </div>
-            </div>
-         </div>
       </div>
      </div>
 
      <!--工单变更窗口 -->
      <div id="con-close-modal-change" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
       <div class="modal-dialog modal-lg-templete">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title"><span id='modal_edit_title'>工单变更</span></h4>
-                <input type='hidden' id='order_edit_xh'>
-            </div>
-            <div class="modal-body">
-                 <div class="row">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title"><span id='modal_edit_title'>工单变更</span></h4>
+                    <input type='hidden' id='order_edit_xh'>
+                </div>
+                <div class="modal-body">
                     <div  class="tab-pane">
-                        <form class="form-horizontal" role="form">
-                            <div class="col-md-8">
-                                <div>
-                                    <label class="col-md-2 control-label">定时工单:<i class="ion-android-alarm"></i></label>
+                         <form class="form-horizontal" role="form">
+                                <div class="col-md-12">
+                                    <div class="col-md-1">
+                                       <label>运行实例</label>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <span id ='run_db_upd' style="color:red"></span>
+                                    </div>
                                 </div>
-                                <div class="col-md-8">
-                                   <span class="input-group-btn">
-                                      <input  id="run_time_change"  type="text" class="form-control datetimepicker"  readonly >
-                                   </span>
+                                <div class="col-md-12">
+                                     <div class="col-md-1">
+                                       <label>发布原因</label>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <span id ='reason_upd'></span>
+                                    </div>
                                 </div>
-                                <div>
-                                   <label class="col-md-1 control-label"><i id='clear_run_time_btn' class="mdi mdi-refresh"></i></label>
-                                </div>
-                           </div>
-                           <div class="col-md-12">
-                                <div id="release_template_edit" class="tab-pane active">
-                                    <hr>
-                                    <div id='ace-editor-change' class="col-md-12"></div>
-                                </div>
-                             </div>
-                        </form>
+                                <div class="col-md-12">
+                                     <div class="col-md-1">
+                                       <label>定时工单</label>
+                                    </div>
+                                    <div class="col-md-6 input-group">
+                                        <input  id="run_time_change"  type="text" class="form-control datetimepicker"  readonly >
+                                        <span class="input-group-addon"><i class="ion-android-alarm"></i></span>
+                                        <span class="input-group-btn">
+                                           <button type="button"  id='clear_run_time_btn' class="btn waves-effect waves-light btn-primary"><i class="mdi mdi-refresh"></i></button>
+                                        </span>
+                                    </div>
+                               </div>
+                               <div class="col-md-12">
+                                   <div class="col-md-1">
+                                       <br>
+                                       <label>执行语句</label>
+                                    </div>
+                                    <div  class="tab-pane">
+                                        <hr>
+                                        <div id='ace-editor-change' class="col-md-11"></div>
+                                    </div>
+                               </div>
+                               <div class="col-md-12">
+                                    <div class="col-md-1">
+                                       <br>
+                                       <label>检测结果</label>
+                                    </div>
+                                   <div class="tab-pane">
+                                        <hr>
+                                        <div id='div-table' class="col-md-11">
+                                            <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
+                                       </div>
+                                   </div>
+
+                               </div>
+
+                            </form>
                     </div>
                  </div>
-             </div>
-             <div class="modal-footer">
-                <div class="col-sm-offset-2 col-sm-4">
-                    <button type="button" id='order_change_btn' class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">变更</button>
-                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                 <div class="modal-footer">
+                    <div class="col-sm-offset-2 col-sm-4">
+                        <button type="button" id='order_change_btn' class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">变更</button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
                 </div>
             </div>
-        </div>
        </div>
-     </div>
+      </div>
 
      <!--问题单变更窗口 -->
      <div id="con-close-modal6" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
@@ -1025,12 +1055,22 @@
                             targets: 10,
                             render: function(data, type, row, meta){
                                  var id=row[0]
+                                 var status=row[2]
                                  $('#cur_release_num').val(id)
-                                 msg ='&nbsp;'+
+                                 if(status=='执行成功' ||   status=='已审核') {
+                                      msg ='&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  disabled value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  disabled value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
+                                      '<input class="btn btn-xs btn-primary"  type="button"  value="日志下载" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
+                                 } else {
+                                       msg ='&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="编辑" onclick="editSql(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="DeleteOrder(\''+id+'\');"/>' +'&nbsp;'+
                                       '<input class="btn btn-xs btn-primary"  type="button"  value="日志下载" onclick="ExpRollback(\''+id+'\');"/>' +'&nbsp;';
+                                 }
+
                                  return msg;
                             }
                          }
@@ -1356,7 +1396,7 @@
                 success: function (dataSet) {
                     setEditor2('ace-editor-release',format_sql(dataSet.message.sqltext))
                     setEditor2('ace-editor-error',dataSet.message.error)
-                      if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
+                    if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
                     } else {
                          $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
@@ -1404,6 +1444,14 @@
                 data:{id: row},
                 success: function (dataSet) {
                     setEditor('ace-editor-change',format_sql(dataSet.message.sqltext))
+                    $('#example').empty()
+                    if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
+                         $('#run_db_upd').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
+                    } else {
+                         $('#run_db_upd').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
+                    }
+                    $('#reason_upd').text(dataSet.message.reason)
+
                     $('#run_time_change').val(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
@@ -1955,20 +2003,6 @@
          })
     })
 
-    // $('#order_type_upd_ver').change(function(){
-    //      $.ajax({
-    //           url: "/online/ver/desc",
-    //           type: "post",
-    //           datatype: "json",
-    //           data:{
-    //               ver : $('#order_type_upd_ver').val()
-    //           },
-    //           success: function (dataSet) {
-    //              $('#order_type_upd_ver_desc').val(dataSet['dmmc2'])
-    //           }
-    //      })
-    // })
-
     $('#online_prod_audit_btn').click(function(){
         var p_order_number = $('#online_prod_audit_order_number').val()
         $.ajax({
@@ -2456,10 +2490,11 @@
                 },
                 success: function (dataSet) {
                     if (dataSet.code == 0) {
-                        swal("更新成功", "", "success")
-                        $("#query_btn").click()
+                        swal("更新成功", "", "info")
+                        //$("#query_btn").click()
                     } else {
                         swal(dataSet.message, "", "error")
+                        //query_release_result()
                     }
                 }
           });
@@ -2468,6 +2503,38 @@
     $('#clear_run_time_btn').click(function(){
         $('#run_time_change').val('')
     });
+
+    function query_release_result(){
+            $.ajax({
+                url     : "/sql/_check/result",
+                type    : "post",
+                datatype: "json",
+                success: function (dataSet) {
+                    $('#example').DataTable( {
+                           "dom"          : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                            destroy       : true,
+                            async         : true,
+                            ordering      : false,
+                            data          : dataSet.data,
+                            columns: [
+                                { "title": "序号" },
+                                { "title": "对象名" },
+                                { "title": "规则ID" },
+                                { "title": "规则名" },
+                                { "title": "规则值" },
+                                { "title": "检测结果" }
+                            ],
+                            scrollX       : true,
+                            scrollY       : true,
+                            scrollCollapse: true,
+                            paging        : false,
+                            iDisplayLength: 6,
+                            "language"    : get_languages()
+                    });
+                }
+             });
+
+     }
 
     $(document).ready(function() {
           var tabPageName='日常工单'

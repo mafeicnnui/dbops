@@ -530,3 +530,17 @@ $.fn.serializeObject = function() {
     //console.log('o=',o)
     return o;
 };
+
+
+function dict2str(item) {
+      var tmp='';
+      arr = $('#'+item).val()
+      if (arr.length>0) {
+         for (let i = 0, len = arr.length; i < len; i++) {
+           tmp=tmp+','+arr[i];
+         }
+      } else {
+          return ''
+      }
+      return tmp.substr(1);
+}

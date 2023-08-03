@@ -10,7 +10,7 @@ import tornado.web
 from web.model.t_monitor import query_monitor_index, save_index, upd_index, del_index, query_monitor_log_analyze, \
     query_monitor_templete_type, query_alert, save_alert_task, get_alert_task_by_tag, upd_alert_task, del_alert, \
     push_alert_task, query_monitor_api, query_monitor_api_log, get_redis_slowlog_hz, get_redis_slowlog_mx, \
-    get_redis_slowlog_dbinfo
+    get_redis_slowlog_dbinfo, query_monitor_index_detail
 from   web.model.t_monitor   import get_monitor_indexes,get_monitor_indexes2,get_monitor_indexes_by_type,get_monitor_task_by_tag,query_monitor_sys
 from   web.model.t_monitor   import query_monitor_templete,save_templete,upd_templete,del_templete,del_task,upd_gather_task,upd_monitor_task
 from   web.model.t_monitor   import get_monitor_sys_indexes,get_monitor_templete_indexes,save_gather_task,save_monitor_task,query_task
@@ -34,10 +34,18 @@ class monitorindex_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         index_code   = self.get_argument("index_code")
-        v_list       = await query_monitor_index(index_code)
+        v_list       = await query_monitor_index(index_code,self.userid,self.username)
         v_json       = json.dumps(v_list)
         self.write(v_json)
 
+class monitorindex_detail(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id           = self.get_argument("id")
+        v_list       = await query_monitor_index_detail(id)
+        v_json       = json.dumps(v_list)
+        print('monitorindex_detail=',v_json)
+        self.write(v_json)
 
 class monitorindexadd_save(base_handler.TokenHandler):
     async def post(self):
@@ -88,14 +96,14 @@ class monitortempletequery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_templete.html",
                     monitor_indexes = await get_monitor_indexes(),
-                    templete_types  = await get_dmm_from_dm('23'),
+                    templete_types  = await get_dmm_from_dm('51'),
                     )
 
 class monitortemplete_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         templete_code  = self.get_argument("templete_code")
-        v_list         = await query_monitor_templete(templete_code)
+        v_list         = await query_monitor_templete(templete_code,self.userid,self.username)
         v_json         = json.dumps(v_list)
         self.write(v_json)
 
@@ -162,7 +170,7 @@ class monitortask_query(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         task_tag     = self.get_argument("task_tag")
-        v_list       = await query_task(task_tag)
+        v_list       = await query_task(task_tag,self.userid,self.username)
         v_json       = json.dumps(v_list)
         self.write(v_json)
 

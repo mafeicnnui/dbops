@@ -14,10 +14,14 @@ from web.utils.common      import format_sql
 from web.utils.common      import current_rq
 from web.utils.mysql_async import async_processer
 
-async def query_monitor_index(index_code):
-    v_where=' '
+async def query_monitor_index(index_code,userid,username):
+    if username == 'admin':
+        v_where = "where 1=1 "
+    else:
+        v_where = "where EXISTS(SELECT 1 FROM `t_dict_group_user` b WHERE b.user_id={} AND b.dm='23' AND INSTR(b.dmm,a.index_type)>0)".format(userid)
+
     if index_code != '':
-        v_where = " where a.index_code like '%{0}%' or a.index_name like '%{1}%'".format(index_code,index_code)
+        v_where = " and  a.index_code like '%{0}%' or a.index_name like '%{1}%'".format(index_code,index_code)
     sql = """SELECT
                  id,  
                  index_code,
@@ -36,7 +40,37 @@ async def query_monitor_index(index_code):
                  concat(trigger_time,'^',trigger_times),
                  CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
             FROM t_monitor_index a {0} order by a.index_type,a.id""".format(v_where)
+    print(sql)
     return await async_processer.query_list(sql)
+
+
+async def query_monitor_index_detail(p_id):
+    st = """SELECT
+                 id,  
+                 index_code,
+                 index_name,                 
+                 (SELECT dmmc FROM t_dmmx b 
+                    WHERE a.index_type=b.dmm AND b.dm='23') AS index_type,
+                 (SELECT dmmc FROM t_dmmx b 
+                    WHERE a.index_db_type=b.dmm AND b.dm='02') AS index_db_type,  
+                 (SELECT dmmc FROM t_dmmx b 
+                    WHERE a.index_threshold_type=b.dmm AND b.dm='24') AS index_threshold_type,     
+                 case when a.index_threshold_type='1' or a.index_threshold_type='3' then
+                    index_threshold
+                 else
+                    concat(index_threshold_day,'^',index_threshold_times)                   
+                 end as    index_threshold,
+                 index_threshold_day,
+                 index_threshold_times,
+                 trigger_time,
+                 trigger_times,
+                 concat(trigger_time,'^',trigger_times),
+                 a.status,
+                 CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
+            FROM t_monitor_index  a where a.id={}""".format(p_id)
+    return await async_processer.query_dict_one(st)
+
+
 
 async def save_index(p_index):
     val=check_index(p_index)
@@ -49,7 +83,7 @@ async def save_index(p_index):
                values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')
             """.format(p_index['index_name'],p_index['index_code'],p_index['index_type'],p_index['index_db_type'],
                        p_index['index_val_type'],p_index['index_threshold_day'],p_index['index_threshold_times'],
-                       p_index['index_threshold'],p_index['index_status'],
+                       format_sql(p_index['index_threshold']),p_index['index_status'],
                        p_index['index_trigger_time'],p_index['index_trigger_times']
                      )
         await async_processer.exec_sql(sql)
@@ -77,9 +111,10 @@ async def upd_index(p_index):
                       trigger_times         ='{10}'                      
                 where id='{11}'
             """.format(p_index['index_name'],p_index['index_code'],p_index['index_type'], p_index['index_db_type'],
-                       p_index['index_val_type'], p_index['index_threshold'],p_index['index_threshold_day'],
+                       p_index['index_val_type'], format_sql(p_index['index_threshold']),p_index['index_threshold_day'],
                        p_index['index_threshold_times'],p_index['index_status'],
                        p_index['index_trigger_time'],p_index['index_trigger_times'],p_index['index_id'])
+        print(sql)
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '更新成功!'}
     except :
@@ -129,14 +164,18 @@ async def get_monitor_indexes2(p_type):
         sql = """SELECT  index_code,index_name FROM t_monitor_index  WHERE STATUS='1' and index_type='{0}' order by index_type,id """.format(p_type)
     return await async_processer.query_list(sql)
 
-async def query_monitor_templete(templete_code):
-    v_where=' '
+async def query_monitor_templete(templete_code,userid,username):
+    if username=='admin':
+       v_where = 'where 1=1 '
+    else:
+       v_where = "where EXISTS(SELECT 1 FROM `t_dict_group_user` b WHERE b.user_id={} AND b.dm='51' AND INSTR(b.dmm,a.type)>0)".format(userid)
+
     if templete_code != '':
-        v_where = " where a.code like '%{0}%' or a.code like '%{1}%'".format(templete_code,templete_code)
+        v_where = " and a.code like '%{0}%' or a.code like '%{1}%'".format(templete_code,templete_code)
     sql = """SELECT  
                  code,name,
                  (SELECT dmmc FROM t_dmmx b 
-                    WHERE a.type=b.dmm AND b.dm='23') AS templete_type,     
+                    WHERE a.type=b.dmm AND b.dm='51') AS templete_type,     
                  CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag, 
                  creator, date_format(creation_date,'%Y-%m-%d')  creation_date,
                  updator, date_format(last_update_date,'%Y-%m-%d') last_update_date
@@ -241,7 +280,6 @@ async def del_templete(p_templete_code):
         return {'code': '-1', 'message': '删除失败!'}
 
 async def get_templetes_by_templete_id(p_templeteid):
-    #sql = """SELECT  name FROM t_monitor_templete where status='1' and instr('{0}',id)>0""".format(p_templeteid)
     sql = """SELECT  name FROM t_monitor_templete where status='1' and id={}""".format(p_templeteid)
     rs = await async_processer.query_list(sql)
     t=''
@@ -253,17 +291,23 @@ async def get_monitor_task_by_tag(p_tag):
     sql = """SELECT  * FROM t_monitor_task where task_tag='{0}'""".format(p_tag)
     return (await async_processer.query_dict_one(sql))
 
-async def query_task(p_task_tag):
-    v_where=' '
+async def query_task(p_task_tag,p_userid,p_username):
+    if p_username == 'admin':
+        v_where = ' '
+    else:
+        v_where = " and EXISTS(SELECT 1 FROM `t_dict_group_user` b WHERE b.user_id={} AND b.dm='51' AND INSTR(b.dmm,m.type)>0)".format(p_userid)
+
     if p_task_tag != '':
-       v_where = " and ( a.task_tag like '%{0}%' or a.comments like '%{1}%' or b.server_ip like '%{2}%')".format(p_task_tag,p_task_tag,p_task_tag)
+        v_where = " and ( a.task_tag like '%{0}%' or a.comments like '%{1}%' or b.server_ip like '%{2}%' or m.name like '%{3}%')".format(p_task_tag,p_task_tag,p_task_tag,p_task_tag)
     sql = """SELECT  
                  task_tag,comments,
                  CONCAT(b.server_ip,':',b.server_port) AS sync_server,             
                  templete_id,run_time,api_server,
                  CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
-            FROM t_monitor_task a,t_server b
-            where a.server_id=b.id {0}""".format(v_where)
+            FROM t_monitor_task a,t_server b,t_monitor_templete m
+            where a.server_id=b.id and a.templete_id=m.id 
+            {0}""".format(v_where)
+    print(sql)
     v_list = []
     for r in await async_processer.query_list(sql):
         v_temp = list(r)
@@ -359,6 +403,7 @@ async def upd_monitor_task(p_task):
                           python3_home='{}',
                           api_server='{}',
                           status='{}',
+                          server_id='{}',
                           db_id='{}',
                           templete_id='{}',
                           receiver='{}',
@@ -371,6 +416,7 @@ async def upd_monitor_task(p_task):
                             p_task['upd_monitor_task_python3_home'],
                             p_task['upd_monitor_task_api_server'],
                             p_task['upd_monitor_task_status'],
+                            p_task['upd_monitor_server'],
                             p_task['upd_monitor_db_server'],
                             p_task['upd_monitor_db_template'],
                             p_task['upd_monitor_receiver'],
@@ -668,13 +714,13 @@ def push_alert_task(p_tag,p_api):
         return jres
 
 def run_monitor_task(p_tag,p_api):
-    url = 'http://{}/run_script_remote_archive'.format(p_api)
+    url = 'http://{}/run_script_remote_monitor'.format(p_api)
     res = requests.post(url, data={'tag': p_tag})
     jres = res.json()
     return jres
 
 def stop_monitor_task(p_tag,p_api):
-    url = 'http://{}/stop_script_remote_archive'.format(p_api)
+    url = 'http://{}/stop_script_remote_monitor'.format(p_api)
     res = requests.post(url, data={'tag': p_tag})
     jres = res.json()
     return jres

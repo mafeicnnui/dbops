@@ -275,12 +275,12 @@ async def get_mysql_result_aio(p_ds,p_sql,curdb,p_event_loop,p_userid):
                 if i[j] is None:
                    tmp.append('')
                 else:
-                   if j in  i_sensitive:
+                   if j in i_sensitive:
                        tmp.append((await get_audit_rule('switch_sensitive_columns'))['error'])
                    #elif desc[j][0][-7:] in c_decrypt:
                    elif is_encrypt(desc[j][0],c_decrypt):
-                       print('env=', p_ds['db_env'], str(i[j]))
-                       tmp.append(await db_decrypt(p_ds['db_env'], str(i[j]),p_userid))
+                       # print('env=', p_ds['db_env'], str(i[j]))
+                       tmp.append((await db_decrypt(p_ds['db_env'], str(i[j]),p_userid))['message'])
                    else:
                        tmp.append(str(i[j]))
             data.append(tmp)

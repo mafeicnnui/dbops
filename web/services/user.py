@@ -11,11 +11,14 @@ import tornado.gen
 from web.model.t_role  import get_roles
 from web.model.t_user import save_user, get_user_by_userid, upd_user, del_user, query_session, kill_session, \
     get_user_roles_n, query_user_grants, save_user_query_grants, get_user_grants, upd_user_query_grants, \
-    del_user_query_grants
-from web.model.t_user  import query_user,get_sys_roles,get_user_roles,save_user_proj_privs
-from web.model.t_dmmx import get_dmm_from_dm, get_users, get_users_by_query_grants
-from web.model.t_ds import query_project, get_dss_sql_query, get_dss_sql_query_grants
-from web.utils         import base_handler
+    del_user_query_grants, save_dict_group_grants, query_dict_groups, del_user_dict_group, get_dict_group, \
+    upd_user_dict_group, save_dict_grant_grants, query_dict_grant, get_dict_grant, del_user_dict_grant, \
+    upd_user_dict_grant
+from web.model.t_user  import query_user,get_sys_roles,save_user_proj_privs
+from web.model.t_dmmx import get_dmm_from_dm, get_users_by_query_grants, get_sys_dmlx, \
+    get_dmm_from_dm, get_sys_dmlx_dic
+from web.model.t_ds import query_project
+from web.utils      import base_handler
 
 class userquery(base_handler.TokenHandler):
      def get(self):
@@ -256,4 +259,102 @@ class user_query_grants_del(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         id  = self.get_argument("id")
         result = await del_user_query_grants(id)
+        self.write({"code": result['code'], "message": result['message']})
+
+class userdictgrants(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./user/dict_grants.html",
+                    query_grants_user = await get_users_by_query_grants(self.username),
+                    dict_group = await get_dmm_from_dm('50'),
+                    query_dmlx = await get_sys_dmlx(),
+                    query_dmlx_group=await get_sys_dmlx_dic(),
+
+         )
+
+class user_dict_group_add_save(base_handler.TokenHandler):
+    async def post(self):
+        dict={}
+        dict['id']   = self.get_argument("dict_id")
+        dict['dm']   = self.get_argument("dict_dmlx")
+        dict['dmm']  = self.get_argument("dict_dmmx")
+        result = await save_dict_group_grants(dict)
+        self.write({"code": result['code'], "message": result['message']})
+
+class user_dict_groups(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname = self.get_argument("qname")
+        v_list = await query_dict_groups(qname)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class user_dict_group_del(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id  = self.get_argument("id")
+        result = await del_user_dict_group(id)
+        self.write({"code": result['code'], "message": result['message']})
+
+class get_user_dict_group(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id = self.get_argument("id")
+        v_list = await get_dict_group(id)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class user_dict_group_upd_save(base_handler.TokenHandler):
+    async def post(self):
+        dict={}
+        dict['id']         = self.get_argument("id")
+        dict['group_id']   = self.get_argument("group_id")
+        dict['dm']         = self.get_argument("dict_dmlx")
+        dict['dmm']        = self.get_argument("dict_dmmx")
+        print('dict=',dict)
+        result = await upd_user_dict_group(dict)
+        self.write({"code": result['code'], "message": result['message']})
+
+class user_dict_grant_add_save(base_handler.TokenHandler):
+    async def post(self):
+        dict={}
+        dict['user_id']  = self.get_argument("user_id")
+        dict['group_id'] = self.get_argument("group_id")
+        dict['dm']   = self.get_argument("dict_dmlx")
+        dict['dmm']  = self.get_argument("dict_dmmx")
+        result = await save_dict_grant_grants(dict)
+        self.write({"code": result['code'], "message": result['message']})
+
+class user_dict_grant(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        qname = self.get_argument("qname")
+        v_list = await query_dict_grant(qname)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_user_dict_grant(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id = self.get_argument("id")
+        v_list = await get_dict_grant(id)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class user_dict_grant_del(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id  = self.get_argument("id")
+        result = await del_user_dict_grant(id)
+        self.write({"code": result['code'], "message": result['message']})
+
+class user_dict_grant_upd_save(base_handler.TokenHandler):
+    async def post(self):
+        dict={}
+        dict['id']         = self.get_argument("id")
+        dict['user_id']    = self.get_argument("user_id")
+        dict['group_id']   = self.get_argument("group_id")
+        dict['dm']         = self.get_argument("dict_dmlx")
+        dict['dmm']        = self.get_argument("dict_dmmx")
+        print('dict=',dict)
+        result = await upd_user_dict_grant(dict)
         self.write({"code": result['code'], "message": result['message']})

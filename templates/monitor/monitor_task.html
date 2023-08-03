@@ -3,7 +3,7 @@
     <title>监控任务</title>
     <style>
         .modal-lg-order {
-            width:40%;
+            width:45%;
             height:45%;
         }
         .table th{
@@ -62,6 +62,7 @@
     </div>
      <!--功能按钮 -->
     <div class="row">
+          <input  id="monitor_tag_tmp"  type="hidden">
           <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
                <input  id='task_add_win'   type='button' class="btn waves-effect waves-light btn-primary"  value="新增"/>
                <input  id='task_upd_win'   type='button' class="btn waves-effect waves-light btn-primary"  value="变更"/>
@@ -69,8 +70,10 @@
                <input  id='task_push_btn'  type='button' class="btn waves-effect waves-light btn-primary"  value="推送"/>
                <input  id='task_run_btn'   type='button' class="btn waves-effect waves-light btn-primary"  value="运行"/>
                <input  id='task_stop_btn'  type='button' class="btn waves-effect waves-light btn-primary"  value="停止"/>
+               <input  id='task_log_btn'   type='button' class="btn waves-effect waves-light btn-primary"  value="日志"/>
          </div>
     </div>
+    <br>
 
     <input type="hidden" id="activeTabInputHidden">
 
@@ -294,7 +297,7 @@
                                             <label class="col-md-2 control-label"><span id="s_add_monitor_task_script_name">*</span>脚本名称</label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input id="add_monitor_task_script_name"  type="text" readonly class="form-control" placeholder="请输入脚本名称" value="monitor_agent.py">
+                                            <input id="add_monitor_task_script_name"  type="text"  class="form-control" placeholder="请输入脚本名称" value="monitor_agent.py">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -483,7 +486,7 @@
                                                 <label class="col-md-2 control-label"><span id="s_upd_monitor_task_tag">*</span>任务标识</label>
                                             </div>
                                             <div class="col-md-10">
-                                                <input id="upd_monitor_task_tag"  type="text" readonly class="form-control" placeholder="请输入任务标识">
+                                                <input id="upd_monitor_task_tag"  type="text"  class="form-control" placeholder="请输入任务标识">
                                             </div>
                                        </div>
                                        <div class="form-group">
@@ -562,7 +565,7 @@
                                                 <label class="col-md-2 control-label"><span id="s_upd_monitor_task_script_name">*</span>脚本名称</label>
                                             </div>
                                             <div class="col-md-10">
-                                                <input id="upd_monitor_task_script_name"  type="text" readonly class="form-control" placeholder="请输入脚本名称" value="monitor_agent.py">
+                                                <input id="upd_monitor_task_script_name"  type="text"  class="form-control" placeholder="请输入脚本名称" value="monitor_agent.py">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -639,12 +642,18 @@
 
      function isSelect(row) {
           $('#upd_task_tag_hidden').val(row)
-          $('#task_upd_win').attr("disabled",false);
-          $('#task_del_btn').attr("disabled",false);
-          $('#task_push_btn').attr("disabled",false);
-          $('#task_run_btn').attr("disabled",false);
-          $('#task_stop_btn').attr("disabled",false);
+          $('#monitor_tag_tmp').val(row)
+          set_button_status(false);
       }
+
+     function set_button_status(status){
+          $('#task_upd_win').attr("disabled",status);
+          $('#task_del_btn').attr("disabled",status);
+          $('#task_push_btn').attr("disabled",status);
+          $('#task_run_btn').attr("disabled",status);
+          $('#task_stop_btn').attr("disabled",status);
+          $('#task_log_btn').attr("disabled",status);
+     }
 
      $(document).ready(function() {
 
@@ -682,18 +691,13 @@
                                   "title": "选择",
                                   "width": "25px",
                                   "render": function (data, type, row) {
-                                      return '<input type="radio"  onclick=isSelect("'+row[0]+'")>'
+                                      return '<input type="radio"  name="choice" onclick=isSelect("'+row[0]+'")>'
                                   }
                               },
                            ],
                           "language": get_languages()
                          });
-                      $('#task_upd_win').attr("disabled",true);
-                      $('#task_del_btn').attr("disabled",true);
-                      $('#task_clone_btn').attr("disabled",true);
-                      $('#task_push_btn').attr("disabled",true);
-                      $('#task_run_btn').attr("disabled",true);
-                      $('#task_stop_btn').attr("disabled",true);
+                      set_button_status(true);
                    }
              })
         }
@@ -776,7 +780,7 @@
         $('#upd_monitor_server').change(function() {
             if ($('#upd_monitor_server').val()!=''){
                 var options=$('#upd_monitor_server option:selected');
-                $("#upd_monitor_task_tag").val($("#add_monitor_server").val()+'_'+$(options[0]).val());
+                $("#upd_monitor_task_tag").val($("#upd_monitor_server").val()+'_'+$(options[0]).val());
                 $("#upd_monitor_task_desc").val('监控任务['+$(options[0]).text()+']');
             } else {
                 $("#upd_monitor_task_tag").val('');
@@ -827,6 +831,7 @@
                   datatype: "json",
                   async:false,
                   success: function (dataSet) {
+                      console.log('task_upd_win=',dataSet)
                       if (task_tag.indexOf('gather')!=-1) {
                           $('#upd_monitor_task_tab').hide()
                           $('#upd_monitor_task').hide()
@@ -866,7 +871,7 @@
                           $('#upd_monitor_task_api_server').val(dataSet['api_server'])
                           $('#upd_monitor_receiver').val(dataSet['receiver'])
                           $('#upd_monitor_task_status').val(dataSet['status'])
-                          $('#upd_monitor_server').attr('disabled','disabled')
+                          //$('#upd_monitor_server').attr('disabled','disabled')
                           $('#activeTabInputHidden').val('监控任务')
                       }
                   }
@@ -1099,6 +1104,84 @@
               });
 
         });
+
+        $("#task_run_btn").click(function() {
+              var v_tag='';
+              var v_desc='';
+              $("#monitor_task_table tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  v_tag=$('#monitor_tag_tmp').val()
+                  v_desc=row[1].innerHTML.replace(/&gt;/g,'>');
+                  v_api=row[5].innerHTML;
+                  $.ajax({
+                          url: "/monitor/task/run",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              tag: v_tag,
+                              api: v_api
+                          },
+                         beforeSend: function () {
+                              swal({
+                                    title: "正在运行中...",
+                                    text: "任务["+v_desc+"]正在运行中...",
+                                    type: "info",
+                                    showConfirmButton: false
+                               });
+                          },
+                          success: function (dataSet) {
+                              if (dataSet.code=='200') {
+                                     swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
+                                     $("#query_btn").click();
+                              } else {
+                                  swal("运行失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
+                              }
+                              set_button_status(true);
+                          },
+                  });
+              });
+
+        });
+
+        $("#task_stop_btn").click(function() {
+              var v_tag='';
+              var v_desc='';
+              $("#monitor_task_table tbody tr td input:checked").each( function() {
+                  var row=$(($(this).parent().parent().html()));
+                  v_tag=$('#monitor_tag_tmp').val()
+                  v_desc=row[1].innerHTML.replace(/&gt;/g,'>');
+                  v_api=row[5].innerHTML;
+                  $.ajax({
+                          url: "/monitor/task/stop",
+                          type: "post",
+                          datatype: "json",
+                          data:{
+                              tag: v_tag,
+                              api: v_api
+                          },
+                         beforeSend: function () {
+                              swal({
+                                    title: "正在停止中...",
+                                    text: "任务["+v_desc+"]正在停止中...",
+                                    type: "info",
+                                    showConfirmButton: false
+                               });
+                          },
+                          success: function (dataSet) {
+                              console.log('>>>>>>>>>>>',dataSet)
+                              if (dataSet.code=='200') {
+                                     swal("停止成功!", "任务["+v_desc+"]已停止运行!", "success");
+                                     $("#query_btn").click();
+                              } else {
+                                  swal("停止失败!", "任务["+v_desc+"]"+dataSet.msg+"!", "error");
+                              }
+                              set_button_status(true);
+                          },
+                  });
+              });
+
+        });
+
 
         $("#query_btn").click(function() {
              query_task()

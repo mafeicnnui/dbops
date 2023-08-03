@@ -837,3 +837,253 @@ async def del_user_query_grants(p_id):
         result['code'] = '-1'
         result['message'] = '删除失败！'
     return result
+
+async def save_dict_group_grants(p_dict):
+    result = {}
+    val = await check_dict_group(p_dict)
+    if val['code'] == '-1':
+        return val
+    try:
+        st = """insert into t_dict_group(`group_id`,`dm`,`dmm`) values({id},'{dm}','{dmm}')""".format(**p_dict)
+        print('st=',st)
+        await async_processer.exec_sql(st)
+        result={}
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except :
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
+
+async def check_dict_group(p_dict,p_flag='I'):
+    print('p_dict>>>',p_dict)
+    result = {}
+    if p_dict["id"] == "":
+        result['code'] = '-1'
+        result['message'] = '字典组名不能为空！'
+        return result
+
+    if p_dict["dm"] == "":
+        result['code'] = '-1'
+        result['message'] = '字典大类不能为空！'
+        return result
+
+    if p_dict["dmm"] == "":
+        result['code'] = '-1'
+        result['message'] = '字典小类不能为空！'
+        return result
+
+    if p_flag=='I':
+        r = await async_processer.query_dict_one(
+            """select count(0) as cnt 
+               from t_dict_group
+                where group_id='{id}' and dm='{dm}'""".format(**p_dict)
+            )
+        if r['cnt'] >0:
+            result['code'] = '-1'
+            result['message'] = '字典组大类已存在!'
+            return result
+
+    result['code'] = '0'
+    result['message'] = '验证通过'
+    return result
+
+async def query_dict_groups(p_name):
+    v_where = ''
+    if p_name != "":
+       v_where = """and b.dmmc like '%{}%'""".format(p_name)
+
+    st ="""SELECT 
+              a.id,
+              a.group_id,
+              b.dmmc AS  "group_name",
+              a.dm,
+              (SELECT mc FROM t_dmlx WHERE dm=a.dm) AS "mc",
+              a.dmm,
+              (SELECT substr(GROUP_CONCAT(dmmc),1,50) FROM t_dmmx WHERE dm=a.dm AND INSTR(a.dmm,dmm)>0) AS "dmmc"   
+            FROM t_dict_group a,t_dmmx b
+            WHERE a.group_id = b.dmm AND b.dm=50
+             {}
+            ORDER BY id""".format(v_where)
+    v_list = await async_processer.query_list(st)
+    return v_list
+
+async def del_user_dict_group(p_id):
+    result={}
+    try:
+        sql="delete from t_dict_group  where id='{0}'".format(p_id)
+        await async_processer.exec_sql(sql)
+        result={}
+        result['code']='0'
+        result['message']='删除成功！'
+    except :
+        result['code'] = '-1'
+        result['message'] = '删除失败！'
+    return result
+
+async def get_dict_group(p_id):
+    st ="""SELECT 
+              a.id,
+              a.group_id,
+              b.dmmc AS  "group_name",
+              a.dm,
+              (SELECT mc FROM t_dmlx WHERE dm=a.dm) AS "mc",
+              a.dmm,
+              (SELECT substr(GROUP_CONCAT(dmmc),1,50) FROM t_dmmx WHERE dm=a.dm AND INSTR(a.dmm,dmm)>0) AS "dmmc"   
+            FROM t_dict_group a,t_dmmx b
+            WHERE a.group_id = b.dmm 
+              AND b.dm=50 and a.id={}""".format(p_id)
+    v_list = await async_processer.query_dict_one(st)
+    return v_list
+
+async def upd_user_dict_group(p_dict):
+    result = {}
+    val = await check_dict_group(p_dict,'U')
+    if val['code'] == '-1':
+        return val
+    try:
+        st = """update t_dict_group 
+                    set `group_id`='{group_id}',
+                        `dm`='{dm}',
+                        `dmm`='{dmm}'
+                    where id={id}""".format(**p_dict)
+        print('upd_user_dict_group=',st)
+        await async_processer.exec_sql(st)
+        result={}
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
+
+async def check_dict_grants(p_dict,p_flag='I'):
+    result = {}
+    if p_dict["group_id"] == "":
+        result['code'] = '-1'
+        result['message'] = '字典组名不能为空！'
+        return result
+
+    if p_dict["dm"] == "":
+        result['code'] = '-1'
+        result['message'] = '字典大类不能为空！'
+        return result
+
+    if p_dict["dmm"] == "":
+        result['code'] = '-1'
+        result['message'] = '字典小类不能为空！'
+        return result
+
+    if p_flag=='I':
+        r = await async_processer.query_dict_one(
+            """select count(0) as cnt 
+               from t_dict_group_user
+                where user_id={user_id} and group_id='{group_id}' and dm='{dm}'""".format(**p_dict)
+            )
+        if r['cnt'] >0:
+            result['code'] = '-1'
+            result['message'] = '用户字典组大类已存在!'
+            return result
+
+    result['code'] = '0'
+    result['message'] = '验证通过'
+    return result
+
+async def save_dict_grant_grants(p_dict):
+    result = {}
+    val = await check_dict_grants(p_dict)
+    if val['code'] == '-1':
+        return val
+    try:
+        st = """insert into t_dict_group_user(`user_id`,`group_id`,`dm`,`dmm`) values({user_id},{group_id},'{dm}','{dmm}')""".format(**p_dict)
+        print('st=',st)
+        await async_processer.exec_sql(st)
+        result={}
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except :
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result
+
+async def query_dict_grant(p_name):
+    v_where = ''
+    if p_name != "":
+       v_where = """and b.dmmc like '%{}%'""".format(p_name)
+
+    st ="""SELECT 
+              a.id,
+              a.user_id,
+               (SELECT NAME FROM t_user WHERE id=a.user_id) AS "user_name",
+              a.group_id,
+              b.dmmc AS  "group_name",
+              a.dm,
+              (SELECT mc FROM t_dmlx WHERE dm=a.dm) AS "mc",
+              a.dmm,
+              (SELECT SUBSTR(GROUP_CONCAT(dmmc),1,50) FROM t_dmmx WHERE dm=a.dm AND INSTR(a.dmm,dmm)>0) AS "dmmc"   
+            FROM t_dict_group_user a,t_dmmx b
+            WHERE a.group_id = b.dmm AND b.dm=50
+             {}
+            ORDER BY id""".format(v_where)
+    v_list = await async_processer.query_list(st)
+    return v_list
+
+async def get_dict_grant(p_id):
+    st ="""SELECT 
+              a.id,
+              a.user_id,
+               (SELECT NAME FROM t_user WHERE id=a.user_id) AS "user_name",
+              a.group_id,
+              b.dmmc AS  "group_name",
+              a.dm,
+              (SELECT mc FROM t_dmlx WHERE dm=a.dm) AS "mc",
+              a.dmm,
+              (SELECT SUBSTR(GROUP_CONCAT(dmmc),1,50) FROM t_dmmx WHERE dm=a.dm AND INSTR(a.dmm,dmm)>0) AS "dmmc"   
+            FROM t_dict_group_user a,t_dmmx b
+            WHERE a.group_id = b.dmm AND b.dm=50
+              and  a.id={}""".format(p_id)
+    v_list = await async_processer.query_dict_one(st)
+    return v_list
+
+async def del_user_dict_grant(p_id):
+    result={}
+    try:
+        sql="delete from t_dict_group_user  where id='{0}'".format(p_id)
+        await async_processer.exec_sql(sql)
+        result={}
+        result['code']='0'
+        result['message']='删除成功！'
+    except :
+        result['code'] = '-1'
+        result['message'] = '删除失败！'
+    return result
+
+async def upd_user_dict_grant(p_dict):
+    result = {}
+    val = await check_dict_grants(p_dict,'U')
+    if val['code'] == '-1':
+        return val
+    try:
+        st = """update t_dict_group_user 
+                    set `user_id`='{user_id}',
+                        `group_id`='{group_id}',
+                        `dm`='{dm}',
+                        `dmm`='{dmm}'
+                    where id={id}""".format(**p_dict)
+        print('upd_user_dict_grant=',st)
+        await async_processer.exec_sql(st)
+        result={}
+        result['code']='0'
+        result['message']='保存成功！'
+        return result
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '保存失败！'
+        return result

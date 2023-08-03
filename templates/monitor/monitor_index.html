@@ -3,8 +3,8 @@
     <title>指标管理</title>
     <style>
         .modal-lg-order {
-            width:40%;
-            height:45%;
+            width:50%;
+            height:55%;
         }
         .table th{
             text-align: center;
@@ -59,10 +59,9 @@
     <div class="row">
           <div class="col-md-offset-5 col-lg-offset-5 col-xl-offset-5">
                <input  id='index_add_win' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
-               <input  id='index_upd_win' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
-               <input  id='index_del_btn' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
          </div>
     </div>
+    <br>
 
     <!--新增指标窗口 -->
     <div id="con-close-modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
@@ -134,7 +133,7 @@
                                     <label class="col-md-3 control-label"><span id="s_add_index_threshold">*</span>预警阀值：</label>
                                 </div>
                                 <div class="col-md-9" >
-                                    <input type="text" id="add_index_threshold_percent"  class="form-control">
+                                    <textarea class="form-control"  rows="3" style="min-width: 100%" id="add_index_threshold_percent"></textarea>
                                 </div>
                            </div>
                            <div class="form-group" id='div_add_index_threshold_calc'>
@@ -273,7 +272,8 @@
                                 <label class="col-md-3 control-label"><span id="s_upd_index_threshold">*</span>预警阀值：</label>
                             </div>
                             <div class="col-md-9" >
-                                <input type="text" id="upd_index_threshold_percent"  class="form-control">
+<!--                                <input type="text" id="upd_index_threshold_percent"  class="form-control">-->
+                                <textarea class="form-control"  rows="3" style="min-width: 100%" id="upd_index_threshold_percent"></textarea>
                             </div>
                        </div>
                        <div class="form-group" id='div_upd_index_threshold_calc'>
@@ -307,14 +307,12 @@
                                 <div class="col-md-9" >
                                    <div class="col-md-4">
                                        <input type="text" id="upd_index_trigger_time" value="10">
-                                       <input type="hidden" id="upd_index_trigger_time_hidden">
                                    </div>
                                    <div class="col-md-3">
                                        <label class="control-label text-left">分钟内连续超过</label>
                                    </div>
                                    <div class="col-md-3">
                                         <input type="text" id="upd_index_trigger_times"  value="3">
-                                        <input type="hidden" id="upd_index_trigger_times_hidden">
                                    </div>
                                    <div  class="col-md-2">
                                       <label class="control-label text-left">次阀值</label>
@@ -351,68 +349,10 @@
 <input type="hidden" id="upd_index_id_hidden">
 
 <script>
-    function isSelect(row) {
-       var obj=row.split(',')
-       $('#upd_index_id_hidden').val(obj[0])
-       $('#upd_index_threshold_calc_day_hidden').val(obj[6].split('^')[0])
-       $('#upd_index_threshold_calc_times_hidden').val(obj[6].split('^')[1])
-       $('#upd_index_trigger_time_hidden').val(obj[7].split('^')[0])
-       $('#upd_index_trigger_times_hidden').val(obj[7].split('^')[1])
 
-       var rec=0;
-       $("#monitor_index_table tbody tr td input:checked").each( function() {
-          rec=rec+1;
-       });
-       if ( rec==1 ){
-          $('#index_upd_win').attr("disabled",false);
-          $('#index_del_btn').attr("disabled",false);
-       } else {
-          $('#index_upd_win').attr("disabled",true);
-          $('#index_del_btn').attr("disabled",true);
-       }
-    }
+    set_selected()
 
-    $(document).ready(function() {
-        $('#div_add_index_threshold_percent').show()
-　      $('#div_add_index_threshold_calc').hide()
-        $('#div_upd_index_threshold_percent').show()
-　      $('#div_upd_index_threshold_calc').hide()
-        $("#add_index_threshold_calc_day").TouchSpin();
-        $("#add_index_threshold_calc_times").TouchSpin();
-        $("#add_index_trigger_time").TouchSpin();
-        $("#add_index_trigger_times").TouchSpin();
-        $("#upd_index_trigger_time").TouchSpin();
-        $("#upd_index_trigger_times").TouchSpin();
-        $("#upd_index_threshold_calc_day").TouchSpin();
-        $("#upd_index_threshold_calc_times").TouchSpin();
-
-        $('#add_index_val_type').change(function() {
-             $('#add_index_threshold_calc_day').val('')
-             $('#add_index_threshold_calc_times').val('')
-             $('#div_add_index_threshold_percent').val('')
-             if ($('#add_index_val_type').val()=='1' || $('#add_index_val_type').val()=='3') {
-             　　$('#div_add_index_threshold_percent').show()
-　             　$('#div_add_index_threshold_calc').hide()
-             } else {
-                $('#div_add_index_threshold_percent').hide()
-　             　$('#div_add_index_threshold_calc').show()
-             }
-        });
-
-         $('#upd_index_val_type').change(function() {
-             $('#upd_index_threshold_calc_day').val('')
-             $('#upd_index_threshold_calc_times').val('')
-             $('#div_upd_index_threshold_percent').val('')
-             if ($('#upd_index_val_type').val()=='1' || $('#upd_index_val_type').val()=='3') {
-             　　$('#div_upd_index_threshold_percent').show()
-　             　$('#div_upd_index_threshold_calc').hide()
-             } else {
-                $('#div_upd_index_threshold_percent').hide()
-                $('#div_upd_index_threshold_calc').show()
-             }
-        });
-
-        function query_index(){
+    function query_index(){
            $.ajax({
                   url: "/monitor/index/_query",
                   type: "post",
@@ -431,7 +371,7 @@
                           scrollX    :false,
                           scrollCollapse: true,
                           paging:     true,
-                          iDisplayLength: 14,
+                          iDisplayLength: 12,
                           data: dataSet,
                           columns: [
                              { "title": "指标标识" },
@@ -447,9 +387,12 @@
                                     "title":"选择",
                                     "width": "25px",
                                     "render": function(data,type,row){
-                                         return '<input type="radio" name="indexid" onclick=isSelect("'+row+'")>'
+                                         var change_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="更新" onclick="update_index(\''+row[0]+'\');"/>' +'&nbsp;'
+                                         var delete_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_index(\''+row[0]+'\');"/>' +'&nbsp;'
+                                         return change_btn+delete_btn
                                     }
                               },
+
                            ],
                            columnDefs: [
                              {
@@ -459,7 +402,11 @@
                                          msg ='最近'+row[6].split('^')[0]+'日平均值的'+row[6].split('^')[1]+'倍'
                                          return msg
                                     } else {
-                                         msg =row[6]
+                                         if (row[6].length>20) {
+                                              msg =row[6].slice(0,20)+'...'
+                                         } else {
+                                              msg =row[6].slice(0,20)
+                                         }
                                          return msg
                                     }
                                 }
@@ -478,47 +425,29 @@
                          ],
                           "language": get_languages()
                          });
-                      $('#index_upd_win').attr("disabled",true);
-                      $('#index_del_btn').attr("disabled",true);
                    }
              })
         }
 
-        $('#index_add_win').click(function(){
-            $('#add_index_name').val('')
-            $('#add_index_code').val('')
-            $('#add_index_type').val('')
-            $('#add_index_threshold').val('')
-            $('#add_index_threshold_calc_day').val('')
-            $('#add_index_threshold_calc_times').val('')
-            $('#add_index_status').val('')
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-modal-add').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-        })
-
-        $('#index_upd_win').click(function(){
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-modal-upd').modal({
-                   keyboard: false,
-                   backdrop:false
-            });
-
-             $("#monitor_index_table tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  $('#upd_index_code').val(row[1].innerHTML)
-                  $('#upd_index_name').val(row[2].innerHTML)
+    function update_index(p_id){
+        $.ajax({
+              url: "/monitor/index/_detail",
+              type: "post",
+              datatype: "json",
+              data:{
+                  id : p_id,
+              },
+              success: function (row) {
+                  $('#upd_index_id_hidden').val(p_id)
+                  $('#upd_index_code').val(row['index_code'])
+                  $('#upd_index_name').val(row['index_name'])
 
                   var options=$('#upd_index_type option');
                   $("#upd_index_type").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
                       text =$(options[i]).text();
-                      if (text == row[3].innerHTML){
+                      if (text == row['index_type']){
                           $("#upd_index_type").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
                       } else {
                           $("#upd_index_type").append("<option value='"+value+"'>"+text+"</option>");
@@ -530,7 +459,7 @@
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
                       text =$(options[i]).text();
-                      if (text == row[4].innerHTML){
+                      if (text == row['index_db_type']){
                           $("#upd_index_db_type").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
                       } else {
                           $("#upd_index_db_type").append("<option value='"+value+"'>"+text+"</option>");
@@ -542,7 +471,7 @@
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
                       text =$(options[i]).text();
-                      if (text == row[5].innerHTML){
+                      if (text == row['index_threshold_type']){
                           $("#upd_index_val_type").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
                       } else {
                           $("#upd_index_val_type").append("<option value='"+value+"'>"+text+"</option>");
@@ -552,153 +481,219 @@
                   if ($("#upd_index_val_type").val()=='1' || $("#upd_index_val_type").val()=='3') {
                      $('#div_upd_index_threshold_percent').show()
                      $('#div_upd_index_threshold_calc').hide()
-                     $('#upd_index_threshold_percent').val(row[6].innerHTML)
+                     $('#upd_index_threshold_percent').val(row['index_threshold'])
                      $('#upd_index_threshold_calc_day').val('')
                      $('#upd_index_threshold_calc_times').val('')
                   } else {
                      $('#div_upd_index_threshold_percent').hide()
             　       $('#div_upd_index_threshold_calc').show()
-                     $('#upd_index_threshold_calc_day').val($('#upd_index_threshold_calc_day_hidden').val())
-                     $('#upd_index_threshold_calc_times').val($('#upd_index_threshold_calc_times_hidden').val())
+                     $('#upd_index_threshold_calc_day').val(row['index_threshold_day'])
+                     $('#upd_index_threshold_calc_times').val(row['index_threshold_times'])
                      $('#upd_index_threshold_percent').val('')
                   }
-
-                  $('#upd_index_trigger_time').val($('#upd_index_trigger_time_hidden').val())
-                  $('#upd_index_trigger_times').val($('#upd_index_trigger_times_hidden').val())
+                  $('#upd_index_trigger_time').val(row['trigger_time'])
+                  $('#upd_index_trigger_times').val(row['trigger_times'])
 
                   var options=$('#upd_index_status option');
                   $("#upd_index_status").empty();
                   for(i=0;i<options.length;i++){
                       value=$(options[i]).val();
                       text =$(options[i]).text();
-                      if (text == row[7].innerHTML){
+                      if (text == row['status']){
                           $("#upd_index_status").append("<option value='"+value+"' selected = \"selected\">"+text+"</option>");
                       } else {
                           $("#upd_index_status").append("<option value='"+value+"'>"+text+"</option>");
                       }
-                  }
-             });
+                 }
 
-        })
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-close-modal-upd').modal({
+                       keyboard: false,
+                       backdrop:false
+                });
+           }
+        });
+    }
 
-        $('#index_save_btn').click(function() {
-            if ($('#add_index_val_type').val()=='2'){
-                $('#div_add_index_threshold_percent').val('')
-            } else {
-                $('#add_index_threshold_calc_day').val('')
-                $('#add_index_threshold_calc_times').val('')
-            }
-            $.ajax({
-                url: "/monitor/index/add/save",
-                type: "post",
-                datatype: "json",
-                data: {
-                    index_name             : $('#add_index_name').val(),
-                    index_code             : $('#add_index_code').val(),
-                    index_type             : $('#add_index_type').val(),
-                    index_db_type          : $('#add_index_db_type').val(),
-                    index_val_type         : $('#add_index_val_type').val(),
-                    index_threshold        : $('#add_index_threshold_percent').val(),
-                    index_threshold_day    : $('#add_index_threshold_calc_day').val(),
-                    index_threshold_times  : $('#add_index_threshold_calc_times').val(),
-                    index_status           : $('#add_index_status').val(),
-                    index_trigger_time     : $('#add_index_trigger_time').val(),
-                    index_trigger_times    : $('#add_index_trigger_times').val(),
-                },
-                success: function (dataSet) {
-                    if (dataSet.code == 0) {
-                        swal("保存成功", "", "success")
-                        query_index()
-                    } else {
-                        swal(dataSet.message, "", "error")
-                    }
-                }
-            })
-        })
-
-        $('#index_upd_btn').click(function(){
-            $.ajax({
-                    url: "/monitor/index/edit/save",
-                    type: "post",
-                    datatype: "json",
-                    data: {
-                        index_id              : $('#upd_index_id_hidden').val(),
-                        index_name            : $('#upd_index_name').val(),
-                        index_code            : $('#upd_index_code').val(),
-                        index_type            : $('#upd_index_type').val(),
-                        index_db_type         : $('#upd_index_db_type').val(),
-                        index_val_type        : $('#upd_index_val_type').val(),
-                        index_threshold       : $('#upd_index_threshold_percent').val(),
-                        index_threshold_day   : $('#upd_index_threshold_calc_day').val(),
-                        index_threshold_times : $('#upd_index_threshold_calc_times').val(),
-                        index_status          : $('#upd_index_status').val(),
-                        index_trigger_time    : $('#upd_index_trigger_time').val(),
-                        index_trigger_times   : $('#upd_index_trigger_times').val(),
-                    },
-                    success: function (dataSet) {
-                        if (dataSet.code == 0) {
-                            swal("更新成功", "", "success")
-                            query_index()
-                        } else {
-                            swal(dataSet.message, "", "error")
-                        }
-                    }
-            })
-
-        })
-
-        $('#index_del_btn').click(function(){
-             var index_code='';
-             var index_name='';
-             $("#monitor_index_table tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  index_code=row[1].innerHTML;
-                  index_name=row[2].innerHTML;
-             });
-
-            swal({
-                    title: "确认要删除吗?",
-                    text: "指标["+index_name+"]将被删除！",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "是, 删除!",
-                    cancelButtonText:  "否, 取消!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                   }, function (isConfirm) {
-                       if (isConfirm) {
-                             $.ajax({
-                                    url: "/monitor/index/edit/del",
-                                    type: "post",
-                                    datatype: "json",
-                                    data:{index_code: index_code},
-                                    success: function (dataSet) {
-                                        if (dataSet.code=='0') {
-                                             swal("已删除!", "指标["+index_name+"]已删除!", "success");
-                                             query_index()
-                                        } else {
-                                             swal("已取消!", "指标["+index_name+"]"+dataSet.message+"!", "error");
+    function delete_index(p_id){
+        $.ajax({
+              url: "/monitor/index/_detail",
+              type: "post",
+              datatype: "json",
+              data:{
+                  id : p_id,
+              },
+              success: function (row) {
+                  var index_code=row['index_code'];
+                  var index_name=row['index_name'];
+                  swal({
+                        title: "确认要删除吗?",
+                        text: "指标["+index_name+"]将被删除！",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "是, 删除!",
+                        cancelButtonText:  "否, 取消!",
+                        closeOnConfirm: false,
+                        closeOnCancel: false
+                       }, function (isConfirm) {
+                          if (isConfirm) {
+                                 $.ajax({
+                                        url: "/monitor/index/edit/del",
+                                        type: "post",
+                                        datatype: "json",
+                                        data:{index_code: index_code},
+                                        success: function (dataSet) {
+                                            if (dataSet.code=='0') {
+                                                 swal("已删除!", "指标["+index_name+"]已删除!", "success");
+                                                 query_index()
+                                            } else {
+                                                 swal("已取消!", "指标["+index_name+"]"+dataSet.message+"!", "error");
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
-                      } else {
-                          swal("已取消", "问题单[" + index_name + "]已取消删除！", "error");
-                      }
-              })
-        })
-
-        $("#query_btn").click(function() {
-             query_index()
+                          } else {
+                                      swal("已取消", "指标[" + index_name + "]已取消删除！", "error");
+                                  }
+                       })
+              }
         });
 
-        set_selected()
+    }
 
-        $("#query_btn").click();
+    $('#add_index_val_type').change(function () {
+            $('#add_index_threshold_calc_day').val('')
+            $('#add_index_threshold_calc_times').val('')
+            $('#div_add_index_threshold_percent').val('')
+            if ($('#add_index_val_type').val() == '1' || $('#add_index_val_type').val() == '3') {
+                $('#div_add_index_threshold_percent').show()
+                $('#div_add_index_threshold_calc').hide()
+            } else {
+                $('#div_add_index_threshold_percent').hide()
+                $('#div_add_index_threshold_calc').show()
+            }
+        });
 
+    $('#upd_index_val_type').change(function () {
+        $('#upd_index_threshold_calc_day').val('')
+        $('#upd_index_threshold_calc_times').val('')
+        $('#div_upd_index_threshold_percent').val('')
+        if ($('#upd_index_val_type').val() == '1' || $('#upd_index_val_type').val() == '3') {
+            $('#div_upd_index_threshold_percent').show()
+            $('#div_upd_index_threshold_calc').hide()
+        } else {
+            $('#div_upd_index_threshold_percent').hide()
+            $('#div_upd_index_threshold_calc').show()
+        }
     });
 
+    $('#index_add_win').click(function () {
+        $('#add_index_name').val('')
+        $('#add_index_code').val('')
+        $('#add_index_type').val('')
+        $('#add_index_threshold').val('')
+        $('#add_index_threshold_calc_day').val('')
+        $('#add_index_threshold_calc_times').val('')
+        $('#add_index_status').val('')
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-modal-add').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    })
+
+    $('#index_save_btn').click(function () {
+        if ($('#add_index_val_type').val() == '2') {
+            $('#div_add_index_threshold_percent').val('')
+        } else {
+            $('#add_index_threshold_calc_day').val('')
+            $('#add_index_threshold_calc_times').val('')
+        }
+        $.ajax({
+            url: "/monitor/index/add/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                index_name: $('#add_index_name').val(),
+                index_code: $('#add_index_code').val(),
+                index_type: $('#add_index_type').val(),
+                index_db_type: $('#add_index_db_type').val(),
+                index_val_type: $('#add_index_val_type').val(),
+                index_threshold: $('#add_index_threshold_percent').val(),
+                index_threshold_day: $('#add_index_threshold_calc_day').val(),
+                index_threshold_times: $('#add_index_threshold_calc_times').val(),
+                index_status: $('#add_index_status').val(),
+                index_trigger_time: $('#add_index_trigger_time').val(),
+                index_trigger_times: $('#add_index_trigger_times').val(),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("保存成功", "", "success")
+                    query_index()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            }
+        })
+    })
+
+    $('#index_upd_btn').click(function () {
+        $.ajax({
+            url: "/monitor/index/edit/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                index_id: $('#upd_index_id_hidden').val(),
+                index_name: $('#upd_index_name').val(),
+                index_code: $('#upd_index_code').val(),
+                index_type: $('#upd_index_type').val(),
+                index_db_type: $('#upd_index_db_type').val(),
+                index_val_type: $('#upd_index_val_type').val(),
+                index_threshold: $('#upd_index_threshold_percent').val(),
+                index_threshold_day: $('#upd_index_threshold_calc_day').val(),
+                index_threshold_times: $('#upd_index_threshold_calc_times').val(),
+                index_status: $('#upd_index_status').val(),
+                index_trigger_time: $('#upd_index_trigger_time').val(),
+                index_trigger_times: $('#upd_index_trigger_times').val(),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("更新成功", "", "success")
+                    query_index()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            }
+        })
+
+    })
+
+    $("#query_btn").click(function () {
+        query_index()
+    })
+
+    $("#name").bind("input propertychange",function(){
+        $("#query_btn").click();
+    });
+
+    $(document).ready(function() {
+        $('#div_add_index_threshold_percent').show()
+        $('#div_add_index_threshold_calc').hide()
+        $('#div_upd_index_threshold_percent').show()
+        $('#div_upd_index_threshold_calc').hide()
+        $("#add_index_threshold_calc_day").TouchSpin();
+        $("#add_index_threshold_calc_times").TouchSpin();
+        $("#add_index_trigger_time").TouchSpin();
+        $("#add_index_trigger_times").TouchSpin();
+        $("#upd_index_trigger_time").TouchSpin();
+        $("#upd_index_trigger_times").TouchSpin();
+        $("#upd_index_threshold_calc_day").TouchSpin();
+        $("#upd_index_threshold_calc_times").TouchSpin();
+        $("#query_btn").click();
+    })
 
 </script>
 

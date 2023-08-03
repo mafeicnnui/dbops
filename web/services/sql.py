@@ -26,7 +26,8 @@ from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tre
     get_tree_by_dbid_query_grants
 from web.model.t_xtqx          import get_db_name,get_tab_name,get_tab_columns,get_tab_structure,get_tab_keys,get_tab_incr_col,query_ds
 from web.model.t_xtqx          import get_tree_by_dbid_proxy,get_tree_by_dbid_mssql_proxy
-from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2
+from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2, \
+    get_dmm_from_dm_dic, get_sys_dmlx_dic
 from web.model.t_ds            import get_ds_by_dsid
 from web.utils.common import DateEncoder, get_server, dict2num
 from web.utils                 import base_handler
@@ -96,10 +97,11 @@ class sql_release(base_handler.TokenHandler):
 class sql_update(base_handler.TokenHandler):
    async def post(self):
        self.set_header("Content-Type", "application/json; charset=UTF-8")
+       user = await get_user_by_loginame(self.username)
        id    = self.get_argument("id")
        sqltext = self.get_argument("sqltext")
        run_time = self.get_argument("run_time")
-       res   = await upd_sql_contents(id,sqltext,run_time)
+       res   = await upd_sql_contents(id,sqltext,run_time,user)
        self.write(res)
 
 class sql_check(base_handler.TokenHandler):
@@ -278,6 +280,22 @@ class get_dmm_dm(base_handler.BaseHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dm     = self.get_argument("dm")
         v_list = await get_dmm_from_dm(dm)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_dic_dmlx(base_handler.BaseHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_list = await get_sys_dmlx_dic()
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class get_dic_dmmx(base_handler.BaseHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        dm     = self.get_argument("dm")
+        v_list = await get_dmm_from_dm_dic(dm)
+        print(v_list)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
