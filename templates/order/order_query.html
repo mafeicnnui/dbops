@@ -2,18 +2,18 @@
 <head>
     <title>工单查询</title>
     <style>
-       #example{
+        #example{
             width: 100% !important;
-       }
+        }
 
-       .modal-lg-templete {
+        .modal-lg-templete {
             width:60%;
             height:20%;
             margin-left:500px;
             margin-top:100px;
        }
 
-       #ace-editor-release,#ace-editor-error{
+        #ace-editor-release,#ace-editor-error{
            overflow-x:auto;
            overflow-y:auto;
        }
@@ -25,6 +25,7 @@
         #ace-editor-error{
            height:80px;
         }
+
         #ace-editor-change{
            height:250px;
         }
@@ -413,7 +414,7 @@
                                    </div>
                                </div>
                            </div>
-                           <div class="form-group">
+                            <div class="form-group">
                                 <div>
                                     <label class="col-md-3 control-label" >问题描述：</label>
                                 </div>
@@ -426,12 +427,12 @@
                    </div>
                 </div>
                 <div class="modal-footer">
-                        <div class="col-sm-offset-3 col-sm-4">
-                           <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                        </div>
+                    <div class="col-sm-offset-3 col-sm-4">
+                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    </div>
                  </div>
             </div>
-      </div>
+       </div>
      </div>
 
      <!--工单变更窗口 -->
@@ -444,62 +445,58 @@
                     <input type='hidden' id='order_edit_xh'>
                 </div>
                 <div class="modal-body">
-                    <div  class="tab-pane">
-                         <form class="form-horizontal" role="form">
-                                <div class="col-md-12">
-                                    <div class="col-md-1">
-                                       <label>运行实例</label>
-                                    </div>
-                                    <div class="col-md-11">
-                                        <span id ='run_db_upd' style="color:red"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                     <div class="col-md-1">
-                                       <label>发布原因</label>
-                                    </div>
-                                    <div class="col-md-11">
-                                        <span id ='reason_upd'></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                     <div class="col-md-1">
-                                       <label>定时工单</label>
-                                    </div>
-                                    <div class="col-md-6 input-group">
-                                        <input  id="run_time_change"  type="text" class="form-control datetimepicker"  readonly >
-                                        <span class="input-group-addon"><i class="ion-android-alarm"></i></span>
-                                        <span class="input-group-btn">
-                                           <button type="button"  id='clear_run_time_btn' class="btn waves-effect waves-light btn-primary"><i class="mdi mdi-refresh"></i></button>
-                                        </span>
-                                    </div>
+                     <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <div class="col-md-1">
+                               <label>运行实例</label>
+                            </div>
+                            <div class="col-md-11">
+                                <span id ='run_db_upd' style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                             <div class="col-md-1">
+                               <label>发布原因</label>
+                            </div>
+                            <div class="col-md-11">
+                                <span id ='reason_upd'></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                             <div class="col-md-1">
+                               <label>定时工单</label>
+                            </div>
+                            <div class="col-md-6 input-group">
+                                <input  id="run_time_change"  type="text" class="form-control datetimepicker"  readonly >
+                                <span class="input-group-addon"><i class="ion-android-alarm"></i></span>
+                                <span class="input-group-btn">
+                                   <button type="button"  id='clear_run_time_btn' class="btn waves-effect waves-light btn-primary"><i class="mdi mdi-refresh"></i></button>
+                                </span>
+                            </div>
+                       </div>
+                        <div class="form-group">
+                           <div class="col-md-1">
+                               <br>
+                               <label>执行语句</label>
+                            </div>
+                            <div  class="tab-pane">
+                                <hr>
+                                <div id='ace-editor-change' class="col-md-11"></div>
+                            </div>
+                       </div>
+                        <div class="form-group">
+                            <div class="col-md-1">
+                               <br>
+                               <label>检测结果</label>
+                            </div>
+                           <div class="tab-pane">
+                                <hr>
+                                <div id='div-table' class="col-md-11">
+                                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
                                </div>
-                               <div class="col-md-12">
-                                   <div class="col-md-1">
-                                       <br>
-                                       <label>执行语句</label>
-                                    </div>
-                                    <div  class="tab-pane">
-                                        <hr>
-                                        <div id='ace-editor-change' class="col-md-11"></div>
-                                    </div>
-                               </div>
-                               <div class="col-md-12">
-                                    <div class="col-md-1">
-                                       <br>
-                                       <label>检测结果</label>
-                                    </div>
-                                   <div class="tab-pane">
-                                        <hr>
-                                        <div id='div-table' class="col-md-11">
-                                            <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
-                                       </div>
-                                   </div>
-
-                               </div>
-
-                            </form>
-                    </div>
+                           </div>
+                       </div>
+                     </form>
                  </div>
                  <div class="modal-footer">
                     <div class="col-sm-offset-2 col-sm-4">
@@ -1451,13 +1448,12 @@
                          $('#run_db_upd').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
                     }
                     $('#reason_upd').text(dataSet.message.reason)
-
                     $('#run_time_change').val(dataSet.message.run_time)
                     $('.modal').on('show.bs.modal', centerModals);
                     $(window).on('resize', centerModals);
                     $('#con-close-modal-change').modal({
-                       keyboard: false,
-                       backdrop:false
+                        keyboard: false,
+                        backdrop:false
                     });
                 }
           });
@@ -1805,7 +1801,6 @@
             keyboard: false,
             backdrop:false
          });
-
          $.ajax({
                 url: "/online/detail",
                 type: "post",
@@ -1825,7 +1820,6 @@
                      $("#order_type_audit_ver_desc").val(online['order_ver_desc']);
                 }
          });
-
     }
 
     function showOnline_audit_canal(p_order_number){
@@ -2537,15 +2531,16 @@
      }
 
     $(document).ready(function() {
+
           var tabPageName='日常工单'
 
           $('.selectpicker').selectpicker({
               size: 10
           });
+
           $(":file").filestyle({input: false});
 
           initEditor('ace-editor-release');
-          //initEditor('ace-editor-rollback');
           initEditor('ace-editor-error');
           initEditor('ace-editor-change');
           initEditor('order_script_add_prod');

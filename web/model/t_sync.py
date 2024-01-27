@@ -65,6 +65,11 @@ async def query_sync_tab(sync_tag,sync_tab):
     print(sql)
     return await async_processer.query_list(sql)
 
+async def query_sync_id(sync_id):
+    sql = """SELECT * FROM t_db_sync_config a WHERE a.id='{}'""".format(sync_id)
+    print(sql)
+    return await async_processer.query_dict_one2(sql)
+
 
 async def query_sync_tab_real(sync_tag,sync_tab):
     sql = """SELECT  
@@ -1388,7 +1393,7 @@ async def query_db_order_num():
                (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=1 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_dev,
                (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=2 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_uat
             FROM (SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -t.help_topic_id DAY),'%Y-%m-%d') AS 'rq'  
-            FROM mysql.help_topic t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
+            FROM help_topic t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
     x = []
     y_hst = []
     y_hft = []

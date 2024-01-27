@@ -70,9 +70,9 @@ async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema,
                    a.column_key,
                    a.column_comment,
                    a.extra
-            FROM t_db_compare a
+            FROM v_db_compare a
             WHERE dsid={} AND not exists(
-                 select 1 FROM t_db_compare b
+                 select 1 FROM v_db_compare b
                     WHERE b.dsid={} 
                       AND b.`table_name`=a.`table_name`
                       AND b.`column_name`=a.`column_name`
@@ -87,7 +87,6 @@ async def db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema,
                       AND b.`extra` = a.`extra`
                       AND b.`column_comment` = a.`column_comment`)"""
       res = await async_processer.query_list(sql.format(sour_db_server,desc_db_server))
-      print('res=',res)
       return res
 
 async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_schema, sour_tab):
@@ -146,7 +145,7 @@ async def db_stru_compare_idx(sour_db_server,sour_schema, desc_db_server, desc_s
 
 def get_sync_sql(sres,dres,desc_schema=''):
     if dres is None:
-        st = """ALTER TABLE `{}`.`{}` ADD `{}` {} {} {} {} {} {};
+        st = """ALTER TABLE `{}`.`{}` ADD `{}` {} {} {} {} {} {} {};
              """.format(desc_schema,
                     sres['table_name'],
                     sres['column_name'],
@@ -154,11 +153,12 @@ def get_sync_sql(sres,dres,desc_schema=''):
                     ' CHARSET ' + sres['character_set_name']  if sres['character_set_name'] is not None and sres['character_set_name'] != '' else '',
                     'COLLATE ' + sres['collation_name'] if sres['collation_name'] is not None and sres['collation_name'] != '' else '',
                     'DEFAULT ' + sres['column_default'] if sres['column_default'] is not None and sres['column_default'] != '' else '',
+                     sres['extra']  if sres['extra'] is not None and sres['extra'] != '' else '',
                     'NULL '  if sres['is_nullable'] == 'YES'  else 'NOT NULL',
                     "COMMENT '"+sres['column_comment']+"'" if sres['column_comment'] is not None and sres['column_comment'] != '' else '')
 
     else:
-        st = """ALTER TABLE `{}`.`{}` CHANGE `{}` `{}` {} {} {} {} {} {};
+        st = """ALTER TABLE `{}`.`{}` CHANGE `{}` `{}` {} {} {} {} {} {} {};
              """.format(dres['table_schema'],
                         dres['table_name'],
                         sres['column_name'],
@@ -170,6 +170,7 @@ def get_sync_sql(sres,dres,desc_schema=''):
                                     if sres['collation_name'] is not None and sres['collation_name'] !='' else '',
                         'DEFAULT ' + sres['column_default']
                                     if sres['column_default'] is not None and sres['column_default'] !='' else '',
+                        sres['extra'] if sres['extra'] is not None and sres['extra'] != '' else '',
                         'NULL ' if sres['is_nullable'] == 'YES'  else 'NOT NULL',
                         "COMMENT '{}'".format(sres['column_comment'])
                                     if sres['column_comment'] is not None and sres['column_comment'] !=''  else '')
@@ -178,26 +179,26 @@ def get_sync_sql(sres,dres,desc_schema=''):
 def get_sync_sql_idx(sres,dres,desc_schema=''):
     if dres is None:
         if sres['index_name'] =='PRIMARY':
-           st = """ALTER TABLE `{}`.`{}` ADD  PRIMARY KEY (`{}`);
+           st = """ALTER TABLE `{}`.`{}` ADD  PRIMARY KEY ({});
                 """.format(desc_schema,sres['table_name'],sres['column_name'],sres['column_name'])
         elif sres['is_unique'] == '0':
-           st = """ALTER TABLE `{}`.`{}` ADD  UNIQUE `{}` (`{}`);
+           st = """ALTER TABLE `{}`.`{}` ADD  UNIQUE {} ({});
                 """.format(desc_schema, sres['table_name'], sres['column_name'], sres['column_name'])
         else:
-           st = """ALTER TABLE `{}`.`{}` ADD  INDEX `{}` (`{}`);
+           st = """ALTER TABLE `{}`.`{}` ADD  INDEX `{}` ({});
                 """.format(desc_schema, sres['table_name'], sres['index_name'],sres['column_name'])
 
     else:
         if sres['index_name'] =='PRIMARY':
-           st = """ALTER TABLE `{}`.`{}` DROP PRIMARY KEY (`{}`);\n\nALTER TABLE `{}`.`{}` ADD  PRIMARY KEY (`{}`);
+           st = """ALTER TABLE `{}`.{} DROP PRIMARY KEY ({});\n\nALTER TABLE `{}`.`{}` ADD  PRIMARY KEY ({});
                 """.format(desc_schema,sres['table_name'],sres['column_name'],sres['column_name'],
                            desc_schema,sres['table_name'],sres['column_name'],sres['column_name'])
         elif sres['is_unique'] == '0':
-           st = """ALTER TABLE `{}`.`{}` DROP UNIQUE `{}` (`{}`);\n\nALTER TABLE `{}`.`{}` ADD  UNIQUE `{}` (`{}`);
+           st = """ALTER TABLE `{}`.`{}` DROP UNIQUE {} ({});\n\nALTER TABLE `{}`.`{}` ADD  UNIQUE {} ({});
                 """.format(desc_schema, sres['table_name'], sres['column_name'], sres['column_name'],
                            desc_schema, sres['table_name'], sres['column_name'], sres['column_name'])
         else:
-           st = """ALTER TABLE `{}`.`{}` DROP INDEX `{}` (`{}`);\n\nALTER TABLE `{}`.`{}` ADD  INDEX `{}` (`{}`);
+           st = """ALTER TABLE `{}`.`{}` DROP INDEX {} ({});\n\nALTER TABLE `{}`.`{}` ADD  INDEX {} ({});
                 """.format(desc_schema, sres['table_name'], sres['index_name'],sres['column_name'],
                            desc_schema, sres['table_name'], sres['index_name'],sres['column_name'])
     return st
@@ -214,15 +215,13 @@ async def db_stru_compare_detail(sour_db_server,sour_schema,desc_db_server,desc_
                       a.collation_name,
                       a.column_comment,
                       a.extra
-               FROM t_db_compare a
+               FROM v_db_compare a
                WHERE  a.dsid={} 
                   and a.`table_schema`='{}' 
                   and a.`table_name`='{}' 
                   and a.`column_name`='{}'"""
     sres = await async_processer.query_dict_one(sql.format(sour_db_server,sour_schema,table,column))
     dres = await async_processer.query_dict_one(sql.format(desc_db_server,desc_schema,table,column))
-    print('sres=',sres)
-    print('dres=',dres)
 
     await async_processer.exec_sql('truncate table t_db_compare_detail')
     for k,v in sres.items():
@@ -262,7 +261,7 @@ async def db_stru_compare_statement(sour_db_server,sour_schema,desc_db_server,de
                       a.collation_name,
                       a.column_comment,
                       a.extra
-               FROM t_db_compare a
+               FROM v_db_compare a
                WHERE  a.dsid={} 
                   and a.`table_schema`='{}' 
                   and a.`table_name`='{}' 
@@ -306,8 +305,6 @@ async def db_stru_compare_statement_idx(sour_db_server,sour_schema,desc_db_serve
                   and a.`index_name`='{}'"""
     sres = await async_processer.query_dict_one(sql.format(sour_db_server,sour_schema,table,index))
     dres = await async_processer.query_dict_one(sql.format(desc_db_server,desc_schema,table,index))
-    print('sres=',sres)
-    print('dres=',dres)
 
     await async_processer.exec_sql('truncate table t_db_compare_detail')
     for k,v in sres.items():
@@ -344,15 +341,18 @@ async def db_stru_batch_gen_statement(sour_db_server,sour_schema,desc_db_server,
                      a.collation_name,
                      a.column_comment,
                      a.extra
-              FROM t_db_compare a
+              FROM v_db_compare a
               WHERE  a.dsid={}
                  and a.`table_schema`='{}'
                  and a.`table_name`='{}'
-                 and a.`column_name`='{}'"""
+                 and a.`column_name`='{}'
+                 and a.`column_key`!= 'MUL'"""
 
     await async_processer.exec_sql('truncate table t_db_compare_detail')
     for r in res:
         sres = await async_processer.query_dict_one(sql.format(sour_db_server,r[0],r[1],r[2]))
+        if sres is None:
+           continue
         dres = await async_processer.query_dict_one(sql.format(desc_db_server,r[0],r[1],r[2]))
         for k,v in sres.items():
             if dres is None:
@@ -431,8 +431,6 @@ async def db_stru_compare_detail_idx(sour_db_server,sour_schema,desc_db_server,d
               AND a.`index_name`='{}'"""
     sres = await async_processer.query_dict_one(sql.format(sour_db_server,sour_schema,table,index))
     dres = await async_processer.query_dict_one(sql.format(desc_db_server,desc_schema,table,index))
-    print('sres_idx=',sres)
-    print('dres_idx=',dres)
 
     await async_processer.exec_sql('truncate table t_db_compare_detail')
     for k,v in sres.items():
@@ -461,7 +459,6 @@ async def db_stru_compare_detail_idx(sour_db_server,sour_schema,desc_db_server,d
                                                  from t_db_compare_detail order by id""")
 
 async def get_ck_query_result(ds,sql,curdb):
-    print('ds=',ds)
     if ds['proxy_status'] == '1':
        res = get_ck_proxy_result(ds, sql, curdb)
     else:

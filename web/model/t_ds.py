@@ -843,20 +843,25 @@ async def db_encrypt(p_env,p_plain,p_userid):
            for plain in p_plain.split(','):
                st = """UPDATE t_cipher SET pro='{}' WHERE id={}""".format(plain, p_userid)
                await async_processer.exec_sql_by_ds(ss_agent_ds, st)
-               rs = await async_processer.query_dict_one('select pro_cipher from t_cipher where id={}'.format(p_userid))
-               res = res +  rs['pro_cipher']+','
+               rs = await async_processer.query_dict_one('select pro_cipher,pro_like from t_cipher where id={}'.format(p_userid))
+               res = res + '-'*20+plain+'-'*20+'\ncipher列密文：\n  '+ rs['pro_cipher']+'\nlike列密文：\n  '+rs['pro_like']+'\n\n'
            return  {"code": 0, "message": res[0:-1]}
         else:
            for plain in p_plain.split(','):
                st = """UPDATE t_cipher SET dev='{}' WHERE id={}""".format(plain,p_userid)
                await async_processer.exec_sql_by_ds(ss_agent_ds, st)
-               rs = await async_processer.query_dict_one('select dev_cipher from t_cipher where id={}'.format(p_userid))
-               res = res + rs['dev_cipher'] + ','
+               rs = await async_processer.query_dict_one('select dev_cipher,dev_like from t_cipher where id={}'.format(p_userid))
+               res = res + '-'*20+plain+'-'*20+'\ncipher列密文：\n  '+rs['dev_cipher'] +'\nLIKE列密文:'+rs['dev_like']+'\n\n'
            return  {"code": 0, "message": res[0:-1]}
     except:
         traceback.print_exc()
         return {"code": -1, "message": '加密出错!'}
 
+def get_ciphers(p_cipher):
+    res = []
+    for cipher in p_cipher.split('\n\n'):
+        res.append(cipher.split('\n')[2].strip())
+    return ','.join(res)
 
 async def db_decrypt(p_env,p_cipher,p_userid):
     ss_agent_dsid = 228
@@ -864,14 +869,14 @@ async def db_decrypt(p_env,p_cipher,p_userid):
     res = ''
     try:
         if p_env in('1') :
-            for cipher in p_cipher.split(','):
+            for cipher in get_ciphers(p_cipher).split(','):
                 st = """UPDATE t_cipher SET pro_cipher='{}' WHERE id={}""".format(cipher, p_userid)
                 await async_processer.exec_sql_by_ds(ss_agent_ds, st)
                 rs = await async_processer.query_dict_one_by_ds(ss_agent_ds,'select pro from t_cipher where id={}'.format(p_userid))
                 res = res + rs['pro'] +','
             return {"code": 0, "message": res[0:-1]}
         else:
-            for cipher in p_cipher.split(','):
+            for cipher in get_ciphers(p_cipher).split(','):
                 st = """UPDATE t_cipher SET dev_cipher='{}' WHERE id={}""".format(cipher,p_userid)
                 await async_processer.exec_sql_by_ds(ss_agent_ds,st)
                 rs = await async_processer.query_dict_one_by_ds(ss_agent_ds,'select dev from t_cipher where id={}'.format(p_userid))

@@ -10,7 +10,7 @@ import time
 import asyncio
 import logging
 import datetime
-from web.model.t_sql_release import exe_sql
+from web.model.t_sql_release import exe_sql,exe_sql_sync
 from web.utils.mysql_async import async_processer
 from web.utils.common import current_time
 
@@ -33,7 +33,7 @@ async def main():
                 if t['run_time']  == current_time()[0:16]:
                     logging.info('Processing Task: db_name={},release_id={},dbid={}...'.
                               format(current_time(), t['db_name'],t['sql_id'], t['db_id']))
-                    await exe_sql(t['db_id'], t['db_name'], t['sql_id'], t['user_name'],host)
+                    await exe_sql_sync(t['db_id'], t['db_name'], t['sql_id'], t['user_name'],host)
                     asyncio.sleep(1)
 
 if __name__ == '__main__':

@@ -538,15 +538,25 @@
                   return db_type;
               }
 
-              function upd_curr_db(dataSet){
-                   $("#curr_db").empty();
-                   $("#curr_db").append("<option value=''>...</option>");
-                    for (i=0;i<dataSet['message'].length;i++){
-                       var val  = dataSet['message'][i].id;
-                       var text = dataSet['message'][i].id;
-                       $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                   }
-                   $("#curr_db").selectpicker('refresh')
+              function upd_curr_db(){
+                   $.ajax({
+                        url     :"/get_database",
+                        type    :"post",
+                        datatype:"json",
+                        data: {
+                            dbid : $('#db_source').val(),
+                        },
+                        success: function (dataSet) {
+                           $("#curr_db").empty();
+                           $("#curr_db").append("<option value=''>...</option>");
+                            for (i=0;i<dataSet['message'].length;i++){
+                               var val  = dataSet['message'][i][0];
+                               var text = dataSet['message'][i][0];
+                               $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                           }
+                           $("#curr_db").selectpicker('refresh')
+                        }
+                   });
               }
 
               function upd_result(){
@@ -563,28 +573,132 @@
 
               function upd_demo(){
                   if (get_db_type()=='6') {
-                       console.log('update demo....false')
+                       //console.log('update demo....false')
                        $('#demo_btn').attr('disabled',false)
                     } else {
                        $('#demo_btn').attr('disabled',true)
                     }
               }
 
-              function upd_curr_db_select(dataSet,curdb){
-                    $("#curr_db").empty();
-                    $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
-                    for (i=0;i<dataSet['message'].length;i++){
-                       var val  = dataSet['message'][i].id;
-                       var text = dataSet['message'][i].id;
-                       if (val!=curdb) {
-                              $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                       }
-                   }
-                   $("#curr_db").append("<option value=''>...</option>");
-                   $("#curr_db").selectpicker('refresh')
+              function upd_curr_db_select(curdb){
+                    $.ajax({
+                        url     :"/get_database",
+                        type    :"post",
+                        datatype:"json",
+                        data: {
+                            dbid : $('#db_source').val(),
+                        },
+                        success: function (dataSet) {
+                            $("#curr_db").empty();
+                            $("#curr_db").append("<option value='"+curdb+"' title='"+curdb+"'>"+curdb+"</option>");
+                            for (i=0;i<dataSet['message'].length;i++){
+                               var val  = dataSet['message'][i][0];
+                               var text = dataSet['message'][i][0];
+                               if (val!=curdb) {
+                                      $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                               }
+                           }
+                           $("#curr_db").append("<option value=''>...</option>");
+                           $("#curr_db").selectpicker('refresh')
+                        }
+                   });
+
               }
 
-              function refresh_tree() {
+              function getCompletions(p_selectNode) {
+                    var currdb = $('#curr_db').val();
+                    if (currdb == '') currdb = p_selectNode;
+                    $.ajax({
+                        url     :"/get_tables",
+                        type    :"post",
+                        datatype:"json",
+                        data: {
+                            dbid : $('#db_source').val(),
+                            db_name : currdb,
+                        },
+                        success: function (dataSet) {
+                            if (dataSet['code'] ='0' ) {
+                                console.log('get_tables=',dataSet['message'],$('#db_source').val(),$('#curr_db').val())
+                                var table_list=[]
+                                for(i=0;i<dataSet['message'].length;i++) {
+                                    table_list[i]={
+                                         name : dataSet['message'][i][0],
+                                         value : dataSet['message'][i][0],
+                                         caption: dataSet['message'][i][0],
+                                         meta: "",
+                                         type: "local",
+                                         score : 1000+i
+                                    }
+                                }
+                                console.log('table_list=',table_list)
+                                var languageTools = ace.require("ace/ext/language_tools");
+                                languageTools.addCompleter({
+                                getCompletions: function(editor, session, pos, prefix, callback) {
+                                    callback(null,  table_list);
+                                  }
+                                });
+
+                            } else {
+                                console.log('get_tables error =',dataSet['message'])
+                            }
+                        }
+                    });
+              }
+
+              function getTableName(p_sql) {
+                  if (p_sql.indexOf('from ')>0) {
+                          console.log('spllit=',p_sql.split('from '))
+                          if (p_sql.split('from ')[1].indexOf(' ')>0) {
+                              console.log('spllit22222222222222222=',p_sql.split('from ')[1].split(' ')[0])
+                              return p_sql.split('from ')[1].split(' ')[0];
+                          } else {
+                              console.log('spllit12222222222222=',p_sql.split('from ')[1])
+                              return p_sql.split('from ')[1];
+                          }
+                  } else {
+                      return null
+                  }
+              }
+
+              function getCompletionsColumns(p_tablename) {
+                   $.ajax({
+                        url     :"/get_columns",
+                        type    :"post",
+                        datatype:"json",
+                        data: {
+                            dbid    : $('#db_source').val(),
+                            db_name : $('#curr_db').val(),
+                            tab_name : p_tablename,
+                        },
+                        success: function (dataSet) {
+                            if (dataSet['code'] ='0' ) {
+                                var columns_list=[]
+                                for(i=0;i<dataSet['message'].length;i++) {
+                                    columns_list[i]={
+                                         name : dataSet['message'][i][0],
+                                         value : dataSet['message'][i][0],
+                                         caption: dataSet['message'][i][0],
+                                         meta: "",
+                                         type: "local",
+                                         score : 1000+i
+                                    }
+                                }
+                                var editor = ace.edit('ace-editor');
+                                var languageTools = ace.require("ace/ext/language_tools");
+                                languageTools.addCompleter({
+                                getCompletions: function(editor, session, pos, prefix, callback) {
+                                    callback(null,  columns_list);
+                                  }
+                                });
+                            } else {
+                                console.log('get_columns error =',dataSet['message'])
+                            }
+                        }
+                    });
+
+              }
+
+              function refresh_tree(is_flush_curr_db=true) {
                   var db_type = ''
                   var db_source = ''
                   if ($('#db_source').val() != '') {
@@ -603,6 +717,11 @@
                           },
                       });
 
+                      var msg = $('#filter_db').val();
+                      if (msg == '') {
+                          msg = $('#curr_db').val();
+                      }
+
                       if ($('#db_source').val()!='') {
                          $.ajax({
                             url     :"/get_tree",
@@ -610,10 +729,11 @@
                             datatype:"json",
                             data: {
                                 dbid : $('#db_source').val(),
-                                msg  : $('#filter_db').val(),
-                                flag  : 'query',
+                                msg  : msg,
+                                flag : 'query',
                             },
                             success: function (dataSet) {
+                                console.log('refresh_tree=',dataSet)
                                 if (dataSet.url.length>30) {
                                     $('#db_title').html(dataSet.url.slice(1,30)+'.../');
                                 } else {
@@ -643,10 +763,13 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         upd_curr_db_select(dataSet,curNode.text)
+                                         upd_curr_db_select(curNode.text)
+                                         getCompletions(curNode.text);
                                     } else {
-                                        upd_curr_db_select(dataSet,parNode.text)
+                                        upd_curr_db_select(parNode.text)
+                                        getCompletions(parNode.text);
                                     }
+
                                 });
 
                                 $('#db_tree').on('nodeUnselected', function(event, data) {
@@ -660,9 +783,9 @@
                                     }
 
                                     if (data.parentId === undefined) {
-                                         upd_curr_db_select(dataSet,curNode.text)
+                                         upd_curr_db_select(curNode.text)
                                     } else {
-                                        upd_curr_db_select(dataSet,parNode.text)
+                                        upd_curr_db_select(parNode.text)
 
                                     }
                                 });
@@ -680,7 +803,9 @@
                                 });
 
                                 //加载数据库列表
-                                upd_curr_db(dataSet)
+                                if (is_flush_curr_db) {
+                                    upd_curr_db()
+                                }
 
                                 //更新结果div
                                 upd_result()
@@ -690,6 +815,7 @@
 
                             }
                         });
+
                       }
                   }
               }
@@ -844,9 +970,10 @@
               function set_editor(p_editor) {
                   var editor = ace.edit(p_editor);
                   editor.setTheme("ace/theme/xcode");
-                  editor.getSession().setMode("ace/mode/mysql");
+                  editor.getSession().setMode("ace/mode/sql");
                   editor.getSession().setUseSoftTabs(true);
                   editor.getSession().setUseWrapMode(true);
+                  editor.setHighlightActiveLine(true);
                   editor.setShowPrintMargin(false);
                   editor.setFontSize(14);
                   editor.setOption("wrap", "free");
@@ -855,9 +982,28 @@
                      enableBasicAutocompletion: true,
                      enableSnippets: true,
                      enableLiveAutocompletion: true,
-                     wrapBehavioursEnabled:false
+                     //wrapBehavioursEnabled:false
                   });
-                  editor.setHighlightActiveLine(true);
+
+                  editor.on("change", function(e){
+                    　editor.execCommand("startAutocomplete");
+                  });
+
+                  editor.getSession().on('change', function(e) {
+                      if($('#db_source').val()=='') {
+                           return false;
+                      }
+                      var v_sql=editor.session.getTextRange(editor.getSelectionRange())
+                      if(v_sql=='') {
+                         v_sql=editor.session.getValue()
+                      }
+                      //var table_name = getTableName(v_sql)
+                      //console.log('table_name=',table_name)
+                      //if ( table_name ) {
+                      //    //getCompletionsColumns(table_name)
+                     // }
+                  });
+
               }
 
               function set_editor_result(p_editor) {
@@ -873,20 +1019,17 @@
                   editor.setHighlightActiveLine(true);
               }
 
-              $("#filter_db").on('compositionstart',function() {
-                  lock = true;
-              });
-
-              $("#filter_db").on('compositionend',function() {
-                  lock = false;
-              });
-
               $("#filter_db").bind("input propertychange",function(){
-                if (!lock) refresh_tree();
+                refresh_tree();
+              });
+
+              $('#curr_db').change(function() {
+                  refresh_tree(false);
+                  getCompletions('');
               });
 
               $("#db_source").on("changed.bs.select",function(){
-                    refresh_tree();
+                  refresh_tree();
               });
 
               $('#beauty_btn').click(function(){
@@ -906,16 +1049,6 @@
                          }
                      })
               });
-
-              $('#curr_db').change(function(){
-                     var pattern = $.trim($('#curr_db').val());
-                     var options = {
-                          ignoreCase: false,
-                          exactMatch: false,
-                          revealResults: true
-                      };
-                     var results = $('#db_tree').treeview('search', [ pattern, options ]);
-              })
 
               $("#query_btn").click(function() {
                     $('#query_time').text('');

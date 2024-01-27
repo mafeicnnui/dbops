@@ -8,6 +8,7 @@
 import json
 import logging
 import re
+import datetime
 from  aiomysql import create_pool,DictCursor
 
 def read_json(file):
@@ -22,6 +23,18 @@ def capital_to_lower(dict_info):
             new_dict[i.lower()] = ''
         else:
             new_dict[i.lower()] = j
+    return new_dict
+
+def datetime2str(dict_info):
+    new_dict = {}
+    for i, j in dict_info.items():
+        if j is None:
+            new_dict[i] = ''
+        else:
+            if isinstance(j, datetime.datetime):
+               new_dict[i] = str(j)
+            else:
+               new_dict[i] = j
     return new_dict
 
 db = read_json('./config/config.json')
@@ -203,6 +216,18 @@ class async_processer:
            return capital_to_lower(rs)
         else:
            return None
+
+    async def query_dict_one2(p_sql):
+        async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],
+                               db=db['db_service'], autocommit=True) as pool:
+            async with pool.acquire() as conn:
+                async with conn.cursor(DictCursor) as cur:
+                    await cur.execute(p_sql)
+                    rs = await cur.fetchone()
+        if rs is not None:
+            return datetime2str(capital_to_lower(rs))
+        else:
+            return None
 
     async def query_dict_one_by_ds(p_ds,p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']), user=p_ds['user'], password=p_ds['password'],

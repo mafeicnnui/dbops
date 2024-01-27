@@ -214,7 +214,7 @@ class get_tree_by_sql(base_handler.TokenHandler):
         user   = await get_user_by_userid(self.userid)
         print('get_tree_by_sql->user=',user)
         result = {}
-        if p_ds['db_type'] in('0','8'):
+        if p_ds['db_type'] in('0','8','11'):
             if user['query_grants'] == '1':
                 if p_ds['proxy_status'] == '1':
                     result = await get_tree_by_dbid_proxy(dbid)

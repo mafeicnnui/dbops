@@ -49,7 +49,6 @@ class _db_compare(base_handler.TokenHandler):
         v_list          = await db_stru_compare(sour_db_server,sour_schema,desc_db_server,desc_schema,sour_tab)
         self.write({"code": 0, "message": v_list})
 
-
 class _db_compare_idx(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -60,7 +59,6 @@ class _db_compare_idx(base_handler.TokenHandler):
         sour_tab        = self.get_argument("sour_tab")
         v_list          = await db_stru_compare_idx(sour_db_server,sour_schema,desc_db_server,desc_schema,sour_tab)
         self.write({"code": 0, "message": v_list})
-
 
 class _db_compare_detail(base_handler.TokenHandler):
     async def post(self):
@@ -86,7 +84,6 @@ class _db_compare_detail_idx(base_handler.TokenHandler):
         v_list         = await db_stru_compare_detail_idx(sour_db_server,sour_schema,desc_db_server,desc_schema,table,index)
         self.write({"code": 0, "message": v_list})
 
-
 class _db_compare_statement(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
@@ -111,7 +108,6 @@ class _db_compare_statement_idx(base_handler.TokenHandler):
         v_list         = await db_stru_compare_statement_idx(sour_db_server, sour_schema, desc_db_server, desc_schema,
                                                  table, index)
         self.write({"code": 0, "message": v_list})
-
 
 class _db_compare_gen_statement(base_handler.TokenHandler):
     async def post(self):

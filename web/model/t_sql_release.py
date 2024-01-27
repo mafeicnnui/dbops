@@ -506,7 +506,7 @@ async def check_sql(p_dbid,p_cdb,p_sql,desc,logon_user,type):
             return result
 
         p_ds = await get_ds_by_dsid(p_dbid)
-        if p_ds['db_type'] == '0':
+        if p_ds['db_type'] in('0','11'):
             val = await check_mysql_ddl(p_dbid,p_cdb, p_sql,logon_user,type)
 
         if val == False:
@@ -529,7 +529,7 @@ async def save_sql(p_dbid,p_cdb,p_sql,desc,p_user,type,time,p_username,p_host,p_
         p_ds = await get_ds_by_dsid(p_dbid)
         p_sqlid = await get_sqlid()
 
-        if p_ds['db_type'] == '0':
+        if p_ds['db_type'] in('0','11') :
             val = check_mysql_ddl(p_dbid,p_cdb, p_sql,p_user,type)
 
         if val == False:
@@ -1019,17 +1019,21 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         # sync_processer.exec_sql_by_ds(p_ds, 'UNLOCK TABLES')
 
         logging.info(('check_statement_count(sql)=', check_statement_count(sql)))
-        if check_statement_count(sql) == 1:
-            binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_new(p_ds, sql)
-
-        if check_statement_count(sql) > 1:
-            binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_multi_new(p_ds, sql)
-
-        logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
-        upd_run_status_sync(p_sql_id, 'after',None,binlog_file,start_position,stop_position)
-
-        # write rollback
-        write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
+        if p_ds['db_type'] == '11':
+            if check_statement_count(sql) == 1:
+                 sync_processer.exec_sql_by_ds(p_ds, sql)
+            if check_statement_count(sql) > 1:
+                sync_processer.exec_sql_by_ds_multi(p_ds, sql)
+            upd_run_status_sync(p_sql_id, 'after')
+        else:
+            if check_statement_count(sql) == 1:
+                binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_new(p_ds, sql)
+            if check_statement_count(sql) > 1:
+                binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_multi_new(p_ds, sql)
+            logging.info('binlog:{},{},{}'.format(binlog_file,str(start_position),str(stop_position)))
+            upd_run_status_sync(p_sql_id, 'after',None,binlog_file,start_position,stop_position)
+            # write rollback
+            write_rollback(p_sql_id,p_ds,binlog_file,start_position,stop_position)
 
         # send success mail
         wkno      =  get_sql_release_sync(p_sql_id)

@@ -13,7 +13,7 @@
 <body>
      <p></p>
      <div class="row">
-         <div class="col-md-3">
+         <div class="col-md-4">
              <div class="input-group">
                  <span class="input-group-addon">数据库环境</span>
                  <select class="form-control select" id="db_env" >
@@ -22,6 +22,7 @@
                          <option value={{var[0]}} >{{var[1]}}</option>
                     {% end %}
                 </select>
+                <span class="input-group-addon" style="color:red">&nbsp;&nbsp;&nbsp;加密多个文本，以逗号隔开!</span>
              </div>
          </div>
       </div>

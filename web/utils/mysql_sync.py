@@ -98,6 +98,11 @@ class sync_processer:
         with mysqlDsManager(p_ds) as cur:
             cur.execute(p_sql)
 
+    def exec_sql_by_ds_multi(p_ds,p_sql):
+        with mysqlDsManager(p_ds) as cur:
+            for st in reReplace(p_sql):
+               cur.execute(st)
+
     def exec_sql_by_ds_new(p_ds,p_sql):
         print('exec_sql_by_ds_new....')
         with mysqlDsManager(p_ds) as cur:
@@ -116,11 +121,6 @@ class sync_processer:
             cur.execute('UNLOCK TABLES')
         print('exec_sql_by_ds_new....ok')
         return binlog_file, start_position, stop_position
-
-    def exec_sql_by_ds_multi(p_ds,p_sql):
-        with mysqlDsManager(p_ds) as cur:
-            for st in reReplace(p_sql):
-               cur.execute(st)
 
     def exec_sql_by_ds_multi_new(p_ds,p_sql):
         with mysqlDsManager(p_ds) as cur:

@@ -62,7 +62,10 @@
     </div>
      <!--功能按钮 -->
     <div class="row">
+          <input  id="monitor_id_tmp"   type="hidden">
           <input  id="monitor_tag_tmp"  type="hidden">
+          <input  id="monitor_desc_tmp" type="hidden">
+          <input  id="monitor_api_tmp"  type="hidden">
           <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
                <input  id='task_add_win'   type='button' class="btn waves-effect waves-light btn-primary"  value="新增"/>
                <input  id='task_upd_win'   type='button' class="btn waves-effect waves-light btn-primary"  value="变更"/>
@@ -218,7 +221,7 @@
                                             <label class="col-md-2 control-label"><span id="s_add_monitor_task_tag">*</span>任务标识</label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input id="add_monitor_task_tag"  type="text" readonly class="form-control" placeholder="请输入任务标识">
+                                            <input id="add_monitor_task_tag"  type="text"  class="form-control" placeholder="请输入任务标识">
                                         </div>
                                    </div>
                                    <div class="form-group">
@@ -226,7 +229,7 @@
                                             <label class="col-md-2 control-label"><span id="s_add_monitor_task_desc">*</span>任务描述</label>
                                         </div>
                                         <div class="col-md-10">
-                                            <input id="add_monitor_task_desc"  type="text" readonly class="form-control"  placeholder="请输入任务描述">
+                                            <input id="add_monitor_task_desc"  type="text"  class="form-control"  placeholder="请输入任务描述">
                                         </div>
                                    </div>
                                    <div class="form-group">
@@ -646,6 +649,25 @@
           set_button_status(false);
       }
 
+     function isSelect2(task_tag) {
+            $('#upd_task_tag_hidden').val(task_tag)
+            $.ajax({
+                  url: "/monitor/_query/id",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      task_tag   : task_tag
+                  },
+                  success: function (dataSet) {
+                       $('#monitor_id_tmp').val(dataSet['id'])
+                       $('#monitor_tag_tmp').val(dataSet['task_tag'])
+                       $('#monitor_desc_tmp').val(dataSet['comments']);
+                       $('#monitor_api_tmp').val(dataSet['api_server']);
+                       set_button_status(false);
+                  }
+             });
+        };
+
      function set_button_status(status){
           $('#task_upd_win').attr("disabled",status);
           $('#task_del_btn').attr("disabled",status);
@@ -691,7 +713,9 @@
                                   "title": "选择",
                                   "width": "25px",
                                   "render": function (data, type, row) {
-                                      return '<input type="radio"  name="choice" onclick=isSelect("'+row[0]+'")>'
+                                      var task_tag= row[0]
+                                      //return '<input type="radio"  name="choice" onclick=isSelect("'+row[0]+'")>'
+                                      return '<input type="radio"  name="choice" onclick=isSelect2("'+task_tag+'")>'
                                   }
                               },
                            ],
@@ -731,12 +755,12 @@
                         },
                       success: function (dataSet) {
                          var templete_type=dataSet['message'][0][0]
-                         if (templete_type == '1') {
-                             $('#add_gather_task_db_server').val('')
-                             $('#add_gather_task_db_server').attr('disabled','disabled')
-                         } else {
-                             $('#add_gather_task_db_server').removeAttr('disabled')
-                         }
+                         // if (templete_type == '1') {
+                         //     $('#add_gather_task_db_server').val('')
+                         //     $('#add_gather_task_db_server').attr('disabled','disabled')
+                         // } else {
+                         //     $('#add_gather_task_db_server').removeAttr('disabled')
+                         // }
                          set_gather_title()
                       }
                 });
@@ -821,7 +845,8 @@
         })
 
         $('#task_upd_win').click(function(){
-            var task_tag = $('#upd_task_tag_hidden').val()
+            //var task_tag = $('#upd_task_tag_hidden').val()
+            var task_tag = $('#monitor_tag_tmp').val()
             $.ajax({
                   url: "/get/monitor/task",
                   type: "post",
@@ -1062,10 +1087,15 @@
               var v_tag='';
               var v_desc='';
               $("#monitor_task_table tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  v_tag  = row[0].innerHTML;
-                  v_desc = row[1].innerHTML.replace(/&gt;/g,'>');
-                  v_api  = row[5].innerHTML;
+                  //var row=$(($(this).parent().parent().html()));
+                  // v_tag  = row[0].innerHTML;
+                  // v_desc = row[1].innerHTML.replace(/&gt;/g,'>');
+                  //v_api  = row[5].innerHTML;
+
+                  v_tag=$('#monitor_tag_tmp').val()
+                  v_desc=$('#monitor_desc_tmp').val()
+                  v_api=$('#monitor_api_tmp').val()
+
                   $.ajax({
                           url: "/monitor/task/push",
                           type: "post",
@@ -1109,10 +1139,15 @@
               var v_tag='';
               var v_desc='';
               $("#monitor_task_table tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
+                  // var row=$(($(this).parent().parent().html()));
+                  // v_tag=$('#monitor_tag_tmp').val()
+                  // v_desc=row[1].innerHTML.replace(/&gt;/g,'>');
+                  // v_api=row[5].innerHTML;
+
                   v_tag=$('#monitor_tag_tmp').val()
-                  v_desc=row[1].innerHTML.replace(/&gt;/g,'>');
-                  v_api=row[5].innerHTML;
+                  v_desc=$('#monitor_desc_tmp').val()
+                  v_api=$('#monitor_api_tmp').val()
+
                   $.ajax({
                           url: "/monitor/task/run",
                           type: "post",
@@ -1181,7 +1216,6 @@
               });
 
         });
-
 
         $("#query_btn").click(function() {
              query_task()

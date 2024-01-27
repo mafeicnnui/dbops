@@ -5,6 +5,7 @@
 # @File : jwt_auth.py.py
 # @Software: PyCharm
 
+import os
 import jwt
 import json
 import datetime
@@ -15,6 +16,14 @@ from webssh.mysql_sync import sync_processer
 JWT_SALT = 'Hopson2021@abcd'
 ISS_UER  = 'zhitbar.cn'
 TIMEOUT  = 60
+
+def read_json(file):
+    with open(file, 'r') as f:
+         cfg = json.loads(f.read())
+    return cfg
+
+ds = read_json(os.path.join(os.path.dirname(__file__))+'/config.json')
+print('ds=',ds)
 
 def refresh_token(token,session_id,timeout=TIMEOUT):
     headers = {
@@ -137,12 +146,15 @@ def kickout_session_log(p_username,p_session_id):
     print('>>>>3', st)
     sync_processer.exec_sql(st)
 
-
 def get_sessoin_state(p_session_id):
+      sql="""select state from t_session where session_id={}
+                                                 union all
+                                                 select state from t_session_history where session_id={}
+                                             """.format(p_session_id,p_session_id)
       return  (sync_processer.query_dict_one("""select state from t_session where session_id={}
-                                                       union all
-                                                       select state from t_session_history where session_id={} 
-                                                    """.format(p_session_id,p_session_id)))['state']
+                                                 union all
+                                                 select state from t_session_history where session_id={}
+                                             """.format(p_session_id,p_session_id)))['state']
 
 
 def check_sess_exists(p_session_id):

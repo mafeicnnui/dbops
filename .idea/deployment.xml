@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="hopson@10.2.39.17:65508_dbops">
+  <component name="PublishConfigData" autoUpload="Always" serverName="root@10.2.39.204:65508">
     <serverData>
+      <paths name="hopson@10.2.39.17:65508_dba_syncer">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.17:65508_dba_tools">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="hopson@10.2.39.17:65508_dbops">
         <serverdata>
           <mappings>
             <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="hopson@10.2.39.17:65508_webssh">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
@@ -24,6 +31,13 @@
         </serverdata>
       </paths>
       <paths name="hopson@10.2.39.18:65508_dbops">
+        <serverdata>
+          <mappings>
+            <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.204:65508_dbops">
         <serverdata>
           <mappings>
             <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
@@ -44,6 +58,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="hopson@10.2.39.21:65508_dba_tools">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="hopson@10.2.39.21:65508_dbapi">
         <serverdata>
           <mappings>
@@ -55,6 +76,20 @@
         <serverdata>
           <mappings>
             <mapping deploy="dbops" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="hopson@10.2.39.59:65508_dbapi">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="root@10.2.39.204:65508">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/hopson/apps/usr/webserver/dbops" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

@@ -145,10 +145,12 @@
 
         function isSelect(v) {
            r = unescape(v)
+           console.log('r=',r)
            sync_id=r.split(',')[0]
            sync_tag=r.split(',')[2]
            sync_desc=r.split(',')[3]
            sync_api=r.split(',')[7]
+           console.log('api=',sync_api)
 
            $('#sync_id_tmp').val(sync_id)
            $('#sync_tag_tmp').val(sync_tag)
@@ -158,12 +160,31 @@
            $("#example tbody tr td input:checked").each( function() {
               rec=rec+1;
            });
+
            if ( rec==1 ){
               set_button_status(false);
            } else {
               set_button_status(true);
            }
         }
+
+        function isSelect2(sync_id) {
+            $.ajax({
+                  url: "/sync/_query/id",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      sync_id   : sync_id
+                  },
+                  success: function (dataSet) {
+                       $('#sync_id_tmp').val(dataSet['id'])
+                       $('#sync_tag_tmp').val(dataSet['sync_tag'])
+                       $('#sync_desc_tmp').val(dataSet['sync_desc']);
+                       $('#sync_api_tmp').val(dataSet['api_server']);
+                       set_button_status(false);
+                  }
+             });
+        };
 
         $("#tagname").bind("input propertychange",function(){
            set_button_status(true);
@@ -231,7 +252,8 @@
                                         "title":"选择",
                                         "width": "25px",
                                         "render": function(data,type,row){
-                                             return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + escape(row) + '")>'
+                                             //return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + escape(row) + '")>'
+                                             return '<input type="radio"  name="sync_selec_id"  onclick=isSelect2("' + row[0] + '")>'
                                         }
                                     },
                               ],
@@ -248,8 +270,6 @@
               $("#example tbody tr td input:checked").each( function() {
                   var row=$(($(this).parent().parent().html()));
                   v_tag=$('#sync_tag_tmp').val()
-                  // v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
-                  // v_api=row[7].innerHTML;
                   v_desc=$('#sync_desc_tmp').val()
                   v_api=$('#sync_api_tmp').val()
 

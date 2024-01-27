@@ -972,7 +972,7 @@ async def exe_query_aio(p_dbid,p_sql,curdb,p_event_loop,p_userid):
     p_ds  = await get_ds_by_dsid(p_dbid)
 
     # 查询 MySQL 数据源
-    if p_ds['db_type'] in('0','8'):
+    if p_ds['db_type'] in('0','8','11'):
         if user['query_grants'] == '1':
             if p_ds['proxy_status'] == '1':
                result = get_mysql_proxy_result(p_ds,p_sql,curdb)

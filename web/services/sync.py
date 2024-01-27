@@ -8,7 +8,7 @@
 import json
 from web.model.t_sync import query_sync, query_sync_tab, query_sync_tab_cfg, save_sync, save_sync_tab, del_sync_tab, \
     get_sync_by_syncid, upd_sync, del_sync, query_sync_log, query_sync_log_detail, query_db_real_sync, \
-    save_sync_clone_real
+    save_sync_clone_real, query_sync_id
 from   web.model.t_sync import push_sync_task,run_sync_task,stop_sync_task,query_sync_log_analyze,query_sync_log_analyze2,query_sync_case,query_sync_case_log,query_sync_tab_cfg_real
 from   web.model.t_sync import query_sync_park,query_sync_park_real_time,query_sync_flow,query_sync_flow_real_time,query_sync_flow_device,query_sync_park_charge,query_sync_bi,get_sync_by_sync_tag
 from   web.model.t_sync import get_mssql_tables_list,get_mysql_tables_list,get_mssql_columns_list,get_mysql_columns_list,get_mssql_incr_columns_list,get_mysql_incr_columns_list
@@ -49,6 +49,13 @@ class sync_query_tab(base_handler.TokenHandler):
         v_json   = json.dumps(v_list)
         self.write(v_json)
 
+class sync_query_id(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        sync_id = self.get_argument("sync_id")
+        v_list   = await query_sync_id(sync_id)
+        v_json   = json.dumps(v_list)
+        self.write(v_json)
 
 class sync_query_tab_real(base_handler.TokenHandler):
     async def post(self):

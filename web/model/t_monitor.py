@@ -21,7 +21,7 @@ async def query_monitor_index(index_code,userid,username):
         v_where = "where EXISTS(SELECT 1 FROM `t_dict_group_user` b WHERE b.user_id={} AND b.dm='23' AND INSTR(b.dmm,a.index_type)>0)".format(userid)
 
     if index_code != '':
-        v_where = " and  a.index_code like '%{0}%' or a.index_name like '%{1}%'".format(index_code,index_code)
+        v_where = v_where + " and  a.index_code like '%{0}%' or a.index_name like '%{1}%'".format(index_code,index_code)
     sql = """SELECT
                  id,  
                  index_code,
@@ -889,3 +889,8 @@ async def get_redis_slowlog_dbinfo(p_batch_id):
     print('dbid=',dbid)
     dbinfo = await get_ds_by_dsid(dbid)
     return dbinfo
+
+async def query_monitor_id(task_tag):
+    sql = """SELECT * FROM t_monitor_task a WHERE a.task_tag='{}'""".format(task_tag)
+    print(sql)
+    return await async_processer.query_dict_one2(sql)

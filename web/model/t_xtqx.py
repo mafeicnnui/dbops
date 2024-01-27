@@ -729,7 +729,6 @@ async def get_tree_by_dbid_mongo(dbid):
         result['db_url'] = ''
     return result
 
-
 def dataConvDict(desc,data):
     res = []
     for i in data:
