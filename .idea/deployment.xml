@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="root@10.2.39.204:65508">
+  <component name="PublishConfigData" autoUpload="Always">
     <serverData>
       <paths name="hopson@10.2.39.17:65508_dba_syncer">
         <serverdata>
@@ -83,13 +83,6 @@
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="root@10.2.39.204:65508">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/home/hopson/apps/usr/webserver/dbops" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>

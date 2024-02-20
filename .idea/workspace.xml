@@ -25,34 +25,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="bug fix">
-      <change afterPath="$PROJECT_DIR$/templates/order/sql_query_bug.html" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="issue fix">
       <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/order_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/order_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sync/sync_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/tools/db_cipher.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_cipher.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_db_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_ds.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_monitor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_xtqx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_xtqx.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/dbtools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/dbtools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/monitor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/task/run_sql_timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_timer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/monitor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/mysql_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_async.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/mysql_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_sync.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webssh/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/webssh/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webssh/jwt_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/webssh/jwt_auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webssh/mysql_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/webssh/mysql_sync.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -915,14 +891,12 @@
       <workItem from="1706079764717" duration="625000" />
       <workItem from="1706236289388" duration="371000" />
       <workItem from="1706238919860" duration="567000" />
-      <workItem from="1706259029118" duration="19068000" />
-    </task>
-    <task id="LOCAL-00232" summary="README.md update">
-      <created>1672989860645</created>
-      <option name="number" value="00232" />
-      <option name="presentableId" value="LOCAL-00232" />
-      <option name="project" value="LOCAL" />
-      <updated>1672989860645</updated>
+      <workItem from="1706259029118" duration="19715000" />
+      <workItem from="1706490181759" duration="1557000" />
+      <workItem from="1706832385922" duration="158000" />
+      <workItem from="1706842022631" duration="6000" />
+      <workItem from="1708306228479" duration="3792000" />
+      <workItem from="1708410747392" duration="2880000" />
     </task>
     <task id="LOCAL-00233" summary="README.md update">
       <created>1672990099685</created>
@@ -1260,7 +1234,14 @@
       <option name="project" value="LOCAL" />
       <updated>1691041541494</updated>
     </task>
-    <option name="localTasksCounter" value="281" />
+    <task id="LOCAL-00281" summary="issue fix">
+      <created>1706352236367</created>
+      <option name="number" value="00281" />
+      <option name="presentableId" value="LOCAL-00281" />
+      <option name="project" value="LOCAL" />
+      <updated>1706352236368</updated>
+    </task>
+    <option name="localTasksCounter" value="282" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1291,7 +1272,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="main page optimize" />
     <MESSAGE value="README.md update" />
     <MESSAGE value="index.html update" />
     <MESSAGE value="logon optimize" />
@@ -1316,41 +1296,46 @@
     <MESSAGE value="sql query update" />
     <MESSAGE value="sql query add Completions" />
     <MESSAGE value="bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="bug fix" />
+    <MESSAGE value="issue fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="issue fix" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1706259240402">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1708411751658">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1706259240402" />
-    <state x="243" y="0" key="#SSH_Configurations" timestamp="1706259122081">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1708411751658" />
+    <state x="243" y="0" key="#SSH_Configurations" timestamp="1708411638364">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1706259122081" />
-    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1706259487250">
+    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1708411638364" />
+    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1708411473612">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1706259487250" />
-    <state width="1483" height="100" key="GridCell.Tab.0.bottom" timestamp="1706351942756">
+    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1708411473612" />
+    <state width="1483" height="360" key="GridCell.Tab.0.bottom" timestamp="1708412837796">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="100" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1706351942756" />
-    <state width="1483" height="100" key="GridCell.Tab.0.center" timestamp="1706351942756">
+    <state width="1483" height="360" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1708412837796" />
+    <state width="1483" height="360" key="GridCell.Tab.0.center" timestamp="1708412837796">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="100" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1706351942756" />
-    <state width="1483" height="100" key="GridCell.Tab.0.left" timestamp="1706351942756">
+    <state width="1483" height="360" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1708412837796" />
+    <state width="1483" height="360" key="GridCell.Tab.0.left" timestamp="1708412837796">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="100" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1706351942756" />
-    <state width="1483" height="100" key="GridCell.Tab.0.right" timestamp="1706351942756">
+    <state width="1483" height="360" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1708412837796" />
+    <state width="1483" height="360" key="GridCell.Tab.0.right" timestamp="1708412837796">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="100" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1706351942756" />
-    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1706259246872">
+    <state width="1483" height="360" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1708412837796" />
+    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1708411755751">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1706259246872" />
+    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1708411755751" />
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1706352607022">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1706352607022" />
     <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1705469618759">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1359,10 +1344,14 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="605" y="77" width="569" height="668" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1706076872787" />
-    <state x="69" y="293" key="publish.login" timestamp="1706350230066">
+    <state x="460" y="289" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1706352531972">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="69" y="293" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1706350230066" />
+    <state x="460" y="289" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1536.824@0.0.1536.824" timestamp="1706352531972" />
+    <state x="388" y="345" key="publish.login" timestamp="1708413081963">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1708413081963" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1378,7 +1367,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1706350232252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1708412836108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>
