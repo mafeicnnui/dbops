@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>报表查询</title>
+</head>
 <body>
   <form class="form-horizontal" role="form">
        <div class="row">
@@ -96,31 +102,31 @@
                                         },
                                         success: function (dataSet) {
                                             for (dm=0;dm<dataSet.length;dm++) {
-                                                options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
-                                                //options = options +"<option value='"+dataSet[dm][0]+"' title='"+dataSet[dm][1]+"'>"+dataSet[dm][1]+"</option>\n"
+                                                //options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
+                                                options = options +"<option value='"+dataSet[dm][0]+"' title='"+dataSet[dm][1]+"'>"+dataSet[dm][1]+"</option>\n"
                                             }
                                        },
                                    });
 
-                                   rowFilter=rowFilter+
+                                   // rowFilter=rowFilter+
+                                   //   '<div class="col-md-3">\n' +
+                                   //   '       <div class="input-group">\n' +
+                                   //   '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                   //   '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
+                                   //   '                <option value="" selected = "selected">...</option>\n' +options+
+                                   //   '            </select> '+
+                                   //   '      </div>\n' +
+                                   //   '</div>'
+
+                                    rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                     '                <option value="" selected = "selected">...</option>\n' +options+
+                                     '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
+                                     '                <option value="">...</option>\n' +options+
                                      '            </select> '+
                                      '      </div>\n' +
                                      '</div>'
-
-                                    // rowFilter=rowFilter+
-                                    //  '<div class="col-md-3">\n' +
-                                    //  '       <div class="input-group">\n' +
-                                    //  '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                    //  '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                    //  '                <option value="">...</option>\n' +options+
-                                    //  '            </select> '+
-                                    //  '      </div>\n' +
-                                    //  '</div>'
 
                               } else {
                                    rowFilter=rowFilter+
@@ -219,8 +225,9 @@
 
                       $('#form_bbgl_filter').append(htmlFilter);
 
-                      // $('.selectpicker').selectpicker();
-                      // $('.selectpicker').selectpicker('refresh');
+                      $('.selectpicker').selectpicker();
+
+                      $('.selectpicker').selectpicker('refresh');
 
                       $.fn.datepicker.dates['zh-CN'] = {
                             days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
@@ -365,9 +372,12 @@
                     });
              });
 
-          // $('.selectpicker').selectpicker();
-          // $('.selectpicker').selectpicker('refresh');
+          $('.selectpicker').selectpicker();
+          $('.selectpicker').selectpicker('refresh');
 
       });
    </script>
+
 </body>
+
+</html>
