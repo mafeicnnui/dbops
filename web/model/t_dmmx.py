@@ -187,7 +187,7 @@ async def get_sync_db_server():
 
 async def get_bbtj_db_server():
     sql = """SELECT id,db_desc FROM t_db_source 
-              WHERE  id in(16,19,191,49,69,84,93) ORDER BY db_desc,db_type"""
+              WHERE  id in(16,19,191,49,88,161,54,69,84,93) ORDER BY db_desc,db_type"""
     return await async_processer.query_list(sql)
 
 async def get_sync_db_mysql_server():

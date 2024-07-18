@@ -779,7 +779,6 @@ def check_index(p_index):
     result['message'] = '验证通过'
     return result
 
-
 async def query_alert(p_task_tag):
     v_where=' '
     if p_task_tag != '':
@@ -797,7 +796,6 @@ async def query_alert(p_task_tag):
         v_temp.insert(4,await get_templetes_by_templete_id(v_temp[3]))
         v_list.append(v_temp)
     return v_list
-
 
 async def save_alert_task(p_task):
     val=check_task(p_task)

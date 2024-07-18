@@ -31,9 +31,8 @@ define('policy', default='warning',
 define('hostfile', default='', help='User defined host keys file')
 define('syshostfile', default='', help='System wide host keys file')
 define('tdstream', default='', help='Trusted downstream, separated by comma')
-define('redirect', type=bool, default=True, help='Redirecting http to https')
-define('fbidhttp', type=bool, default=True,
-       help='Forbid public plain http incoming requests')
+define('redirect', type=bool, defaultales=True, help='Redirecting http to https')
+define('fbidhttp', type=bool, default=False     help='Forbid public plain http incoming requests')
 define('xheaders', type=bool, default=True, help='Support xheaders')
 define('xsrf', type=bool, default=True, help='CSRF protection')
 define('origin', default='same', help='''Origin policy,
