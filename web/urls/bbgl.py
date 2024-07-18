@@ -5,7 +5,9 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.bbgl import bbgl_add, bbgl_add_save, bbgl_add_header_save, bbgl_header_query, bbgl_query_dm
+from web.services.bbgl import bbgl_add, bbgl_add_save, bbgl_add_header_save, bbgl_header_query, bbgl_query_dm, \
+        bbgltaskquery, bbgltask_query, bbgltaskadd_save, bbgltaskupd_save, bbgltaskedit_del, bbgltask_push, \
+        bbgltask_run, bbgltask_stop, bbgltask_tjrq_value, bbgltask_data, bbgltask_crontab_zh
 from web.services.bbgl  import bbgl_add_filter_save,bbgl_filter_query
 from web.services.bbgl  import bbgl_add_preprocess_save,bbgl_preprocess_query
 from web.services.bbgl  import bbgl_add_statement_save,bbgl_statement_query
@@ -63,5 +65,17 @@ bbgl = [
         (r"/bbgl/export/data", bbgl_export_data),
         (r"/bbgl/download", bbgl_download),
         (r"/bbgl/delete/export", bbgl_delete_export),
+
+        # 报表任务
+        (r"/bbgl/task/query", bbgltaskquery),
+        (r"/bbgl/task/_query", bbgltask_query),
+        (r"/bbgl/task/add/save", bbgltaskadd_save),
+        (r"/bbgl/task/edit/save", bbgltaskupd_save),
+        (r"/bbgl/task/edit/del", bbgltaskedit_del),
+        (r"/bbgl/task/push", bbgltask_push),
+        (r"/bbgl/task/run", bbgltask_run),
+        (r"/bbgl/task/stop", bbgltask_stop),
+        (r"/get/bbgl/task", bbgltask_data),
+        (r"/bbgl/tjrq/value", bbgltask_tjrq_value),
 
 ]

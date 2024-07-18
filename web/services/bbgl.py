@@ -7,11 +7,13 @@
 
 import json
 from   web.utils   import base_handler
-from web.model.t_dmmx import get_dmm_from_dm, get_dmlx_from_dm_bbgl, get_dmm_from_dm_bbgl
+from web.model.t_dmmx import get_dmm_from_dm, get_dmlx_from_dm_bbgl, get_dmm_from_dm_bbgl, get_gather_server
 from   web.utils.common  import DateEncoder
 
 from   web.model.t_dmmx  import get_bbtj_db_server
-from   web.model.t_bbgl  import save_bbgl,save_bbgl_header,query_bbgl_header
+from web.model.t_bbgl import save_bbgl, save_bbgl_header, query_bbgl_header, save_bbgl_task, query_bbgl_task, \
+    upd_bbgl_task, push_bbgl_task, run_bbgl_task, stop_bbgl_task, del_bbgl_task, get_bbgl_task_by_tag, get_bbgl_id, \
+    get_bbgl_tjrq_type, get_bbgl_tjrq_value, translate_crontab
 from   web.model.t_bbgl  import save_bbgl_filter,query_bbgl_filter
 from   web.model.t_bbgl  import save_bbgl_preprocess,query_bbgl_preprocess
 from   web.model.t_bbgl  import save_bbgl_statement,query_bbgl_statement
@@ -342,4 +344,115 @@ class bbgl_delete_export(base_handler.TokenHandler):
        self.write(v_json)
 
 
+'''任务管理'''
+class bbgltaskquery(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./bbgl/bbgl_task.html",
+                    gather_servers  = await get_gather_server(),
+                    gather_bbgl_ids = await get_bbgl_id(),
+                    bbgl_tjrq_type  = await get_bbgl_tjrq_type(),
+                    )
 
+class bbgltask_query(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        task_tag     = self.get_argument("task_tag")
+        v_list       = await query_bbgl_task(task_tag,self.userid,self.username)
+        v_json       = json.dumps(v_list)
+        self.write(v_json)
+
+class bbgltaskadd_save(base_handler.TokenHandler):
+    async def post(self):
+        d_task = {}
+        d_task['add_bbgl_task_tag']             = self.get_argument("add_bbgl_task_tag")
+        d_task['add_bbgl_task_desc']            = self.get_argument("add_bbgl_task_desc")
+        d_task['add_bbgl_server']               = self.get_argument("add_bbgl_server")
+        d_task['add_bbgl_id']                   = self.get_argument("add_bbgl_id")
+        d_task['add_bbgl_tjrq_begin_value']     = self.get_argument("add_bbgl_tjrq_begin_value")
+        d_task['add_bbgl_tjrq_end_value']       = self.get_argument("add_bbgl_tjrq_end_value")
+        d_task['add_bbgl_tjrq_begin_type']      = self.get_argument("add_bbgl_tjrq_begin_type")
+        d_task['add_bbgl_tjrq_end_type']        = self.get_argument("add_bbgl_tjrq_end_type")
+        d_task['add_bbgl_task_run_time']        = self.get_argument("add_bbgl_task_run_time")
+        d_task['add_bbgl_task_python3_home']    = self.get_argument("add_bbgl_task_python3_home")
+        d_task['add_bbgl_task_script_base']     = self.get_argument("add_bbgl_task_script_base")
+        d_task['add_bbgl_task_script_name']     = self.get_argument("add_bbgl_task_script_name")
+        d_task['add_bbgl_task_api_server']      = self.get_argument("add_bbgl_task_api_server")
+        d_task['add_bbgl_task_status']          = self.get_argument("add_bbgl_task_status")
+        d_task['add_bbgl_receiver']             = self.get_argument("add_bbgl_receiver")
+        d_task['add_bbgl_cc']                   = self.get_argument("add_bbgl_cc")
+        result = await save_bbgl_task(d_task)
+        self.write({"code": result['code'], "message": result['message']})
+
+class bbgltaskupd_save(base_handler.TokenHandler):
+    async def post(self):
+        d_task = {}
+        d_task['upd_bbgl_task_tag']           = self.get_argument("upd_bbgl_task_tag")
+        d_task['upd_bbgl_task_desc']          = self.get_argument("upd_bbgl_task_desc")
+        d_task['upd_bbgl_server']             = self.get_argument("upd_bbgl_server")
+        d_task['upd_bbgl_id']                 = self.get_argument("upd_bbgl_id")
+        d_task['upd_bbgl_tjrq_begin_value']   = self.get_argument("upd_bbgl_tjrq_begin_value")
+        d_task['upd_bbgl_tjrq_end_value']     = self.get_argument("upd_bbgl_tjrq_end_value")
+        d_task['upd_bbgl_tjrq_begin_type']    = self.get_argument("upd_bbgl_tjrq_begin_type")
+        d_task['upd_bbgl_tjrq_end_type']      = self.get_argument("upd_bbgl_tjrq_end_type")
+        d_task['upd_bbgl_task_run_time']      = self.get_argument("upd_bbgl_task_run_time")
+        d_task['upd_bbgl_task_python3_home']  = self.get_argument("upd_bbgl_task_python3_home")
+        d_task['upd_bbgl_task_script_base']   = self.get_argument("upd_bbgl_task_script_base")
+        d_task['upd_bbgl_task_script_name']   = self.get_argument("upd_bbgl_task_script_name")
+        d_task['upd_bbgl_task_api_server']    = self.get_argument("upd_bbgl_task_api_server")
+        d_task['upd_bbgl_task_status']        = self.get_argument("upd_bbgl_task_status")
+        d_task['upd_bbgl_receiver']           = self.get_argument("upd_bbgl_receiver")
+        d_task['upd_bbgl_cc']                 = self.get_argument("upd_bbgl_cc")
+        d_task['upd_bbgl_task_tag_old']       = self.get_argument("upd_bbgl_task_tag_old")
+        result = await upd_bbgl_task(d_task)
+        self.write({"code": result['code'], "message": result['message']})
+
+class bbgltaskedit_del(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        task_tag  = self.get_argument("task_tag")
+        result    = await del_bbgl_task(task_tag)
+        self.write({"code": result['code'], "message": result['message']})
+
+class bbgltask_push(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        tag    = self.get_argument("tag")
+        api    = self.get_argument("api")
+        v_list = push_bbgl_task(tag, api)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class bbgltask_run(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        tag    = self.get_argument("tag")
+        api    = self.get_argument("api")
+        v_list = run_bbgl_task(tag, api)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class bbgltask_stop(base_handler.TokenHandler):
+    def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        tag    = self.get_argument("tag")
+        api    = self.get_argument("api")
+        v_list = stop_bbgl_task(tag, api)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+
+class bbgltask_data(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_tag  = self.get_argument("task_tag")
+        v_list = await get_bbgl_task_by_tag(v_tag)
+        v_json = json.dumps(v_list)
+        self.write(v_json)
+
+class bbgltask_tjrq_value(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_tjlx  = self.get_argument("tjlx")
+        v_list = await get_bbgl_tjrq_value(v_tjlx)
+        v_json = json.dumps(v_list)
+        self.write(v_json)

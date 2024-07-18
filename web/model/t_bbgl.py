@@ -11,12 +11,13 @@ import traceback
 import xlwt
 import openpyxl
 import os,zipfile
+import requests
 from web.utils.mysql_async import async_processer
 from web.utils.common  import format_sql as fmt_sql,get_seconds
 from web.model.t_ds    import get_ds_by_dsid
 from web.model.t_sql  import exe_query_exp
-from web.utils.mysql_sync import sync_processer
 from web.utils.common import current_rq
+from web.utils.common import format_sql
 
 
 async def get_config(p_bbdm):
@@ -31,7 +32,7 @@ async def get_preprocess(p_bbdm):
     return  await async_processer.query_dict_list(st)
 
 async def get_headers(p_bbdm):
-    st = "select xh,header_name from t_bbgl_header where bbdm='{}' ORDER BY xh".format(p_bbdm)
+    st = "select xh,header_name,header_width from t_bbgl_header where bbdm='{}' ORDER BY xh".format(p_bbdm)
     return  await async_processer.query_dict_list(st)
 
 async def get_filter(p_bbdm):
@@ -174,8 +175,9 @@ async def query_bbgl_data(bbdm,param):
              #3.获取预处理脚本，替换变量为实参
              for s in preprocess:
                  s['replace_statement'] = s['statement']
-                 for key,value in param.items():
-                     s['replace_statement']= s['replace_statement'].replace('$$'+key+'$$',value)
+                 if len(param)>0 :
+                     for key,value in param.items():
+                         s['replace_statement']= s['replace_statement'].replace('$$'+key+'$$',value)
 
              #4.执行预处理代码
              start_time = datetime.datetime.now()
@@ -187,27 +189,26 @@ async def query_bbgl_data(bbdm,param):
              batch_pre_statement = '\n'.join([ s['replace_statement'] if s['replace_statement'][-1]==';' else s['replace_statement']+';' for s in  preprocess])
              print('batch_pre_statement=',batch_pre_statement)
              await async_processer.exec_sql_by_ds_multi(ds,batch_pre_statement)
-
-
              preProcessTime = get_seconds(start_time)
          else:
              preProcessTime = 0
 
          #5. 处理查询定义中占位符
          cfg['replace_statement'] = cfg['statement']
-         for key, value in param.items():
-             cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
+         if len(param) > 0:
+             for key, value in param.items():
+                 cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
 
          # 执行查询
          print('replace_statement=',cfg['replace_statement'])
          result = await exe_query_exp(cfg['dsid'],cfg['replace_statement'],cfg['db'])
-
 
          # 替换表头
          if headers !=[]:
              xh = 0
              for i in result['column']:
                  i['title'] =headers[xh]['header_name']
+                 i['sWidth'] = '{}px'.format(headers[xh]['header_width'])
                  xh=xh+1
          result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime)}
          return  result
@@ -550,3 +551,167 @@ async def del_export(p_id):
     except Exception as e:
         traceback.print_exc()
         return {'code': -1, 'message': '删除失败!'}
+
+
+
+'''
+报表平台-任务管理 
+'''
+
+def check_task(p_task):
+    result = {}
+    result['code'] = '0'
+    result['message'] = '验证通过'
+    return result
+
+async def query_bbgl_task(p_task_tag,p_userid,p_username):
+    if p_username == 'admin':
+        v_where = ' '
+    else:
+        v_where = " and EXISTS(SELECT 1 FROM `t_dict_group_user` b WHERE b.user_id={} AND b.dm='51' AND INSTR(b.dmm,m.type)>0)".format(p_userid)
+
+    if p_task_tag != '':
+        v_where = " and ( a.task_tag like '%{0}%' or a.comments like '%{1}%' or b.server_ip like '%{2}%' or m.name like '%{3}%')".format(p_task_tag,p_task_tag,p_task_tag,p_task_tag)
+    sql = """SELECT  
+                 task_tag,
+                 comments,
+                 CONCAT(b.server_ip,':',b.server_port) AS sync_server,             
+                 run_time,
+                 api_server,
+                 CASE a.STATUS WHEN '1' THEN '启用' WHEN '0' THEN '禁用' END  AS  flag
+            FROM t_bbgl_task a,t_server b
+            where a.server_id=b.id 
+            {0}""".format(v_where)
+    print(sql)
+    return await async_processer.query_list(sql)
+
+async def save_bbgl_task(p_task):
+    val=check_task(p_task)
+    if val['code']=='-1':
+        return val
+    try:
+        sql ="""insert into t_bbgl_task (task_tag,comments,server_id,bbid,tjrq_begin,tjrq_end,tjrq_begin_type,
+                    tjrq_end_type,run_time,script_path,script_file,python3_home,api_server,status,receiver,cc)
+                      values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}')
+             """.format(p_task['add_bbgl_task_tag'],
+                        p_task['add_bbgl_task_desc'],
+                        p_task['add_bbgl_server'],
+                        p_task['add_bbgl_id'],
+                        p_task['add_bbgl_tjrq_begin_value'],
+                        p_task['add_bbgl_tjrq_end_value'],
+                        p_task['add_bbgl_tjrq_begin_type'],
+                        p_task['add_bbgl_tjrq_end_type'],
+                        p_task['add_bbgl_task_run_time'],
+                        format_sql(p_task['add_bbgl_task_script_base']),
+                        format_sql(p_task['add_bbgl_task_script_name']),
+                        format_sql(p_task['add_bbgl_task_python3_home']),
+                        p_task['add_bbgl_task_api_server'],
+                        p_task['add_bbgl_task_status'],
+                        p_task['add_bbgl_receiver'],
+                        p_task['add_bbgl_cc'])
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '保存成功!'}
+    except:
+        traceback.print_exc()
+        return {'code': '-1', 'message': '保存失败!'}
+
+async def upd_bbgl_task(p_task):
+    val = check_task(p_task)
+    if val['code']=='-1':
+        return val
+    try:
+        sql ="""update t_bbgl_task
+                  set  task_tag='{}',
+                       comments='{}',
+                       run_time='{}',
+                       script_path='{}',
+                       script_file='{}',
+                       python3_home='{}',
+                       api_server='{}',
+                       status='{}',
+                       bbid ='{}',
+                       tjrq_begin='{}',
+                       tjrq_end='{}',
+                       tjrq_begin_type='{}',                     
+                       tjrq_end_type='{}',
+                       receiver='{}',
+                       cc='{}',
+                       server_id='{}'
+                 where task_tag='{}'
+             """.format(p_task['upd_bbgl_task_tag'],
+                        p_task['upd_bbgl_task_desc'],
+                        p_task['upd_bbgl_task_run_time'],
+                        format_sql(p_task['upd_bbgl_task_script_base']),
+                        format_sql(p_task['upd_bbgl_task_script_name']),
+                        format_sql(p_task['upd_bbgl_task_python3_home']),
+                        p_task['upd_bbgl_task_api_server'],
+                        p_task['upd_bbgl_task_status'],
+                        p_task['upd_bbgl_id'],
+                        p_task['upd_bbgl_tjrq_begin_value'],
+                        p_task['upd_bbgl_tjrq_end_value'],
+                        p_task['upd_bbgl_tjrq_begin_type'],
+                        p_task['upd_bbgl_tjrq_end_type'],
+                        p_task['upd_bbgl_receiver'],
+                        p_task['upd_bbgl_cc'],
+                        p_task['upd_bbgl_server'],
+                        p_task['upd_bbgl_task_tag_old'])
+        print('sql=',sql)
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '保存成功!'}
+    except:
+        traceback.print_exc()
+        return {'code': '-1', 'message': '保存失败!'}
+
+async def del_bbgl_task(p_task_tag):
+    try:
+        sql="delete from t_bbgl_task  where task_tag='{0}'".format(p_task_tag)
+        await async_processer.exec_sql(sql)
+        return {'code': '0', 'message': '删除成功!'}
+    except :
+        traceback.print_exc()
+        return {'code': '-1', 'message': '删除失败!'}
+
+def push_bbgl_task(p_tag,p_api):
+    url  = 'http://{}/push_script_remote_bbgl'.format(p_api)
+    res  = requests.post(url, data={'tag': p_tag})
+    jres = res.json()
+    if jres['code'] == 200:
+        v = ''
+        for c in jres['msg']:
+            if c.count(p_tag) > 0:
+                v = v + "<span class='warning'>" + c + "</span>"
+            else:
+                v = v + c
+            v = v + '<br>'
+        jres['msg'] = v
+        return jres
+    else:
+        return jres
+
+def run_bbgl_task(p_tag,p_api):
+    url = 'http://{}/run_script_remote_bbgl'.format(p_api)
+    res = requests.post(url, data={'tag': p_tag})
+    jres = res.json()
+    return jres
+
+def stop_bbgl_task(p_tag,p_api):
+    url = 'http://{}/stop_script_remote_bbgl'.format(p_api)
+    res = requests.post(url, data={'tag': p_tag})
+    jres = res.json()
+    return jres
+
+async def get_bbgl_task_by_tag(p_tag):
+    sql = """SELECT  * FROM t_bbgl_task where task_tag='{0}'""".format(p_tag)
+    return (await async_processer.query_dict_one(sql))
+
+async def get_bbgl_id():
+    sql = "select id,bbmc from t_bbgl_config order by 1"
+    return await async_processer.query_list(sql)
+
+async def get_bbgl_tjrq_type():
+    sql = "select dmm,dmmc from t_bbgl_dmmx where dm='002' order by dm"
+    return await async_processer.query_list(sql)
+
+async def get_bbgl_tjrq_value(tjlx):
+    sql = "select dmm,dmmc,dmmc2 from t_bbgl_dmmx where dm='{}' order by dm+0".format(tjlx)
+    return await async_processer.query_list(sql)

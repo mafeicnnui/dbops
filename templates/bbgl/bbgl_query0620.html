@@ -1,15 +1,36 @@
+<head>
+    <style>
+        .bootstrap-select.show-menu .dropdown-menu {
+          max-height: 250px; /* 设置最大高度以展示滚动条 */
+          min-height: 100px; /* 设置最大高度以展示滚动条 */
+          overflow-y: auto;  /* 添加滚动条 */
+        }
+
+        #bbdm {
+          max-height: 250px; /* 设置最大高度以展示滚动条 */
+          min-height: 100px; /* 设置最大高度以展示滚动条 */
+          overflow-y: auto;  /* 添加滚动条 */
+        }
+    </style>
+</head>
 <body>
   <form class="form-horizontal" role="form">
        <div class="row">
             <div class="col-md-3">
                  <div class="input-group">
                     <span class="input-group-addon">报表代码</span>
-                    <select class="form-control select" id="bbdm" name="bbdm">
-                        <option value='' selected = "selected">请选择报表</option>
-                        {% for var in dm_bbdm %}
-                          <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
+<!--                    <select class="form-control select" id="bbdm" name="bbdm">-->
+<!--                        <option value='' selected = "selected">请选择报表</option>-->
+<!--                        {% for var in dm_bbdm %}-->
+<!--                          <option value={{var[0]}} >{{var[1]}}</option>-->
+<!--                        {% end %}-->
+<!--                    </select>-->
+                      <select class="selectpicker"  data-live-search="true"   data-style="btn-default" id="bbdm" name="bbdm">
+                         <option value='' selected = "selected">请选择报表</option>
+                         {% for var in dm_bbdm %}
+                            <option value={{var[0]}} title={{var[1]}} >{{var[1]}}</option>
+                         {% end %}
+                     </select>
                  </div>
             </div>
             <div class="col-md-1">
@@ -24,12 +45,12 @@
   </form>
   <br>
   <form class="form-horizontal" role="form" id="form_bbgl_filter"></form>
-  <input type="hidden" id="notnull_filter">
-  <input type="hidden" id="rq_range_filter">
   <br>
   <div id='div-table'>
       <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
   </div>
+  <input type="hidden" id="notnull_filter">
+  <input type="hidden" id="rq_range_filter">
 
   <script>
       $(document).ready(function() {
@@ -96,31 +117,31 @@
                                         },
                                         success: function (dataSet) {
                                             for (dm=0;dm<dataSet.length;dm++) {
-                                                options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
-                                                //options = options +"<option value='"+dataSet[dm][0]+"' title='"+dataSet[dm][1]+"'>"+dataSet[dm][1]+"</option>\n"
+                                                //options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
+                                                options = options +"<option value='"+dataSet[dm][0]+"' title='"+dataSet[dm][1]+"'>"+dataSet[dm][1]+"</option>\n"
                                             }
                                        },
                                    });
 
-                                   rowFilter=rowFilter+
+                                   // rowFilter=rowFilter+
+                                   //   '<div class="col-md-3">\n' +
+                                   //   '       <div class="input-group">\n' +
+                                   //   '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
+                                   //   '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
+                                   //   '                <option value="" selected = "selected">...</option>\n' +options+
+                                   //   '            </select> '+
+                                   //   '      </div>\n' +
+                                   //   '</div>'
+
+                                    rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                     '                <option value="" selected = "selected">...</option>\n' +options+
+                                     '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
+                                     '                <option value="">...</option>\n' +options+
                                      '            </select> '+
                                      '      </div>\n' +
                                      '</div>'
-
-                                    // rowFilter=rowFilter+
-                                    //  '<div class="col-md-3">\n' +
-                                    //  '       <div class="input-group">\n' +
-                                    //  '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                    //  '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                    //  '                <option value="">...</option>\n' +options+
-                                    //  '            </select> '+
-                                    //  '      </div>\n' +
-                                    //  '</div>'
 
                               } else {
                                    rowFilter=rowFilter+
@@ -219,9 +240,6 @@
 
                       $('#form_bbgl_filter').append(htmlFilter);
 
-                      // $('.selectpicker').selectpicker();
-                      // $('.selectpicker').selectpicker('refresh');
-
                       $.fn.datepicker.dates['zh-CN'] = {
                             days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
                             daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
@@ -257,6 +275,8 @@
                         forceParse: 0,
                         minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
                     });
+
+                      $('.selectpicker').selectpicker('refresh');
 
                    },
                 });
@@ -322,7 +342,9 @@
                    if (table!=undefined ){
                          table.destroy();
                     }
+
                     $('#example').empty();
+
 
                     obj = $('#form_bbgl_filter').serializeObject()
                     $.ajax({
@@ -365,8 +387,22 @@
                     });
              });
 
-          // $('.selectpicker').selectpicker();
-          // $('.selectpicker').selectpicker('refresh');
+          table=$('#example').DataTable( {
+                "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                destroy       : true,
+                async         : true,
+                data          : [[''],[''],['']],
+                columns       : [{title: '', sTitle: ''}],
+                scrollX       : false,
+                scrollY       : false,
+                scrollCollapse: false,
+                paging        : false,
+                iDisplayLength: 0,
+                autoWidth     : true,
+                "language"    : get_languages()
+            });
+          $('.selectpicker').selectpicker();
+          $('.selectpicker').selectpicker('refresh');
 
       });
    </script>

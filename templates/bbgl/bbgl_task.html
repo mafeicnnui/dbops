@@ -1,0 +1,960 @@
+<html>
+<head>
+    <title>报表任务</title>
+    <style>
+        .modal-lg-order {
+            width:45%;
+            height:45%;
+        }
+        .table th{
+            text-align: center;
+            vertical-align: middle!important;
+        }
+         #sys_templete_name,#task_templete_name {
+            height: 60px;
+            max-height: 60px;
+        }
+        .modal-lg-detail {
+            width:65%;
+            height:80%;
+        }
+        #ace-editor {
+            color: #59aed5;
+            overflow:auto;
+            height: 400px;
+        }
+        .warning {
+            color: #d54c15;
+        }
+
+    </style>
+</head>
+
+<body>
+    <p></p>
+    <!--查询条件 -->
+    <div class="row">
+        <div class="col-md-12">
+           <div class="col-md-3">
+               <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    <input type="text" id="name"  class="form-control" placeholder="请输入关键字">
+               </div>
+            </div>
+             <div class="col-md-1">
+               <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    </span>
+                    <span class="input-group-btn">
+                       <button type="button"  id='task_add_win' class="btn waves-effect waves-light btn-primary"><i class="ion-android-add"></i></button>
+                    </span>
+               </div>
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <!--指标情况 -->
+    <div class="row">
+         <div class="col-md-12">
+              <div id="div-tab">
+                   <table id="bbgl_task_table" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+              </div>
+         </div>
+    </div>
+    <br>
+
+    <!--新增任务窗口 -->
+    <div id="con-close-modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">新增任务</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                         <form class="form-horizontal" role="form">
+                                   <div class="form-group">
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_tag">*</span>任务标识</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_tag"  type="text"  class="form-control" placeholder="请输入任务标识">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_desc">*</span>任务描述</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_desc"  type="text"  class="form-control"  placeholder="请输入任务描述">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_server">*</span>运行服务器</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select class="form-control selectpicker" data-live-search="true" data-style="btn-default" id="add_bbgl_server" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in gather_servers %}
+                                                 <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_id">*</span>选择报表</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select class="form-control select" id="add_bbgl_id" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in gather_bbgl_ids %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_tjrq_begin">*</span>开始日期</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-control select" id="add_bbgl_tjrq_begin_type" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in bbgl_tjrq_type %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                       <div class="col-md-7">
+                                            <select class="form-control select" id="add_bbgl_tjrq_begin_value" >
+                                                <option value='' selected = "selected">......</option>
+                                            </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_tjrq_end">*</span>结束日期</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-control select" id="add_bbgl_tjrq_end_type" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in bbgl_tjrq_type %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                       <div class="col-md-7">
+                                            <select class="form-control select" id="add_bbgl_tjrq_end_value" >
+                                                <option value='' selected = "selected">......</option>
+                                            </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_run_time">*</span>运行时间</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
+                                        </div>
+                                    </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_python3_home">*</span>PYTHON目录</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3目录">
+                                        </div>
+                                    </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_script_base">*</span>脚本目录</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_script_base"  type="text" class="form-control" placeholder="请输入脚本目录">
+                                        </div>
+                                    </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_script_name">*</span>脚本名称</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_script_name"  type="text" class="form-control" placeholder="请输入脚本名称">
+                                        </div>
+                                    </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_api_server">*</span>API服务器</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_task_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_receiver">*</span>收件人</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_receiver"  type="text"  class="form-control"  placeholder="请输入收件人">
+                                        </div>
+                                   </div>
+                                   <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_cc">*</span>抄送人</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input id="add_bbgl_cc"  type="text"  class="form-control"  placeholder="请输入抄送人">
+                                        </div>
+                                   </div>
+
+
+                                   <div class="form-group">
+                                        <div >
+                                            <label class="col-md-2 control-label"><span id="s_add_bbgl_task_status">*</span>任务状态</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select class="form-control select" id="add_bbgl_task_status">
+                                                 <option value="1">启用</option>
+                                                 <option value="0">禁用</option>
+                                            </select>
+                                       </div>
+                                    </div>
+                                 </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="task_save_btn" >保存</button>
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+    <!--任务变更窗口 -->
+   <div id="con-close-modal-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+       <div class="modal-dialog modal-lg-order">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">任务变更</h4>
+            </div>
+            <div class="modal-body">
+               <div class="panel panel-default">
+                      <div class="panel-body">
+                         <form class="form-horizontal" role="form">
+                           <div class="form-group">
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_tag">*</span>任务标识</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_tag"  type="text" readonly class="form-control" placeholder="请输入任务标识">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_desc">*</span>任务描述</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_desc"  type="text" readonly class="form-control"  placeholder="请输入任务描述">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_server">*</span>运行服务器</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="form-control selectpicker" data-live-search="true" data-style="btn-default" id="upd_bbgl_server" readonly>
+                                        <option value='' selected = "selected">......</option>
+                                        {% for var in gather_servers %}
+                                         <option value={{var[0]}} title={{var[1]}} >{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                               </div>
+                           </div>
+                           <div class="form-group">
+                                        <div>
+                                            <label class="col-md-2 control-label"><span id="s_upd_bbgl_id">*</span>选择报表</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <select class="form-control select" id="upd_bbgl_id" >
+                                                <option value='' selected = "selected">......</option>
+                                                {% for var in gather_bbgl_ids %}
+                                                 <option value={{var[0]}} >{{var[1]}}</option>
+                                                {% end %}
+                                            </select>
+                                       </div>
+                                   </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_tjrq_begin">*</span>开始日期</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control select" id="upd_bbgl_tjrq_begin_type" >
+                                        <option value='' selected = "selected">......</option>
+                                        {% for var in bbgl_tjrq_type %}
+                                         <option value={{var[0]}} >{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                               </div>
+                               <div class="col-md-7">
+                                    <select class="form-control select" id="upd_bbgl_tjrq_begin_value" >
+                                        <option value='' selected = "selected">......</option>
+                                    </select>
+                               </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_tjrq_end">*</span>结束日期</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control select" id="upd_bbgl_tjrq_end_type" >
+                                        <option value='' selected = "selected">......</option>
+                                        {% for var in bbgl_tjrq_type %}
+                                         <option value={{var[0]}} >{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                               </div>
+                               <div class="col-md-7">
+                                    <select class="form-control select" id="upd_bbgl_tjrq_end_value" >
+                                        <option value='' selected = "selected">......</option>
+                                    </select>
+                               </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_run_time">*</span>运行时间</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_python3_home">*</span>PYTHON目录</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3目录">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_script_base">*</span>脚本目录</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_script_base"  type="text" class="form-control" placeholder="请输入脚本目录">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_script_name">*</span>脚本名称</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_script_name"  type="text" class="form-control" placeholder="请输入脚本名称">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_api_server">*</span>API服务器</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_task_api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_receiver">*</span>收件人</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_receiver"  type="text"  class="form-control"  placeholder="请输入收件人">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_cc">*</span>抄送人</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id="upd_bbgl_cc"  type="text"  class="form-control"  placeholder="请输入抄送人">
+                                </div>
+                           </div>
+                           <div class="form-group">
+                                <div >
+                                    <label class="col-md-2 control-label"><span id="s_upd_bbgl_task_status">*</span>任务状态</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="form-control select" id="upd_bbgl_task_status">
+                                         <option value="1">启用</option>
+                                         <option value="0">禁用</option>
+                                    </select>
+                               </div>
+                            </div>
+                         </form>
+                      </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-3 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="task_upd_btn" >变更</button>
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+           </div>
+
+     </div>
+    </div>
+   </div>
+   <input type='hidden' id='upd_task_tag_hidden'>
+
+    <!--远程任务详情 -->
+    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">任务详情</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div id='ace-editor' class="col-md-12"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div><!-- /.modal -->
+
+</body>
+
+<script>
+
+     function set_button_status(status){
+          $('#task_upd_win').attr("disabled",status);
+          $('#task_del_btn').attr("disabled",status);
+          $('#task_push_btn').attr("disabled",status);
+          $('#task_run_btn').attr("disabled",status);
+          $('#task_stop_btn').attr("disabled",status);
+          $('#task_log_btn').attr("disabled",status);
+     }
+
+     function query_task(){
+           $.ajax({
+                  url: "/bbgl/task/_query",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      task_tag : $("#name").val(),
+                  },
+                  success: function (dataSet) {
+                      $('#bbgl_task_table').DataTable( {
+                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                          destroy    :true,
+                          async      :true,
+                          ordering   :false,
+                          scrollY    :false,
+                          scrollX    :false,
+                          scrollCollapse: true,
+                          paging:     true,
+                          iDisplayLength: 12,
+                          data: dataSet,
+                          columns: [
+                             { "title": "任务标识" },
+                             { "title": "任务描述" },
+                             { "title": "运行服务器" },
+                             { "title": "运行时间" },
+                             { "title": "接口服务" },
+                             { "title": "任务状态" },
+                             {
+                                "title":"操作",
+                                "width": "25px",
+                                "render": function(data,type,row){
+                                     var change_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="upd_bbgl_task(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                     var delete_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_bbgl_task(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                     var push_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="推送" onclick="push_bbgl_task(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                     var run_btn    = '<input class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="run_bbgl_task(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                     var stop_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="停止" onclick="stop_bbgl_task(\''+escape(row)+'\');"/>' +'&nbsp;'
+                                    return change_btn+delete_btn+push_btn+run_btn+stop_btn
+                                }
+                             },
+                           ],
+                          "language": get_languages()
+                         });
+                      set_button_status(true);
+                   }
+             })
+        }
+
+     function del_bbgl_task(r) {
+        v =unescape(r).split(',')
+        task_tag= v[0]
+        task_desc=v[1]
+        swal({
+                title: "确认要删除吗?",
+                text: "指标["+task_desc+"]将被删除！",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是, 删除!",
+                cancelButtonText:  "否, 取消!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+               }, function (isConfirm) {
+                   if (isConfirm) {
+                         $.ajax({
+                                url: "/bbgl/task/edit/del",
+                                type: "post",
+                                datatype: "json",
+                                data:{task_tag: task_tag},
+                                success: function (dataSet) {
+                                    if (dataSet.code=='0') {
+                                         swal("已删除!", "指标["+task_desc+"]已删除!", "success");
+                                         query_task()
+                                    } else {
+                                         swal("已取消!", "指标["+task_desc+"]"+dataSet.message+"!", "error");
+                                    }
+                                }
+                            });
+
+                  } else {
+                      swal("已取消", "问题单[" + task_desc + "]已取消删除！", "error");
+                  }
+        })
+     }
+
+     function upd_bbgl_task(r) {
+            v = unescape(r).split(',')
+            task_tag= v[0]
+            $.ajax({
+                  url: "/get/bbgl/task",
+                  type: "post",
+                  data:{
+                      task_tag : task_tag,
+                  },
+                  datatype: "json",
+                  async:false,
+                  success: function (dataSet) {
+                      $('#upd_task_tag_hidden').val(dataSet['task_tag'])
+                      $('#upd_bbgl_task_tag').val(dataSet['task_tag'])
+                      $('#upd_bbgl_task_desc').val(dataSet['comments'])
+                      $('#upd_bbgl_server').val(dataSet['server_id'])
+                      $("#upd_bbgl_server").selectpicker('refresh')
+                      $('#upd_bbgl_id').val(dataSet['bbid'])
+                      $('#upd_bbgl_tjrq_begin_type').val(dataSet['tjrq_begin_type'])
+                      $('#upd_bbgl_tjrq_end_type').val(dataSet['tjrq_end_type'])
+                      $('#upd_bbgl_tjrq_begin_type').change()
+                      $('#upd_bbgl_tjrq_end_type').change()
+                      $('#upd_bbgl_tjrq_begin_value').val(dataSet['tjrq_begin'])
+                      $('#upd_bbgl_tjrq_end_value').val(dataSet['tjrq_end'])
+                      $('#upd_bbgl_task_run_time').val(dataSet['run_time'])
+                      $('#upd_bbgl_task_python3_home').val(dataSet['python3_home'])
+                      $('#upd_bbgl_task_script_base').val(dataSet['script_path'])
+                      $('#upd_bbgl_task_script_name').val(dataSet['script_file'])
+                      $('#upd_bbgl_task_api_server').val(dataSet['api_server'])
+                      $('#upd_bbgl_task_status').val(dataSet['status'])
+                      $('#upd_bbgl_receiver').val(dataSet['receiver'])
+                      $('#upd_bbgl_cc').val(dataSet['cc'])
+                  }
+            });
+
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal-upd').modal({
+                   keyboard: false,
+                   backdrop:false
+            });
+     }
+
+     function push_bbgl_task(r) {
+           v =unescape(r).split(',')
+           v_tag= v[0]
+           v_desc=v[1]
+           v_api=v[4]
+           $.ajax({
+                  url: "/bbgl/task/push",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      tag: v_tag,
+                      api: v_api
+                  },
+                  beforeSend: function () {
+                      swal({
+                            title: "正在推送中...",
+                            text: "任务["+v_desc+"]正在推送中...",
+                            type: "info",
+                            showConfirmButton: false
+                       });
+                  },
+                  success: function (dataSet) {
+                      if (dataSet['code']== 200) {
+                          swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
+                          $('#ace-editor').html(dataSet['msg'])
+                          $('.modal').on('show.bs.modal', centerModals);
+                          $(window).on('resize', centerModals);
+                          $('#con-close-modal').modal({ keyboard: false,backdrop:false});
+                          $("#query_btn").click();
+                      } else {
+                          swal("推送失败!", "任务["+v_desc+"]推送失败("+dataSet['msg']+")!", "error");
+                      }
+                      $('#task_upd_win').attr("disabled",true);
+                      $('#task_clone_win').attr("disabled",true);
+                      $('#task_del_btn').attr("disabled",true);
+                      $('#task_push_btn').attr("disabled",true);
+                      $('#task_run_btn').attr("disabled",true);
+                      $('#task_stop_btn').attr("disabled",true);
+                  },
+          });
+     }
+
+     function run_bbgl_task(r) {
+          v = unescape(r).split(',')
+          v_tag= v[0]
+          v_desc=v[1]
+          v_api=v[4]
+          $.ajax({
+                  url: "/bbgl/task/run",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      tag: v_tag,
+                      api: v_api
+                  },
+                 beforeSend: function () {
+                      swal({
+                            title: "正在运行中...",
+                            text: "任务["+v_desc+"]正在运行中...",
+                            type: "info",
+                            showConfirmButton: false
+                       });
+                  },
+                  success: function (dataSet) {
+                      if (dataSet.code=='200') {
+                             swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
+                             $("#query_btn").click();
+                      } else {
+                          swal("运行失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
+                      }
+                      set_button_status(true);
+                  },
+          });
+     }
+
+     function stop_bbgl_task(r) {
+          v = unescape(r).split(',')
+          v_tag= v[0]
+          v_desc=v[1]
+          v_api=v[4]
+          $.ajax({
+                  url: "/bbgl/task/stop",
+                  type: "post",
+                  datatype: "json",
+                  data:{
+                      tag: v_tag,
+                      api: v_api
+                  },
+                 beforeSend: function () {
+                      swal({
+                            title: "正在停止中...",
+                            text: "任务["+v_desc+"]正在停止中...",
+                            type: "info",
+                            showConfirmButton: false
+                       });
+                  },
+                  success: function (dataSet) {
+                      console.log('>>>>>>>>>>>',dataSet)
+                      if (dataSet.code=='200') {
+                             swal("停止成功!", "任务["+v_desc+"]已停止运行!", "success");
+                             $("#query_btn").click();
+                      } else {
+                          swal("停止失败!", "任务["+v_desc+"]"+dataSet.msg+"!", "error");
+                      }
+                      set_button_status(true);
+                  },
+          });
+     }
+
+     $(document).ready(function() {
+
+        function set_bbgl_title(flag) {
+            if (flag == 'a') {
+                if ($('#add_bbgl_server').val()!=''){
+                    var options=$('#add_bbgl_server option:selected');
+                    $("#add_bbgl_task_tag").val('bbgl_task_server_'+$(options[0]).val());
+                    $("#add_bbgl_task_desc").val('报表任务['+$(options[0]).text()+']');
+                } else {
+                    $("#add_bbgl_task_tag").val('');
+                    $("#add_bbgl_task_desc").val('');
+                }
+
+                if ($('#add_bbgl_id').val()!=''){
+                    var options=$('#add_bbgl_id option:selected');
+                    $("#add_bbgl_task_tag").val($("#add_bbgl_task_tag").val()+'_'+$(options[0]).val());
+                    $("#add_bbgl_task_desc").val($("#add_bbgl_task_desc").val()+' - ['+$(options[0]).text()+']');
+                } else {
+                    $("#add_bbgl_task_tag").val('');
+                    $("#add_bbgl_task_desc").val('');
+                }
+
+            }
+
+            if (flag == 'u') {
+                if ($('#upd_bbgl_server').val()!=''){
+                    var options=$('#upd_bbgl_server option:selected');
+                    $("#upd_bbgl_task_tag").val('bbgl_task_server_'+$(options[0]).val());
+                    $("#upd_bbgl_task_desc").val('报表任务['+$(options[0]).text()+']');
+                } else {
+                    $("#upd_bbgl_task_tag").val('');
+                    $("#upd_bbgl_task_desc").val('');
+                }
+
+                if ($('#upd_bbgl_id').val()!=''){
+                    var options=$('#upd_bbgl_id option:selected');
+                    $("#upd_bbgl_task_tag").val($("#upd_bbgl_task_tag").val()+'_'+$(options[0]).val());
+                    $("#upd_bbgl_task_desc").val($("#upd_bbgl_task_desc").val()+' - ['+$(options[0]).text()+']');
+                } else {
+                    $("#upd_bbgl_task_tag").val('');
+                    $("#upd_bbgl_task_desc").val('');
+                }
+            }
+
+        }
+
+        $("#add_bbgl_tjrq_begin_type").change(function () {
+            var tjlx = $('#add_bbgl_tjrq_begin_type').val();
+            if (tjlx != '') {
+                $.ajax({
+                    url: "/bbgl/tjrq/value",
+                    async: false,
+                    type: "post",
+                    datatype: "text",
+                    data: {
+                        tjlx: tjlx
+                    },
+                    success: function (dataSet) {
+                         $("#add_bbgl_tjrq_begin_value").empty();
+                         $("#add_bbgl_tjrq_begin_value").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet.length;i++){
+                              var val  = dataSet[i][2];
+                              var text = dataSet[i][1];
+                              $("#add_bbgl_tjrq_begin_value").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+
+                    }
+                });
+            }
+        });
+
+        $("#add_bbgl_tjrq_end_type").change(function () {
+            var tjlx = $('#add_bbgl_tjrq_end_type').val();
+            if (tjlx != '') {
+                $.ajax({
+                    url: "/bbgl/tjrq/value",
+                    async: false,
+                    type: "post",
+                    datatype: "text",
+                    data: {
+                        tjlx: tjlx
+                    },
+                    success: function (dataSet) {
+                         $("#add_bbgl_tjrq_end_value").empty();
+                         $("#add_bbgl_tjrq_end_value").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet.length;i++){
+                              var val  = dataSet[i][2];
+                              var text = dataSet[i][1];
+                              $("#add_bbgl_tjrq_end_value").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+
+                    }
+                });
+            }
+        });
+
+        $("#upd_bbgl_tjrq_begin_type").change(function () {
+            var tjlx = $('#upd_bbgl_tjrq_begin_type').val();
+            if (tjlx != '') {
+                $.ajax({
+                    url: "/bbgl/tjrq/value",
+                    async: false,
+                    type: "post",
+                    datatype: "text",
+                    data: {
+                        tjlx: tjlx
+                    },
+                    success: function (dataSet) {
+                         console.log(dataSet)
+                         $("#upd_bbgl_tjrq_begin_value").empty();
+                         $("#upd_bbgl_tjrq_begin_value").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet.length;i++){
+                              var val  = dataSet[i][2];
+                              var text = dataSet[i][1];
+                              $("#upd_bbgl_tjrq_begin_value").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+
+                    }
+                });
+            }
+        });
+
+        $("#upd_bbgl_tjrq_end_type").change(function () {
+            var tjlx = $('#upd_bbgl_tjrq_end_type').val();
+            if (tjlx != '') {
+                $.ajax({
+                    url: "/bbgl/tjrq/value",
+                    async: false,
+                    type: "post",
+                    datatype: "text",
+                    data: {
+                        tjlx: tjlx
+                    },
+                    success: function (dataSet) {
+                         console.log(dataSet)
+                         $("#upd_bbgl_tjrq_end_value").empty();
+                         $("#upd_bbgl_tjrq_end_value").append("<option value=''>...</option>");
+                         for(i=0;i<dataSet.length;i++){
+                              var val  = dataSet[i][2];
+                              var text = dataSet[i][1];
+                              $("#upd_bbgl_tjrq_end_value").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
+                         }
+
+                    }
+                });
+            }
+        });
+
+        $('#add_bbgl_server').change(function() {
+           set_bbgl_title('a')
+        });
+
+        $('#upd_bbgl_server').change(function() {
+            set_bbgl_title('u')
+        });
+
+        $('#add_bbgl_id').change(function() {
+            set_bbgl_title('a')
+        });
+
+        $('#upd_bbgl_id').change(function() {
+            set_bbgl_title('u')
+        });
+
+        $('#task_add_win').click(function(){
+            $('#add_bbgl_task_tag').val('')
+            $('#add_bbgl_task_desc').val('')
+            $('#add_bbgl_server').val('')
+            $('#add_bbgl_id').val('')
+            $('#add_bbgl_tjrq_begin_value').val('')
+            $('#add_bbgl_tjrq_end_value').val('')
+            $('#add_bbgl_task_run_time').val('')
+            $('#add_bbgl_task_python3_home').val('')
+            $('#add_bbgl_task_script_base').val('')
+            $('#add_bbgl_task_script_name').val('')
+            $('#add_bbgl_task_api_server').val('')
+            $('#add_bbgl_receiver').val('')
+            $('#add_bbgl_cc').val('')
+            $('#add_bbgl_task_status').val('1')
+            $('.modal').on('show.bs.modal', centerModals);
+            $(window).on('resize', centerModals);
+            $('#con-close-modal-add').modal({
+                   keyboard: false,
+                   backdrop:false
+             });
+        })
+
+        $('#task_save_btn').click(function() {
+            $.ajax({
+                    url: "/bbgl/task/add/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        add_bbgl_task_tag           : $('#add_bbgl_task_tag').val(),
+                        add_bbgl_task_desc          : $('#add_bbgl_task_desc').val(),
+                        add_bbgl_server             : $('#add_bbgl_server').val(),
+                        add_bbgl_id                 : $('#add_bbgl_id').val(),
+                        add_bbgl_tjrq_begin_value   : $('#add_bbgl_tjrq_begin_value').val(),
+                        add_bbgl_tjrq_end_value     : $('#add_bbgl_tjrq_end_value').val(),
+                        add_bbgl_tjrq_begin_type    : $('#add_bbgl_tjrq_begin_type').val(),
+                        add_bbgl_tjrq_end_type      : $('#add_bbgl_tjrq_end_type').val(),
+                        add_bbgl_task_run_time      : $('#add_bbgl_task_run_time').val(),
+                        add_bbgl_task_python3_home  : $('#add_bbgl_task_python3_home').val(),
+                        add_bbgl_task_script_base   : $('#add_bbgl_task_script_base').val(),
+                        add_bbgl_task_script_name   : $('#add_bbgl_task_script_name').val(),
+                        add_bbgl_task_api_server    : $('#add_bbgl_task_api_server').val(),
+                        add_bbgl_receiver           : $('#add_bbgl_receiver').val(),
+                        add_bbgl_cc                 : $('#add_bbgl_cc').val(),
+                        add_bbgl_task_status        : $('#add_bbgl_task_status').val(),
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.code == 0) {
+                            swal("保存成功", "", "success")
+                            query_task()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    },
+            });
+        });
+
+        $('#task_upd_btn').click(function(){
+            $.ajax({
+                url: "/bbgl/task/edit/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    upd_bbgl_task_tag           : $('#upd_bbgl_task_tag').val(),
+                    upd_bbgl_task_desc          : $('#upd_bbgl_task_desc').val(),
+                    upd_bbgl_server             : $('#upd_bbgl_server').val(),
+                    upd_bbgl_id                 : $('#upd_bbgl_id').val(),
+                    upd_bbgl_tjrq_begin_value   : $('#upd_bbgl_tjrq_begin_value').val(),
+                    upd_bbgl_tjrq_begin_type    : $('#upd_bbgl_tjrq_begin_type').val(),
+                    upd_bbgl_tjrq_end_value     : $('#upd_bbgl_tjrq_end_value').val(),
+                    upd_bbgl_tjrq_end_type      : $('#upd_bbgl_tjrq_end_type').val(),
+                    upd_bbgl_task_run_time      : $('#upd_bbgl_task_run_time').val(),
+                    upd_bbgl_task_python3_home  : $('#upd_bbgl_task_python3_home').val(),
+                    upd_bbgl_task_script_base   : $('#upd_bbgl_task_script_base').val(),
+                    upd_bbgl_task_script_name   : $('#upd_bbgl_task_script_name').val(),
+                    upd_bbgl_task_api_server    : $('#upd_bbgl_task_api_server').val(),
+                    upd_bbgl_task_status        : $('#upd_bbgl_task_status').val(),
+                    upd_bbgl_receiver           : $('#upd_bbgl_receiver').val(),
+                    upd_bbgl_cc                 : $('#upd_bbgl_cc').val(),
+                    upd_bbgl_task_tag_old       : $('#upd_task_tag_hidden').val(),
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == 0) {
+                        swal("更新成功", "", "success")
+                        query_task()
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                },
+            })
+        })
+
+        $("#query_btn").click(function() {
+          query_task()
+        });
+
+        $("#query_btn").click()
+
+        $("#name").bind("input propertychange",function(){
+          query_task()
+       });
+
+        $("#add_bbgl_server").selectpicker('refresh')
+        $("#upd_bbgl_server").selectpicker('refresh')
+
+    });
+
+</script>
+
+</html>
