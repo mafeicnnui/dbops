@@ -26,18 +26,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="func optimize">
-      <change afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dbops.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbops.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_dmmx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_dmmx.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/urls/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/utils/mysql_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_async.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -954,14 +944,7 @@
       <workItem from="1721291481239" duration="130000" />
       <workItem from="1721717872184" duration="19477000" />
       <workItem from="1721809819372" duration="1376000" />
-      <workItem from="1721869106158" duration="15639000" />
-    </task>
-    <task id="LOCAL-00237" summary="add logon font">
-      <created>1672997631091</created>
-      <option name="number" value="00237" />
-      <option name="presentableId" value="LOCAL-00237" />
-      <option name="project" value="LOCAL" />
-      <updated>1672997631091</updated>
+      <workItem from="1721869106158" duration="16616000" />
     </task>
     <task id="LOCAL-00238" summary="update sql">
       <created>1673225736545</created>
@@ -1299,7 +1282,14 @@
       <option name="project" value="LOCAL" />
       <updated>1721291549270</updated>
     </task>
-    <option name="localTasksCounter" value="286" />
+    <task id="LOCAL-00286" summary="func optimize">
+      <created>1721898014018</created>
+      <option name="number" value="00286" />
+      <option name="presentableId" value="LOCAL-00286" />
+      <option name="project" value="LOCAL" />
+      <updated>1721898014019</updated>
+    </task>
+    <option name="localTasksCounter" value="287" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1374,22 +1364,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1721722718228" />
-    <state width="1483" height="18" key="GridCell.Tab.0.bottom" timestamp="1721894306589">
+    <state width="1483" height="98" key="GridCell.Tab.0.bottom" timestamp="1721898002826">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="18" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
-    <state width="1483" height="18" key="GridCell.Tab.0.center" timestamp="1721894306589">
+    <state width="1483" height="98" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
+    <state width="1483" height="98" key="GridCell.Tab.0.center" timestamp="1721898002826">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="18" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
-    <state width="1483" height="18" key="GridCell.Tab.0.left" timestamp="1721894306589">
+    <state width="1483" height="98" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
+    <state width="1483" height="98" key="GridCell.Tab.0.left" timestamp="1721898002826">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="18" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
-    <state width="1483" height="18" key="GridCell.Tab.0.right" timestamp="1721894306589">
+    <state width="1483" height="98" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
+    <state width="1483" height="98" key="GridCell.Tab.0.right" timestamp="1721898002826">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="18" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
+    <state width="1483" height="98" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
     <state width="1483" height="125" key="GridCell.Tab.1.bottom" timestamp="1716432553432">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1410,10 +1400,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1721892597256" />
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1721291555837">
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1721899241885">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1721291555837" />
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1721899241885" />
     <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1721870862711">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1422,10 +1412,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="605" y="76" width="475" height="668" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1721783315466" />
-    <state x="388" y="345" key="publish.login" timestamp="1721897704272">
+    <state x="388" y="345" key="publish.login" timestamp="1721898092250">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1721897704272" />
+    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1721898092250" />
     <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1721897795274">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
