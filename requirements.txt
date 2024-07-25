@@ -31,7 +31,7 @@ matplotlib==2.2.3
 minio==6.0.0
 mysql-replication==0.21
 ntlm-auth==1.5.0
-numpy==1.15.1
+numpy==1.15.4
 openpyxl==3.0.9
 paramiko==2.6.0
 Pillow==6.2.0
@@ -77,3 +77,4 @@ xpinyin==0.7.6
 zipp==3.6.0
 sql-metadata==1.11.0
 sqlparse==0.4.3
+humanize-3.14.0

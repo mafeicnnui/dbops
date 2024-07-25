@@ -181,6 +181,17 @@ class async_processer:
                 await conn.commit()
         return binlog_file, start_position, stop_position
 
+        # match execute
+
+    async def exec_sql_by_ds_batch(p_ds, p_sql,p_data):
+        async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
+                               user=p_ds['user'], password=p_ds['password'],
+                               db=p_ds['service'], autocommit=True) as pool:
+            async with pool.acquire() as conn:
+                async with conn.cursor() as cur:
+                     await cur.executemany(p_sql,p_data)
+                await conn.commit()
+
     async def query_dict_list(p_sql):
         async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],
                                db=db['db_service'], autocommit=True) as pool:

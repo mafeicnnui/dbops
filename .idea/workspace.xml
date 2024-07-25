@@ -25,11 +25,19 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="issue fix">
-      <change afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query0516.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query_test.html" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="func optimize">
+      <change afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dbops.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbops.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_dmmx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_dmmx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_async.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +140,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="sftp://hopson@10.2.39.17:65508/home/hopson/apps/usr/webserver/dba/python3.6.0/bin/python3" />
+      <option name="SDK_HOME" value="sftp://hopson@10.2.39.17:65508/home/hopson/apps/usr/webserver/dba/python3.6.8/bin/python3" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -154,7 +162,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="start_schedule.sh" type="ShConfigurationType" temporary="true">
+    <configuration name="start_schedule.sh" type="ShConfigurationType">
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
       <option name="SCRIPT_PATH" value="$PROJECT_DIR$/web/task/run_sql_timer.sh" />
       <option name="SCRIPT_OPTIONS" value="" />
@@ -171,7 +179,6 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Shell Script.start_schedule.sh" />
         <item itemvalue="Shell Script.start_schedule.sh" />
         <item itemvalue="Shell Script.start_schedule.sh" />
       </list>
@@ -912,27 +919,42 @@
       <workItem from="1715737469217" duration="8187000" />
       <workItem from="1715765456124" duration="462000" />
       <workItem from="1715818782462" duration="20770000" />
-    </task>
-    <task id="LOCAL-00234" summary="README.md update">
-      <created>1672993708755</created>
-      <option name="number" value="00234" />
-      <option name="presentableId" value="LOCAL-00234" />
-      <option name="project" value="LOCAL" />
-      <updated>1672993708755</updated>
-    </task>
-    <task id="LOCAL-00235" summary="README.md &amp; sql update">
-      <created>1672996678267</created>
-      <option name="number" value="00235" />
-      <option name="presentableId" value="LOCAL-00235" />
-      <option name="project" value="LOCAL" />
-      <updated>1672996678268</updated>
-    </task>
-    <task id="LOCAL-00236" summary="README.md update">
-      <created>1672997620556</created>
-      <option name="number" value="00236" />
-      <option name="presentableId" value="LOCAL-00236" />
-      <option name="project" value="LOCAL" />
-      <updated>1672997620556</updated>
+      <workItem from="1715937124641" duration="235000" />
+      <workItem from="1716168691854" duration="49219000" />
+      <workItem from="1716435844604" duration="3183000" />
+      <workItem from="1716453063484" duration="2358000" />
+      <workItem from="1716521273964" duration="2437000" />
+      <workItem from="1716537300790" duration="32000" />
+      <workItem from="1717482434336" duration="1266000" />
+      <workItem from="1717720616192" duration="607000" />
+      <workItem from="1718097373286" duration="604000" />
+      <workItem from="1718328938316" duration="1892000" />
+      <workItem from="1718348129317" duration="107000" />
+      <workItem from="1718696110969" duration="7091000" />
+      <workItem from="1718851255588" duration="854000" />
+      <workItem from="1718863444507" duration="1503000" />
+      <workItem from="1718933293784" duration="2478000" />
+      <workItem from="1719198326301" duration="13000" />
+      <workItem from="1719210511443" duration="603000" />
+      <workItem from="1719815495444" duration="3067000" />
+      <workItem from="1719899818572" duration="595000" />
+      <workItem from="1719905842296" duration="1540000" />
+      <workItem from="1719908177079" duration="1565000" />
+      <workItem from="1719909767091" duration="1814000" />
+      <workItem from="1720143504104" duration="1207000" />
+      <workItem from="1720163034071" duration="453000" />
+      <workItem from="1721024486006" duration="992000" />
+      <workItem from="1721026092237" duration="2045000" />
+      <workItem from="1721031279121" duration="712000" />
+      <workItem from="1721093145222" duration="178000" />
+      <workItem from="1721094388717" duration="4799000" />
+      <workItem from="1721199468336" duration="814000" />
+      <workItem from="1721203336370" duration="3411000" />
+      <workItem from="1721265060561" duration="1240000" />
+      <workItem from="1721291481239" duration="130000" />
+      <workItem from="1721717872184" duration="19477000" />
+      <workItem from="1721809819372" duration="1376000" />
+      <workItem from="1721869106158" duration="15639000" />
     </task>
     <task id="LOCAL-00237" summary="add logon font">
       <created>1672997631091</created>
@@ -1256,7 +1278,28 @@
       <option name="project" value="LOCAL" />
       <updated>1708414092244</updated>
     </task>
-    <option name="localTasksCounter" value="283" />
+    <task id="LOCAL-00283" summary="bug fix">
+      <created>1715937136217</created>
+      <option name="number" value="00283" />
+      <option name="presentableId" value="LOCAL-00283" />
+      <option name="project" value="LOCAL" />
+      <updated>1715937136217</updated>
+    </task>
+    <task id="LOCAL-00284" summary="add bbgl func">
+      <created>1721291530597</created>
+      <option name="number" value="00284" />
+      <option name="presentableId" value="LOCAL-00284" />
+      <option name="project" value="LOCAL" />
+      <updated>1721291530597</updated>
+    </task>
+    <task id="LOCAL-00285" summary="func optimize">
+      <created>1721291549270</created>
+      <option name="number" value="00285" />
+      <option name="presentableId" value="LOCAL-00285" />
+      <option name="project" value="LOCAL" />
+      <updated>1721291549270</updated>
+    </task>
+    <option name="localTasksCounter" value="286" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1287,8 +1330,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="README.md update" />
-    <MESSAGE value="index.html update" />
     <MESSAGE value="logon optimize" />
     <MESSAGE value="update sql" />
     <MESSAGE value="optimize python lib" />
@@ -1310,59 +1351,85 @@
     <MESSAGE value="Complete documentation" />
     <MESSAGE value="sql query update" />
     <MESSAGE value="sql query add Completions" />
-    <MESSAGE value="bug fix" />
     <MESSAGE value="issue fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="issue fix" />
+    <MESSAGE value="bug fix" />
+    <MESSAGE value="add bbgl func" />
+    <MESSAGE value="func optimize" />
+    <option name="LAST_COMMIT_MESSAGE" value="func optimize" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1715830988242">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1721869233549">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1715830988242" />
-    <state x="619" y="243" width="571" height="338" key="#Notifications" timestamp="1708414234132">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1721869233549" />
+    <state x="243" y="0" key="#SSH_Configurations" timestamp="1721869232316">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="619" y="243" width="571" height="338" key="#Notifications/0.0.1536.824@0.0.1536.824" timestamp="1708414234132" />
-    <state x="243" y="0" key="#SSH_Configurations" timestamp="1715830987115">
+    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1721869232316" />
+    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1721783623651">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1715830987115" />
-    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1715737919857">
+    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1721783623651" />
+    <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1721722718228">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1715737919857" />
-    <state width="1483" height="139" key="GridCell.Tab.0.bottom" timestamp="1715851521482">
+    <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1721722718228" />
+    <state width="1483" height="18" key="GridCell.Tab.0.bottom" timestamp="1721894306589">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="139" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1715851521482" />
-    <state width="1483" height="139" key="GridCell.Tab.0.center" timestamp="1715851521482">
+    <state width="1483" height="18" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
+    <state width="1483" height="18" key="GridCell.Tab.0.center" timestamp="1721894306589">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="139" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1715851521482" />
-    <state width="1483" height="139" key="GridCell.Tab.0.left" timestamp="1715851521482">
+    <state width="1483" height="18" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
+    <state width="1483" height="18" key="GridCell.Tab.0.left" timestamp="1721894306589">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="139" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1715851521482" />
-    <state width="1483" height="139" key="GridCell.Tab.0.right" timestamp="1715851521482">
+    <state width="1483" height="18" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
+    <state width="1483" height="18" key="GridCell.Tab.0.right" timestamp="1721894306589">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="139" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1715851521482" />
-    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1715830992050">
+    <state width="1483" height="18" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1721894306589" />
+    <state width="1483" height="125" key="GridCell.Tab.1.bottom" timestamp="1716432553432">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1715830992050" />
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1708414738880">
+    <state width="1483" height="125" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
+    <state width="1483" height="125" key="GridCell.Tab.1.center" timestamp="1716432553432">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1708414738880" />
-    <state x="502" y="303" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1708414087224">
+    <state width="1483" height="125" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
+    <state width="1483" height="125" key="GridCell.Tab.1.left" timestamp="1716432553431">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="502" y="303" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.824@0.0.1536.824" timestamp="1708414087224" />
-    <state x="388" y="345" key="publish.login" timestamp="1715845136103">
+    <state width="1483" height="125" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1716432553431" />
+    <state width="1483" height="125" key="GridCell.Tab.1.right" timestamp="1716432553432">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1715845136103" />
+    <state width="1483" height="125" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
+    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1721892597256">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1721892597256" />
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1721291555837">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1721291555837" />
+    <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1721870862711">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="395" y="80" width="745" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1721870862711" />
+    <state x="605" y="76" width="475" height="668" key="ftp.server.browser" timestamp="1721783315466">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="605" y="76" width="475" height="668" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1721783315466" />
+    <state x="388" y="345" key="publish.login" timestamp="1721897704272">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1721897704272" />
+    <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1721897795274">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1721897795274" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1378,7 +1445,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1715830993975" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1721894306581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

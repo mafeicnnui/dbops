@@ -715,3 +715,7 @@ async def get_bbgl_tjrq_type():
 async def get_bbgl_tjrq_value(tjlx):
     sql = "select dmm,dmmc,dmmc2 from t_bbgl_dmmx where dm='{}' order by dm+0".format(tjlx)
     return await async_processer.query_list(sql)
+
+async def get_imp_data_type():
+    sql = "select dmm,dmmc from t_bbgl_dmmx where dm='009' order by dm"
+    return await async_processer.query_list(sql)

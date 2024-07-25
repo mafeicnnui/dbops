@@ -18,6 +18,7 @@ import socket
 import string
 import sqlparse
 import re
+import os
 import requests
 import decimal
 from email.mime.text import MIMEText
@@ -26,7 +27,7 @@ from web.utils.mysql_async import async_processer
 from web.utils.mysql_sync import sync_processer
 from PIL  import Image,ImageDraw,ImageFont,ImageFilter
 from clickhouse_driver import connect
-
+from humanize import naturalsize
 
 def get_server(p_host):
     if p_host == "124.127.103.190":
@@ -768,3 +769,22 @@ def dict2num(now_dict):
            now_dict[key]=str(value)
       else:
            pass
+
+def fmt_val(obj):
+   if isinstance(obj, datetime.datetime):
+       return obj.strftime('%Y-%m-%d %H:%M:%S')
+   elif isinstance(obj, datetime.date):
+       return obj.strftime("%Y-%m-%d")
+   elif isinstance(obj, datetime.timedelta):
+       return str(obj)
+   elif isinstance(obj, decimal.Decimal):
+       return float(obj)
+   elif isinstance(obj, int):
+       return obj
+   else:
+       return str(obj).replace("\\", "\\\\").replace("'", "\\'")
+
+def get_file_size(file_path):
+    file_size = os.path.getsize(file_path)
+    readable_size = naturalsize(file_size)
+    return readable_size

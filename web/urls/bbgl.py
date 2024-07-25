@@ -7,7 +7,7 @@
 
 from web.services.bbgl import bbgl_add, bbgl_add_save, bbgl_add_header_save, bbgl_header_query, bbgl_query_dm, \
         bbgltaskquery, bbgltask_query, bbgltaskadd_save, bbgltaskupd_save, bbgltaskedit_del, bbgltask_push, \
-        bbgltask_run, bbgltask_stop, bbgltask_tjrq_value, bbgltask_data, bbgltask_crontab_zh
+        bbgltask_run, bbgltask_stop, bbgltask_tjrq_value, bbgltask_data, bbglimportquery, bbglimport
 from web.services.bbgl  import bbgl_add_filter_save,bbgl_filter_query
 from web.services.bbgl  import bbgl_add_preprocess_save,bbgl_preprocess_query
 from web.services.bbgl  import bbgl_add_statement_save,bbgl_statement_query
@@ -77,5 +77,9 @@ bbgl = [
         (r"/bbgl/task/stop", bbgltask_stop),
         (r"/get/bbgl/task", bbgltask_data),
         (r"/bbgl/tjrq/value", bbgltask_tjrq_value),
+
+        # 数据导入
+        (r"/bbgl/import/query", bbglimportquery),
+        (r"/bbgl/import", bbglimport),
 
 ]

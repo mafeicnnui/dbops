@@ -456,6 +456,7 @@
                       task_tag : $("#name").val(),
                   },
                   success: function (dataSet) {
+                      console.log(dataSet)
                       $('#bbgl_task_table').DataTable( {
                           "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
                           "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',

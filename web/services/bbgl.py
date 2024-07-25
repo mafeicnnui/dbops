@@ -6,14 +6,18 @@
 # @Software: PyCharm
 
 import json
-from   web.utils   import base_handler
-from web.model.t_dmmx import get_dmm_from_dm, get_dmlx_from_dm_bbgl, get_dmm_from_dm_bbgl, get_gather_server
-from   web.utils.common  import DateEncoder
+import pandas as pd
+import traceback
 
-from   web.model.t_dmmx  import get_bbtj_db_server
+from web.model.t_ds import get_ds_by_dsid_by_cdb
+from  web.utils   import base_handler
+from web.model.t_dmmx import get_dmm_from_dm, get_dmlx_from_dm_bbgl, get_dmm_from_dm_bbgl, get_gather_server, \
+    get_bbtj_db_imp_server
+from web.utils.common import DateEncoder, get_file_size
+from  web.model.t_dmmx  import get_bbtj_db_server
 from web.model.t_bbgl import save_bbgl, save_bbgl_header, query_bbgl_header, save_bbgl_task, query_bbgl_task, \
     upd_bbgl_task, push_bbgl_task, run_bbgl_task, stop_bbgl_task, del_bbgl_task, get_bbgl_task_by_tag, get_bbgl_id, \
-    get_bbgl_tjrq_type, get_bbgl_tjrq_value, translate_crontab
+    get_bbgl_tjrq_type, get_bbgl_tjrq_value, get_imp_data_type
 from   web.model.t_bbgl  import save_bbgl_filter,query_bbgl_filter
 from   web.model.t_bbgl  import save_bbgl_preprocess,query_bbgl_preprocess
 from   web.model.t_bbgl  import save_bbgl_statement,query_bbgl_statement
@@ -22,6 +26,8 @@ from   web.model.t_bbgl  import update_bbgl_header,delete_bbgl_header
 from   web.model.t_bbgl  import update_bbgl_filter,delete_bbgl_filter
 from   web.model.t_bbgl  import query_bbgl_preprocess_detail,update_bbgl_preprocess,delete_bbgl_preprocess
 from   web.model.t_bbgl  import update_bbgl_statement,query_bbgl_config,delete_bbgl,export_bbgl_data,get_download,query_bbgl_export,del_export
+from web.utils.mysql_async import async_processer
+from web.utils.common import format_sql,fmt_val
 
 class bbgl_query(base_handler.TokenHandler):
    async def get(self):
@@ -456,3 +462,88 @@ class bbgltask_tjrq_value(base_handler.TokenHandler):
         v_list = await get_bbgl_tjrq_value(v_tjlx)
         v_json = json.dumps(v_list)
         self.write(v_json)
+
+
+'''数据导入'''
+class bbglimportquery(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./bbgl/bbgl_import.html",
+                    db_server=await get_bbtj_db_imp_server(),
+                    imp_data_type   = await get_imp_data_type()
+                    )
+
+class bbglimport2(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        static_path = self.get_template_path().replace("templates", "static")
+        file_metas  = self.request.files["file"]
+        type = self.get_argument("type")
+        dsid = self.get_argument("dsid")
+        try:
+            ds = await get_ds_by_dsid_by_cdb(dsid, 'hopsonone_analysis')
+            await async_processer.exec_sql_by_ds(ds,"delete from hopsonone_analysis.t_bbgl_imp where type='{}'".format(type))
+            for meta in file_metas:
+                file_path = static_path+'/'+'assets/images/bbgl'
+                file_name = file_path+'/'+meta['filename']
+                with open(file_name, 'wb') as up:
+                    up.write(meta['body'])
+                df = pd.read_excel(file_name)
+                cols = df.columns.values.tolist()
+                tmp = ','.join(['`v{}`'.format(str(i + 1)) for i in range(len(cols))])
+                header = "insert into hopsonone_analysis.t_bbgl_imp(`type`,{}) values ('{}',".format(tmp, type)
+                for _, item in df.iterrows():
+                    values = ''
+                    for col in df.columns.values.tolist():
+                        values = values + "'" + format_sql(str(item[col])) + "',"
+                    sql = header + values[0:-1] + ')'
+                    try:
+                       await async_processer.exec_sql_by_ds(ds,sql)
+                    except:
+                       traceback.print_exc()
+                       print(sql)
+                       raise
+                print('{} import sucess'.format(meta['filename']))
+            self.write({"code": 0, "file_path": '/static/assets/images/bbgl',"file_name":file_name})
+        except Exception as e:
+            traceback.print_exc()
+            self.write({"code": -1, "message": '导入失败'+str(e)})
+
+class bbglimport(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        static_path = self.get_template_path().replace("templates", "static")
+        file_metas  = self.request.files["file"]
+        type = self.get_argument("type")
+        dsid = self.get_argument("dsid")
+        try:
+            ds = await get_ds_by_dsid_by_cdb(dsid, 'hopsonone_analysis')
+            await async_processer.exec_sql_by_ds(ds,"delete from hopsonone_analysis.t_bbgl_imp where type='{}'".format(type))
+            res = []
+            for meta in file_metas:
+                file_path = static_path+'/'+'assets/images/bbgl'
+                file_name = file_path+'/'+meta['filename']
+                with open(file_name, 'wb') as up:
+                    up.write(meta['body'])
+                df = pd.read_excel(file_name)
+                rows, columns = df.shape
+                cols = df.columns.values.tolist()
+                vals = ','.join(['%s' for i in range(len(cols)+1)])
+                tmp = ','.join(['`v{}`'.format(str(i + 1)) for i in range(len(cols))])
+                sql = "insert into hopsonone_analysis.t_bbgl_imp(`type`,{}) values ({})".format(tmp,vals)
+                data = []
+                for _, item in df.iterrows():
+                    row = [type]
+                    for col in df.columns.values.tolist():
+                       row.append('' if str(item[col]) == 'nan' else fmt_val(item[col]))
+                    data.append(tuple(row))
+                await async_processer.exec_sql_by_ds_batch(ds, sql,data)
+                print('{} import sucess'.format(meta['filename']))
+                res.append((
+                    meta['filename'],
+                    get_file_size(file_name),
+                    rows
+                ))
+            self.write({"code": 0, "message": res})
+        except Exception as e:
+            traceback.print_exc()
+            self.write({"code": -1, "message": '导入失败'+str(e)})
