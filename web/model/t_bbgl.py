@@ -210,7 +210,17 @@ async def query_bbgl_data(bbdm,param):
                  i['title'] =headers[xh]['header_name']
                  i['sWidth'] = '{}px'.format(headers[xh]['header_width'])
                  xh=xh+1
-         result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime)}
+
+         file_time = current_rq()
+         if len(param)>0 :
+            if param.get('bbrq_begin')  and  param.get('bbrq_end'):
+                file_time='{}-{}'.format(param.get('bbrq_begin'),param.get('bbrq_end'))
+            elif param.get('bbrq'):
+                file_time= param.get('bbrq')
+            else:
+                pass
+
+         result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],"preTime":str(preProcessTime),"file_time":file_time}
          return  result
 
      except:
@@ -479,8 +489,8 @@ async def exp_data_xlsx(static_path,p_bbdm,p_data,p_id):
         ws = wb.create_sheet(index=0,title=p_bbdm)
         file_path = static_path + '/downloads/bbtj'
         os.system('cd {0}'.format(file_path))
-        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xlsx'.format(p_bbdm,current_rq())
-        file_name_s = 'exp_bbtj_{}_{}.xls'.format(p_bbdm,current_rq())
+        file_name   = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.xlsx'.format(p_bbdm,p_data['file_time'])
+        file_name_s = 'exp_bbtj_{}_{}.xls'.format(p_bbdm,p_data['file_time'])
 
         # write header
         for k in range(len(p_data['column'])):
@@ -506,8 +516,8 @@ async def exp_data_xlsx(static_path,p_bbdm,p_data,p_id):
         wb.save(file_name)
         print("{0} export complete!".format(file_name))
 
-        zip_file = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,current_rq())
-        rzip_file = '/static/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,current_rq())
+        zip_file = static_path + '/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,p_data['file_time'])
+        rzip_file = '/static/downloads/bbtj/exp_bbtj_{}_{}.zip'.format(p_bbdm,p_data['file_time'])
 
         if os.path.exists(zip_file):
             os.system('rm -f {0}'.format(zip_file))

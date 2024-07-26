@@ -27,7 +27,7 @@
   <component name="ChangeListManager">
     <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="func optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -944,14 +944,8 @@
       <workItem from="1721291481239" duration="130000" />
       <workItem from="1721717872184" duration="19477000" />
       <workItem from="1721809819372" duration="1376000" />
-      <workItem from="1721869106158" duration="16616000" />
-    </task>
-    <task id="LOCAL-00238" summary="update sql">
-      <created>1673225736545</created>
-      <option name="number" value="00238" />
-      <option name="presentableId" value="LOCAL-00238" />
-      <option name="project" value="LOCAL" />
-      <updated>1673225736545</updated>
+      <workItem from="1721869106158" duration="17353000" />
+      <workItem from="1721956324322" duration="1499000" />
     </task>
     <task id="LOCAL-00239" summary="main page optimize">
       <created>1673226934059</created>
@@ -1289,7 +1283,14 @@
       <option name="project" value="LOCAL" />
       <updated>1721898014019</updated>
     </task>
-    <option name="localTasksCounter" value="287" />
+    <task id="LOCAL-00287" summary="func optimize">
+      <created>1721899401861</created>
+      <option name="number" value="00287" />
+      <option name="presentableId" value="LOCAL-00287" />
+      <option name="project" value="LOCAL" />
+      <updated>1721899401861</updated>
+    </task>
+    <option name="localTasksCounter" value="288" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1348,14 +1349,14 @@
     <option name="LAST_COMMIT_MESSAGE" value="func optimize" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1721869233549">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1721957446463">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1721869233549" />
-    <state x="243" y="0" key="#SSH_Configurations" timestamp="1721869232316">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1721957446463" />
+    <state x="243" y="0" key="#SSH_Configurations" timestamp="1721957445248">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1721869232316" />
+    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1721957445248" />
     <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1721783623651">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1364,22 +1365,26 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1721722718228" />
-    <state width="1483" height="98" key="GridCell.Tab.0.bottom" timestamp="1721898002826">
+    <state x="575" y="316" key="Github.Dialog.Accounts.Choose" timestamp="1721899340248">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="98" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
-    <state width="1483" height="98" key="GridCell.Tab.0.center" timestamp="1721898002826">
+    <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1721899340248" />
+    <state width="1483" height="496" key="GridCell.Tab.0.bottom" timestamp="1721957644435">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="98" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
-    <state width="1483" height="98" key="GridCell.Tab.0.left" timestamp="1721898002826">
+    <state width="1483" height="496" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1721957644435" />
+    <state width="1483" height="496" key="GridCell.Tab.0.center" timestamp="1721957644434">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="98" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
-    <state width="1483" height="98" key="GridCell.Tab.0.right" timestamp="1721898002826">
+    <state width="1483" height="496" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1721957644434" />
+    <state width="1483" height="496" key="GridCell.Tab.0.left" timestamp="1721957644434">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="98" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1721898002826" />
+    <state width="1483" height="496" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1721957644434" />
+    <state width="1483" height="496" key="GridCell.Tab.0.right" timestamp="1721957644435">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1483" height="496" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1721957644435" />
     <state width="1483" height="125" key="GridCell.Tab.1.bottom" timestamp="1716432553432">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1396,14 +1401,14 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1483" height="125" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
-    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1721892597256">
+    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1721957455683">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1721892597256" />
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1721899241885">
+    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1721957455683" />
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1721899414095">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1721899241885" />
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1721899414095" />
     <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1721870862711">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1412,10 +1417,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="605" y="76" width="475" height="668" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1721783315466" />
-    <state x="388" y="345" key="publish.login" timestamp="1721898092250">
+    <state x="388" y="345" key="publish.login" timestamp="1721957720570">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1721898092250" />
+    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1721957720570" />
     <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1721897795274">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1435,7 +1440,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1721894306581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1721957457481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>
