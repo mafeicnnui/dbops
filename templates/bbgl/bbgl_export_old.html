@@ -4,26 +4,14 @@
     <meta charset="utf-8">
     <title>报表导出</title>
     <style>
-        .modal-dialog {
+       .modal-dialog {
            width :70%;
-        }
-        #modal-exp-filter{
+       }
+       #modal-exp-filter{
            margin-top:10px;
            padding-top:10px;
            margin-left:120px;
-        }
-
-        .bootstrap-select.show-menu .dropdown-menu {
-          height:150px;
-          max-height: 200px; /* 设置最大高度以展示滚动条 */
-          min-height: 100px; /* 设置最大高度以展示滚动条 */
-          overflow-y: auto;  /* 添加滚动条 */
-        }
-
-        #div-table {
-            height:600px;
-        }
-
+       }
     </style>
 </head>
 <body>
@@ -32,12 +20,12 @@
             <div class="col-md-3">
                  <div class="input-group">
                     <span class="input-group-addon">报表代码</span>
-                     <select class="selectpicker"  data-live-search="true"   data-style="btn-default" id="bbdm" name="bbdm">
-                         <option value='' selected = "selected">请选择报表</option>
-                         {% for var in dm_bbdm %}
-                            <option value={{var[0]}} title={{var[1]}} >{{var[1]}}</option>
-                         {% end %}
-                     </select>
+                    <select class="form-control select" id="bbdm" name="bbdm">
+                        <option value='' selected = "selected">请选择报表</option>
+                        {% for var in dm_bbdm %}
+                          <option value={{var[0]}} >{{var[1]}}</option>
+                        {% end %}
+                    </select>
                  </div>
             </div>
             <div class="col-md-1">
@@ -323,26 +311,15 @@
                                        },
                                    });
 
-                                   // rowFilter=rowFilter+
-                                   //   '<div class="col-md-3">\n' +
-                                   //   '       <div class="input-group">\n' +
-                                   //   '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                   //   '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                   //   '                <option value="" selected = "selected">...</option>\n' +options+
-                                   //   '            </select> '+
-                                   //   '      </div>\n' +
-                                   //   '</div>'
-
                                    rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
                                      '       <div class="input-group">\n' +
                                      '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                     '                <option value="">...</option>\n' +options+
+                                     '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
+                                     '                <option value="" selected = "selected">...</option>\n' +options+
                                      '            </select> '+
                                      '      </div>\n' +
                                      '</div>'
-
                               } else {
                                    rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
@@ -437,9 +414,7 @@
                            rowFilter=rowFilter+'</div>\n'
                            htmlFilter = htmlFilter +rowFilter+'<br>'
                       }
-
                       $('#form_export_filter').append(htmlFilter)
-
                       $.fn.datepicker.dates['zh-CN'] = {
                             days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
                             daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
@@ -453,7 +428,6 @@
                             titleFormat: "yyyy年mm月",
                             weekStart: 1
                         };
-
                       $('.datepicker').datepicker({
                             language: 'zh-CN',
                             format: "yyyy-mm-dd",
@@ -462,7 +436,6 @@
                             todayHighlight: true,
                             defaultTIme: false
                       });
-
                       $('.datetimepicker').datetimepicker({
                             language: 'zh-CN',
                             CustomFormat: 'yyyy-mm-dd HH:ii:ss',
@@ -475,9 +448,6 @@
                             forceParse: 0,
                             minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
                       });
-
-                      $('.selectpicker').selectpicker('refresh');
-
                       $('#cur_bbdm').val($('#bbdm').val())
 
                       open_model2('modal-exp-filter')
@@ -602,8 +572,6 @@
 
       $(document).ready(function() {
           $("#query_btn").click();
-          $('.selectpicker').selectpicker();
-          $('.selectpicker').selectpicker('refresh');
       });
    </script>
 

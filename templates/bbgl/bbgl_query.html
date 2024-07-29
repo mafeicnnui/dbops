@@ -1,15 +1,21 @@
 <head>
     <style>
         .bootstrap-select.show-menu .dropdown-menu {
-          max-height: 250px; /* 设置最大高度以展示滚动条 */
+          height:150px;
+          max-height: 200px; /* 设置最大高度以展示滚动条 */
           min-height: 100px; /* 设置最大高度以展示滚动条 */
           overflow-y: auto;  /* 添加滚动条 */
         }
 
-        #bbdm {
-          max-height: 250px; /* 设置最大高度以展示滚动条 */
-          min-height: 100px; /* 设置最大高度以展示滚动条 */
-          overflow-y: auto;  /* 添加滚动条 */
+        /*#bbdm {*/
+        /*  height:150px;*/
+        /*  max-height: 200px; !* 设置最大高度以展示滚动条 *!*/
+        /*  min-height: 100px; !* 设置最大高度以展示滚动条 *!*/
+        /*  overflow-y: auto;  !* 添加滚动条 *!*/
+        /*}*/
+
+        #div-table {
+            height:600px;
         }
     </style>
 </head>
@@ -19,12 +25,6 @@
             <div class="col-md-3">
                  <div class="input-group">
                     <span class="input-group-addon">报表代码</span>
-<!--                    <select class="form-control select" id="bbdm" name="bbdm">-->
-<!--                        <option value='' selected = "selected">请选择报表</option>-->
-<!--                        {% for var in dm_bbdm %}-->
-<!--                          <option value={{var[0]}} >{{var[1]}}</option>-->
-<!--                        {% end %}-->
-<!--                    </select>-->
                       <select class="selectpicker"  data-live-search="true"   data-style="btn-default" id="bbdm" name="bbdm">
                          <option value='' selected = "selected">请选择报表</option>
                          {% for var in dm_bbdm %}
@@ -122,16 +122,6 @@
                                             }
                                        },
                                    });
-
-                                   // rowFilter=rowFilter+
-                                   //   '<div class="col-md-3">\n' +
-                                   //   '       <div class="input-group">\n' +
-                                   //   '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                   //   '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                   //   '                <option value="" selected = "selected">...</option>\n' +options+
-                                   //   '            </select> '+
-                                   //   '      </div>\n' +
-                                   //   '</div>'
 
                                     rowFilter=rowFilter+
                                      '<div class="col-md-3">\n' +
@@ -283,6 +273,7 @@
           })
 
           $("#query_btn").click(function() {
+                   // $('#example').show();
                    $('#query_time').text('');
 
                    if ($('#bbdm').val()=='') {
@@ -387,23 +378,11 @@
                     });
              });
 
-          table=$('#example').DataTable( {
-                "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                destroy       : true,
-                async         : true,
-                data          : [[''],[''],['']],
-                columns       : [{title: '', sTitle: ''}],
-                scrollX       : false,
-                scrollY       : false,
-                scrollCollapse: false,
-                paging        : false,
-                iDisplayLength: 0,
-                autoWidth     : true,
-                "language"    : get_languages()
-            });
           $('.selectpicker').selectpicker();
           $('.selectpicker').selectpicker('refresh');
 
+
       });
    </script>
+
 </body>
