@@ -190,13 +190,14 @@
                 <div class="content">
                      <div class="panel-body">
                         <ul id="ul_tabs" class="nav nav-tabs tabs-bordered">
+                            <li class="active"><a href="#main"  data-toggle="tab" aria-expanded="true">首页<button id="close_main" type="button" class="close" >×</button></a></li>
                         </ul>
-                        <div class="tab-content br-n pn">
-                             <div id="main" class="tab-pane active">
-                                <div id='main-container-div' class="container"></div>
-                             </div>
+                        <div id="tab-pans" class="tab-content br-n pn">
+                            <div id="main" class="tab-pane active">
+                                <div id='main-container-div' class="container"></div>->
+                            </div>
                         </div>
-                       </div>
+                    </div>
                 </div>
                 <footer class="footer text-right">
                     <div class="col-lg-3 col-md-4 col-sm-6"><span><b>作者:</b>一切随风</span></div>
@@ -877,18 +878,22 @@
                       if (tabStatus[tabId] == true) {
                           $('#'+tabId).parent().addClass("active")
                       } else {
-                          $('#ul_tabs').append('<li class="active"><a href="#"  id="'+tabId+'" data-toggle="tab" aria-expanded="false">'+$(this).text()+'<button id="close_'+tabId+'" type="button" class="close" >×</button></a></li>')
+                          //$('#ul_tabs').append('<li class="active"><a href="#"  id="'+tabId+'" data-toggle="tab" aria-expanded="false">'+$(this).text()+'<button id="close_'+tabId+'" type="button" class="close" >×</button></a></li>')
+                          $('#ul_tabs').append('<li class="active"><a href="#'+tabId+'" data-toggle="tab" aria-expanded="false">'+$(this).text()+'<button id="close_'+tabId+'" type="button" class="close" >×</button></a></li>')
+                          $('#tab-pans').append('<div id="'+tabId+'" class="tab-pane active"><div id="main-container-div-'+tabId+'" class="container"></div>')
+
                           if (tabStatus[tabId] == undefined) {
                               tabStatus[tabId]=true;
                           }
                       }
 
-                      $('#main-container-div').load(url);
+                      //$('#main-container-div').load(url);
+                      $('#main-container-div-'+tabId).load(url);
 
                       $('#'+tabId).on('show.bs.tab', function (e) {
                          id = $(e.target).attr('id')
                          url = '/'+id.replace(/_/g,'/')
-                         $('#main-container-div').load(url);
+                         $('#main-container-div-'+tabId).load(url);
                          //refresh_token ();
                       })
 
@@ -901,10 +906,9 @@
                               $('#main-container-div').load('/main');
                          } else {
                               lastHref= '/'+lastId.replace(/_/g,'/')
-                              $('#main-container-div').load(lastHref);
+                              $('#main-container-div-'+tabId).load(lastHref);
                          }
                       })
-
                  });
 
             $('#windows_main').click(function(){
