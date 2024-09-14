@@ -339,7 +339,7 @@
 
                     obj = $('#form_bbgl_filter').serializeObject()
                     $.ajax({
-                        url     : "/bbgl/query/data",
+                            url     : "/bbgl/query/data",
                         type    : "post",
                         datatype: "json",
                         data: {
@@ -350,7 +350,9 @@
                         success: function (dataSet) {
                             console.log('>>>>>>>>>>>>>>',dataSet)
                             if (dataSet.status=="1") {
+                                console.log(dataSet)
                                 showtips('error',dataSet.msg);
+                                console.log(dataSet.msg)
                             } else {
                                 table=$('#example').DataTable( {
                                     "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -364,6 +366,7 @@
                                     paging        : true,
                                     iDisplayLength: 20,
                                     autoWidth     : true,
+                                    "ordering"    : false,
                                     "language"    : get_languages()
                                 });
 

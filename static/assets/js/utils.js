@@ -107,8 +107,8 @@ function start_Loader(p_id) {
     $(light).block({
         message: '<i class="icon-spinner spinner"></i>',
         overlayCSS: {
-            backgroundColor: '#FFFAFA',
-            opacity: 0.8,
+            backgroundColor: 'rgba(255,250,250,0.53)',
+            opacity: 0.1,
             cursor: 'wait'
         },
         css: {

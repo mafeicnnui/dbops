@@ -28,3 +28,8 @@ then
     ps -ef |grep dbops | grep -v grep | grep run_sql_timer| awk '{print $2}' | xargs kill -9
 fi
 
+echo "Stopping webssh ...ok"
+if [ `ps -ef |grep dbops | grep -v grep | grep webssh | wc -l` == '1' ]
+then
+    ps -ef |grep dbops | grep -v grep | grep webssh| awk '{print $2}' | xargs kill -9
+fi

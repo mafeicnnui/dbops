@@ -818,6 +818,7 @@
                                             roles      : get_privs(),
                                             file_path  : dataSet.file_path,
                                             file_name  : dataSet.file_name,
+                                            query_grants:'1'
                                         },
                                         success: function (dataSet) {
                                             if (dataSet.code==0) {
@@ -853,6 +854,7 @@
                                 roles      : get_privs(),
                                 file_path  : $('#user_detail_image_path').val(),
                                 file_name  : $('#user_detail_image_file').val(),
+                                query_grants:'1'
                             },
                             success: function (dataSet) {
                                 if (dataSet.code==0) {
@@ -936,14 +938,17 @@
             });
 
             $(document).ajaxStart(function() {
-                start_Loader('main-container-div')
+                // start_Loader('main-container-div')
+                start_Loader('wrapper')
+
             }).ajaxComplete(function( event, request, settings ) {
                 // if (! is_white_list(settings['url'])) {
                 //      console.log('flush token!')
                 //      //refresh_token()
                 // }
             }).ajaxStop(function() {
-                end_Loader('main-container-div')
+                // end_Loader('main-container-div')
+                end_Loader('wrapper')
             }).ajaxError(function( event, request,options ) {
                 if (request.status==401){
                     swal("用户认证已过期!", "", "error")

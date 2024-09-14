@@ -25,9 +25,24 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="bug fix">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="add ignore file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crontab/proc_clear_log.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_clear_log.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crontab/proc_tj_service.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_tj_service.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crontab/proc_tj_sync_monitor.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_tj_sync_monitor.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crontab/proc_trunc_log.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_trunc_log.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stop.sh" beforeDir="false" afterPath="$PROJECT_DIR$/stop.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func/func_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys/sys_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_code.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_xtqx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_xtqx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/bbgl.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,27 +114,27 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/bbgl" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/crontab" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\dbops\crontab" />
+      <recent name="D:\work\dbops\templates\bbgl" />
+      <recent name="D:\work\dbops\templates\login" />
+      <recent name="D:\work\dbops\templates\order" />
+      <recent name="D:\work\dbops\templates\user" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\sql\data" />
       <recent name="D:\work\dbops\sql\table" />
       <recent name="D:\work\dbops\static\doc" />
       <recent name="D:\work\dbops" />
       <recent name="D:\work\dbops\web" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\templates\bbgl" />
-      <recent name="D:\work\dbops\templates\login" />
-      <recent name="D:\work\dbops\templates\order" />
-      <recent name="D:\work\dbops\templates\user" />
-      <recent name="D:\work\dbops\static\doc\images" />
     </key>
   </component>
   <component name="RunManager" selected="Python.server">
@@ -950,14 +965,27 @@
       <workItem from="1721983550844" duration="4234000" />
       <workItem from="1722217211566" duration="4723000" />
       <workItem from="1722233322623" duration="5839000" />
-      <workItem from="1722244384338" duration="350000" />
-    </task>
-    <task id="LOCAL-00242" summary="README.md update">
-      <created>1673234556662</created>
-      <option name="number" value="00242" />
-      <option name="presentableId" value="LOCAL-00242" />
-      <option name="project" value="LOCAL" />
-      <updated>1673234556662</updated>
+      <workItem from="1722244384338" duration="996000" />
+      <workItem from="1722310598476" duration="1438000" />
+      <workItem from="1722331555086" duration="257000" />
+      <workItem from="1722413496856" duration="18000" />
+      <workItem from="1722503082331" duration="1333000" />
+      <workItem from="1722568473726" duration="1572000" />
+      <workItem from="1722924820467" duration="3538000" />
+      <workItem from="1722928958978" duration="1261000" />
+      <workItem from="1723085760905" duration="948000" />
+      <workItem from="1723169880667" duration="602000" />
+      <workItem from="1723426920465" duration="3072000" />
+      <workItem from="1723441015027" duration="621000" />
+      <workItem from="1723514181826" duration="1980000" />
+      <workItem from="1723598137899" duration="1432000" />
+      <workItem from="1724141361014" duration="722000" />
+      <workItem from="1724656657901" duration="654000" />
+      <workItem from="1725007032656" duration="105000" />
+      <workItem from="1725010287659" duration="2950000" />
+      <workItem from="1725345067100" duration="69000" />
+      <workItem from="1725586606045" duration="613000" />
+      <workItem from="1725588768709" duration="1878000" />
     </task>
     <task id="LOCAL-00243" summary="README.md update">
       <created>1673234798293</created>
@@ -1295,7 +1323,14 @@
       <option name="project" value="LOCAL" />
       <updated>1722244670977</updated>
     </task>
-    <option name="localTasksCounter" value="291" />
+    <task id="LOCAL-00291" summary="add ignore file">
+      <created>1722244749468</created>
+      <option name="number" value="00291" />
+      <option name="presentableId" value="LOCAL-00291" />
+      <option name="project" value="LOCAL" />
+      <updated>1722244749468</updated>
+    </task>
+    <option name="localTasksCounter" value="292" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1326,7 +1361,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="update sql" />
     <MESSAGE value="optimize python lib" />
     <MESSAGE value="bbtj bug fix" />
     <MESSAGE value="sql update" />
@@ -1351,17 +1385,18 @@
     <MESSAGE value="func optimize" />
     <MESSAGE value="add selectpicker" />
     <MESSAGE value="bug fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="bug fix" />
+    <MESSAGE value="add ignore file" />
+    <option name="LAST_COMMIT_MESSAGE" value="add ignore file" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1722241909587">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1725345122129">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1722241909587" />
-    <state x="243" y="0" key="#SSH_Configurations" timestamp="1722241908691">
+    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1725345122129" />
+    <state x="243" y="0" key="#SSH_Configurations" timestamp="1725345120945">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1722241908691" />
+    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1725345120945" />
     <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1721783623651">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1370,62 +1405,50 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1721722718228" />
-    <state x="575" y="316" key="Github.Dialog.Accounts.Choose" timestamp="1722244217025">
+    <state x="452" y="226" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1723428228230">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1722244217025" />
-    <state width="1483" height="66" key="GridCell.Tab.0.bottom" timestamp="1722242028459">
+    <state x="452" y="226" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1536.824@0.0.1536.824" timestamp="1723428228230" />
+    <state x="575" y="316" key="Github.Dialog.Accounts.Choose" timestamp="1722244764455">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="66" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1722242028459" />
-    <state width="1483" height="66" key="GridCell.Tab.0.center" timestamp="1722242028459">
+    <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1722244764455" />
+    <state width="1483" height="432" key="GridCell.Tab.0.bottom" timestamp="1725345156236">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="66" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1722242028459" />
-    <state width="1483" height="66" key="GridCell.Tab.0.left" timestamp="1722242028458">
+    <state width="1483" height="432" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
+    <state width="1483" height="432" key="GridCell.Tab.0.center" timestamp="1725345156236">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="66" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1722242028458" />
-    <state width="1483" height="66" key="GridCell.Tab.0.right" timestamp="1722242028459">
+    <state width="1483" height="432" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
+    <state width="1483" height="432" key="GridCell.Tab.0.left" timestamp="1725345156236">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="66" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1722242028459" />
-    <state width="1483" height="125" key="GridCell.Tab.1.bottom" timestamp="1716432553432">
+    <state width="1483" height="432" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
+    <state width="1483" height="432" key="GridCell.Tab.0.right" timestamp="1725345156236">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="125" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
-    <state width="1483" height="125" key="GridCell.Tab.1.center" timestamp="1716432553432">
+    <state width="1483" height="432" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
+    <state x="126" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1725345127259">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="125" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
-    <state width="1483" height="125" key="GridCell.Tab.1.left" timestamp="1716432553431">
+    <state x="126" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1725345127259" />
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1722244755703">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="125" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1716432553431" />
-    <state width="1483" height="125" key="GridCell.Tab.1.right" timestamp="1716432553432">
+    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1722244755703" />
+    <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1723428290324">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1483" height="125" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1716432553432" />
-    <state x="120" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1722244372761">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="120" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1722244372761" />
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1722244196870">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1722244196870" />
-    <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1721870862711">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="395" y="80" width="745" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1721870862711" />
+    <state x="395" y="80" width="745" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1723428290324" />
     <state x="605" y="76" width="475" height="668" key="ftp.server.browser" timestamp="1721783315466">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="605" y="76" width="475" height="668" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1721783315466" />
-    <state x="388" y="345" key="publish.login" timestamp="1722244003985">
+    <state x="388" y="345" key="publish.login" timestamp="1725010656383">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1722244003985" />
+    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1725010656383" />
     <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1721897795274">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1445,7 +1468,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1722241914520" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1725345129164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
   </component>
 </project>

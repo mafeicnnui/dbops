@@ -224,7 +224,8 @@ async def query_bbgl_data(bbdm,param):
          return  result
 
      except:
-         result = {"data": '', "column": '', "status": '1', "msg": traceback.print_exc()}
+         error = traceback.format_exc()[traceback.format_exc().find('pymysql.err.ProgrammingError'):]
+         result = {"data": '', "column": '', "status": '1', "msg": error}
          return result
 
 async def update_bbgl_header(p_bbdm,p_xh,p_name,p_width):

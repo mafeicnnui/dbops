@@ -1171,9 +1171,9 @@ async def query_func(p_name):
         sql = """SELECT   id,
                       func_name,
                       func_url,
-                      CASE STATUS WHEN '1' THEN '是'  WHEN '0' THEN '否'  END  STATUS,
-                      creator,DATE_FORMAT(creation_date,'%Y-%m-%d')    creation_date,
-                      updator,DATE_FORMAT(last_update_date,'%Y-%m-%d') last_update_date 
+                      CASE STATUS WHEN '1' THEN '是'  WHEN '0' THEN '否'  END  STATUS
+                      -- creator,DATE_FORMAT(creation_date,'%Y-%m-%d')    creation_date,
+                      -- updator,DATE_FORMAT(last_update_date,'%Y-%m-%d') last_update_date 
                  from t_func              
                  order by id"""
     else:

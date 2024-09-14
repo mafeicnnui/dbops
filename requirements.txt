@@ -17,7 +17,8 @@ cryptography==2.7
 cx-Oracle==8.0.0
 cycler==0.10.0
 Cython==0.29.14
-elasticsearch==7.13.0
+# elasticsearch==7.13.0
+elasticsearch==1.9.0
 et-xmlfile==1.1.0
 happybase==1.2.0
 html5lib==1.1
