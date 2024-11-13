@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -25,24 +28,22 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="add ignore file">
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="upd bbgl">
+      <change afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query1018.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_empty.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_full.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_offline.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crontab/proc_clear_log.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_clear_log.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crontab/proc_tj_service.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_tj_service.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crontab/proc_tj_sync_monitor.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_tj_sync_monitor.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crontab/proc_trunc_log.sh" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/proc_trunc_log.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stop.sh" beforeDir="false" afterPath="$PROJECT_DIR$/stop.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/func/func_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_change.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sys/sys_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_code.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/model/t_xtqx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_xtqx.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/services/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/controller/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/controller/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/run_sql_timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_timer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/monitor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,6 +91,9 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="1oF2HmTSwLtYDb2uaD3lgs00joD" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -101,33 +105,31 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/dbops/templates/minio_add.html" />
-    <property name="ToolWindowRun.ShowToolbar" value="false" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/crontab" />
-    <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.server.executor&quot;: &quot;Run&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/work/dbops/templates/monitor&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\crontab" />
+      <recent name="D:\work\dbops\templates\monitor" />
       <recent name="D:\work\dbops\templates\bbgl" />
+      <recent name="D:\work\dbops\crontab" />
       <recent name="D:\work\dbops\templates\login" />
       <recent name="D:\work\dbops\templates\order" />
-      <recent name="D:\work\dbops\templates\user" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\sql\data" />
@@ -140,6 +142,7 @@
   <component name="RunManager" selected="Python.server">
     <configuration name="server" type="PythonConfigurationType" factoryName="Python">
       <module name="dbops" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -168,6 +171,7 @@
       <method v="2" />
     </configuration>
     <configuration name="start_schedule.sh" type="ShConfigurationType">
+      <option name="SCRIPT_TEXT" value="" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
       <option name="SCRIPT_PATH" value="$PROJECT_DIR$/web/task/run_sql_timer.sh" />
       <option name="SCRIPT_OPTIONS" value="" />
@@ -176,6 +180,9 @@
       <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
       <option name="INTERPRETER_PATH" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
       <method v="2" />
     </configuration>
     <list>
@@ -189,6 +196,15 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18968.29" />
+        <option value="bundled-python-sdk-f5635417b835-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18968.29" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -986,13 +1002,23 @@
       <workItem from="1725345067100" duration="69000" />
       <workItem from="1725586606045" duration="613000" />
       <workItem from="1725588768709" duration="1878000" />
-    </task>
-    <task id="LOCAL-00243" summary="README.md update">
-      <created>1673234798293</created>
-      <option name="number" value="00243" />
-      <option name="presentableId" value="LOCAL-00243" />
-      <option name="project" value="LOCAL" />
-      <updated>1673234798293</updated>
+      <workItem from="1726304771504" duration="623000" />
+      <workItem from="1728439198331" duration="760000" />
+      <workItem from="1728885762484" duration="657000" />
+      <workItem from="1729069590272" duration="627000" />
+      <workItem from="1729073264034" duration="215000" />
+      <workItem from="1729073500350" duration="792000" />
+      <workItem from="1729146311600" duration="608000" />
+      <workItem from="1729217710964" duration="7839000" />
+      <workItem from="1729231274320" duration="1839000" />
+      <workItem from="1729492332485" duration="707000" />
+      <workItem from="1730368674308" duration="1110000" />
+      <workItem from="1730427650763" duration="4837000" />
+      <workItem from="1730445261283" duration="609000" />
+      <workItem from="1730962949856" duration="3798000" />
+      <workItem from="1731295468878" duration="940000" />
+      <workItem from="1731393271466" duration="21853000" />
+      <workItem from="1731476414544" duration="2749000" />
     </task>
     <task id="LOCAL-00244" summary="index.html update">
       <created>1673257302884</created>
@@ -1330,11 +1356,18 @@
       <option name="project" value="LOCAL" />
       <updated>1722244749468</updated>
     </task>
-    <option name="localTasksCounter" value="292" />
+    <task id="LOCAL-00292" summary="upd bbgl">
+      <created>1726304790114</created>
+      <option name="number" value="00292" />
+      <option name="presentableId" value="LOCAL-00292" />
+      <option name="project" value="LOCAL" />
+      <updated>1726304790114</updated>
+    </task>
+    <option name="localTasksCounter" value="293" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -1358,10 +1391,8 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="optimize python lib" />
     <MESSAGE value="bbtj bug fix" />
     <MESSAGE value="sql update" />
     <MESSAGE value="add api monitor" />
@@ -1386,73 +1417,8 @@
     <MESSAGE value="add selectpicker" />
     <MESSAGE value="bug fix" />
     <MESSAGE value="add ignore file" />
-    <option name="LAST_COMMIT_MESSAGE" value="add ignore file" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="257" y="0" width="1194" height="824" key="#Deployment" timestamp="1725345122129">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="257" y="0" width="1194" height="824" key="#Deployment/0.0.1536.824@0.0.1536.824" timestamp="1725345122129" />
-    <state x="243" y="0" key="#SSH_Configurations" timestamp="1725345120945">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="243" y="0" key="#SSH_Configurations/0.0.1536.824@0.0.1536.824" timestamp="1725345120945" />
-    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1721783623651">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="219" y="57" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1721783623651" />
-    <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1721722718228">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="451" y="191" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1721722718228" />
-    <state x="452" y="226" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1723428228230">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="452" y="226" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1536.824@0.0.1536.824" timestamp="1723428228230" />
-    <state x="575" y="316" key="Github.Dialog.Accounts.Choose" timestamp="1722244764455">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="575" y="316" key="Github.Dialog.Accounts.Choose/0.0.1536.824@0.0.1536.824" timestamp="1722244764455" />
-    <state width="1483" height="432" key="GridCell.Tab.0.bottom" timestamp="1725345156236">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1483" height="432" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
-    <state width="1483" height="432" key="GridCell.Tab.0.center" timestamp="1725345156236">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1483" height="432" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
-    <state width="1483" height="432" key="GridCell.Tab.0.left" timestamp="1725345156236">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1483" height="432" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
-    <state width="1483" height="432" key="GridCell.Tab.0.right" timestamp="1725345156236">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1483" height="432" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1725345156236" />
-    <state x="126" y="0" width="1139" height="824" key="SettingsEditor" timestamp="1725345127259">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="126" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1725345127259" />
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2" timestamp="1722244755703">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="261" y="79" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1722244755703" />
-    <state x="395" y="80" width="745" height="700" key="find.popup" timestamp="1723428290324">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="395" y="80" width="745" height="700" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1723428290324" />
-    <state x="605" y="76" width="475" height="668" key="ftp.server.browser" timestamp="1721783315466">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="605" y="76" width="475" height="668" key="ftp.server.browser/0.0.1536.824@0.0.1536.824" timestamp="1721783315466" />
-    <state x="388" y="345" key="publish.login" timestamp="1725010656383">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="388" y="345" key="publish.login/0.0.1536.824@0.0.1536.824" timestamp="1725010656383" />
-    <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1721897795274">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1721897795274" />
+    <MESSAGE value="upd bbgl" />
+    <option name="LAST_COMMIT_MESSAGE" value="upd bbgl" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1466,9 +1432,9 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1725345129164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1729218723150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

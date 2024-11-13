@@ -984,8 +984,8 @@ async def exe_sql(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content_wx = v_content_wx.replace('$$ERROR$$', error)
         v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id)
         to_user = '{}|{}|{}'.format((await get_user_by_loginame(wkno['executor']))['wkno'],
-                                    (await get_user_by_loginame(wkno['creator']))['wkno'],
-                                    (await get_user_by_loginame(wkno['auditor']))['wkno'])
+                                          (await get_user_by_loginame(wkno['creator']))['wkno'],
+                                          (await get_user_by_loginame(wkno['auditor']))['wkno'])
         await send_message(to_user, v_title, v_content_wx, v_detail_url)
         return res
 
@@ -1079,9 +1079,15 @@ def exe_sql_sync(p_dbid, p_db_name,p_sql_id,p_username,p_host):
         v_content_wx = v_content_wx.replace('$$STATUS$$', status)
         v_content_wx = v_content_wx.replace('$$ERROR$$', '')
         v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id)
-        to_user = '{}|{}|{}'.format(get_user_by_loginame_sync(wkno['executor'])['wkno'],
-                                    get_user_by_loginame_sync(wkno['creator'])['wkno'],
-                                    get_user_by_loginame_sync(wkno['auditor'])['wkno'])
+
+        if wkno['executor'] is not None and wkno['executor'] !='':
+            to_user = '{}|{}|{}'.format(get_user_by_loginame_sync(wkno['executor'])['wkno'],
+                                        get_user_by_loginame_sync(wkno['creator'])['wkno'],
+                                        get_user_by_loginame_sync(wkno['auditor'])['wkno'])
+        else:
+            to_user = '{}|{}'.format(get_user_by_loginame_sync(wkno['creator'])['wkno'],
+                                        get_user_by_loginame_sync(wkno['auditor'])['wkno'])
+
         send_message_sync(to_user, v_title, v_content_wx, v_detail_url)
 
         res['code'] = '0'

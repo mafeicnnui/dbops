@@ -1,0 +1,97 @@
+<html>
+<head>
+    <title>充电宝监控</title>
+    <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{static_url('plugins/datatables/jquery.dataTables.min.css')}}" rel="stylesheet" type="text/css"/>
+    <script src="{{static_url('assets/js/jquery.min.js')}}"></script>
+    <script src="{{static_url('assets/js/bootstrap.min.js')}}"></script>
+    <script src="{{static_url('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <style>
+        table.dataTable {
+            font-size:18px;
+            /*font-weight: bold;*/
+        }
+    </style>
+</head>
+
+<body>
+   <h1 align="center">充电宝可还数异常查询</h1>
+   <p>&nbsp;<br></p>
+   <div class="row" >
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+          <table id="power_tab" class="table table-striped table-bordered dt-responsive nowrap"  ></table>
+        </div>
+        <div class="col-md-1"></div>
+   </div>
+</body>
+
+<script>
+  $(document).ready(function() {
+     $.ajax({
+              url: "/monitor/power/full/warn",
+              type: "post",
+              datatype: "json",
+              data:{
+              },
+              success: function (dataSet) {
+                  console.log('dataset2=',JSON.parse(dataSet))
+                  $('#power_tab').DataTable( {
+                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
+                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                      responsive :true,
+                      destroy    :true,
+                      async      :true,
+                      ordering   :true,
+                      scrollY    :false,
+                      scrollX    :false,
+                      scrollCollapse: true,
+                      paging    : true,
+                      autoWidth : false,
+                      iDisplayLength: 20,
+                      data: JSON.parse(dataSet),
+                      columns: [
+                            { "title": "机柜号"},
+                            { "title": "总仓数"},
+                            { "title": "可还数"},
+                            { "title": "网点名"},
+                            { "title": "代理商"},
+                      ],
+                      columnDefs: [
+                            { width: "12%", targets: 0 },
+                            { width: "12%", targets: 1 },
+                            { width: "12%", targets: 2 },
+                            { width: "34%", targets: 3 },
+                            { width: "30%", targets: 4 },
+                      ],
+                      "language": {
+                             "search"       : "在表格中搜索:",
+                             "sProcessing"  : "处理中...",
+                             "sLengthMenu"  : "显示 _MENU_ 项结果",
+                             "sZeroRecords" : "没有匹配结果",
+                             "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                             "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
+                             "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                             "sInfoPostFix" : "",
+                             "sSearch"      : "搜索:",
+                             "sUrl"         : "",
+                             "sEmptyTable"  : "表中数据为空",
+                             "sLoadingRecords": "载入中...",
+                             "sInfoThousands": ",",
+                             "oPaginate": {
+                                 "sFirst"   : "首页",
+                                 "sPrevious": "上页",
+                                 "sNext"    : "下页",
+                                 "sLast"    : "末页"
+                             },
+                             "oAria": {
+                                 "sSortAscending" : ": 以升序排列此列",
+                                 "sSortDescending": ": 以降序排列此列"
+                             }
+                         }
+                     });
+              }
+          })
+  })
+</script>
+</html>

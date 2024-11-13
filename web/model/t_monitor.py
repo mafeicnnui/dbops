@@ -892,3 +892,85 @@ async def query_monitor_id(task_tag):
     sql = """SELECT * FROM t_monitor_task a WHERE a.task_tag='{}'""".format(task_tag)
     print(sql)
     return await async_processer.query_dict_one2(sql)
+
+
+async def get_items_from_monitor_templete():
+    st = """SELECT index_code,index_threshold FROM t_monitor_index
+              WHERE id IN(SELECT index_id FROM `t_monitor_templete_index`
+                           WHERE templete_id=44) AND STATUS='1'"""
+
+    rs = await async_processer.query_dict_list(st)
+    d = {}
+    for r in rs:
+        d[r['index_code']] = r['index_threshold']
+    return d
+
+async def query_power_empty():
+    ds = await get_ds_by_dsid(69)
+    ds['service'] = 'power_bank'
+    it = await get_items_from_monitor_templete()
+    st = """SELECT 
+              b.rentbox_id,
+              b.depot_count,
+              b.depot_borrow,
+              d.name AS site_name,
+              c.name AS agency_name
+            FROM power_bank.`t_rentbox` a,power_bank.`t_rentbox_graph` b,
+                 power_bank.`t_agency` c,power_bank.`t_site` d
+            WHERE a.`device_id` = b.`device_id`
+             and a.`agency_id`=c.id
+             and a.`site_id` = d.id
+             AND a.agency_id IN(100003,100004)
+             and b.depot_count>0
+             and (CASE WHEN b.depot_borrow < ( CASE WHEN b.depot_count=48 THEN {} 
+                                                    WHEN b.depot_count=24 THEN {}
+                                                    WHEN b.depot_count=12 THEN {}
+                                                    WHEN b.depot_count=6 THEN {} ELSE 1 END) THEN 0 ELSE 1 END) = 0      
+          """.format(it['POWER_WARN_48'],it['POWER_WARN_24'],
+                          it['POWER_WARN_12'],it['POWER_WARN_6'])
+    return await async_processer.query_list_by_ds(ds,st)
+
+async def query_power_full() :
+    ds = await get_ds_by_dsid(69)
+    ds['service'] = 'power_bank'
+    it = await get_items_from_monitor_templete()
+    st = """SELECT 
+              b.rentbox_id,
+              b.depot_count,
+              b.depot_empty,
+              d.name AS site_name,
+              c.name AS agency_name
+            FROM power_bank.`t_rentbox` a,power_bank.`t_rentbox_graph` b,
+                 power_bank.`t_agency` c,power_bank.`t_site` d
+            WHERE a.`device_id` = b.`device_id`
+              and a.`agency_id`=c.id
+              and a.`site_id` = d.id
+              and a.agency_id IN(100003,100004)
+              and b.depot_count>0
+              and (CASE WHEN b.depot_empty < ( CASE WHEN b.depot_count=48 THEN {} 
+                                                    WHEN b.depot_count=24 THEN {}
+                                                    WHEN b.depot_count=12 THEN {}
+                                                    WHEN b.depot_count=6 THEN {} ELSE 1 END) THEN 0 ELSE 1 END) = 0      
+          """.format(it['POWER_WARN_48'],it['POWER_WARN_24'],
+                     it['POWER_WARN_12'],it['POWER_WARN_6'])
+    return await async_processer.query_list_by_ds(ds,st)
+
+async def query_power_offline():
+    ds = await get_ds_by_dsid(69)
+    ds['service'] = 'power_bank'
+    st = """SELECT     
+                  b.rentbox_id,
+                  b.depot_count,
+                  b.depot_borrow,
+                  d.name AS site_name,
+                  c.name AS agency_name
+            FROM power_bank.`t_rentbox` a,power_bank.`t_rentbox_graph` b,
+                 power_bank.`t_agency` c,power_bank.`t_site` d
+            WHERE a.`device_id` = b.`device_id`
+             AND a.`agency_id`=c.id
+             AND a.`site_id` = d.id
+             AND a.agency_id IN(100003,100004)
+             AND b.depot_count>0
+             and a.is_online = 0
+             ORDER BY b.depot_count"""
+    return await async_processer.query_list_by_ds(ds, st)

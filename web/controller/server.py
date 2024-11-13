@@ -20,13 +20,13 @@ define("port", default=sys.argv[1], help="run on the given port", type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = urls
-        settings = dict(static_path   = os.path.join(os.path.dirname(__file__), "../../static"),
+        settings = dict(static_path = os.path.join(os.path.dirname(__file__), "../../static"),
                         template_path = os.path.join(os.path.dirname(__file__), "../../templates"),
                         cookie_secret = "2379874hsdhf0234990sdhsaiuofyasop977djdj",
-                        xsrf_cookies  = False,
-                        debug         = True,
-                        event_loop    = asyncio.get_event_loop(),
-                        login_url     = "/login")
+                        xsrf_cookies = False,
+                        debug = True,
+                        event_loop = asyncio.get_event_loop(),
+                        login_url = "/login")
         tornado.web.Application.__init__(self, handlers, **settings)
 
 if __name__ == '__main__':

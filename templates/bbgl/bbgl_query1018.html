@@ -6,6 +6,14 @@
           min-height: 100px; /* 设置最大高度以展示滚动条 */
           overflow-y: auto;  /* 添加滚动条 */
         }
+
+        /*#bbdm {*/
+        /*  height:150px;*/
+        /*  max-height: 200px; !* 设置最大高度以展示滚动条 *!*/
+        /*  min-height: 100px; !* 设置最大高度以展示滚动条 *!*/
+        /*  overflow-y: auto;  !* 添加滚动条 *!*/
+        /*}*/
+
         #div-table {
             height:600px;
         }
@@ -39,7 +47,7 @@
   <form class="form-horizontal" role="form" id="form_bbgl_filter"></form>
   <br>
   <div id='div-table'>
-      <table id="example_bbgl" class="table table-striped table-bordered nowrap"  style="width:100%" ></table>
+      <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
   </div>
   <input type="hidden" id="notnull_filter">
   <input type="hidden" id="rq_range_filter">
@@ -326,7 +334,7 @@
                          table.destroy();
                     }
 
-                    $('#example_bbgl').empty();
+                    $('#example').empty();
 
 
                     obj = $('#form_bbgl_filter').serializeObject()
@@ -346,8 +354,8 @@
                                 showtips('error',dataSet.msg);
                                 console.log(dataSet.msg)
                             } else {
-                                table=$('#example_bbgl').DataTable( {
-                                    dom           : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                table=$('#example').DataTable( {
+                                    "dom"         : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                                     destroy       : true,
                                     async         : true,
                                     data          : dataSet.data,
@@ -356,21 +364,17 @@
                                     scrollY       : true,
                                     scrollCollapse: true,
                                     paging        : true,
-                                    fixedHeader   : true,
-                                    fixedColumns  : {
-                                        leftColumns: 1
-                                    },
                                     iDisplayLength: 20,
                                     autoWidth     : true,
-                                    ordering      : false,
-                                    language      : get_languages(),
+                                    "ordering"    : false,
+                                    "language"    : get_languages()
                                 });
 
                                 if (dataSet.msg!='' ){
                                     $('#query_time').css('color','red')
                                     $('#query_time').text('查询:'+dataSet.msg+'秒,预处理:'+dataSet.preTime+'秒')
                                 } else {
-                                    $('#query_time').text('');
+                                     $('#query_time').text('');
                                 }
                            }
                        },
