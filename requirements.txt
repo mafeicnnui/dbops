@@ -78,4 +78,4 @@ xpinyin==0.7.6
 zipp==3.6.0
 sql-metadata==1.11.0
 sqlparse==0.4.3
-humanize-3.14.0
+humanize==3.14.0
