@@ -426,8 +426,8 @@
         $('#upd_alert_server').change(function() {
             if ($('#upd_alert_server').val()!=''){
                 var options=$('#upd_alert_server option:selected');
-                $("#upd_alert_task_tag").val($("#add_alert_server").val()+'_'+$(options[0]).val());
-                $("#upd_alter_task_desc").val('告警任务['+$(options[0]).text()+']');
+                $("#upd_alert_task_tag").val('alert_task_'+$(options[0]).val());
+                $("#upd_alert_task_desc").val('告警任务['+$(options[0]).text()+']');
             } else {
                 $("#upd_alert_task_tag").val('');
                 $("#upd_alert_task_desc").val('');
@@ -555,6 +555,7 @@
                     upd_alert_task_script_name   : $('#upd_alert_task_script_name').val(),
                     upd_alert_task_api_server    : $('#upd_alert_task_api_server').val(),
                     upd_alert_task_status        : $('#upd_alert_task_status').val(),
+                    upd_alert_task_tag_old       : $('#upd_task_tag_hidden').val()
                 },
                 success: function (dataSet) {
                     if (dataSet.code == 0) {

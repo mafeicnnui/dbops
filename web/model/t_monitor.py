@@ -826,20 +826,29 @@ async def upd_alert_task(p_task):
         return val
     try:
         sql ="""update t_alert_task
-                  set  run_time='{}',
+                  set  task_tag='{}',
+                       server_id={},
+                       comments='{}',
+                       templete_id={},
+                       run_time='{}',
                        script_path='{}',
                        script_file='{}',
                        python3_home='{}',
                        api_server='{}',
                        status='{}'
                  where task_tag='{}'
-             """.format(p_task['upd_alert_task_run_time'],
-                        format_sql(p_task['upd_alert_task_script_base']),
-                        format_sql(p_task['upd_alert_task_script_name']),
-                        format_sql(p_task['upd_alert_task_python3_home']),
-                        p_task['upd_alert_task_api_server'],
-                        p_task['upd_alert_task_status'],
-                        p_task['upd_alert_task_tag'])
+             """.format(p_task['upd_alert_task_tag'],
+                             p_task['upd_alert_server'],
+                             p_task['upd_alert_task_desc'],
+                             p_task['upd_alert_task_templete_name'],
+                             p_task['upd_alert_task_run_time'],
+                             format_sql(p_task['upd_alert_task_script_base']),
+                             format_sql(p_task['upd_alert_task_script_name']),
+                             format_sql(p_task['upd_alert_task_python3_home']),
+                             p_task['upd_alert_task_api_server'],
+                             p_task['upd_alert_task_status'],
+                             p_task['upd_alert_task_tag_old'])
+        print(sql)
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '保存成功!'}
     except:
@@ -910,7 +919,7 @@ async def query_power_empty():
     ds['service'] = 'power_bank'
     it = await get_items_from_monitor_templete()
     st = """SELECT 
-              b.rentbox_id,
+              b.device_id,
               b.depot_count,
               b.depot_borrow,
               d.name AS site_name,
@@ -935,7 +944,7 @@ async def query_power_full() :
     ds['service'] = 'power_bank'
     it = await get_items_from_monitor_templete()
     st = """SELECT 
-              b.rentbox_id,
+              b.device_id,
               b.depot_count,
               b.depot_empty,
               d.name AS site_name,
@@ -955,22 +964,28 @@ async def query_power_full() :
                      it['POWER_WARN_12'],it['POWER_WARN_6'])
     return await async_processer.query_list_by_ds(ds,st)
 
-async def query_power_offline():
+async def query_power_offline(p_batch_id):
     ds = await get_ds_by_dsid(69)
     ds['service'] = 'power_bank'
     st = """SELECT     
-                  b.rentbox_id,
+                  b.device_id,
                   b.depot_count,
                   b.depot_borrow,
                   d.name AS site_name,
-                  c.name AS agency_name
+                  c.name AS agency_name,
+                  date_format(e.`LastOnlineTime`,'%Y-%m-%d %H:%i:%s') as last_line_time
             FROM power_bank.`t_rentbox` a,power_bank.`t_rentbox_graph` b,
-                 power_bank.`t_agency` c,power_bank.`t_site` d
+                 power_bank.`t_agency` c,power_bank.`t_site` d,
+                 hopsonone_analysis.`t_rentbox_aliyun` e
             WHERE a.`device_id` = b.`device_id`
              AND a.`agency_id`=c.id
              AND a.`site_id` = d.id
+             AND a.device_uuid = e.`DeviceName`
              AND a.agency_id IN(100003,100004)
              AND b.depot_count>0
-             and a.is_online = 0
-             ORDER BY b.depot_count"""
+             and e.`Status` = 'OFFLINE'
+             and e.batch_id='{}'
+             AND TIMESTAMPDIFF(DAY, e.`LastOnlineTime`, NOW())<=3
+             ORDER BY b.depot_count""".format(p_batch_id)
+    print(st)
     return await async_processer.query_list_by_ds(ds, st)

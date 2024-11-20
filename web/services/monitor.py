@@ -492,6 +492,7 @@ class monitoralertupd_save(base_handler.TokenHandler):
         d_task['upd_alert_task_script_name'] = self.get_argument("upd_alert_task_script_name")
         d_task['upd_alert_task_api_server'] = self.get_argument("upd_alert_task_api_server")
         d_task['upd_alert_task_status'] = self.get_argument("upd_alert_task_status")
+        d_task['upd_alert_task_tag_old'] = self.get_argument("upd_alert_task_tag_old")
         result = await upd_alert_task(d_task)
         self.write({"code": result['code'], "message": result['message']})
 
@@ -569,6 +570,7 @@ class monitor_power_full_warn(base_handler.BaseHandler):
         print(v_json)
         self.write(v_json)
 
+
 class monitor_power_full(base_handler.BaseHandler):
     async def get(self):
         self.render("./monitor/monitor_power_full.html")
@@ -576,11 +578,18 @@ class monitor_power_full(base_handler.BaseHandler):
 
 class monitor_power_offline_warn(base_handler.BaseHandler):
     async def post(self):
-        v_list = await query_power_offline()
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        #batch_id = self.get_query_argument("pid")
+        batch_id = self.get_argument("batch_id")
+        print('batch_id2222=',batch_id)
+        v_list = await query_power_offline(batch_id)
         v_json = json.dumps(v_list)
         print(v_json)
         self.write(v_json)
 
+
 class monitor_power_offline(base_handler.BaseHandler):
-    async def get(self):
-        self.render("./monitor/monitor_power_offline.html")
+    def get(self):
+        batch_id = self.get_query_argument("batch_id")
+        self.render("./monitor/monitor_power_offline.html",
+                    batch_id=batch_id)
