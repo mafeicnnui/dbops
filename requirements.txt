@@ -79,3 +79,4 @@ zipp==3.6.0
 sql-metadata==1.11.0
 sqlparse==0.4.3
 humanize==3.14.0
+pandas==1.1.5
