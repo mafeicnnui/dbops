@@ -5,262 +5,262 @@
     <title>新增数据源</title>
 </head>
 <body>
-   <p></p>
-   <div class="col-md-6">
-       <form class="form-horizontal" role="form">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_market_id">*</span>项目编码</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="market_id" >
-                        <option value='' selected = "selected">......</option>
-                         {% for var in dm_proj_type %}
-                           <option value={{var[0]}} >{{var[1]}}</option>
-                         {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_inst_type">*</span>实例类型</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="inst_type" >
-                          <option value='' selected = "selected">......</option>
-                          {% for var in dm_inst_type %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                          {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_db_type">*</span>数据库类型</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="db_type" >
-                          <option value='' selected = "selected">......</option>
-                           {% for var in dm_db_type %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                           {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_db_env">*</span>数据库环境</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="db_env" >
-                          <option value='' selected = "selected">......</option>
-                          {% for var in dm_env_type %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                           {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_db_desc">*</span>数据源描述</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="db_desc" type="text" class="form-control" placeholder="请输入数据源描述">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_ip">*</span>数据源地址</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="ip" type="text" class="form-control" placeholder="请输入数据源地址">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_port">*</span>数据源端口</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="port" type="text" class="form-control" placeholder="请输入数据源端口">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">StreamLoad地址</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="stream_load" type="text" class="form-control" placeholder="请输入StreamLoad地址">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">数据源服务名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="service" type="text" class="form-control" placeholder="请输入数据源服务名">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_user">*</span>数据源用户</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="user" type="text" class="form-control" placeholder="请输入数据源用户">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_pass">*</span>数据源口令</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入数据源口令">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_ds_status">*</span>数据源状态</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="status" name="status">
-                        <option value="1">启用</option>
-                        <option value="0">禁用</option>
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">是否启用代理</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="proxy_status" name="status">
-                        <option value="0">禁用</option>
-                        <option value="1">启用</option>
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">代理服务器</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="proxy_server" >
-                        <option value='' selected = "selected">......</option>
-                        {% for var in dm_ds_proxy %}
-                          <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">只读库</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="read_db" >
-                          <option value='' selected = "selected">......</option>
-                          {% for var in db_server %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                          {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">相关数据源</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="related_id" >
-                        <option value='' selected = "selected">......</option>
-                        {% for var in db_related %}
-                          <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-           <br>
-           <div class="form-group m-b-0">
-                <div class="col-sm-offset-6 col-sm-9">
-                  <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-                </div>
-           </div>
-       </form>
-    </div>
+<p></p>
+<div class="col-md-6">
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_market_id">*</span>项目编码</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="market_id">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_proj_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_inst_type">*</span>实例类型</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="inst_type">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_inst_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_db_type">*</span>数据库类型</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="db_type">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_db_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_db_env">*</span>数据库环境</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="db_env">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_env_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_db_desc">*</span>数据源描述</label>
+            </div>
+            <div class="col-md-10">
+                <input id="db_desc" type="text" class="form-control" placeholder="请输入数据源描述">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_ip">*</span>数据源地址</label>
+            </div>
+            <div class="col-md-10">
+                <input id="ip" type="text" class="form-control" placeholder="请输入数据源地址">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_port">*</span>数据源端口</label>
+            </div>
+            <div class="col-md-10">
+                <input id="port" type="text" class="form-control" placeholder="请输入数据源端口">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">StreamLoad地址</label>
+            </div>
+            <div class="col-md-10">
+                <input id="stream_load" type="text" class="form-control" placeholder="请输入StreamLoad地址">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">数据源服务名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="service" type="text" class="form-control" placeholder="请输入数据源服务名">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_user">*</span>数据源用户</label>
+            </div>
+            <div class="col-md-10">
+                <input id="user" type="text" class="form-control" placeholder="请输入数据源用户">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_pass">*</span>数据源口令</label>
+            </div>
+            <div class="col-md-10">
+                <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入数据源口令">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ds_status">*</span>数据源状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">是否启用代理</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="proxy_status" name="status">
+                    <option value="0">禁用</option>
+                    <option value="1">启用</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">代理服务器</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="proxy_server">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_ds_proxy %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">只读库</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="read_db">
+                    <option value='' selected="selected">......</option>
+                    {% for var in db_server %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">相关数据源</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="related_id">
+                    <option value='' selected="selected">......</option>
+                    {% for var in db_related %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="form-group m-b-0">
+            <div class="col-sm-offset-6 col-sm-9">
+                <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
 
-    <script>
+<script>
 
-        $(document).ready(function() {
-          set_selected()
+    $(document).ready(function () {
+        set_selected()
 
-          $('#db_type').change(function(){
-                 if ($('#db_type').val() == '8') {
-                    $('#stream_load').attr("readonly",false);
-                 } else {
-                     $('#stream_load').val('')
-                     $('#stream_load').attr("readonly",true);
-                 }
-          });
+        $('#db_type').change(function () {
+            if ($('#db_type').val() == '8') {
+                $('#stream_load').attr("readonly", false);
+            } else {
+                $('#stream_load').val('')
+                $('#stream_load').attr("readonly", true);
+            }
+        });
 
-          $('#proxy_status').change(function() {
+        $('#proxy_status').change(function () {
             if ($('#proxy_status').val() == '0') {
                 $("#proxy_server").empty();
                 $("#proxy_server").append("<option value='' selected = 'selected'>......</option>");
-             } else {
+            } else {
                 $.ajax({
                     url: "/get/dmm/dm",
                     type: "post",
                     datatype: "json",
                     data: {
-                        dm :'26',
+                        dm: '26',
                     },
                     success: function (dataSet) {
-                         $("#proxy_server").empty();
-                         $("#proxy_server").append("<option value='' selected = 'selected'>......</option>");
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#proxy_server").append("<option value='"+val+"'>"+text+"</option>");
-                         }
+                        $("#proxy_server").empty();
+                        $("#proxy_server").append("<option value='' selected = 'selected'>......</option>");
+                        for (i = 0; i < dataSet.length; i++) {
+                            var val = dataSet[i][0];
+                            var text = dataSet[i][1];
+                            $("#proxy_server").append("<option value='" + val + "'>" + text + "</option>");
+                        }
                     },
-              });
-           }
-         });
+                });
+            }
+        });
 
-          $("#add").click(function () {
+        $("#add").click(function () {
             $.ajax({
                 url: "/ds/add/save",
                 type: "post",
                 datatype: "json",
                 data: {
-                        market_id     :$('#market_id').val(),
-                        inst_type     :$('#inst_type').val(),
-                        db_type       :$('#db_type').val(),
-                        db_env        :$('#db_env').val(),
-                        db_desc       :$('#db_desc').val(),
-                        ip            :$('#ip').val(),
-                        port          :$('#port').val(),
-                        service       :$('#service').val(),
-                        user          :$('#user').val(),
-                        pass          :$('#pass').val(),
-                        status        :$('#status').val(),
-                        proxy_status  :$('#proxy_status').val(),
-                        proxy_server  :$('#proxy_server').val(),
-                        read_db       :$('#read_db').val(),
-                        stream_load   :$('#stream_load').val(),
-                        related_id    :$('#related_id').val(),
+                    market_id: $('#market_id').val(),
+                    inst_type: $('#inst_type').val(),
+                    db_type: $('#db_type').val(),
+                    db_env: $('#db_env').val(),
+                    db_desc: $('#db_desc').val(),
+                    ip: $('#ip').val(),
+                    port: $('#port').val(),
+                    service: $('#service').val(),
+                    user: $('#user').val(),
+                    pass: $('#pass').val(),
+                    status: $('#status').val(),
+                    proxy_status: $('#proxy_status').val(),
+                    proxy_server: $('#proxy_server').val(),
+                    read_db: $('#read_db').val(),
+                    stream_load: $('#stream_load').val(),
+                    related_id: $('#related_id').val(),
                 },
                 success: function (dataSet) {
-                    if (dataSet.code==0) {
-                       swal("保存成功", "", "success")
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
                     } else {
-                       swal(dataSet.message, "", "error")
+                        swal(dataSet.message, "", "error")
                     }
                 },
-             });
-          });
-
+            });
         });
 
-   </script>
+    });
+
+</script>
 </body>
 
 </html>

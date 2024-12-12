@@ -4,22 +4,23 @@
     <meta charset="utf-8">
     <title>新建同步</title>
     <style>
-        #sour_tab_cols,#sele_sour_tab_cols {
+        #sour_tab_cols, #sele_sour_tab_cols {
             height: 290px;
             max-height: 290px;
         }
 
         .modal-lg {
-            width:65%;
-            height:40%;
-            margin-left:320px;
-            margin-right:50px;
-            margin-top:80px;
+            width: 65%;
+            height: 40%;
+            margin-left: 320px;
+            margin-right: 50px;
+            margin-top: 80px;
         }
 
-        table{
-			table-layout:fixed;
-		}
+        table {
+            table-layout: fixed;
+        }
+
         th, td {
             word-break: keep-all;
             white-space: nowrap;
@@ -28,524 +29,530 @@
             -moz-text-overflow: ellipsis;
         }
 
-        #doris_tab_config{
-            height:200px;
+        #doris_tab_config {
+            height: 200px;
         }
 
     </style>
 </head>
 <body>
-   <p></p>
-    <form class="form-horizontal" role="form">
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
-                        </div>
-                        <div class="col-md-10">
-                            <input id="sync_tag"  type="text"  class="form-control" placeholder="请输入同步标识号">
-                        </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
-                        </div>
-                        <div class="col-md-10">
-                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_server">
-                                <option value='' selected = "selected">...</option>
-                                {% for var in sync_server %}
-                                  <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                                {% end %}
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源数据库实例</label>
-                        </div>
-                       <div class="col-md-10">
-                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_server">
-                                <option value='' selected = "selected">...</option>
-                                {% for var in db_server %}
-                                  <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                                {% end %}
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span id="s_sour_db_name">*</span>源数据库名称</label>
-                        </div>
-                        <div class="col-md-10">
-                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_name">
-                                <option value=''  selected = "selected">...</option>
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>同步数据类型</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="sync_data_type" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in dm_sync_data_type %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>同步业务类型</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="sync_ywlx" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in dm_sync_ywlx %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
-                        </div>
-                        <div class="col-md-10">
-                            <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_tab_name">
-                                <option value=''  selected = "selected">...</option>
-                            </select>
-                       </div>
-                   </div>
-               </div>
-               <div class="col-md-1">
-                   <div class="form-group">
-                        <div>
-                            <button type="button" id='mdi-view-list' class="btn btn-xs waves-effect waves-light" disabled  onclick=showTabDetail()><i class="mdi mdi-view-list"></i></button>
-                        </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-                   <div class="col-md-6">
-                       <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label">源数据库列名</label>
-                            </div>
-                            <div class="col-md-10">
-                                <select multiple="multiple" class="form-control" id="sour_tab_cols" >
-                                </select>
-                            </div>
-                       </div>
-                   </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group m-b-0">
-                    <div class="col-sm-offset-6 col-sm-9">
-                        <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"  disabled onclick=selectAll()><i class="ion-arrow-down-a"></i></button>
-                        <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"  disabled onclick=cancelAll()><i class="ion-arrow-up-a"></i></button>
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sele_sour_tab_cols">*</span>选择同步列名</label>
-                    </div>
-                     <div class="col-md-10">
-                        <select multiple="multiple" class="form-control" id="sele_sour_tab_cols" >
-                        </select>
-                     </div>
-               </div>
-             </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label">增量同步列名</label>
-                        </div>
-                       <div class="col-md-10">
-                            <select class="form-control select" id="sour_incr_col" >
-                                <option value='' selected = "selected">......</option>
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_zk_hosts">*</span>zookeeper地址</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select class="form-control select" id="zk_hosts" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in dm_sync_zk_host %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_hbase_thrift">*</span>hbase thrift地址</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select class="form-control select" id="hbase_thrift" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in dm_sync_hbase_thrift %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_hbase_table">*</span>hbase表名</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="hbase_table"  type="text" class="form-control"  >
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_hbase_rowkey">*</span>hbase行键</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="hbase_rowkey"  type="text" class="form-control"  >
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_hbase_rowkey_separator"></span>hbase行键分隔符</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="hbase_rowkey_separator"  type="text" class="form-control" value="_">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_es_service">*</span>ElasticSearch服务</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="es_service"  type="text" class="form-control">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_es_index_name">*</span>ElasticSearch索引</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="es_index_name"  type="text" class="form-control">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_es_type_name">*</span>ElasticSearch类型</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="es_type_name"  type="text" class="form-control">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span>*</span>doris实例</label>
-                        </div>
-                        <div class="col-md-10">
-                            <select class="form-control select" id="db_doris" >
-                                <option value='' selected = "selected">......</option>
-                                {% for var in db_server_doris %}
-                                  <option value={{var[0]}} >{{var[1]}}</option>
-                                {% end %}
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span>*</span>doris库名</label>
-                        </div>
-                       <div class="col-md-10">
-                            <select class="form-control select" id="doris_db_name" >
-                                <option value='' selected = "selected">......</option>
-                            </select>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-               <div class="col-md-6">
-                   <div class="form-group">
-                        <div>
-                            <label class="col-md-2 control-label"><span>*</span>doris表名</label>
-                        </div>
-                       <div class="col-md-10">
-                             <input id="doris_tab_name"  type="text" class="form-control" readonly  >
-                       </div>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>doris批大小</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="doris_batch_size"  type="text" class="form-control"  value="200">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>dataX JVM配置</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="doris_jvm"  type="text" class="form-control" value="-Xms1G -Xmx1G">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>doris表配置</label>
-                    </div>
-                    <div class="col-md-10">
-                         <div id='doris_tab_config' class="col-md-12">ENGINE=OLAP
-UNIQUE KEY($$PK_NAMES$$)
-COMMENT "OLAP"
-DISTRIBUTED BY HASH($$PK_NAMES$$) BUCKETS 3
-PROPERTIES (
-"replication_allocation" = "tag.location.default: 1",
-"in_memory" = "false",
-"storage_format" = "V2"
-)</div>
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sync_doris_type">*</span>doris同步类型</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="doris_sync_type" >
-                            {% for var in dm_sync_doris_type %}
-                                {%  if var[0]=='3' %}
-                                   <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                                {% else %}
-                                   <option value={{var[0]}} >{{var[1]}}</option>
-                                {% end %}
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-              </div>
-           </div>
-
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="python3_home"  type="text" class="form-control" placeholder="PYTHON3主目录">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_script_base">*</span>dataX脚本目录</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="script_base"  type="text" class="form-control" placeholder="dataX目录">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="run_time"  type="text" class="form-control" placeholder="请输入备份运行时间">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="task_desc"  type="text" class="form-control"  readonly  placeholder="请输入任务描述">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_datax_home">*</span>dataX主目录</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="datax_home"  type="text" class="form-control" placeholder="请输入dataX主目录">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sync_time_type">*</span>同步时间类型</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="sync_time_type" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in dm_sync_time_type %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="sync_gap"  type="text" class="form-control" placeholder="请输入同步间隔"  value="1" >
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器">
-                    </div>
-               </div>
-              </div>
-           </div>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select class="form-control select" id="status" name="status">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
+<p></p>
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_tag" type="text" class="form-control" placeholder="请输入同步标识号">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_server">
+                        <option value='' selected="selected">...</option>
+                        {% for var in sync_server %}
+                        <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源数据库实例</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_server">
+                        <option value='' selected="selected">...</option>
+                        {% for var in db_server %}
+                        <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sour_db_name">*</span>源数据库名称</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_name">
+                        <option value='' selected="selected">...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>同步数据类型</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="sync_data_type">
+                        <option value='' selected="selected">......</option>
+                        {% for var in dm_sync_data_type %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>同步业务类型</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="sync_ywlx">
+                        <option value='' selected="selected">......</option>
+                        {% for var in dm_sync_ywlx %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sour_tab_name">*</span>源数据库表名</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_tab_name">
+                        <option value='' selected="selected">...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-group">
+                <div>
+                    <button type="button" id='mdi-view-list' class="btn btn-xs waves-effect waves-light" disabled
+                            onclick=showTabDetail()><i class="mdi mdi-view-list"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">源数据库列名</label>
+                </div>
+                <div class="col-md-10">
+                    <select multiple="multiple" class="form-control" id="sour_tab_cols">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                    <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light" disabled
+                            onclick=selectAll()><i class="ion-arrow-down-a"></i></button>
+                    <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light" disabled
+                            onclick=cancelAll()><i class="ion-arrow-up-a"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sele_sour_tab_cols">*</span>选择同步列名</label>
+                </div>
+                <div class="col-md-10">
+                    <select multiple="multiple" class="form-control" id="sele_sour_tab_cols">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">增量同步列名</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="sour_incr_col">
+                        <option value='' selected="selected">......</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_zk_hosts">*</span>zookeeper地址</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="zk_hosts">
+                        <option value='' selected="selected">......</option>
+                        {% for var in dm_sync_zk_host %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_hbase_thrift">*</span>hbase thrift地址</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="hbase_thrift">
+                        <option value='' selected="selected">......</option>
+                        {% for var in dm_sync_hbase_thrift %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_hbase_table">*</span>hbase表名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="hbase_table" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_hbase_rowkey">*</span>hbase行键</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="hbase_rowkey" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span
+                            id="s_hbase_rowkey_separator"></span>hbase行键分隔符</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="hbase_rowkey_separator" type="text" class="form-control" value="_">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_es_service">*</span>ElasticSearch服务</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="es_service" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_es_index_name">*</span>ElasticSearch索引</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="es_index_name" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_es_type_name">*</span>ElasticSearch类型</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="es_type_name" type="text" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>doris实例</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="db_doris">
+                        <option value='' selected="selected">......</option>
+                        {% for var in db_server_doris %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>doris库名</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="doris_db_name">
+                        <option value='' selected="selected">......</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>doris表名</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="doris_tab_name" type="text" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>doris批大小</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="doris_batch_size" type="text" class="form-control" value="200">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>dataX JVM配置</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="doris_jvm" type="text" class="form-control" value="-Xms1G -Xmx1G">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>doris表配置</label>
+                </div>
+                <div class="col-md-10">
+                    <div id='doris_tab_config' class="col-md-12">ENGINE=OLAP
+                        UNIQUE KEY($$PK_NAMES$$)
+                        COMMENT "OLAP"
+                        DISTRIBUTED BY HASH($$PK_NAMES$$) BUCKETS 3
+                        PROPERTIES (
+                        "replication_allocation" = "tag.location.default: 1",
+                        "in_memory" = "false",
+                        "storage_format" = "V2"
+                        )
                     </div>
                 </div>
-              </div>
-           </div>
-           <br>
-           <div class="row">
-             <div class="col-md-6">
-               <div class="form-group m-b-0">
-                    <div class="col-sm-offset-6 col-sm-9">
-                      <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-                    </div>
-               </div>
-              </div>
-           </div>
-       </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_doris_type">*</span>doris同步类型</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="doris_sync_type">
+                        {% for var in dm_sync_doris_type %}
+                        {% if var[0]=='3' %}
+                        <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                        {% else %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home" type="text" class="form-control" placeholder="PYTHON3主目录">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>dataX脚本目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_base" type="text" class="form-control" placeholder="dataX目录">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="run_time" type="text" class="form-control" placeholder="请输入备份运行时间">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc" type="text" class="form-control" readonly placeholder="请输入任务描述">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_datax_home">*</span>dataX主目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="datax_home" type="text" class="form-control" placeholder="请输入dataX主目录">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_time_type">*</span>同步时间类型</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="sync_time_type">
+                        <option value='' selected="selected">......</option>
+                        {% for var in dm_sync_time_type %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="sync_gap" type="text" class="form-control" placeholder="请输入同步间隔" value="1">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server" type="text" class="form-control" placeholder="请输入API服务器">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="status" name="status">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group m-b-0">
+                <div class="col-sm-offset-6 col-sm-9">
+                    <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -554,511 +561,514 @@ PROPERTIES (
             <div class="modal-body">
                 <p></p>
                 <div class="row">
-                     <div class="col-md-12">
-                          <div id="div-tab">
-                               <table id="example" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" ></table>
-                          </div>
-                     </div>
+                    <div class="col-md-12">
+                        <div id="div-tab">
+                            <table id="example" style="white-space: nowrap;"
+                                   class="table table-striped table-bordered nowrap"></table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-   </div><!-- /.modal -->
+</div><!-- /.modal -->
 
-    <script>
+<script>
 
-        function selectAll() {
-            try {
-               options=$('#sour_tab_cols option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#sour_tab_cols option').remove();
-               }
-            } catch(err){
-                console.log(err)
+    function selectAll() {
+        try {
+            options = $('#sour_tab_cols option');
+            if (options.length > 0) {
+                for (var i = 0; i < options.length; i++) {
+                    console.log('i=', i, 'val=', $(options[i]).val(), 'text=', $(options[i]).val())
+                    value = $(options[i]).val();
+                    text = $(options[i]).text();
+                    $('#sele_sour_tab_cols').append("<option value='" + value + "'>" + text + "</option>");
+                }
+                $('#sour_tab_cols option').remove();
             }
+        } catch (err) {
+            console.log(err)
         }
+    }
 
-        function cancelAll() {
-               options=$('#sele_sour_tab_cols option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#sele_sour_tab_cols option').remove();
-               }
-        }
-
-        function get_selec_cols(){
-             var tmp='';
-             var val='';
-             $('#sele_sour_tab_cols option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-        }
-
-        function showTabDetail(){
-            if ($('#sour_db_name').val() =='') {
-                return false
+    function cancelAll() {
+        options = $('#sele_sour_tab_cols option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#sour_tab_cols').append("<option value='" + value + "'>" + text + "</option>");
             }
+            $('#sele_sour_tab_cols option').remove();
+        }
+    }
 
-            $('#con-close-modal').modal({
-                keyboard: false,
-                backdrop:false
+    function get_selec_cols() {
+        var tmp = '';
+        var val = '';
+        $('#sele_sour_tab_cols option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
+
+    function showTabDetail() {
+        if ($('#sour_db_name').val() == '') {
+            return false
+        }
+
+        $('#con-close-modal').modal({
+            keyboard: false,
+            backdrop: false
+        });
+
+        $('#tab_stru').text($('#sour_db_name').val())
+
+        if ($('#sour_db_name').val() != '') {
+
+            $.ajax({
+                url: "/get_tab_stru",
+                type: "post",
+                datatype: "json",
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    db_name: $('#sour_db_name').val(),
+                    tab_name: $('#sour_tab_name').val()
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        scrollY: "300px",
+                        ordering: false,
+                        bAutoWidth: true,
+                        scrollX: true,
+                        paging: false,
+                        iDisplayLength: 10,
+                        data: dataSet,
+                        responsive: false,
+                        columns: [
+                            {"title": "列名"},
+                            {"title": "列描述"},
+                            {"title": "列类型"},
+                            {"title": "是否自增"},
+                            {"title": "是否主键"},
+                            {"title": "是否非空"},
+                        ],
+                        "language": get_languages()
+                    });
+                }
+            });
+        }
+    }
+
+    $("#add").click(function () {
+        var editor = ace.edit("doris_tab_config")
+        $.ajax({
+            url: "/datax/add/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                sync_tag: $('#sync_tag').val(),
+                sync_server: $('#sync_server').val(),
+                sour_db_server: $('#sour_db_server').val(),
+                sour_db_name: $('#sour_db_name').val(),
+                sour_tab_name: $('#sour_tab_name').val(),
+                sour_tab_cols: get_selec_cols(),
+                sour_incr_col: $('#sour_incr_col').val(),
+                zk_hosts: $('#zk_hosts').val(),
+                hbase_thrift: $('#hbase_thrift').val(),
+                sync_hbase_table: $('#hbase_table').val(),
+                sync_hbase_rowkey: $('#hbase_rowkey').val(),
+                sync_hbase_rowkey_separator: $('#hbase_rowkey_separator').val(),
+                es_service: $('#es_service').val(),
+                es_index_name: $('#es_index_name').val(),
+                es_type_name: $('#es_type_name').val(),
+                sync_ywlx: $('#sync_ywlx').val(),
+                sync_data_type: $('#sync_data_type').val(),
+                python3_home: $('#python3_home').val(),
+                script_base: $('#script_base').val(),
+                run_time: $('#run_time').val(),
+                task_desc: $('#task_desc').val(),
+                datax_home: $('#datax_home').val(),
+                sync_time_type: $('#sync_time_type').val(),
+                sync_gap: $('#sync_gap').val(),
+                api_server: $('#api_server').val(),
+                status: $('#status').val(),
+                db_doris: $('#db_doris').val(),
+                doris_db_name: $('#doris_db_name').val(),
+                doris_tab_name: $('#doris_tab_name').val(),
+                doris_batch_size: $('#doris_batch_size').val(),
+                doris_jvm: $('#doris_jvm').val(),
+                doris_tab_config: editor.getValue(),
+                doris_sync_type: $('#doris_sync_type').val()
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("新增成功", "", "success")
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            },
+        });
+    });
+
+    $('#sour_db_server').change(function () {
+        if ($('#sour_db_server').val() != '') {
+            $.ajax({
+                url: "/get_database",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                },
+                success: function (dataSet) {
+                    $("#sour_db_name").empty();
+                    $("#sele_sour_tab_cols").empty();
+                    $("#sour_db_name").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#sour_db_name").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#sour_db_name").selectpicker('refresh')
+                }
+            });
+        } else {
+            $("#sour_db_name").empty();
+            $("#sour_db_name").append("<option value=''>...</option>");
+        }
+    });
+
+    $('#sour_db_name').change(function () {
+        $("#sour_tab_name").empty();
+        $("#sour_tab_cols").empty();
+        $("#sele_sour_tab_cols").empty();
+        $('#hbase_table').val('');
+
+        if ($('#sour_db_name').val() != '') {
+            console.log('dbid=', $('#sour_db_server').val())
+            console.log('db_name=', $('#sour_db_name').val())
+            $.ajax({
+                url: "/get_tables",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    db_name: $('#sour_db_name').val(),
+                },
+                success: function (dataSet) {
+                    console.log('sour_db_name changed!')
+                    console.log('dataSet=', dataSet)
+                    $("#sour_tab_name").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        console.log(val, text)
+                        $("#sour_tab_name").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#sour_tab_name").selectpicker('refresh')
+                }
+            });
+        } else {
+            $("#sour_tab_name").append("<option value=''>......</option>");
+            $("#sour_incr_col").append("<option value=''>......</option>");
+        }
+    });
+
+    $('#sour_tab_name').change(function () {
+        $('#hbase_table').val('');
+        if ($('#sour_tab_name').val() != '') {
+
+            //更新源数据库列名
+            $.ajax({
+                url: "/get_columns",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    db_name: $('#sour_db_name').val(),
+                    tab_name: $('#sour_tab_name').val()
+                },
+                success: function (dataSet) {
+                    $("#sour_tab_cols").empty();
+                    $("#sele_sour_tab_cols").empty();
+                    $("#sour_incr_col").empty();
+
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i][0];
+                        var text = dataSet['message'][i][0] + '(' + dataSet['message'][i][1] + ')';
+                        $("#sour_tab_cols").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+
+                    var db_prefix = $('#sour_db_name').val().split('_')[1]
+                    if ($('#sync_data_type').val() == '5') {
+                        $('#hbase_table').val('hopsonone:doris' + db_prefix + '_' + $('#sour_tab_name').val());
+                    } else if ($('#sync_data_type').val() == '7') {
+                        $('#doris_tab_name').val($('#sour_tab_name').val())
+                    }
+
+                    $('#sync_tag').val('datax_' + $('#sour_db_name').val() + '.' + $('#sour_tab_name').val() + '_v1')
+
+                    if ($('#sync_data_type').val() == '5') {
+                        $('#task_desc').val('dataX同步[source_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                    } else if ($('#sync_data_type').val() == '6') {
+                        $('#task_desc').val('dataX同步[es_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                    } else if ($('#sync_data_type').val() == '7') {
+                        $('#task_desc').val('dataX同步[doris_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                    } else if ($('#sync_data_type').val() == '8') {
+                        $('#task_desc').val('dataX同步[ck_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
+                    }
+                    $('#ion-arrow-down').attr('disabled', false);
+                    $('#ion-arrow-up').attr('disabled', false);
+                    $('#mdi-view-list').attr('disabled', false);
+                }
             });
 
-            $('#tab_stru').text($('#sour_db_name').val())
+            //更新增量同步列名
+            $.ajax({
+                url: "/get_incr_col",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    db_name: $('#sour_db_name').val(),
+                    tab_name: $('#sour_tab_name').val()
+                },
+                success: function (dataSet) {
+                    $("#sour_incr_col").empty();
+                    $("#sour_incr_col").append("<option value=''>......</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i][0];
+                        var text = dataSet['message'][i][0] + '(' + dataSet['message'][i][1] + ')';
+                        $("#sour_incr_col").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
 
-            if ($('#sour_db_name').val()!='') {
-
+            //更新hbase行键
+            if ($('#sync_data_type').val() == '5') {
                 $.ajax({
-                    url: "/get_tab_stru",
+                    url: "/get_keys",
                     type: "post",
                     datatype: "json",
+                    async: false,
                     data: {
                         dbid: $('#sour_db_server').val(),
                         db_name: $('#sour_db_name').val(),
                         tab_name: $('#sour_tab_name').val()
                     },
                     success: function (dataSet) {
-                        $('#example').DataTable({
-                            "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
-                            "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                            destroy: true,
-                            async: true,
-                            scrollY: "300px",
-                            ordering: false,
-                            bAutoWidth: true,
-                            scrollX: true,
-                            paging: false,
-                            iDisplayLength: 10,
-                            data: dataSet,
-                            responsive: false,
-                            columns: [
-                                {"title": "列名"},
-                                {"title": "列描述"},
-                                {"title": "列类型"},
-                                {"title": "是否自增"},
-                                {"title": "是否主键"},
-                                {"title": "是否非空"},
-                            ],
-                            "language": get_languages()
-                        });
+                        $("#hbase_rowkey").val(dataSet['message'])
+                        $('#hbase_rowkey').attr("readonly", "readonly");
                     }
                 });
             }
-        }
 
-        $("#add").click(function () {
-            var editor = ace.edit("doris_tab_config")
-            $.ajax({
-                url: "/datax/add/save",
-                type: "post",
-                datatype: "json",
-                data: {
-                    sync_tag             : $('#sync_tag').val(),
-                    sync_server          : $('#sync_server').val(),
-                    sour_db_server       : $('#sour_db_server').val(),
-                    sour_db_name         : $('#sour_db_name').val(),
-                    sour_tab_name        : $('#sour_tab_name').val(),
-                    sour_tab_cols        : get_selec_cols(),
-                    sour_incr_col        : $('#sour_incr_col').val(),
-                    zk_hosts             : $('#zk_hosts').val(),
-                    hbase_thrift         : $('#hbase_thrift').val(),
-                    sync_hbase_table     : $('#hbase_table').val(),
-                    sync_hbase_rowkey    : $('#hbase_rowkey').val(),
-                    sync_hbase_rowkey_separator : $('#hbase_rowkey_separator').val(),
-                    es_service           : $('#es_service').val(),
-                    es_index_name        : $('#es_index_name').val(),
-                    es_type_name         : $('#es_type_name').val(),
-                    sync_ywlx            : $('#sync_ywlx').val(),
-                    sync_data_type       : $('#sync_data_type').val(),
-                    python3_home         : $('#python3_home').val(),
-                    script_base          : $('#script_base').val(),
-                    run_time             : $('#run_time').val(),
-                    task_desc            : $('#task_desc').val(),
-                    datax_home           : $('#datax_home').val(),
-                    sync_time_type       : $('#sync_time_type').val(),
-                    sync_gap             : $('#sync_gap').val(),
-                    api_server           : $('#api_server').val(),
-                    status               : $('#status').val(),
-                    db_doris             : $('#db_doris').val(),
-                    doris_db_name        : $('#doris_db_name').val(),
-                    doris_tab_name       : $('#doris_tab_name').val(),
-                    doris_batch_size     : $('#doris_batch_size').val(),
-                    doris_jvm            : $('#doris_jvm').val(),
-                    doris_tab_config     : editor.getValue(),
-                    doris_sync_type      : $('#doris_sync_type').val()
-                },
-                success: function (dataSet) {
-                    if (dataSet.code==0) {
-                       swal("新增成功", "", "success")
-                    } else {
-                       swal(dataSet.message, "", "error")
-                    }
-                },
-             });
-          });
-
-        $('#sour_db_server').change(function() {
-            if ($('#sour_db_server').val()!=''){
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#sour_db_server').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#sour_db_name").empty();
-                         $("#sele_sour_tab_cols").empty();
-                         $("#sour_db_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#sour_db_name").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#sour_db_name").selectpicker('refresh')
-                      }
-                });
-            } else {
-                $("#sour_db_name").empty();
-                $("#sour_db_name").append("<option value=''>...</option>");
-            }
-        });
-
-        $('#sour_db_name').change(function() {
-            $("#sour_tab_name").empty();
+        } else {
             $("#sour_tab_cols").empty();
             $("#sele_sour_tab_cols").empty();
+            $("#sour_incr_col").empty();
+            $("#sour_tab_cols").append("<option value=''>...</option>");
+            $("#sele_sour_tab_cols").append("<option value=''>...</option>");
+            $("#sour_incr_col").append("<option value=''>...</option>");
+            $("#hbase_rowkey").val('')
             $('#hbase_table').val('');
-
-            if ($('#sour_db_name').val()!=''){
-                console.log('dbid=',$('#sour_db_server').val())
-                console.log('db_name=',$('#sour_db_name').val())
-                $.ajax({
-                      url: "/get_tables",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid    : $('#sour_db_server').val(),
-                          db_name : $('#sour_db_name').val(),
-                      },
-                      success: function (dataSet) {
-                         console.log('sour_db_name changed!')
-                         console.log('dataSet=',dataSet)
-                         $("#sour_tab_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              console.log(val,text)
-                              $("#sour_tab_name").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#sour_tab_name").selectpicker('refresh')
-                      }
-                });
-            } else {
-                $("#sour_tab_name").append("<option value=''>......</option>");
-                $("#sour_incr_col").append("<option value=''>......</option>");
-            }
-        });
-
-        $('#sour_tab_name').change(function() {
-            $('#hbase_table').val('');
-            if ($('#sour_tab_name').val()!=''){
-
-                //更新源数据库列名
-                $.ajax({
-                      url: "/get_columns",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid     : $('#sour_db_server').val(),
-                          db_name  : $('#sour_db_name').val(),
-                          tab_name : $('#sour_tab_name').val()
-                      },
-                      success: function (dataSet) {
-                         $("#sour_tab_cols").empty();
-                         $("#sele_sour_tab_cols").empty();
-                         $("#sour_incr_col").empty();
-
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i][0];
-                              var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
-                              $("#sour_tab_cols").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-
-                         var db_prefix=$('#sour_db_name').val().split('_')[1]
-                         if ($('#sync_data_type').val() == '5'){
-                             $('#hbase_table').val('hopsonone:doris'+db_prefix+'_'+$('#sour_tab_name').val());
-                         } else if ( $('#sync_data_type').val() =='7') {
-                             $('#doris_tab_name').val($('#sour_tab_name').val())
-                         }
-
-                         $('#sync_tag').val('datax_'+$('#sour_db_name').val()+'.'+$('#sour_tab_name').val()+'_v1')
-
-                         if ($('#sync_data_type').val() == '5') {
-                             $('#task_desc').val('dataX同步[source_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
-                         } else if ($('#sync_data_type').val() == '6') {
-                             $('#task_desc').val('dataX同步[es_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
-                         } else if ($('#sync_data_type').val() == '7') {
-                             $('#task_desc').val('dataX同步[doris_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
-                         } else if ($('#sync_data_type').val() == '8') {
-                             $('#task_desc').val('dataX同步[ck_' + db_prefix + '_' + $('#sour_tab_name').val() + '_v1]')
-                         }
-                         $('#ion-arrow-down').attr('disabled',false);
-                         $('#ion-arrow-up').attr('disabled',false);
-                         $('#mdi-view-list').attr('disabled',false);
-                      }
-                });
-
-                //更新增量同步列名
-                $.ajax({
-                      url: "/get_incr_col",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid     : $('#sour_db_server').val(),
-                          db_name  : $('#sour_db_name').val(),
-                          tab_name : $('#sour_tab_name').val()
-                      },
-                      success: function (dataSet) {
-                         $("#sour_incr_col").empty();
-                         $("#sour_incr_col").append("<option value=''>......</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i][0];
-                              var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
-                              $("#sour_incr_col").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-
-                //更新hbase行键
-                if ($('#sync_data_type').val() == '5') {
-                     $.ajax({
-                          url: "/get_keys",
-                          type: "post",
-                          datatype: "json",
-                          async:false,
-                          data:{
-                              dbid     : $('#sour_db_server').val(),
-                              db_name  : $('#sour_db_name').val(),
-                              tab_name : $('#sour_tab_name').val()
-                          },
-                          success: function (dataSet) {
-                             $("#hbase_rowkey").val(dataSet['message'])
-                             $('#hbase_rowkey').attr("readonly","readonly");
-                          }
-                    });
-                }
-
-            } else {
-                $("#sour_tab_cols").empty();
-                $("#sele_sour_tab_cols").empty();
-                $("#sour_incr_col").empty();
-                $("#sour_tab_cols").append("<option value=''>...</option>");
-                $("#sele_sour_tab_cols").append("<option value=''>...</option>");
-                $("#sour_incr_col").append("<option value=''>...</option>");
-                $("#hbase_rowkey").val('')
-                $('#hbase_table').val('');
-            }
-        });
-
-        $("#sour_tab_cols").click(function () {
-               options=$('#sour_tab_cols option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#sele_sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#sour_tab_cols option:selected').remove();
-               }
-         });
-
-        $("#sele_sour_tab_cols").click(function () {
-               options=$('#sele_sour_tab_cols option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#sour_tab_cols').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#sele_sour_tab_cols option:selected').remove();
-               }
-        });
-
-        function set_sync_data_type() {
-             //考虑直接隐藏这些元素，最后调试
-            if  ( $('#sync_data_type').val() =='7') {
-                $("#zk_hosts").empty();
-                $("#hbase_thrift").empty();
-                $("#hbase_table").val('');
-                $('#hbase_rowkey').val('');
-                $('#hbase_rowkey_separator').val('');
-                $('#zk_hosts').attr("disabled",true);
-                $('#hbase_thrift').attr("disabled",true);
-                $('#hbase_table').attr("readonly","readonly");
-                $('#hbase_rowkey').attr("readonly","readonly");
-                $('#hbase_rowkey_separator').attr("readonly","readonly");
-
-                $("#es_service").val('');
-                $("#es_index_name").val('');
-                $('#es_type_name').val('');
-                $('#es_service').attr("disabled",true);
-                $('#es_index_name').attr("disabled",true);
-                $('#es_type_name').attr("disabled",true);
-
-                $("#db_doris").attr("disabled", false);
-                $("#doris_db_name").attr("disabled", false);
-                $("#doris_tab_name").attr("disabled", false);
-                $("#doris_batch_size").attr("disabled", false);
-
-            } else if ( $('#sync_data_type').val() =='6') {
-                $("#zk_hosts").empty();
-                $("#hbase_thrift").empty();
-                $("#hbase_table").val('');
-                $('#hbase_rowkey').val('');
-                $('#hbase_rowkey_separator').val('');
-                $('#zk_hosts').attr("disabled",true);
-                $('#hbase_thrift').attr("disabled",true);
-                $('#hbase_table').attr("readonly","readonly");
-                $('#hbase_rowkey').attr("readonly","readonly");
-                $('#hbase_rowkey_separator').attr("readonly","readonly");
-                $('#es_service').attr("readonly",false);
-                $('#es_index_name').attr("readonly",false);
-                $('#es_type_name').attr("readonly",false);
-                $("#db_doris").attr("disabled", true);
-                $("#doris_db_name").attr("disabled", true);
-                $("#doris_tab_name").attr("disabled", true);
-                $("#doris_batch_size").attr("disabled", true);
-            } else {
-                $('#zk_hosts').attr("disabled",false);
-                $('#hbase_thrift').attr("disabled",false);
-                $('#hbase_table').attr("readonly",false);
-                $('#hbase_rowkey').attr("readonly",false);
-                $('#hbase_rowkey_separator').attr("readonly",false);
-                $('#es_service').val('');
-                $('#es_service').attr("readonly",true);
-                $('#es_index_name').val('');
-                $('#es_index_name').attr("readonly",true);
-                $('#es_type_name').val('');
-                $('#es_type_name').attr("readonly",true);
-                $("#db_doris").val('');
-                $("#doris_db_name").val('');
-                $("#doris_tab_name").val('');
-                $("#doris_batch_size").val('');
-                $("#db_doris").attr("disabled", true);
-                $("#doris_db_name").attr("disabled", true);
-                $("#doris_tab_name").attr("disabled", true);
-                $("#doris_batch_size").attr("disabled", true);
-            }
         }
+    });
 
-        $('#sync_data_type').change(function() {
-            set_sync_data_type();
-        });
-
-        $('#db_doris').change(function(){
-           if ($('#db_doris').val()!=''){
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#db_doris').val(),
-                      },
-                      success: function (dataSet) {
-                         console.log('db_doris=',dataSet)
-                         $("#doris_db_name").empty();
-                         $("#doris_tab_name").empty();
-                         $("#doris_db_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#doris_db_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-            } else {
-                $("#doris_db_name").empty();
-                $("#doris_db_name").append("<option value=''>...</option>");
+    $("#sour_tab_cols").click(function () {
+        options = $('#sour_tab_cols option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#sele_sour_tab_cols').append("<option value='" + value + "'>" + text + "</option>");
             }
-        });
-
-        $('#doris_db_name').change(function() {
-            $("#doris_tab_name").empty();
-            if ($('#doris_db_name').val()!=''){
-                $.ajax({
-                      url: "/get_tables",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid    : $('#db_doris').val(),
-                          db_name : $('#doris_db_name').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#doris_tab_name").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#doris_tab_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-            } else {
-                $("#doris_tab_name").append("<option value=''>......</option>");
-            }
-        });
-
-        function set_editor(p_editor) {
-              var editor = ace.edit(p_editor);
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/mysql");
-              editor.getSession().setUseSoftTabs(true);
-              editor.getSession().setUseWrapMode(true);
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(14);
-              editor.setOption("wrap", "free");
-              ace.require("ace/ext/language_tools");
-              editor.setOptions({
-                 enableBasicAutocompletion: true,
-                 enableSnippets: true,
-                 enableLiveAutocompletion: true
-              });
-              editor.setHighlightActiveLine(true);
+            $('#sour_tab_cols option:selected').remove();
         }
+    });
 
-        $(document).ready(function() {
-           set_selected();
-           set_editor('doris_tab_config')
-           $("#sync_server").selectpicker('refresh')
-           $("#sour_db_server").selectpicker('refresh')
-           $("#sour_tab_name").selectpicker('refresh')
-           $("#sour_db_name").selectpicker('refresh')
-           set_sync_data_type();
+    $("#sele_sour_tab_cols").click(function () {
+        options = $('#sele_sour_tab_cols option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#sour_tab_cols').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#sele_sour_tab_cols option:selected').remove();
+        }
+    });
+
+    function set_sync_data_type() {
+        //考虑直接隐藏这些元素，最后调试
+        if ($('#sync_data_type').val() == '7') {
+            $("#zk_hosts").empty();
+            $("#hbase_thrift").empty();
+            $("#hbase_table").val('');
+            $('#hbase_rowkey').val('');
+            $('#hbase_rowkey_separator').val('');
+            $('#zk_hosts').attr("disabled", true);
+            $('#hbase_thrift').attr("disabled", true);
+            $('#hbase_table').attr("readonly", "readonly");
+            $('#hbase_rowkey').attr("readonly", "readonly");
+            $('#hbase_rowkey_separator').attr("readonly", "readonly");
+
+            $("#es_service").val('');
+            $("#es_index_name").val('');
+            $('#es_type_name').val('');
+            $('#es_service').attr("disabled", true);
+            $('#es_index_name').attr("disabled", true);
+            $('#es_type_name').attr("disabled", true);
+
+            $("#db_doris").attr("disabled", false);
+            $("#doris_db_name").attr("disabled", false);
+            $("#doris_tab_name").attr("disabled", false);
+            $("#doris_batch_size").attr("disabled", false);
+
+        } else if ($('#sync_data_type').val() == '6') {
+            $("#zk_hosts").empty();
+            $("#hbase_thrift").empty();
+            $("#hbase_table").val('');
+            $('#hbase_rowkey').val('');
+            $('#hbase_rowkey_separator').val('');
+            $('#zk_hosts').attr("disabled", true);
+            $('#hbase_thrift').attr("disabled", true);
+            $('#hbase_table').attr("readonly", "readonly");
+            $('#hbase_rowkey').attr("readonly", "readonly");
+            $('#hbase_rowkey_separator').attr("readonly", "readonly");
+            $('#es_service').attr("readonly", false);
+            $('#es_index_name').attr("readonly", false);
+            $('#es_type_name').attr("readonly", false);
+            $("#db_doris").attr("disabled", true);
+            $("#doris_db_name").attr("disabled", true);
+            $("#doris_tab_name").attr("disabled", true);
+            $("#doris_batch_size").attr("disabled", true);
+        } else {
+            $('#zk_hosts').attr("disabled", false);
+            $('#hbase_thrift').attr("disabled", false);
+            $('#hbase_table').attr("readonly", false);
+            $('#hbase_rowkey').attr("readonly", false);
+            $('#hbase_rowkey_separator').attr("readonly", false);
+            $('#es_service').val('');
+            $('#es_service').attr("readonly", true);
+            $('#es_index_name').val('');
+            $('#es_index_name').attr("readonly", true);
+            $('#es_type_name').val('');
+            $('#es_type_name').attr("readonly", true);
+            $("#db_doris").val('');
+            $("#doris_db_name").val('');
+            $("#doris_tab_name").val('');
+            $("#doris_batch_size").val('');
+            $("#db_doris").attr("disabled", true);
+            $("#doris_db_name").attr("disabled", true);
+            $("#doris_tab_name").attr("disabled", true);
+            $("#doris_batch_size").attr("disabled", true);
+        }
+    }
+
+    $('#sync_data_type').change(function () {
+        set_sync_data_type();
+    });
+
+    $('#db_doris').change(function () {
+        if ($('#db_doris').val() != '') {
+            $.ajax({
+                url: "/get_database",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#db_doris').val(),
+                },
+                success: function (dataSet) {
+                    console.log('db_doris=', dataSet)
+                    $("#doris_db_name").empty();
+                    $("#doris_tab_name").empty();
+                    $("#doris_db_name").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#doris_db_name").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
+        } else {
+            $("#doris_db_name").empty();
+            $("#doris_db_name").append("<option value=''>...</option>");
+        }
+    });
+
+    $('#doris_db_name').change(function () {
+        $("#doris_tab_name").empty();
+        if ($('#doris_db_name').val() != '') {
+            $.ajax({
+                url: "/get_tables",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#db_doris').val(),
+                    db_name: $('#doris_db_name').val(),
+                },
+                success: function (dataSet) {
+                    $("#doris_tab_name").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#doris_tab_name").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
+        } else {
+            $("#doris_tab_name").append("<option value=''>......</option>");
+        }
+    });
+
+    function set_editor(p_editor) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/mysql");
+        editor.getSession().setUseSoftTabs(true);
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(14);
+        editor.setOption("wrap", "free");
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
         });
-   </script>
+        editor.setHighlightActiveLine(true);
+    }
+
+    $(document).ready(function () {
+        set_selected();
+        set_editor('doris_tab_config')
+        $("#sync_server").selectpicker('refresh')
+        $("#sour_db_server").selectpicker('refresh')
+        $("#sour_tab_name").selectpicker('refresh')
+        $("#sour_db_name").selectpicker('refresh')
+        set_sync_data_type();
+    });
+</script>
 </body>
 
 </html>

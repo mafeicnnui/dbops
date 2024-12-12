@@ -28,22 +28,344 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="upd bbgl">
-      <change afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query1018.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_empty.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_full.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_offline.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="38585ee9-03c4-42bf-aae1-29ecd8ebb6d7" name="Default" comment="add table help_topic">
+      <change afterPath="$PROJECT_DIR$/static/uploads/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/components.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/core.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/fonts/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/fullscreen.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/icons.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/icons/icomoon/fonts/icomoon.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/icons/icomoon/fonts/icomoon.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/icons/icomoon/fonts/icomoon.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/icons/icomoon/fonts/icomoon.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/icons/icomoon/styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/sweet-alert.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/css/xterm.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/img/animat-search-color.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/img/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/jquery.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/main_bak.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/popper.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/sweet-alert.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/xterm-addon-fit.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/webssh/js/xterm.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/sys/file_upload.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/webssh/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/webssh/page-404.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/_version.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/jwt_auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/mysql_sync.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/webssh/worker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crontab/webchat.py" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/webchat.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crontab/webchat2.py" beforeDir="false" afterPath="$PROJECT_DIR$/crontab/webchat2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/assets/js/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/assets/js/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/jquery.filer/assets/fonts/jquery.filer-icons/jquery-filer-preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/plugins/jquery.filer/assets/fonts/jquery.filer-icons/jquery-filer-preview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/plugins/jquery.filer/uploads/preview.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/plugins/jquery.filer/uploads/preview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive/archive_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive/archive_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive/archive_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive/archive_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive/archive_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/archive/archive_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/archive/archive_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backup/backup_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backup/backup_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_export.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_export.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_export_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_export_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_import.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query0516.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query0516.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query1018.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query1018.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_query_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_query_test.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbgl/bbgl_task.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_generate.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_generate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_hst_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_hst_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/bbtj/kpi_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datax/sync_datax_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_cfg_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_cfg_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_console.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_console.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_create.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_mgr.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_opt_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_opt_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_inst_para.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_inst_para.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/db/db_user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/db/db_user_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_change_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_change_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_console.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_console.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_opt_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_opt_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/ds/ds_test.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/ds/ds_test.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func/func_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func/func_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func/func_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/func/func_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/func/func_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/forget_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/forget_password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/index-modify.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index-modify.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/page-404.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/page-500.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-500.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/page-lock-screen.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-lock-screen.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/page-login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login/page-logout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login/page-logout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/easylife.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/easylife.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/main_0104.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main_0104.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/main_0109.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main_0109.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/main_0126.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/main_0126.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/main/platform.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main/platform.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/menu_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/menu_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/minio/minio_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/minio/minio_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_alert.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_alert.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_power_empty.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_empty.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_power_full.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_full.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_power_offline.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_power_offline.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_redis_slowlog.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_redis_slowlog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_task.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_templete.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_templete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/monitor/monitor_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/monitor/monitor_view.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/es_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/es_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/exp_audit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/exp_audit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/exp_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/exp_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/exp_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/exp_task.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/order_attachment.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/order_attachment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/order_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/order_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/redis_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/redis_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_audit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_audit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_export.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_export.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_query_bug.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_query_bug.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_release.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_release.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/order/sql_run.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order/sql_run.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port/port_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port/port_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port/port_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/port/port_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/port/port_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role/role_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role/role_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role/role_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/role/role_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/role/role_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_change_bak.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_change_bak.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/server/server_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/server/server_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow/slow_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow/slow_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/slow/slow_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/slow/slow_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_add_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_add_real.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_clone_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_clone_real.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_edit_real.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_log_analyze.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_log_analyze.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sync/sync_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sync/sync_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys/audit_rule.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/audit_rule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys/sys_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_code.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys/sys_setting.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_setting.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sys/sys_setting_old.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sys/sys_setting_old.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/task/task_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/task/task_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/task/task_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/task/task_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/task/task_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/task/task_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/task/task_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/task/task_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tools/db_cipher.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_cipher.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tools/db_compare.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_compare.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tools/db_compare_data.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_compare_data.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/tools/db_dict.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/tools/db_dict.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer/transfer_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer/transfer_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer/transfer_clone.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_clone.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer/transfer_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer/transfer_log_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_log_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/transfer/transfer_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/transfer/transfer_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/dict_grants.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/dict_grants.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/projectquery.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/projectquery.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/sess_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/sess_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/user_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/user_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_change.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/user_edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/user_grants.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_grants.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/user/user_query.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user/user_query.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/controller/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/controller/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_archive.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_archive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_inst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_db_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_db_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_dmmx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_dmmx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_ds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_es.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_es.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_kpi.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_kpi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_minio.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_minio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_port.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_port.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_redis.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_redis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_role.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_role_privs.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_role_privs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_slow.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_slow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql_export.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_export.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sql_online.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_online.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/model/t_sql_release.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sql_release.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sync_datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sync_datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_sys.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_sys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_transfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_transfer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_user_role.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_user_role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/model/t_xtqx.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/model/t_xtqx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/archive.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/archive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/db_inst.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/db_inst.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/db_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/db_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/dbtools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/dbtools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/ds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/func.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/kpi.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/kpi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/logon.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/logon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/minio.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/minio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/services/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/port.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/port.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/role.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/slow.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/slow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/sys.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/sys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/transfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/transfer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/services/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/services/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/run_db_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_db_task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/task/run_sql_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_task.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/task/run_sql_timer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/task/run_sql_timer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/archive.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/archive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/bbgl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/bbgl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/bbtj.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/bbtj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/comm.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/comm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/datax.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/datax.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/ds.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/ds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/func.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/func.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/logon.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/logon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/menu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/minio.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/minio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/urls/monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/port.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/port.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/role.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/role.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/slow.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/slow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/sql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/sql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/sys.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/sys.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/task.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/transfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/transfer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/urls/wtd.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/urls/wtd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/base_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/base_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/basehandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/basehandler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/check_mysql.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/check_mysql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/check_mysql_ddl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/check_mysql_ddl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/check_sqlserver_ddl.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/check_sqlserver_ddl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/jwt_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/jwt_auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mongo_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mongo_query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_async.bak.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_async.bak.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_async.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_async.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_async_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_async_process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_rollback.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_rollback.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/mysql_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/mysql_sync.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/utils/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/web/utils/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/_version.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/handler.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/jwt_auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/mysql_sync.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/policy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/bootstrap.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/components.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/core.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/fonts/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/fullscreen.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/icons.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/icons/icomoon/fonts/icomoon.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/icons/icomoon/fonts/icomoon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/icons/icomoon/fonts/icomoon.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/icons/icomoon/fonts/icomoon.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/icons/icomoon/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/sweet-alert.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/css/xterm.min.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/img/animat-search-color.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/img/favicon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/bootstrap.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/jquery.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/main_bak.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/popper.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/sweet-alert.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/xterm-addon-fit.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/static/js/xterm.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/templates/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/templates/index_bak.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/templates/page-404.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webssh/worker.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,28 +430,30 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Python.server.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
     &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/work/dbops/templates/monitor&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/work/dbops/templates/sys&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\work\dbops\templates\monitor" />
-      <recent name="D:\work\dbops\templates\bbgl" />
-      <recent name="D:\work\dbops\crontab" />
-      <recent name="D:\work\dbops\templates\login" />
-      <recent name="D:\work\dbops\templates\order" />
+      <recent name="D:\work\dbops\templates\sys" />
+      <recent name="D:\work\dbops\web\controller" />
+      <recent name="D:\work\dbops\web" />
+      <recent name="D:\work\dbops\web\urls" />
+      <recent name="D:\work\dbops\templates\webssh" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\work\dbops\sql\data" />
@@ -1018,7 +1342,31 @@
       <workItem from="1730962949856" duration="3798000" />
       <workItem from="1731295468878" duration="940000" />
       <workItem from="1731393271466" duration="21853000" />
-      <workItem from="1731476414544" duration="2749000" />
+      <workItem from="1731476414544" duration="6651000" />
+      <workItem from="1731551812261" duration="3026000" />
+      <workItem from="1731571301030" duration="5180000" />
+      <workItem from="1731634938221" duration="343000" />
+      <workItem from="1731635311326" duration="4784000" />
+      <workItem from="1731656371752" duration="6977000" />
+      <workItem from="1731814300343" duration="8006000" />
+      <workItem from="1731986108707" duration="1359000" />
+      <workItem from="1732007534054" duration="132000" />
+      <workItem from="1732081260940" duration="811000" />
+      <workItem from="1732153649181" duration="1017000" />
+      <workItem from="1732167502083" duration="2379000" />
+      <workItem from="1732178511026" duration="1033000" />
+      <workItem from="1732497849722" duration="55000" />
+      <workItem from="1732602555934" duration="602000" />
+      <workItem from="1732756482077" duration="4391000" />
+      <workItem from="1732850976742" duration="1298000" />
+      <workItem from="1733107173636" duration="734000" />
+      <workItem from="1733192028156" duration="11073000" />
+      <workItem from="1733291238514" duration="38000" />
+      <workItem from="1733291561911" duration="7495000" />
+      <workItem from="1733361835313" duration="12861000" />
+      <workItem from="1733793098428" duration="41510000" />
+      <workItem from="1733967180948" duration="5195000" />
+      <workItem from="1733981966367" duration="6029000" />
     </task>
     <task id="LOCAL-00244" summary="index.html update">
       <created>1673257302884</created>
@@ -1363,7 +1711,7 @@
       <option name="project" value="LOCAL" />
       <updated>1726304790114</updated>
     </task>
-    <option name="localTasksCounter" value="293" />
+    <option name="localTasksCounter" value="299" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1393,12 +1741,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="bbtj bug fix" />
-    <MESSAGE value="sql update" />
-    <MESSAGE value="add api monitor" />
-    <MESSAGE value="redis query update" />
-    <MESSAGE value="sys setting update" />
-    <MESSAGE value="redis monitor update" />
     <MESSAGE value="sync and ds ui optimize" />
     <MESSAGE value="sql order optimize" />
     <MESSAGE value="sys settings ui optimize" />
@@ -1418,7 +1760,13 @@
     <MESSAGE value="bug fix" />
     <MESSAGE value="add ignore file" />
     <MESSAGE value="upd bbgl" />
-    <option name="LAST_COMMIT_MESSAGE" value="upd bbgl" />
+    <MESSAGE value="upd power" />
+    <MESSAGE value="upd power task" />
+    <MESSAGE value="fix issue" />
+    <MESSAGE value="add pandas" />
+    <MESSAGE value="rm jwt" />
+    <MESSAGE value="add table help_topic" />
+    <option name="LAST_COMMIT_MESSAGE" value="add table help_topic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1435,6 +1783,6 @@
     <SUITE FILE_PATH="coverage/dbops$main.coverage" NAME="main Coverage Results" MODIFIED="1646875551180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webssh" />
     <SUITE FILE_PATH="coverage/dbops$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1628560159424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/task" />
     <SUITE FILE_PATH="coverage/dbops$mysql_async_process.coverage" NAME="mysql_async_process Coverage Results" MODIFIED="1613274795466" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web/utils" />
-    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1729218723150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/dbops$server.coverage" NAME="server Coverage Results" MODIFIED="1733988077638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

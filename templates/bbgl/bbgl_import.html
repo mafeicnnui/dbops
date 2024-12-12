@@ -2,10 +2,11 @@
 <head>
     <title>报表任务</title>
     <style>
-        .table th{
+        .table th {
             text-align: center;
-            vertical-align: middle!important;
+            vertical-align: middle !important;
         }
+
         .jFiler-theme-default .jFiler-input {
             position: relative;
             display: block;
@@ -15,84 +16,85 @@
 </head>
 
 <body>
-    <p></p>
-    <form class="form-horizontal" action=""  method="POST" enctype="multipart/form-data"  id="imp_form">
-        <div class="row">
-                <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>导入实例</label>
-                    </div>
-                   <div class="col-md-10">
-                         <select class="selectpicker" data-live-search="true" data-style="btn-default" id="dsid">
-                            <option value='' selected = "selected">...</option>
-                            {% for var in db_server %}
-                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                            {% end %}
-                         </select>
-                   </div>
-               </div>
-              <div class="col-md-2">
-                    <button type="button"  id='imp_btn' class="btn waves-effect waves-light btn-primary">导入</button>
-                    <button type="button"  id='ret_btn' class="btn waves-effect waves-light btn-primary">重置</button>
-               </div>
-        </div>
-        <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>数据类型</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select class="form-control select" id="imp_data_type" >
-                            <option value='' selected = "selected">请选择类型...</option>
-                            {% for var in imp_data_type %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                    </div>
-               </div>
-        </div>
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>文件名称</label>
-                </div>
-                <div class="col-md-10" id="filesnames">
-                    <input type="file" name="files[]" width=100% id="filer_input"  multiple="multiple">
-                </div>
-           </div>
-
-        </div>
-    </form>
-
-    <p></p>
+<p></p>
+<form class="form-horizontal" action="" method="POST" enctype="multipart/form-data" id="imp_form">
     <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="bbgl_imp_table" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
-              </div>
-         </div>
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>导入实例</label>
+            </div>
+            <div class="col-md-10">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="dsid">
+                    <option value='' selected="selected">...</option>
+                    {% for var in db_server %}
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" id='imp_btn' class="btn waves-effect waves-light btn-primary">导入</button>
+            <button type="button" id='ret_btn' class="btn waves-effect waves-light btn-primary">重置</button>
+        </div>
     </div>
-    <br>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>数据类型</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="imp_data_type">
+                    <option value='' selected="selected">请选择类型...</option>
+                    {% for var in imp_data_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>文件名称</label>
+            </div>
+            <div class="col-md-10" id="filesnames">
+                <input type="file" name="files[]" width=100% id="filer_input" multiple="multiple">
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="bbgl_imp_table" class="table table-striped table-bordered dt-responsive nowrap"
+                   cellspacing="0"></table>
+        </div>
+    </div>
+</div>
+<br>
 </body>
 
 <script>
-     $(document).ready(function() {
+    $(document).ready(function () {
         set_selected();
         $("#dsid").selectpicker('refresh')
         $("#imp_btn").click(function () {
-            $('#imp_btn').attr("disabled",true);
-            if ($("#dsid").val()=='') {
+            $('#imp_btn').attr("disabled", true);
+            if ($("#dsid").val() == '') {
                 swal("导入实例不能为空!", "", "error")
                 return
             }
-            if ($("#imp_data_type").val()=='') {
+            if ($("#imp_data_type").val() == '') {
                 swal("数据类型不能为空!", "", "error")
                 return
             }
-            if ($("#filer_input").get(0).files.length>0) {
+            if ($("#filer_input").get(0).files.length > 0) {
                 var fd = new FormData();
                 var files = $("#filer_input").get(0).files;
-                for(i=0;i<files.length;i++) {
+                for (i = 0; i < files.length; i++) {
                     fd.append("file", files[i]);
                 }
                 fd.append("token", window.localStorage.getItem("token"));
@@ -108,37 +110,37 @@
                     async: false,
                     dataType: 'JSON',
                     success: function (dataSet) {
-                        if (dataSet.code==0) {
+                        if (dataSet.code == 0) {
                             swal("导入成功!", "", "success")
-                            $('#bbgl_imp_table').DataTable( {
-                                  "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                                  "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                  destroy    :true,
-                                  async      :true,
-                                  ordering   :false,
-                                  scrollY    :false,
-                                  scrollX    :false,
-                                  scrollCollapse: true,
-                                  paging:     true,
-                                  iDisplayLength: 12,
-                                  data: dataSet.message,
-                                  columns: [
-                                     { "title": "文件名称" },
-                                     { "title": "文件大小" },
-                                     { "title": "文件行数" }
-                                   ],
-                                  "language": get_languages()
-                                 });
+                            $('#bbgl_imp_table').DataTable({
+                                "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                                "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                destroy: true,
+                                async: true,
+                                ordering: false,
+                                scrollY: false,
+                                scrollX: false,
+                                scrollCollapse: true,
+                                paging: true,
+                                iDisplayLength: 12,
+                                data: dataSet.message,
+                                columns: [
+                                    {"title": "文件名称"},
+                                    {"title": "文件大小"},
+                                    {"title": "文件行数"}
+                                ],
+                                "language": get_languages()
+                            });
                         } else {
                             swal("导入失败!", dataSet.message, "error")
                         }
                     }
                 });
             } else {
-                 swal("文件名不能为空!", "", "error")
+                swal("文件名不能为空!", "", "error")
             }
-            $('#imp_btn').attr("disabled",false);
-          });
+            $('#imp_btn').attr("disabled", false);
+        });
         $('#filer_input').filer({
             limit: 20,
             maxSize: 3,
@@ -147,19 +149,19 @@
             showThumbs: true,
             addMore: true
         });
-        $('#ret_btn').click(function(){
+        $('#ret_btn').click(function () {
             $("#dsid").val('')
             $("#dsid").selectpicker('refresh')
             $("#imp_data_type").val('')
             $('#filesnames').html('<input type="file" name="files[]" width=100% id="filer_input"  multiple="multiple">\n')
             $('#filer_input').filer({
-            limit: 20,
-            maxSize: 3,
-            extensions: ['xls', 'xlsx'],
-            changeInput: true,
-            showThumbs: true,
-            addMore: true
-        });
+                limit: 20,
+                maxSize: 3,
+                extensions: ['xls', 'xlsx'],
+                changeInput: true,
+                showThumbs: true,
+                addMore: true
+            });
             $('#bbgl_imp_table').empty()
         })
     });

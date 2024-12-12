@@ -5,8 +5,10 @@ import tornado.websocket
 from tornado.ioloop import IOLoop
 from tornado.iostream import _ERRNO_CONNRESET
 from tornado.util import errno_from_exception
-from webssh.mysql_sync import sync_processer
-from webssh import jwt_auth
+from web.webssh.mysql_sync import sync_processer
+from web.webssh import jwt_auth
+#from web.utils import jwt_auth
+
 
 BUF_SIZE = 32 * 1024
 clients = {}  # {ip: {id: worker}}
@@ -32,7 +34,7 @@ def recycle_worker(worker):
 
 
 class Worker(object):
-    def __init__(self, loop, ssh, chan, dst_addr,token):
+    def __init__(self, loop, ssh, chan, dst_addr, token):
         self.loop = loop
         self.ssh = ssh
         self.chan = chan
@@ -46,9 +48,9 @@ class Worker(object):
         self.command = []
         self.commands = []
         self.logs = []
-        self.log = {'cmd':'','log':''}
-        self.token=token
-        print('Worker->->id->token>>>>',self.id,self.token)
+        self.log = {'cmd': '', 'log': ''}
+        self.token = token
+        print('Worker->->id->token>>>>', self.id, self.token)
 
     def __call__(self, fd, events):
         if events & IOLoop.READ:
@@ -87,9 +89,9 @@ class Worker(object):
             logging.debug('{!r} to {}:{}'.format(data, *self.handler.src_addr))
             try:
                 self.handler.write_message(data, binary=True)
-                print('on read:>>>>>>>>>>>>>>>>',str(data,encoding='utf-8'),data)
-                self.log['log'] = str(data,encoding='utf-8')
-                if  data == b'\r\n':
+                print('on read:>>>>>>>>>>>>>>>>', str(data, encoding='utf-8'), data)
+                self.log['log'] = str(data, encoding='utf-8')
+                if data == b'\r\n':
                     self.logs.append(self.log)
                     logging.debug('log>>>:{!r}'.format(self.log))
                     logging.debug('logs>>>:{!r}'.format(self.logs))
@@ -114,19 +116,19 @@ class Worker(object):
             self.log['cmd'] = ''.join(self.command[0:-1])
             self.command = []
             logging.debug('commands:{}'.format(self.commands))
-            #check token
+            # check token
             result = jwt_auth.parse_payload(self.token)
-            print('result=',result)
+            print('result123=', result)
             if not result["status"]:
-               self.close(reason='用户认证失败!')
+                self.close(reason='用户认证失败!')
 
             state = jwt_auth.get_sessoin_state(result['data']['session_id'])
+            print('state=',state)
             if state == '3':
-               self.close(reason='用户`{}`已离线!'.format(result['data']['username']))
-
+                self.close(reason='用户`{}`已离线!'.format(result['data']['username']))
+            print('check_session_exists=',jwt_auth.check_sess_exists(result['data']['session_id']))
             if (jwt_auth.check_sess_exists(result['data']['session_id'])) == 0:
                 self.close(reason='用户`{}`已注销!'.format(result['data']['username']))
-
 
         try:
             sent = self.chan.send(data)

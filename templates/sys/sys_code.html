@@ -2,692 +2,721 @@
 <head>
     <title>代码管理</title>
     <style>
-        .table th{
+        .table th {
             text-align: center;
-            vertical-align: middle!important;
+            vertical-align: middle !important;
         }
-       .modal-lg {
-            width:70%;
-            height:45%;
-            margin-left:400px;
-            margin-top:80px;
+
+        .modal-lg {
+            width: 70%;
+            height: 45%;
+            margin-left: 400px;
+            margin-top: 80px;
         }
 
     </style>
 </head>
 
 <body>
-    <div class="col-md-3 input-group">
-            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-            <input type="text" id="type-name"  class="form-control" placeholder="请输入类型或名称">
-            <span class="input-group-btn">
-               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+<div class="col-md-3 input-group">
+    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+    <input type="text" id="type-name" class="form-control" placeholder="请输入类型或名称">
+    <span class="input-group-btn">
+               <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                       class="fa fa-search"></i></button>
             </span>
-      </div>
-    <br>
+</div>
+<br>
 
-    <!--代码管理 -->
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <ul class="nav nav-pills m-b-30 pull-left">
-                <li class="active">
-                    <a href="#div-sys-code-type" data-toggle="tab" aria-expanded="true">代码类型</a>
-                </li>
-                <li class="">
-                    <a href="#div-sys-code-detail" data-toggle="tab" aria-expanded="false">代码明细</a>
-                </li>
-            </ul>
-            <div class="tab-content br-n pn">
-                 <div id="div-sys-code-type" class="tab-pane active">
-                    <table id="tab-sys-code-type" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-                    <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-                        <input  id='code-add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
-                        <input  id='code-exp-btn' type='button' class="btn waves-effect waves-light btn-primary" value="导出"/>
-                    </div>
-                 </div>
-                 <div id="div-sys-code-detail" class="tab-pane">
-                    <table id="tab-sys-code-detail" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-                    <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-                        <input  id='code-detail-add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
-                        <input  id='code-detail-exp-btn' type='button' class="btn waves-effect waves-light btn-primary" value="导出"/>
-                    </div>
+<!--代码管理 -->
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav nav-pills m-b-30 pull-left">
+            <li class="active">
+                <a href="#div-sys-code-type" data-toggle="tab" aria-expanded="true">代码类型</a>
+            </li>
+            <li class="">
+                <a href="#div-sys-code-detail" data-toggle="tab" aria-expanded="false">代码明细</a>
+            </li>
+        </ul>
+        <div class="tab-content br-n pn">
+            <div id="div-sys-code-type" class="tab-pane active">
+                <table id="tab-sys-code-type" class="table table-striped table-bordered dt-responsive nowrap"
+                       cellspacing="0" width="100%" height="100%"></table>
+                <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                    <input id='code-add-btn' type='button' class="btn waves-effect waves-light btn-primary"
+                           value="新增"/>
+                    <input id='code-exp-btn' type='button' class="btn waves-effect waves-light btn-primary"
+                           value="导出"/>
+                </div>
+            </div>
+            <div id="div-sys-code-detail" class="tab-pane">
+                <table id="tab-sys-code-detail" class="table table-striped table-bordered dt-responsive nowrap"
+                       cellspacing="0" width="100%" height="100%"></table>
+                <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                    <input id='code-detail-add-btn' type='button' class="btn waves-effect waves-light btn-primary"
+                           value="新增"/>
+                    <input id='code-detail-exp-btn' type='button' class="btn waves-effect waves-light btn-primary"
+                           value="导出"/>
                 </div>
             </div>
         </div>
-      </div>
+    </div>
+</div>
 
-    <!--新增代码窗口 -->
-    <div id="con-modal-code-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog">
+<!--新增代码窗口 -->
+<div id="con-modal-code-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">新增代码</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
-                  <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" ><span id="s_add_type_name">*</span>类型名称：</label>
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span
+                                            id="s_add_type_name">*</span>类型名称：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="add_type_name" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="add_type_name"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_add_type_code">*</span>类型代码：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span
+                                            id="s_add_type_code">*</span>类型代码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="add_type_code" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="add_type_code"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_add_type_status">*</span>类型状态：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_type_status">*</span>类型状态：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="add_type_status">
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                 <select class="form-control select" id="add_type_status" >
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="code_add_btn" >保存</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        </form>
                     </div>
-              </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="code_add_btn">
+                            保存
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-    <!--代码变更窗口 -->
-    <div id="con-modal-code-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog">
+<!--代码变更窗口 -->
+<div id="con-modal-code-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">代码变更</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
-                  <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" ><span id="s_upd_type_name">*</span>类型名称：</label>
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span
+                                            id="s_upd_type_name">*</span>类型名称：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="upd_type_name" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="upd_type_name"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_upd_type_code">*</span>类型代码：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span
+                                            id="s_upd_type_code">*</span>类型代码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="upd_type_code" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="upd_type_code" readonly  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_upd_type_status">*</span>类型状态：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_type_status">*</span>类型状态：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="upd_type_status">
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                 <select class="form-control select" id="upd_type_status" >
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="code_upd_btn" >更新</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        </form>
                     </div>
-              </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="code_upd_btn">
+                            更新
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-    <!--新增明细窗口 -->
-    <div id="con-modal-code-add-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog">
+<!--新增明细窗口 -->
+<div id="con-modal-code-add-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">新增明细</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
-                  <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_add_type_code_detail">*</span>类型代码：</label>
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_type_code_detail">*</span>类型代码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="add_type_code_detail">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in sys_code_type %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <select class="form-control select" id="add_type_code_detail">
-                                    <option value='' selected = "selected">...</option>
-                                    {% for var in sys_code_type %}
-                                      <option value={{var[0]}}>{{var[1]}}</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" ><span id="s_add_detail_name">*</span>小类名称：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_detail_name">*</span>小类名称：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="add_detail_name" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="add_detail_name"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_add_detail_code">*</span>小类代码：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_detail_code">*</span>小类代码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="add_detail_code" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="add_detail_code"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_add_detail_desc">*</span>小类描述：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_detail_desc">*</span>小类描述：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="add_detail_desc" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="add_detail_desc"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_add_detail_status">*</span>小类状态：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_add_detail_status">*</span>小类状态：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="add_detail_status">
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                 <select class="form-control select" id="add_detail_status" >
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="detail_add_btn" >保存</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        </form>
                     </div>
-              </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="detail_add_btn">保存
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-    <!--代码细变更窗口 -->
-    <div id="con-modal-code-detail-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog">
+<!--代码细变更窗口 -->
+<div id="con-modal-code-detail-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">代码明细变更</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
-                  <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_upd_type_code_detail">*</span>类型代码：</label>
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_type_code_detail">*</span>类型代码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" disabled id="upd_type_code_detail">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in sys_code_type %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <select class="form-control select" disabled id="upd_type_code_detail">
-                                    <option value='' selected = "selected">...</option>
-                                    {% for var in sys_code_type %}
-                                      <option value={{var[0]}}>{{var[1]}}</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_upd_detail_code">*</span>小类代码：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_detail_code">*</span>小类代码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="upd_detail_code" class="form-control">
+                                    <input type="hidden" id="upd_detail_code_old" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="upd_detail_code"   class="form-control">
-                               <input type="hidden" id="upd_detail_code_old"   class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" ><span id="s_upd_detail_name">*</span>小类名称：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_detail_name">*</span>小类名称：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="upd_detail_name" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="upd_detail_name"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" ><span id="s_upd_detail_desc">*</span>小类描述：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_detail_desc">*</span>小类描述：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="upd_detail_desc" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="upd_detail_desc"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label"><span id="s_upd_detail_status">*</span>小类状态：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label"><span id="s_upd_detail_status">*</span>小类状态：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="upd_detail_status">
+                                        <option value="1">启用</option>
+                                        <option value="0">禁用</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                 <select class="form-control select" id="upd_detail_status" >
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="code_upd_detail_btn" >更新</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        </form>
                     </div>
-              </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="code_upd_detail_btn">更新
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-     </div>
-     <input id='cur_tab' type="hidden">
+        </div>
+    </div>
+</div>
+<input id='cur_tab' type="hidden">
 </body>
 <script type="text/javascript">
 
-     //查询代码类型
-     function query_sys_code_type(){
-            $.ajax({
-              url: "/sys/code/type/_query",
-              type: "post",
-              datatype: "json",
-              data: {
-                code:$("#type-name").val()
+    //查询代码类型
+    function query_sys_code_type() {
+        $.ajax({
+            url: "/sys/code/type/_query",
+            type: "post",
+            datatype: "json",
+            data: {
+                code: $("#type-name").val()
             },
-              success: function (dataSet) {
-                $('#tab-sys-code-type').DataTable( {
-                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                      destroy    :true,
-                      async      :true,
-                      ordering   :false,
-                      scrollY    :false,
-                      scrollX    :false,
-                      scrollCollapse: true,
-                      paging:     true,
-                      iDisplayLength: 12,
-                      data: dataSet,
-                      columns: [
-                         { "title": "类型代码" },
-                         { "title": "类型描述" },
-                         { "title": "类型状态" },
-                         { "title": "创建日期" },
-                         { "title": "更新日期" },
-                         { "title": "操作"},
-                       ],
-                      columnDefs: [
-                      {
-                        targets: 5,
-                        render: function(data, type, row, meta){
-                              var btn ='&nbsp;'+
-                                  '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="updCode(\''+escape(row)+'\');"/>' +'&nbsp;'+
-                                  '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delCode(\''+row[0]+'\');"/>' +'&nbsp;'
-                            return btn
+            success: function (dataSet) {
+                $('#tab-sys-code-type').DataTable({
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: false,
+                    scrollX: false,
+                    scrollCollapse: true,
+                    paging: true,
+                    iDisplayLength: 12,
+                    data: dataSet,
+                    columns: [
+                        {"title": "类型代码"},
+                        {"title": "类型描述"},
+                        {"title": "类型状态"},
+                        {"title": "创建日期"},
+                        {"title": "更新日期"},
+                        {"title": "操作"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 5,
+                            render: function (data, type, row, meta) {
+                                var btn = '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="updCode(\'' + escape(row) + '\');"/>' + '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delCode(\'' + row[0] + '\');"/>' + '&nbsp;'
+                                return btn
+                            }
                         }
-                      }
-                     ],
-                      "language": get_languages()
-                    });
-                }
-            })
-      }
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+    }
 
-     //查询代码明细
-     function query_sys_code_detail(){
-            $.ajax({
-              url: "/sys/code/detail/_query",
-              type: "post",
-              datatype: "json",
-              data: {
-                code:$("#type-name").val()
+    //查询代码明细
+    function query_sys_code_detail() {
+        $.ajax({
+            url: "/sys/code/detail/_query",
+            type: "post",
+            datatype: "json",
+            data: {
+                code: $("#type-name").val()
             },
-              success: function (dataSet) {
-                $('#tab-sys-code-detail').DataTable( {
-                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                      destroy    :true,
-                      async      :true,
-                      ordering   :false,
-                      //scrollY    :true,
-                      //scrollX    :true,
-                      scrollCollapse: true,
-                      paging:     true,
-                      iDisplayLength: 12,
-                      //AutoWidth : true,
-                      data: dataSet,
-                      columns: [
-                          { "title": "类型代码" },
-                          { "title": "类型描述" },
-                          { "title": "明细代码" },
-                          { "title": "明细名称","sWidth":"100px"},
-                          { "title": "明细描述","sWidth":"150px" },
-                          { "title": "明细状态" },
-                          { "title": "创建日期" },
-                          { "title": "更新日期" },
-                          { "title": "操作"},
-                       ],
-                     columnDefs: [
-                     {
-                        targets: 8,
-                        render: function(data, type, row, meta){
-                            var btn ='&nbsp;'+
-                                  '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="updCodeDetail(\''+escape(row)+'\');"/>' +'&nbsp;'+
-                                  '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delCodeDetail(\''+escape(row)+'\');"/>' +'&nbsp;'
-                            return btn
+            success: function (dataSet) {
+                $('#tab-sys-code-detail').DataTable({
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    //scrollY    :true,
+                    //scrollX    :true,
+                    scrollCollapse: true,
+                    paging: true,
+                    iDisplayLength: 12,
+                    //AutoWidth : true,
+                    data: dataSet,
+                    columns: [
+                        {"title": "类型代码"},
+                        {"title": "类型描述"},
+                        {"title": "明细代码"},
+                        {"title": "明细名称", "sWidth": "100px"},
+                        {"title": "明细描述", "sWidth": "150px"},
+                        {"title": "明细状态"},
+                        {"title": "创建日期"},
+                        {"title": "更新日期"},
+                        {"title": "操作"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 8,
+                            render: function (data, type, row, meta) {
+                                var btn = '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="updCodeDetail(\'' + escape(row) + '\');"/>' + '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delCodeDetail(\'' + escape(row) + '\');"/>' + '&nbsp;'
+                                return btn
+                            }
                         }
-                      }
-                     ],
-                      "language": get_languages()
-                    });
-                }
-            })
-      }
-
-     $('#code-add-btn').click(function(){
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-modal-code-add').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-     });
-
-     function updCode(row){
-            obj = unescape(row)
-            $('#upd_type_name').val(obj.split(',')[1])
-            $('#upd_type_code').val(obj.split(',')[0])
-            if (obj.split(',')[2]=='启用') {
-                  $('#upd_type_status').val('1')
-            } else {
-                 $('#upd_type_status').val('0')
+                    ],
+                    "language": get_languages()
+                });
             }
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-modal-code-upd').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-     }
+        })
+    }
 
-     function updCodeDetail(row){
-            obj = unescape(row)
-            $('#upd_type_code_detail').val(obj.split(',')[0])
-            $('#upd_detail_code').val(obj.split(',')[2])
-            $('#upd_detail_name').val(obj.split(',')[3])
-            $("#upd_detail_code_old").val(obj.split(',')[2])
-            $('#upd_detail_desc').val(obj.split(',')[4])
-            if (obj.split(',')[4]=='启用') {
-                  $('#upd_detail_status').val('1')
+    $('#code-add-btn').click(function () {
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-code-add').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    });
+
+    function updCode(row) {
+        obj = unescape(row)
+        $('#upd_type_name').val(obj.split(',')[1])
+        $('#upd_type_code').val(obj.split(',')[0])
+        if (obj.split(',')[2] == '启用') {
+            $('#upd_type_status').val('1')
+        } else {
+            $('#upd_type_status').val('0')
+        }
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-code-upd').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
+
+    function updCodeDetail(row) {
+        obj = unescape(row)
+        $('#upd_type_code_detail').val(obj.split(',')[0])
+        $('#upd_detail_code').val(obj.split(',')[2])
+        $('#upd_detail_name').val(obj.split(',')[3])
+        $("#upd_detail_code_old").val(obj.split(',')[2])
+        $('#upd_detail_desc').val(obj.split(',')[4])
+        if (obj.split(',')[4] == '启用') {
+            $('#upd_detail_status').val('1')
+        } else {
+            $('#upd_detail_status').val('0')
+        }
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-code-detail-upd').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
+
+    function delCode(code) {
+        swal({
+            title: "确认要删除吗?",
+            text: "所有使用代码[" + code + "]的程序无法使用该代码!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 撤销!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/sys/code/type/del",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        type_code: code,
+                    },
+                    success: function (dataSet) {
+                        console.log(dataSet.code, dataSet.message);
+                        if (dataSet.code == 0) {
+                            swal(dataSet.message, "", "success")
+                            query_sys_code_type()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    },
+                })
+
             } else {
-                 $('#upd_detail_status').val('0')
+                swal("已取消", "代码[" + code + "]未删除！", "error");
             }
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-modal-code-detail-upd').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-     }
+        });
 
-     function delCode(code){
-          swal({
-                title: "确认要删除吗?",
-                text: "所有使用代码["+code+"]的程序无法使用该代码!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 撤销!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                       $.ajax({
-                          url: "/sys/code/type/del",
-                          type: "post",
-                          datatype: "json",
-                          data: {
-                              type_code : code,
-                          },
-                          success: function (dataSet) {
-                            console.log(dataSet.code, dataSet.message);
-                            if (dataSet.code == 0) {
-                                swal(dataSet.message, "", "success")
-                                query_sys_code_type()
-                            } else {
-                                swal(dataSet.message, "", "error")
-                            }
-                          },
-                       })
+    }
 
-                } else {
-                    swal("已取消", "代码["+code+"]未删除！", "error");
-                }
-            });
+    function delCodeDetail(row) {
+        obj = unescape(row)
+        swal({
+            title: "确认要删除吗?",
+            text: "所有使用代码[" + obj.split(',')[3] + "]的程序无法使用该代码!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 撤销!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/sys/code/detail/del",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        type_code: obj.split(',')[0],
+                        detail_code: obj.split(',')[2],
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.code == 0) {
+                            swal(dataSet.message, "", "success")
+                            query_sys_code_type()
+                        } else {
+                            swal(dataSet.message, "", "error")
+                        }
+                    },
+                })
 
-     }
-
-     function delCodeDetail(row){
-          obj = unescape(row)
-          swal({
-                title: "确认要删除吗?",
-                text:  "所有使用代码["+obj.split(',')[3]+"]的程序无法使用该代码!",
-                type:  "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 撤销!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                       $.ajax({
-                          url: "/sys/code/detail/del",
-                          type: "post",
-                          datatype: "json",
-                          data: {
-                              type_code   : obj.split(',')[0],
-                              detail_code : obj.split(',')[2],
-                          },
-                          success: function (dataSet) {
-                            if (dataSet.code == 0) {
-                                swal(dataSet.message, "", "success")
-                                query_sys_code_type()
-                            } else {
-                                swal(dataSet.message, "", "error")
-                            }
-                          },
-                       })
-
-                } else {
-                    swal("已取消", "代码["+code+"]未删除！", "error");
-                }
-            });
+            } else {
+                swal("已取消", "代码[" + code + "]未删除！", "error");
+            }
+        });
 
 
+    }
 
-     }
+    $("#query_btn").click(function () {
+        if ($('#cur_tab').val() == '代码类型') {
+            query_sys_code_type();
+        } else {
+            query_sys_code_detail();
+        }
+    });
 
-     $("#query_btn").click(function()
-     {
-         if ($('#cur_tab').val() == '代码类型') {
-             query_sys_code_type();
-         } else  {
-             query_sys_code_detail();
-         }
-     });
+    $("#query_detail_btn").click(function () {
+        query_sys_code_detail();
+    });
 
-     $("#query_detail_btn").click(function()
-     {
-          query_sys_code_detail();
-     });
+    $("#type-name").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-     $("#type-name").bind("input propertychange",function(){
-          $("#query_btn").click();
-     });
+    $("#detail-type-name").bind("input propertychange", function () {
+        $("#query_detail_btn").click();
+    });
 
-     $("#detail-type-name").bind("input propertychange",function(){
-          $("#query_detail_btn").click();
-     });
-
-     $('#code_add_btn').click(function(){
-          $.ajax({
-              url: "/sys/code/type/add/save",
-              type: "post",
-              datatype: "json",
-              data: {
-                  type_name   : $("#add_type_name").val(),
-                  type_code   : $("#add_type_code").val(),
-                  type_status : $("#add_type_status").val(),
-              },
-              success: function (dataSet) {
+    $('#code_add_btn').click(function () {
+        $.ajax({
+            url: "/sys/code/type/add/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                type_name: $("#add_type_name").val(),
+                type_code: $("#add_type_code").val(),
+                type_status: $("#add_type_status").val(),
+            },
+            success: function (dataSet) {
                 if (dataSet.code == 0) {
                     swal("保存成功", "", "success")
                 } else {
                     swal(dataSet.message, "", "error")
                 }
-              },
-          })
-     });
+            },
+        })
+    });
 
-     $('#code_upd_btn').click(function(){
-          $.ajax({
-              url: "/sys/code/type/upd/save",
-              type: "post",
-              datatype: "json",
-              data: {
-                  type_name   : $("#upd_type_name").val(),
-                  type_code   : $("#upd_type_code").val(),
-                  type_status : $("#upd_type_status").val(),
-              },
-              success: function (dataSet) {
+    $('#code_upd_btn').click(function () {
+        $.ajax({
+            url: "/sys/code/type/upd/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                type_name: $("#upd_type_name").val(),
+                type_code: $("#upd_type_code").val(),
+                type_status: $("#upd_type_status").val(),
+            },
+            success: function (dataSet) {
                 if (dataSet.code == 0) {
                     swal(dataSet.message, "", "success")
                     query_sys_code_type()
                 } else {
                     swal(dataSet.message, "", "error")
                 }
-              },
-          })
-     })
+            },
+        })
+    })
 
-     $('#code-detail-add-btn').click(function(){
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-modal-code-add-detail').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-     });
+    $('#code-detail-add-btn').click(function () {
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-code-add-detail').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    });
 
-     $('#detail_add_btn').click(function(){
-          $.ajax({
-              url: "/sys/code/detail/add/save",
-              type: "post",
-              datatype: "json",
-              data: {
-                  type_code     : $("#add_type_code_detail").val(),
-                  detail_name   : $("#add_detail_name").val(),
-                  detail_code   : $("#add_detail_code").val(),
-                  detail_status : $("#add_detail_status").val(),
-                  detail_desc   : $("#add_detail_desc").val(),
+    $('#detail_add_btn').click(function () {
+        $.ajax({
+            url: "/sys/code/detail/add/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                type_code: $("#add_type_code_detail").val(),
+                detail_name: $("#add_detail_name").val(),
+                detail_code: $("#add_detail_code").val(),
+                detail_status: $("#add_detail_status").val(),
+                detail_desc: $("#add_detail_desc").val(),
 
-              },
-              success: function (dataSet) {
+            },
+            success: function (dataSet) {
                 if (dataSet.code == 0) {
                     swal("保存成功", "", "success")
                     query_sys_code_detail()
                 } else {
                     swal(dataSet.message, "", "error")
                 }
-              },
-          })
-     });
+            },
+        })
+    });
 
-     $('#code_upd_detail_btn').click(function(){
-          $.ajax({
-              url: "/sys/code/detail/upd/save",
-              type: "post",
-              datatype: "json",
-              data: {
-                  type_code       : $("#upd_type_code_detail").val(),
-                  detail_name     : $("#upd_detail_name").val(),
-                  detail_code     : $("#upd_detail_code").val(),
-                  detail_code_old : $("#upd_detail_code_old").val(),
-                  detail_status   : $("#upd_detail_status").val(),
-                  detail_desc     : $("#upd_detail_desc").val(),
-              },
-              success: function (dataSet) {
+    $('#code_upd_detail_btn').click(function () {
+        $.ajax({
+            url: "/sys/code/detail/upd/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                type_code: $("#upd_type_code_detail").val(),
+                detail_name: $("#upd_detail_name").val(),
+                detail_code: $("#upd_detail_code").val(),
+                detail_code_old: $("#upd_detail_code_old").val(),
+                detail_status: $("#upd_detail_status").val(),
+                detail_desc: $("#upd_detail_desc").val(),
+            },
+            success: function (dataSet) {
                 if (dataSet.code == 0) {
                     swal(dataSet.message, "", "success")
                     query_sys_code_detail()
                 } else {
                     swal(dataSet.message, "", "error")
                 }
-              },
-          })
-     })
+            },
+        })
+    })
 
-     $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-         var activeTab = $(e.target).text();
-         var previousTab = $(e.relatedTarget).text();
-         $('#cur_tab').val(activeTab)
+    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        var activeTab = $(e.target).text();
+        var previousTab = $(e.relatedTarget).text();
+        $('#cur_tab').val(activeTab)
 
-         if (activeTab == '代码类型') {
-             query_sys_code_type();
-         } else  {
-             query_sys_code_detail();
-             upd_code_type();
-         }
-     });
+        if (activeTab == '代码类型') {
+            query_sys_code_type();
+        } else {
+            query_sys_code_detail();
+            upd_code_type();
+        }
+    });
 
-     function upd_code_type(){
+    function upd_code_type() {
         $.ajax({
-              url: "/sys/get/code/type",
-              type: "post",
-              datatype: "json",
-              async:false,
-              success: function (dataSet) {
-                 $("#add_type_code_detail").empty();
-                 $("#add_type_code_detail").append("<option value=''>......</option>");
-                 for(i=0;i<dataSet['message'].length;i++){
-                      var val  = dataSet['message'][i][0];
-                      var text = dataSet['message'][i][0]+'('+dataSet['message'][i][1]+')';
-                      $("#add_type_code_detail").append("<option value='"+val+"'>"+text+"</option>");
-                 }
-              }
+            url: "/sys/get/code/type",
+            type: "post",
+            datatype: "json",
+            async: false,
+            success: function (dataSet) {
+                $("#add_type_code_detail").empty();
+                $("#add_type_code_detail").append("<option value=''>......</option>");
+                for (i = 0; i < dataSet['message'].length; i++) {
+                    var val = dataSet['message'][i][0];
+                    var text = dataSet['message'][i][0] + '(' + dataSet['message'][i][1] + ')';
+                    $("#add_type_code_detail").append("<option value='" + val + "'>" + text + "</option>");
+                }
+            }
         });
-     }
+    }
 
-     $(document).ready(function() {
-         set_selected()
-         query_sys_code_type();
-         $('#cur_tab').val('代码类型')
-     });
+    $(document).ready(function () {
+        set_selected()
+        query_sys_code_type();
+        $('#cur_tab').val('代码类型')
+    });
 
- </script>
+</script>
 
 </html>

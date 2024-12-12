@@ -4,274 +4,276 @@
     <meta charset="utf-8">
     <title>数据源变更</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-      <div class="row">
-           <div class="col-md-2">
-              <div class="input-group">
+<p></p>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="input-group">
                 <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
-                <input type="text" id="dsname"  class="form-control" placeholder="请输入数据源名">
-              </div>
-           </div>
-           <div class="col-md-3">
-                 <div class="input-group">
-                    <span class="input-group-addon">项目名称</span>
-                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id">
-                        <option value='' selected = "selected">.....</option>
-                        {% for var in dm_proj_type %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                     </select>
-                 </div>
-           </div>
-           <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据库环境</span>
-                 <select class="form-control select" id="db_env" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_env_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
+                <input type="text" id="dsname" class="form-control" placeholder="请输入数据源名">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">项目名称</span>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_proj_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
-             </div>
-          </div>
-          <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据源类型</span>
-                 <select class="form-control select" id="ds_type" >
-                    <option value='' selected = "selected">.....</option>
-                    <option value='backup' >备份数据源</option>
-                    <option value='sync' >同步数据源</option>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据库环境</span>
+                <select class="form-control select" id="db_env">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_env_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
                 </select>
-             </div>
-          </div>
-          <div class="col-md-2">
-                 <div class="input-group">
-                     <span class="input-group-addon">任务状态</span>
-                        <select class="form-control select" id="ds_status">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
-                    </select>
-                 </div>
-           </div>
-           <div class="col-md-1">
-             <div class="input-group">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据源类型</span>
+                <select class="form-control select" id="ds_type">
+                    <option value='' selected="selected">.....</option>
+                    <option value='backup'>备份数据源</option>
+                    <option value='sync'>同步数据源</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">任务状态</span>
+                <select class="form-control select" id="ds_status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group">
                 <span class="input-group-btn">
-                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                   <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                           class="fa fa-search"></i></button>
                 </span>
-           </div>
-     </div>
-      </div>
-      <p></p>
-      <div class="row">
-          <div id="div-tab">
-               <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-          </div>
-     </div>
+            </div>
+        </div>
     </div>
-    <script>
-        // $(document).keydown(function(event){
-        //     if (event.keyCode == 13) { //判断为Enter键
-        //         $("#query_btn").click();
-        //     }
-        //  });
+    <p></p>
+    <div class="row">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                   width="100%" height="100%"></table>
+        </div>
+    </div>
+</div>
+<script>
+    // $(document).keydown(function(event){
+    //     if (event.keyCode == 13) { //判断为Enter键
+    //         $("#query_btn").click();
+    //     }
+    //  });
 
-        $("#dsname").bind("input propertychange",function(){
-           $("#query_btn").click();
+    $("#dsname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#market_id").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#db_env").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#ds_type").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#query_btn").click(function () {
+        $.ajax({
+            url: "/ds/_query",
+            type: "post",
+            datatype: "json",
+            data: {
+                dsname: $('#dsname').val(),
+                market_id: $('#market_id').val(),
+                db_env: $('#db_env').val(),
+                ds_type: $('#ds_type').val(),
+                ds_status: $('#ds_status').val(),
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    ordering: false,
+                    iDisplayLength: 15,
+                    data: dataSet,
+                    columns: [
+                        {"title": "标识符"},
+                        {"title": "项目名称"},
+                        {"title": "数据源描述"},
+                        {"title": "数据源环境"},
+                        {"title": "数据源定义", "visible": false},
+                        {"title": "用户"},
+                        {"title": "是否启用"},
+                        {"title": "更新人"},
+                        {"title": "更新日期"},
+                        {"title": "操作"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 9,
+                            render: function (data, type, row, meta) {
+                                var test_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="测试" onclick="test_btn(\'' + row + '\');"/>' + '&nbsp;'
+                                var change_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="change_btn(\'' + row + '\');"/>' + '&nbsp;'
+                                var delete_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_btn(\'' + row + '\');"/>' + '&nbsp;'
+                                var clone_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="克隆" onclick="clone_btn(\'' + row + '\');"/>' + '&nbsp;'
+                                var console_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台" onclick="console_btn(\'' + row + '\');"/>' + '&nbsp;'
+                                return test_btn + change_btn + clone_btn + delete_btn + console_btn
+                            }
+                        }
+                    ],
+                    "language": get_languages()
+                });
+            },
         });
+    });
 
-        $("#market_id").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+    function change_btn(p_ds_row) {
+        var dsid = p_ds_row.split(',')[0]
+        $.ajax({
+            url: "/ds/edit",
+            type: "get",
+            datatype: "html",
+            data: {
+                dsid: dsid
+            },
+            success: function () {
+                $('#main-container-div').load("/ds/edit?dsid=" + dsid);
+            },
+        })
+    }
 
-        $("#db_env").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
-
-        $("#ds_type").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
-
-        $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/ds/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      dsname   : $('#dsname').val(),
-                      market_id: $('#market_id').val(),
-                      db_env   : $('#db_env').val(),
-                      ds_type  : $('#ds_type').val(),
-                      ds_status :$('#ds_status').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging:     true,
-                          ordering   :false,
-                          iDisplayLength: 15,
-                          data: dataSet,
-                          columns: [
-                                 { "title": "标识符" },
-                                 { "title": "项目名称" },
-                                 { "title": "数据源描述" },
-                                 { "title": "数据源环境" },
-                                 { "title": "数据源定义","visible":false },
-                                 { "title": "用户"},
-                                 { "title": "是否启用"},
-                                 { "title": "更新人"},
-                                 { "title": "更新日期"},
-                                 { "title": "操作"},
-                             ],
-                             columnDefs: [
-                                {
-                                    targets: 9,
-                                    render: function(data, type, row, meta){
-                                        var test_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="测试" onclick="test_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var change_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="change_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var delete_btn   = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var clone_btn    = '<input class="btn btn-xs btn-primary"  type="button"  value="克隆" onclick="clone_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        var console_btn  = '<input class="btn btn-xs btn-primary"  type="button"  value="控制台" onclick="console_btn(\''+row+'\');"/>' +'&nbsp;'
-                                        return test_btn+change_btn+clone_btn+delete_btn+console_btn
-                                    }
-                                 }
-                             ],
-                          "language": get_languages()
-                         });
-                  },
-             });
-            });
-
-        function change_btn(p_ds_row) {
-           var dsid  = p_ds_row.split(',')[0]
-           $.ajax({
-                url: "/ds/edit",
-                type: "get",
-                datatype: "html",
-                data: {
-                    dsid:dsid
-                },
-                success: function () {
-                   $('#main-container-div').load("/ds/edit?dsid="+dsid);
-                },
-             })
-        }
-
-        function test_btn(p_ds_row) {
-            var dsid  = p_ds_row.split(',')[0]
-            $.ajax({
-                url: "/ds/check/valid",
-                type: "post",
-                datatype: "json",
-                data: {
-                    id: dsid
-                },
-                success: function (dataSet) {
-                    if (dataSet.code == '0') {
-                        swal("数据源测试通过!", "", "success");
-                        $("#query_btn").click();
-                    } else {
-                        swal("数据源测试失败!", dataSet.message + "!", "error");
-                    }
-                    $('#dstest').attr("disabled", false);
-                },
-            });
-        }
-
-        function delete_btn(p_ds_row) {
-           var dsid  = p_ds_row.split(',')[0]
-           var desc = p_ds_row.split(',')[2]
-              swal({
-                title: "确认要删除吗?",
-                text: "数据源["+desc+"]将被删除了！",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 撤销!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                    $.ajax({
-                            url: "/ds/edit/del?dsid="+dsid,
-                            type: "post",
-                            datatype: "json",
-                            success: function (dataSet) {
-                                if (dataSet.code=='0') {
-                                    swal("已删除!", "数据源["+desc+"]已删除!", "success");
-                                    $("#query_btn").click();
-                                } else {
-                                    swal("删除失败!", "用户["+desc+"]"+dataSet.message+"!", "error");
-                                }
-                            },
-                       });
-
+    function test_btn(p_ds_row) {
+        var dsid = p_ds_row.split(',')[0]
+        $.ajax({
+            url: "/ds/check/valid",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: dsid
+            },
+            success: function (dataSet) {
+                if (dataSet.code == '0') {
+                    swal("数据源测试通过!", "", "success");
+                    $("#query_btn").click();
                 } else {
-                    swal("已取消", "数据源["+desc+"]未删除！", "error");
+                    swal("数据源测试失败!", dataSet.message + "!", "error");
                 }
-            });
-        }
-
-        function clone_btn(p_ds_row) {
-            var dsid  = p_ds_row.split(',')[0]
-            $.ajax({
-                url: "/ds/clone",
-                type: "get",
-                datatype: "html",
-                data: {
-                    dsid:dsid
-                },
-                success: function () {
-                   $('#main-container-div').load("/ds/clone?dsid="+dsid);
-                },
-             })
-        }
-
-        function console_btn(p_ds_row) {
-            var dsid  = p_ds_row.split(',')[0]
-            $.ajax({
-                url: "/ds/console",
-                type: "get",
-                datatype: "html",
-                data: {
-                    dsid:dsid
-                },
-                success: function () {
-                   $('#main-container-div').load("/ds/console?dsid="+dsid);
-                },
-             })
-        }
-
-        $(document).ready(function() {
-            $('.selectpicker').selectpicker({
-              size: 10
-            });
-            $("#query_btn").click();
+                $('#dstest').attr("disabled", false);
+            },
         });
+    }
 
-         $("#dsname").bind("input propertychange",function(){
-           $("#query_btn").click();
+    function delete_btn(p_ds_row) {
+        var dsid = p_ds_row.split(',')[0]
+        var desc = p_ds_row.split(',')[2]
+        swal({
+            title: "确认要删除吗?",
+            text: "数据源[" + desc + "]将被删除了！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 撤销!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/ds/edit/del?dsid=" + dsid,
+                    type: "post",
+                    datatype: "json",
+                    success: function (dataSet) {
+                        if (dataSet.code == '0') {
+                            swal("已删除!", "数据源[" + desc + "]已删除!", "success");
+                            $("#query_btn").click();
+                        } else {
+                            swal("删除失败!", "用户[" + desc + "]" + dataSet.message + "!", "error");
+                        }
+                    },
+                });
+
+            } else {
+                swal("已取消", "数据源[" + desc + "]未删除！", "error");
+            }
         });
+    }
 
-        $("#market_id").bind("input propertychange",function(){
-           $("#query_btn").click();
+    function clone_btn(p_ds_row) {
+        var dsid = p_ds_row.split(',')[0]
+        $.ajax({
+            url: "/ds/clone",
+            type: "get",
+            datatype: "html",
+            data: {
+                dsid: dsid
+            },
+            success: function () {
+                $('#main-container-div').load("/ds/clone?dsid=" + dsid);
+            },
+        })
+    }
+
+    function console_btn(p_ds_row) {
+        var dsid = p_ds_row.split(',')[0]
+        $.ajax({
+            url: "/ds/console",
+            type: "get",
+            datatype: "html",
+            data: {
+                dsid: dsid
+            },
+            success: function () {
+                $('#main-container-div').load("/ds/console?dsid=" + dsid);
+            },
+        })
+    }
+
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            size: 10
         });
+        $("#query_btn").click();
+    });
 
-   </script>
+    $("#dsname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#market_id").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+</script>
 </body>
 
 </html>

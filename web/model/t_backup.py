@@ -5,21 +5,24 @@
 # @File    : t_user.py
 # @Software: PyCharm
 
-import requests
 import traceback
-from web.utils.common  import format_sql
-from web.utils.mysql_async  import async_processer
 
-async def query_backup(tagname,db_env,db_type,db_status):
+import requests
+
+from web.utils.common import format_sql
+from web.utils.mysql_async import async_processer
+
+
+async def query_backup(tagname, db_env, db_type, db_status):
     v_where = ' and 1=1 '
-    if  tagname!='':
-       v_where=v_where+" and a.db_tag='{0}'\n".format(tagname)
+    if tagname != '':
+        v_where = v_where + " and a.db_tag='{0}'\n".format(tagname)
     if db_env != '':
-        v_where =v_where+ " and c.db_env='{0}'\n".format(db_env)
+        v_where = v_where + " and c.db_env='{0}'\n".format(db_env)
     if db_type != '':
-        v_where =v_where+ " and c.db_type='{0}'\n   ".format(db_type)
+        v_where = v_where + " and c.db_type='{0}'\n   ".format(db_type)
     if db_status != '':
-        v_where =v_where+ " and a.status='{0}'\n".format(db_status)
+        v_where = v_where + " and a.status='{0}'\n".format(db_status)
     sql = """SELECT
                   a.id,a.comments,a.db_tag,a.expire,a.run_time,
                   concat(b.server_ip,':',b.server_port),a.api_server,
@@ -29,8 +32,9 @@ async def query_backup(tagname,db_env,db_type,db_status):
               WHERE a.server_id=b.id  AND a.db_id=c.id AND b.status='1'  {0} """.format(v_where)
     return await async_processer.query_list(sql)
 
+
 async def query_backup_case(p_db_env):
-    st1  = """SELECT 
+    st1 = """SELECT 
                    e.comments,c.dmmc AS 'db_type',
                    date_format(d.start_time,'%Y-%m-%d %H:%i:%s') as create_date,
                    date_format(d.end_time,'%Y-%m-%d %H:%i:%s') as end_time, 
@@ -64,22 +68,23 @@ async def query_backup_case(p_db_env):
 
     rs = await async_processer.query_one(st2)
     res = {
-        'data'    : await async_processer.query_list(st1),
-        'success' : rs[0],
-        'failure' : rs[1]
+        'data': await async_processer.query_list(st1),
+        'success': rs[0],
+        'failure': rs[1]
     }
     return res
 
-async def query_backup_log(tagname,db_env,begin_date,end_date):
+
+async def query_backup_log(tagname, db_env, begin_date, end_date):
     v_where = ' and 1=1 '
-    if  tagname != '':
-        v_where = v_where+" and a.db_tag='{0}'\n".format(tagname)
-    if  db_env != '':
-        v_where = v_where+" and c.db_env='{0}'\n".format(db_env)
-    if  begin_date != '':
-        v_where = v_where+" and b.create_date>='{0}'\n".format(begin_date)
-    if  end_date != '':
-        v_where = v_where+" and b.create_date<='{0}'\n".format(end_date)
+    if tagname != '':
+        v_where = v_where + " and a.db_tag='{0}'\n".format(tagname)
+    if db_env != '':
+        v_where = v_where + " and c.db_env='{0}'\n".format(db_env)
+    if begin_date != '':
+        v_where = v_where + " and b.create_date>='{0}'\n".format(begin_date)
+    if end_date != '':
+        v_where = v_where + " and b.create_date<='{0}'\n".format(end_date)
 
     st = """SELECT  b.id, a.comments, b.db_tag,
                     cast(b.create_date as char),
@@ -93,7 +98,8 @@ async def query_backup_log(tagname,db_env,begin_date,end_date):
 
     return await async_processer.query_list(st)
 
-async def query_backup_log_analyze(db_env,db_type,tagname,begin_date,end_date):
+
+async def query_backup_log_analyze(db_env, db_type, tagname, begin_date, end_date):
     v_where = ' where a.db_tag=b.db_tag and b.db_id=c.id '
     if db_env != '':
         v_where = v_where + " and c.db_env='{0}'\n".format(db_env)
@@ -126,14 +132,15 @@ async def query_backup_log_analyze(db_env,db_type,tagname,begin_date,end_date):
               {0}
               ORDER BY a.start_time
            """.format(v_where)
-    return await async_processer.query_list(st1),await async_processer.query_list(st2)
+    return await async_processer.query_list(st1), await async_processer.query_list(st2)
 
-async def query_backup_log_detail(tagname,backup_date):
+
+async def query_backup_log_detail(tagname, backup_date):
     v_where = ' and 1=1 '
     if tagname != '':
-       v_where = v_where + " and b.db_tag='{0}'\n".format(tagname)
+        v_where = v_where + " and b.db_tag='{0}'\n".format(tagname)
     if backup_date != '':
-       v_where = v_where + " and b.create_date='{0}'\n".format(backup_date)
+        v_where = v_where + " and b.create_date='{0}'\n".format(backup_date)
 
     st = """SELECT 
                 a.comments,a.db_tag,b.db_name,b.file_name,b.bk_path,
@@ -149,50 +156,53 @@ async def query_backup_log_detail(tagname,backup_date):
 
     return await async_processer.query_list(st)
 
+
 async def save_backup(p_backup):
     try:
         res = check_backup(p_backup)
         if res['code'] == '-1':
             return res
 
-        st="""insert into t_db_config
+        st = """insert into t_db_config
                 (server_id,db_id,db_type,db_tag,expire,bk_base,script_path,script_file,bk_cmd,run_time,comments,
                  python3_home,backup_databases,api_server,status,binlog_status,oss_status,oss_path,oss_cloud) 
                values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')
-           """.format(p_backup['backup_server'],p_backup['db_server'],p_backup['db_type'],
-                       p_backup['backup_tag'], p_backup['backup_expire'],format_sql(p_backup['backup_base']),
-                       format_sql(p_backup['script_base']),p_backup['script_name'],p_backup['cmd_name'],
-                       p_backup['run_time'],p_backup['task_desc'],format_sql(p_backup['python3_home']),
-                       p_backup['backup_databases'],p_backup['api_server'],
-                       p_backup['status'],p_backup['binlog_status'],p_backup['oss_status'],p_backup['oss_path'],p_backup['oss_cloud'])
+           """.format(p_backup['backup_server'], p_backup['db_server'], p_backup['db_type'],
+                      p_backup['backup_tag'], p_backup['backup_expire'], format_sql(p_backup['backup_base']),
+                      format_sql(p_backup['script_base']), p_backup['script_name'], p_backup['cmd_name'],
+                      p_backup['run_time'], p_backup['task_desc'], format_sql(p_backup['python3_home']),
+                      p_backup['backup_databases'], p_backup['api_server'],
+                      p_backup['status'], p_backup['binlog_status'], p_backup['oss_status'], p_backup['oss_path'],
+                      p_backup['oss_cloud'])
         await async_processer.exec_sql(st)
         return {'code': '0', 'message': '保存成功!'}
     except:
         traceback.print_exc()
-        return {'code':-1,'message':'保存失败!'}
+        return {'code': -1, 'message': '保存失败!'}
+
 
 async def upd_backup(p_backup):
     try:
-        backupid         = p_backup['backup_id']
-        backup_server    = p_backup['backup_server']
-        db_server        = p_backup['db_server']
-        db_type          = p_backup['db_type']
-        backup_tag       = p_backup['backup_tag']
-        backup_expire    = p_backup['backup_expire']
-        backup_base      = format_sql(p_backup['backup_base'])
-        script_base      = format_sql(p_backup['script_base'])
-        script_name      = p_backup['script_name']
-        cmd_name         = p_backup['cmd_name']
-        run_time         = p_backup['run_time']
-        task_desc        = p_backup['task_desc']
-        python3_home     = format_sql(p_backup['python3_home'])
+        backupid = p_backup['backup_id']
+        backup_server = p_backup['backup_server']
+        db_server = p_backup['db_server']
+        db_type = p_backup['db_type']
+        backup_tag = p_backup['backup_tag']
+        backup_expire = p_backup['backup_expire']
+        backup_base = format_sql(p_backup['backup_base'])
+        script_base = format_sql(p_backup['script_base'])
+        script_name = p_backup['script_name']
+        cmd_name = p_backup['cmd_name']
+        run_time = p_backup['run_time']
+        task_desc = p_backup['task_desc']
+        python3_home = format_sql(p_backup['python3_home'])
         backup_databases = p_backup['backup_databases']
-        api_server       = p_backup['api_server']
-        status           = p_backup['status']
-        binlog_status    = p_backup['binlog_status']
-        oss_status       = p_backup['oss_status']
-        oss_path         = p_backup['oss_path']
-        oss_cloud        = p_backup['oss_cloud']
+        api_server = p_backup['api_server']
+        status = p_backup['status']
+        binlog_status = p_backup['binlog_status']
+        oss_status = p_backup['oss_status']
+        oss_path = p_backup['oss_path']
+        oss_cloud = p_backup['oss_cloud']
 
         res = check_backup(p_backup)
         if res['code'] == '-1':
@@ -218,22 +228,24 @@ async def upd_backup(p_backup):
                        oss_status        ='{16}',
                        oss_path          ='{17}',
                        oss_cloud         ='{18}'
-                where id='{19}'""".format(backup_server,db_server,db_type,backup_tag,backup_expire,backup_base,
-                                          script_base,script_name,cmd_name,run_time,task_desc,python3_home,
-                                          backup_databases,api_server,status,binlog_status,
-                                          oss_status,oss_path,oss_cloud,backupid)
+                where id='{19}'""".format(backup_server, db_server, db_type, backup_tag, backup_expire, backup_base,
+                                          script_base, script_name, cmd_name, run_time, task_desc, python3_home,
+                                          backup_databases, api_server, status, binlog_status,
+                                          oss_status, oss_path, oss_cloud, backupid)
         await async_processer.exec_sql(st)
-        return {'code':'0','message':'更新成功!'}
+        return {'code': '0', 'message': '更新成功!'}
     except:
         return {'code': '-1', 'message': '更新失败!'}
 
+
 async def del_backup(p_backupid):
     try:
-        sql="delete from t_db_config  where id='{0}'".format(p_backupid)
+        sql = "delete from t_db_config  where id='{0}'".format(p_backupid)
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '删除成功!'}
-    except :
+    except:
         return {'code': '-1', 'message': '删除失败!'}
+
 
 async def get_backup_by_backupid(p_backupid):
     sql = """select server_id,
@@ -259,17 +271,18 @@ async def get_backup_by_backupid(p_backupid):
              from t_db_config where id={0}""".format(p_backupid)
     return await async_processer.query_dict_one(sql)
 
+
 def check_backup(p_server):
-    if p_server["backup_server"]=="":
-       return {'code':'-1','message':'备份服务器不能为空!'}
+    if p_server["backup_server"] == "":
+        return {'code': '-1', 'message': '备份服务器不能为空!'}
 
-    if p_server["db_server"]=="":
-       return {'code': '-1', 'message': '数据库服务不能为空!'}
+    if p_server["db_server"] == "":
+        return {'code': '-1', 'message': '数据库服务不能为空!'}
 
-    if p_server["db_type"]=="":
-       return {'code': '-1', 'message': '数据库类型不能为空!'}
+    if p_server["db_type"] == "":
+        return {'code': '-1', 'message': '数据库类型不能为空!'}
 
-    if p_server["backup_tag"]=="":
+    if p_server["backup_tag"] == "":
         return {'code': '-1', 'message': '备份标识号不能为空!'}
 
     if p_server["backup_expire"] == "":
@@ -303,12 +316,13 @@ def check_backup(p_server):
         return {'code': '-1', 'message': '任务状态不能为空!'}
 
     if p_server["oss_status"] == "1":
-        if p_server["oss_path"]  is None or p_server["oss_path"]=='':
-           return {'code': '-1', 'message': 'oss备份路径不能为空!'}
+        if p_server["oss_path"] is None or p_server["oss_path"] == '':
+            return {'code': '-1', 'message': 'oss备份路径不能为空!'}
 
     return {'code': '0', 'message': '验证通过!'}
 
-def push_backup_task(p_tag,p_api):
+
+def push_backup_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
@@ -317,15 +331,16 @@ def push_backup_task(p_tag,p_api):
     jres = res.json()
     v = ''
     for c in jres['msg']:
-        if c.count(p_tag)>0:
-           v = v +"<span class='warning'>"+c +"</span>"
+        if c.count(p_tag) > 0:
+            v = v + "<span class='warning'>" + c + "</span>"
         else:
-           v = v + c
-        v  = v +'<br>'
+            v = v + c
+        v = v + '<br>'
     jres['msg'] = v
     return jres
 
-def run_backup_task(p_tag,p_api):
+
+def run_backup_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
@@ -334,11 +349,12 @@ def run_backup_task(p_tag,p_api):
     jres = res.json()
     return jres
 
-def stop_backup_task(p_tag,p_api):
+
+def stop_backup_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
-    url  = 'http://{}/stop_script_remote'.format(p_api)
-    res  = requests.post(url, data=data)
+    url = 'http://{}/stop_script_remote'.format(p_api)
+    res = requests.post(url, data=data)
     jres = res.json()
     return jres

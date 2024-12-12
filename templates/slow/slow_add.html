@@ -5,218 +5,220 @@
     <title>新增慢查询</title>
 </head>
 <body>
-    <p></p>
-    <div class="row">
-      <div class="col-md-6">
-       <form class="form-horizontal" role="form">
+<p></p>
+<div class="row">
+    <div class="col-md-6">
+        <form class="form-horizontal" role="form">
             <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_db_typee">*</span>数据库类型</label>
                 </div>
                 <div class="col-md-10">
-                      <select class="form-control select" id="db_type" >
-                          {% for var in dm_db_type %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                          {% end %}
-                      </select>
+                    <select class="form-control select" id="db_type">
+                        {% for var in dm_db_type %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
                 </div>
-           </div>
+            </div>
             <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_stats_method">*</span>采集方式</label>
                 </div>
                 <div class="col-md-10">
-                      <select class="form-control select" id="stats_method" >
-                          {% for var in dm_stats_method %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                          {% end %}
-                      </select>
+                    <select class="form-control select" id="stats_method">
+                        {% for var in dm_stats_method %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_db_source">*</span>数据源列表</label>
                 </div>
                 <div class="col-md-10">
-                      <select class="form-control select" id="db_source" >
-                          <option value='' selected = "selected">.....</option>
-                          {% for var in db_server %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                          {% end %}
-                      </select>
+                    <select class="form-control select" id="db_source">
+                        <option value='' selected="selected">.....</option>
+                        {% for var in db_server %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_inst_name">*</span>数据库实例</label>
                 </div>
                 <div class="col-md-10">
-                      <select class="form-control select" id="inst_name" >
-                          <option value='' selected = "selected">.....</option>
-                          {% for var in dm_inst_names %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                          {% end %}
-                      </select>
+                    <select class="form-control select" id="inst_name">
+                        <option value='' selected="selected">.....</option>
+                        {% for var in dm_inst_names %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_inst_server">*</span>采集服务器</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="inst_server" >
-                        <option value='' selected = "selected">......</option>
+                    <select class="form-control select" id="inst_server">
+                        <option value='' selected="selected">......</option>
                         {% for var in dm_db_server %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
+                        <option value={{var[0]}}>{{var[1]}}</option>
                         {% end %}
                     </select>
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_slow_time">*</span>慢查询时长</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="slow_time"  type="text" class="form-control" placeholder="请输入慢查询时长">
+                    <input id="slow_time" type="text" class="form-control" placeholder="请输入慢查询时长">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_slow_log_name">*</span>慢日志文件名</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="slow_log_name"  type="text" class="form-control"  value="slow_log_YYYYMMDD.log" placeholder="请输入慢查询日志名">
+                    <input id="slow_log_name" type="text" class="form-control" value="slow_log_YYYYMMDD.log"
+                           placeholder="请输入慢查询日志名">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3目录</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="python3_home"  type="text" class="form-control" placeholder="PYTHON3主目录">
+                    <input id="python3_home" type="text" class="form-control" placeholder="PYTHON3主目录">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="run_time"  type="text" class="form-control" placeholder="运行时间">
+                    <input id="run_time" type="text" class="form-control" placeholder="运行时间">
                 </div>
-           </div>
-          <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_exec_time">*</span>执行时长</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="exec_time"  type="text" class="form-control" placeholder="执行时长">
+                    <input id="exec_time" type="text" class="form-control" placeholder="执行时长">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_script_path">*</span>脚本路径</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="script_path"  type="text" class="form-control" placeholder="请输入脚本路径">
+                    <input id="script_path" type="text" class="form-control" placeholder="请输入脚本路径">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_script_file">*</span>采集脚本</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="script_file"  type="text" class="form-control"  value="gather_slow.py" placeholder="请输入采集脚本">
+                    <input id="script_file" type="text" class="form-control" value="gather_slow.py"
+                           placeholder="请输入采集脚本">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
                 </div>
                 <div class="col-md-10">
-                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器">
+                    <input id="api_server" type="text" class="form-control" placeholder="请输入API服务器">
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <div>
                     <label class="col-md-2 control-label"><span id="s_slow_status">*</span>是否开启</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="slow_status" >
+                    <select class="form-control select" id="slow_status">
                         <option value="1">启用</option>
                         <option value="0">禁用</option>
                     </select>
                 </div>
             </div>
-       </form>
-      </div>
+        </form>
     </div>
-    <p></p>
-    <div class="row">
-        <div class="col-md-offset-3 col-lg-offset-5col-xl-offset-3">
-             <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="保存"/>
-        </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-md-offset-3 col-lg-offset-5col-xl-offset-3">
+        <input id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="保存"/>
     </div>
+</div>
 
-    <script>
-        $('#inst_name').change(function() {
-           $.ajax({
-              url: "/db/inst/query/id",
-              type: "post",
-              datatype: "json",
-              data: {
-                  inst_id  :$('#inst_name').val()
-              },
-              success: function (instObj) {
-                    if (instObj['is_rds']=='N') {
-                       $('#inst_server').val(instObj['server_id'])
-                       $('#inst_server').attr('disabled',false)
+<script>
+    $('#inst_name').change(function () {
+        $.ajax({
+            url: "/db/inst/query/id",
+            type: "post",
+            datatype: "json",
+            data: {
+                inst_id: $('#inst_name').val()
+            },
+            success: function (instObj) {
+                if (instObj['is_rds'] == 'N') {
+                    $('#inst_server').val(instObj['server_id'])
+                    $('#inst_server').attr('disabled', false)
 
-                    } else {
-                        $('#inst_server').val('')
-                        $('#inst_server').attr('disabled',false)
-                    }
-               }
-             })
-        });
+                } else {
+                    $('#inst_server').val('')
+                    $('#inst_server').attr('disabled', false)
+                }
+            }
+        })
+    });
 
-        $(document).ready(function() {
+    $(document).ready(function () {
 
-          set_selected()
+        set_selected()
 
-          $("#add-btn").click(function () {
+        $("#add-btn").click(function () {
             $.ajax({
                 url: "/slow/add/save",
                 type: "post",
                 datatype: "json",
                 data: {
-                     db_type       : $('#db_type').val(),
-                     db_source     : $('#db_source').val(),
-                     inst_id       : $('#inst_name').val(),
-                     server_id     : $('#inst_server').val(),
-                     slow_time     : $('#slow_time').val(),
-                     slow_log_name : $('#slow_log_name').val(),
-                     python3_home  : $('#python3_home').val(),
-                     run_time      : $('#run_time').val(),
-                     exec_time     : $('#exec_time').val(),
-                     script_path   : $('#script_path').val(),
-                     script_file   : $('#script_file').val(),
-                     api_server    : $('#api_server').val(),
-                     slow_status   : $('#slow_status').val(),
+                    db_type: $('#db_type').val(),
+                    db_source: $('#db_source').val(),
+                    inst_id: $('#inst_name').val(),
+                    server_id: $('#inst_server').val(),
+                    slow_time: $('#slow_time').val(),
+                    slow_log_name: $('#slow_log_name').val(),
+                    python3_home: $('#python3_home').val(),
+                    run_time: $('#run_time').val(),
+                    exec_time: $('#exec_time').val(),
+                    script_path: $('#script_path').val(),
+                    script_file: $('#script_file').val(),
+                    api_server: $('#api_server').val(),
+                    slow_status: $('#slow_status').val(),
                 },
                 success: function (dataSet) {
                     console.log(dataSet.code, dataSet.message);
-                    if (dataSet.code==0) {
-                       swal("保存成功", "", "success")
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
                     } else {
-                       swal(dataSet.message, "", "error")
+                        swal(dataSet.message, "", "error")
                     }
                 },
-             });
-          });
-
+            });
         });
 
-   </script>
+    });
+
+</script>
 </body>
 
 </html>

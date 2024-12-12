@@ -4,117 +4,124 @@
     <title>ES查询</title>
     <style>
         #div-table-panal-mapping {
-            display:none;
-            height:60%;
+            display: none;
+            height: 60%;
         }
+
         #ace-editor {
-            height:200px;
+            height: 200px;
         }
+
         .modal-lg-demo {
-            width :60%;
-            height:30%;
+            width: 60%;
+            height: 30%;
         }
     </style>
 </head>
 
 <body>
-   <p></p>
-   <div class="row">
-        <form class="form-horizontal" role="form">
-           <div class="col-md-3">
-                <div class="form-group">
-                    <div>
-                        <label class="col-md-3 control-label">数据源</label>
-                    </div>
-                    <div class="col-md-9">
-                         <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
-                            <option value='' selected = "selected">...</option>
-                            {% for var in dss %}
-                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                            {% end %}
-                         </select>
-                   </div>
+<p></p>
+<div class="row">
+    <form class="form-horizontal" role="form">
+        <div class="col-md-3">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-3 control-label">数据源</label>
                 </div>
-           </div>
-           <div  class="col-md-3">
-               <div class="form-group">
-                    <div>
-                       <label class="col-md-3 control-label">索引</label>
-                    </div>
-                    <div class="col-md-9">
-                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="idx_name">
-                          <option value='' selected = "selected">...</option>
-                       </select>
-                    </div>
-               </div>
-            </div>
-           <div  class="col-md-2">
-               <div class="form-group">
-                    <div>
-                       <label class="col-md-3 control-label">文档</label>
-                    </div>
-                    <div class="col-md-9">
-                       <select class="selectpicker" data-live-search="true" data-style="btn-default" id="idx_doc">
-                          <option value='' selected = "selected">...</option>
-                       </select>
-                    </div>
-               </div>
-            </div>
-           <div class="col-md-2">
-                <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label">类型：</label>
-                    </div>
-                    <div class="col-md-8">
-                         <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_type">
-                            <option value='1' selected = "selected">数据</option>
-                            <option value='2' >映射</option>
-                         </select>
-                   </div>
-                </div>
-           </div>
-           <div  class="col-md-2">
-                <div class="form-group">
-                      <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
-                      <button type="button" id='demo_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="示例" data-original-title="示例"><i class="mdi mdi-help"></i></button>
-
-                </div>
-           </div>
-         </form>
-    </div>
-   <p></p>
-   <div class="row">
-       <div class="col-lg-12">
-            <div id='ace-editor-panal' class="panel panel-border panel-primary" >
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <div id="ace-editor" ></div>
+                <div class="col-md-9">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
+                        <option value='' selected="selected">...</option>
+                        {% for var in dss %}
+                        <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
                 </div>
             </div>
-
-            <div id='div-table-panal' class="panel panel-border panel-primary" >
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <div id="div-table" ></div>
-                </div>
-            </div>
-
-            <div id='div-table-panal-mapping' class="panel panel-border panel-primary" >
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <div id="div-mapping" ></div>
-                </div>
-            </div>
-
         </div>
-    </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-3 control-label">索引</label>
+                </div>
+                <div class="col-md-9">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="idx_name">
+                        <option value='' selected="selected">...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-3 control-label">文档</label>
+                </div>
+                <div class="col-md-9">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="idx_doc">
+                        <option value='' selected="selected">...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-4 control-label">类型：</label>
+                </div>
+                <div class="col-md-8">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="query_type">
+                        <option value='1' selected="selected">数据</option>
+                        <option value='2'>映射</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <button type="button" id='query_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip"
+                        data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i>
+                </button>
+                <button type="button" id='demo_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip"
+                        data-placement="top" title="示例" data-original-title="示例"><i class="mdi mdi-help"></i>
+                </button>
 
-   <!--查看DEMO详情  -->
-   <div id="con-close-modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg-demo">
+            </div>
+        </div>
+    </form>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-lg-12">
+        <div id='ace-editor-panal' class="panel panel-border panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <div id="ace-editor"></div>
+            </div>
+        </div>
+
+        <div id='div-table-panal' class="panel panel-border panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <div id="div-table"></div>
+            </div>
+        </div>
+
+        <div id='div-table-panal-mapping' class="panel panel-border panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <div id="div-mapping"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--查看DEMO详情  -->
+<div id="con-close-modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-demo">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><span id='demo-header'></span></h4>
@@ -126,526 +133,521 @@
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-   </div><!-- /.modal -->
+</div><!-- /.modal -->
 
-   <script type="text/javascript">
+<script type="text/javascript">
 
-         var es_demo =
-               [
-                {
-                  "query":{
-                       "term":{
-                            "_id" : "325333945838571520"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                      "match_all":{}
-                   }
-                },
-                {
-                    "from": 0,
-                    "size": 100
-                },
-                {
-                  "query":{
-                       "term":{
-                            "schema": "block_user"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "term":{
-                            "block_users.sex" : 2
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "term":{
-                            "block_users.birthday": "1994-07-05T00:00:00"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "term":{
-                            "block_users.create_user_name": "林丽双"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "wildcard":{
-                            "block_users.create_user_name": "*双"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "wildcard":{
-                            "block_users.nick_name": "*收集*"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                      "bool":{
-                          "must":[
+    var es_demo =
+        [
+            {
+                "query": {
+                    "term": {
+                        "_id": "325333945838571520"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "match_all": {}
+                }
+            },
+            {
+                "from": 0,
+                "size": 100
+            },
+            {
+                "query": {
+                    "term": {
+                        "schema": "block_user"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "term": {
+                        "block_users.sex": 2
+                    }
+                }
+            },
+            {
+                "query": {
+                    "term": {
+                        "block_users.birthday": "1994-07-05T00:00:00"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "term": {
+                        "block_users.create_user_name": "林丽双"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "wildcard": {
+                        "block_users.create_user_name": "*双"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "wildcard": {
+                        "block_users.nick_name": "*收集*"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "bool": {
+                        "must": [
                             {
-                                "term":{
+                                "term": {
                                     "block_users.id": 788
-                                 }
+                                }
                             },
                             {
-                                "term":{
+                                "term": {
                                     "block_users.create_user_name": "林丽双"
                                 }
                             }]
-                       }
-                  }
-                },
-                {
-                  "query":{
-                       "wildcard":{
-                            "block_users.nick_name": "*星火*"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "term":{
-                            "block_users.personl_id": "3653641857"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "wildcard":{
-                            "block_users.introduction": "*长空*"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "wildcard":{
-                            "block_users.nick_name": "长野星火尽散"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "match_phrase":{
-                            "block_users.nick_name": "长野星火尽散"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "wildcard":{
-                            "block_users.nick_name": "*星火*"
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "term":{
-                            "block_users.user_id": 335251997581463550
-                        }
-                   }
-                },
-                {
-                  "query":{
-                       "range":{
-                           "block_users.user_id" : {"gte":335251997581463550,"lte":335251997581463552 }
-                        }
-                   }
+                    }
                 }
-              ]
-
-        function set_screen_size(n_height){
-             if (n_height <= 657)
-             {
-                   //set ace_editor style
-                   console.log('1366*768(100%):'+n_height)
-                   $("#ace-editor-panal").css("height",n_height*0.20);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.4);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.55)+'px')
-                   return
-             }
-              //1366*768(80%)
-             if (n_height ==821)
-             {
-                   //set ace_editor style
-                   console.log('1366*768(80%):'+n_height)
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.45);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   // console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
-
-             //1440*1050(100%)、1680*1050（100%）
-             if (n_height==939)
-             {
-                   console.log('1440*1050(100%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.45);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   return
-             }
-
-             //1440*1050(80%)、1680*1050（100%）
-             if (n_height==1174) {
-                   console.log('1440*1050(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.53);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   // console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
-
-            //1440*900(100%)、1600*900（100%）
-             if (n_height == 789 )
-             {
-                   console.log('1440*900(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.43);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   return
-             }
-
-             //1440*900(80%)、1600*900（80%）
-             if (n_height == 986 )
-             {
-                   console.log('1440*900(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.48);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   return
-             }
-
-             //1920*1080(100%)
-             if (n_height == 969 )
-             {
-                   console.log('1920*1080(100%) :'+n_height+'px')
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.4);
-                   $("#div-table").css("height",$("#div-table-panal").height()*0.88);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   return
-             }
-
-             //1920*1080(80%)
-             if (n_height == 1211 )
-             {
-                   console.log('1920*1080(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.3);
-                   $("#div-table").css("height",$("#div-table-panal").height()*0.8);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   return
-             }
-        }
-
-        function set_styles() {
-             set_screen_size($(window).height())
-             $('#ace-editor-panal').show()
-             $('#div-table-panal').show()
-        }
-
-        function set_editor(p_editor) {
-                  var editor = ace.edit(p_editor);
-                  editor.setTheme("ace/theme/xcode");
-                  editor.getSession().setMode("ace/mode/json");
-                  editor.getSession().setUseSoftTabs(true);
-                  editor.getSession().setUseWrapMode(true);
-                  editor.setShowPrintMargin(false);
-                  editor.setFontSize(14);
-                  editor.setOption("wrap", "free");
-                  ace.require("ace/ext/language_tools");
-                  editor.setOptions({
-                     enableBasicAutocompletion: true,
-                     enableSnippets: true,
-                     enableLiveAutocompletion: true
-                  });
-                  editor.setHighlightActiveLine(true);
-              }
-
-        function set_editor_result(p_editor) {
-                  var editor = ace.edit(p_editor);
-                  editor.setTheme("ace/theme/xcode");
-                  editor.getSession().setMode("ace/mode/json");
-                  editor.getSession().setUseSoftTabs(true);
-                  editor.getSession().setUseWrapMode(true);
-                  editor.setShowPrintMargin(false);
-                  editor.setFontSize(14);
-                  editor.setOption("wrap", "free");
-                  editor.setReadOnly(true);
-                  editor.setHighlightActiveLine(true);
-              }
-
-        function query_table(sql){
-            if ($('#query_type').val() == '1') {
-                  $.ajax({
-                        url     : "/es/_query",
-                        type    : "post",
-                        data: {
-                            dbid  :  $('#db_source').val(),
-                            index_name :  $('#idx_name').val(),
-                            idx_doc :  $('#idx_doc').val(),
-                            body:sql
-                        },
-                        success: function (dataSet) {
-                           var editor = ace.edit("div-table")
-                           editor.setValue('')
-                           editor.insert(JSON.stringify(dataSet.data, null, "\t"))
-                        },
-                  })
-            } else {
-                     $.ajax({
-                        url     : "/es/_query/mapping",
-                        type    : "post",
-                       // datatype: "text",
-                        data: {
-                            dbid  :  $('#db_source').val(),
-                            index_name :  $('#idx_name').val(),
-                        },
-                        success: function (dataSet) {
-                           var editor = ace.edit("div-mapping")
-                           editor.setValue('')
-                           editor.insert(JSON.stringify(dataSet.data, null, "\t"))
-                        },
-                  })
+            },
+            {
+                "query": {
+                    "wildcard": {
+                        "block_users.nick_name": "*星火*"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "term": {
+                        "block_users.personl_id": "3653641857"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "wildcard": {
+                        "block_users.introduction": "*长空*"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "wildcard": {
+                        "block_users.nick_name": "长野星火尽散"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "match_phrase": {
+                        "block_users.nick_name": "长野星火尽散"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "wildcard": {
+                        "block_users.nick_name": "*星火*"
+                    }
+                }
+            },
+            {
+                "query": {
+                    "term": {
+                        "block_users.user_id": 335251997581463550
+                    }
+                }
+            },
+            {
+                "query": {
+                    "range": {
+                        "block_users.user_id": {"gte": 335251997581463550, "lte": 335251997581463552}
+                    }
+                }
             }
+        ]
 
-          }
+    function set_screen_size(n_height) {
+        if (n_height <= 657) {
+            //set ace_editor style
+            console.log('1366*768(100%):' + n_height)
+            $("#ace-editor-panal").css("height", n_height * 0.20);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-        function upd_idx_name(dataSet){
-               $("#idx_name").empty();
-               $("#idx_name").append("<option value=''>...</option>");
-                for (i=0;i<dataSet['data'].length;i++){
-                   var val  = dataSet['data'][i];
-                   var text = dataSet['data'][i];
-                   $("#idx_name").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-               }
-               $("#idx_name").selectpicker('refresh')
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.4);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.55) + 'px')
+            return
+        }
+        //1366*768(80%)
+        if (n_height == 821) {
+            //set ace_editor style
+            console.log('1366*768(80%):' + n_height)
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.45);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.7) + 'px')
+            // console.log('h_tab_height=',$("#h_tab_height").val())
+            return
         }
 
-        function upd_idx_doc(dataSet){
-               $("#idx_doc").empty();
-               $("#idx_doc").append("<option value=''>...</option>");
-                for (i=0;i<dataSet['data'].length;i++){
-                   var val  = dataSet['data'][i];
-                   var text = dataSet['data'][i];
-                   $("#idx_doc").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-               }
-               $("#idx_doc").selectpicker('refresh')
+        //1440*1050(100%)、1680*1050（100%）
+        if (n_height == 939) {
+            console.log('1440*1050(100%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.45);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.7) + 'px')
+            return
         }
 
-        $("#query_btn").click(function() {
-                var editor = ace.edit("ace-editor");
-                v_sql=editor.session.getTextRange(editor.getSelectionRange())
+        //1440*1050(80%)、1680*1050（100%）
+        if (n_height == 1174) {
+            console.log('1440*1050(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-                if(v_sql=='') {
-                  v_sql=editor.session.getValue()
-                }
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.53);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.75) + 'px')
+            // console.log('h_tab_height=',$("#h_tab_height").val())
+            return
+        }
 
-                if($('#db_source').val()=='') {
-                   showtips('info','请选择数据源!');
-                   return false;
-                }
-                if($('#idx_name').val()=='') {
-                   showtips('info','请选择索引!');
-                   return false;
-                }
+        //1440*900(100%)、1600*900（100%）
+        if (n_height == 789) {
+            console.log('1440*900(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-                if($('#idx_doc').val()=='') {
-                   showtips('info','请选择文档!');
-                   return false;
-                }
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.43);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.7) + 'px')
+            return
+        }
 
-                if(v_sql=='' ) {
-                   if ($('#query_type').val() == '1') {
-                        showtips('info','条件不能为空!');
-                        return false;
-                   } else {
-                       var editor = ace.edit("ace-editor");
-                       editor.setValue('')
-                       $('#ace-editor-panal').hide()
-                   }
-                }
-                query_table(v_sql)
+        //1440*900(80%)、1600*900（80%）
+        if (n_height == 986) {
+            console.log('1440*900(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.48);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.75) + 'px')
+            return
+        }
+
+        //1920*1080(100%)
+        if (n_height == 969) {
+            console.log('1920*1080(100%) :' + n_height + 'px')
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.4);
+            $("#div-table").css("height", $("#div-table-panal").height() * 0.88);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            return
+        }
+
+        //1920*1080(80%)
+        if (n_height == 1211) {
+            console.log('1920*1080(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.3);
+            $("#div-table").css("height", $("#div-table-panal").height() * 0.8);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            return
+        }
+    }
+
+    function set_styles() {
+        set_screen_size($(window).height())
+        $('#ace-editor-panal').show()
+        $('#div-table-panal').show()
+    }
+
+    function set_editor(p_editor) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/json");
+        editor.getSession().setUseSoftTabs(true);
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(14);
+        editor.setOption("wrap", "free");
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
         });
+        editor.setHighlightActiveLine(true);
+    }
 
-        $("#demo_btn").click(function() {
-                var editor = ace.edit("ace-editor-demo");
-                editor.setValue('')
-                var demo= JSON.stringify(es_demo, null, "\t")
-                editor.insert(demo);
-                $('#demo-header').text('示例信息')
-                $('.modal').on('show.bs.modal', centerModals);
-                $(window).on('resize', centerModals);
-                $('#con-close-modal-demo').modal({
-                   keyboard: false,
-                   backdrop:false
-                });
-         });
+    function set_editor_result(p_editor) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/json");
+        editor.getSession().setUseSoftTabs(true);
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(14);
+        editor.setOption("wrap", "free");
+        editor.setReadOnly(true);
+        editor.setHighlightActiveLine(true);
+    }
 
-        $('#query_type').change(function(){
-            var editor1 = ace.edit("ace-editor");
-            var editor2 = ace.edit("div-table");
+    function query_table(sql) {
+        if ($('#query_type').val() == '1') {
+            $.ajax({
+                url: "/es/_query",
+                type: "post",
+                data: {
+                    dbid: $('#db_source').val(),
+                    index_name: $('#idx_name').val(),
+                    idx_doc: $('#idx_doc').val(),
+                    body: sql
+                },
+                success: function (dataSet) {
+                    var editor = ace.edit("div-table")
+                    editor.setValue('')
+                    editor.insert(JSON.stringify(dataSet.data, null, "\t"))
+                },
+            })
+        } else {
+            $.ajax({
+                url: "/es/_query/mapping",
+                type: "post",
+                // datatype: "text",
+                data: {
+                    dbid: $('#db_source').val(),
+                    index_name: $('#idx_name').val(),
+                },
+                success: function (dataSet) {
+                    var editor = ace.edit("div-mapping")
+                    editor.setValue('')
+                    editor.insert(JSON.stringify(dataSet.data, null, "\t"))
+                },
+            })
+        }
+
+    }
+
+    function upd_idx_name(dataSet) {
+        $("#idx_name").empty();
+        $("#idx_name").append("<option value=''>...</option>");
+        for (i = 0; i < dataSet['data'].length; i++) {
+            var val = dataSet['data'][i];
+            var text = dataSet['data'][i];
+            $("#idx_name").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+        }
+        $("#idx_name").selectpicker('refresh')
+    }
+
+    function upd_idx_doc(dataSet) {
+        $("#idx_doc").empty();
+        $("#idx_doc").append("<option value=''>...</option>");
+        for (i = 0; i < dataSet['data'].length; i++) {
+            var val = dataSet['data'][i];
+            var text = dataSet['data'][i];
+            $("#idx_doc").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+        }
+        $("#idx_doc").selectpicker('refresh')
+    }
+
+    $("#query_btn").click(function () {
+        var editor = ace.edit("ace-editor");
+        v_sql = editor.session.getTextRange(editor.getSelectionRange())
+
+        if (v_sql == '') {
+            v_sql = editor.session.getValue()
+        }
+
+        if ($('#db_source').val() == '') {
+            showtips('info', '请选择数据源!');
+            return false;
+        }
+        if ($('#idx_name').val() == '') {
+            showtips('info', '请选择索引!');
+            return false;
+        }
+
+        if ($('#idx_doc').val() == '') {
+            showtips('info', '请选择文档!');
+            return false;
+        }
+
+        if (v_sql == '') {
             if ($('#query_type').val() == '1') {
-                editor1.setValue('')
-                editor2.setValue('')
-                $('#ace-editor-panal').show()
-                $('#div-table-panal').show()
-                $('#div-table-panal-mapping').hide()
-                set_styles()
+                showtips('info', '条件不能为空!');
+                return false;
             } else {
-                editor1.setValue('')
+                var editor = ace.edit("ace-editor");
+                editor.setValue('')
                 $('#ace-editor-panal').hide()
-                $('#div-table-panal').hide()
-                $('#div-table-panal-mapping').show()
-           }
-        })
+            }
+        }
+        query_table(v_sql)
+    });
 
-        $("#db_source").on("changed.bs.select",function(){
-               $.ajax({
-                    url     :"/es/_index",
-                    type    :"post",
-                    datatype:"json",
-                    data: {
-                        dbid : $('#db_source').val(),
-                    },
-                    success: function (dataSet) {
-                        console.log('dataset=',dataSet)
-                        upd_idx_name(dataSet)
-                    }
-               });
+    $("#demo_btn").click(function () {
+        var editor = ace.edit("ace-editor-demo");
+        editor.setValue('')
+        var demo = JSON.stringify(es_demo, null, "\t")
+        editor.insert(demo);
+        $('#demo-header').text('示例信息')
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-modal-demo').modal({
+            keyboard: false,
+            backdrop: false
         });
+    });
 
-        $("#idx_name").on("changed.bs.select",function(){
-               $.ajax({
-                    url     :"/es/_query/docs",
-                    type    :"post",
-                    datatype:"json",
-                    data: {
-                        dbid : $('#db_source').val(),
-                        index_name : $('#idx_name').val(),
-                    },
-                    success: function (dataSet) {
-                        console.log('idx_name dataset=',dataSet)
-                        upd_idx_doc(dataSet)
-                    }
-               });
-        });
-
-        $(window).resize(function () {
+    $('#query_type').change(function () {
+        var editor1 = ace.edit("ace-editor");
+        var editor2 = ace.edit("div-table");
+        if ($('#query_type').val() == '1') {
+            editor1.setValue('')
+            editor2.setValue('')
+            $('#ace-editor-panal').show()
+            $('#div-table-panal').show()
+            $('#div-table-panal-mapping').hide()
             set_styles()
-        })
+        } else {
+            editor1.setValue('')
+            $('#ace-editor-panal').hide()
+            $('#div-table-panal').hide()
+            $('#div-table-panal-mapping').show()
+        }
+    })
 
-        $(document).ready(function() {
-              set_editor("ace-editor")
-              set_editor_result("div-table")
-              set_editor_result("div-mapping")
-              set_editor("ace-editor-demo")
-              $("#db_source").selectpicker('refresh')
-              $("#idx_name").selectpicker('refresh')
-              $("#idx_doc").selectpicker('refresh')
-              $("#query_type").selectpicker('refresh')
-              set_styles()
+    $("#db_source").on("changed.bs.select", function () {
+        $.ajax({
+            url: "/es/_index",
+            type: "post",
+            datatype: "json",
+            data: {
+                dbid: $('#db_source').val(),
+            },
+            success: function (dataSet) {
+                console.log('dataset=', dataSet)
+                upd_idx_name(dataSet)
+            }
         });
- </script>
+    });
+
+    $("#idx_name").on("changed.bs.select", function () {
+        $.ajax({
+            url: "/es/_query/docs",
+            type: "post",
+            datatype: "json",
+            data: {
+                dbid: $('#db_source').val(),
+                index_name: $('#idx_name').val(),
+            },
+            success: function (dataSet) {
+                console.log('idx_name dataset=', dataSet)
+                upd_idx_doc(dataSet)
+            }
+        });
+    });
+
+    $(window).resize(function () {
+        set_styles()
+    })
+
+    $(document).ready(function () {
+        set_editor("ace-editor")
+        set_editor_result("div-table")
+        set_editor_result("div-mapping")
+        set_editor("ace-editor-demo")
+        $("#db_source").selectpicker('refresh')
+        $("#idx_name").selectpicker('refresh')
+        $("#idx_doc").selectpicker('refresh')
+        $("#query_type").selectpicker('refresh')
+        set_styles()
+    });
+</script>
 
 </body>
 

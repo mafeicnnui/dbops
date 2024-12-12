@@ -5,19 +5,23 @@
 # @File    : t_user.py
 # @Software: PyCharm
 
+import os
 import traceback
-import xlrd,xlwt
-import os,zipfile
+import zipfile
+
+import xlwt
+
 from web.utils.common import current_rq
 from web.utils.mysql_async import async_processer
 
-async def query_kpi_item(p_month,p_market_id):
+
+async def query_kpi_item(p_month, p_market_id):
     v_where = ' where 1=1 '
     if p_month != '':
-       v_where = v_where + " and month='{0}'\n".format(p_month)
+        v_where = v_where + " and month='{0}'\n".format(p_month)
 
-    if  p_market_id!='':
-        v_where=v_where+" and market_id='{0}'\n".format(p_market_id)
+    if p_market_id != '':
+        v_where = v_where + " and market_id='{0}'\n".format(p_market_id)
 
     sql = """SELECT market_id,market_name,month,item_code,item_name,item_value
               FROM kpi_item_plan 
@@ -31,10 +35,10 @@ async def query_kpi_item_market():
     return await async_processer.query_list(sql)
 
 
-async def query_kpi(p_month,p_market_id):
+async def query_kpi(p_month, p_market_id):
     v_where = ' '
-    if  p_market_id!='':
-        v_where=v_where+" and a.market_id='{0}'\n".format(p_market_id)
+    if p_market_id != '':
+        v_where = v_where + " and a.market_id='{0}'\n".format(p_market_id)
 
     sql = """select date_format(a.bbrq,'%Y-%m-%d') as bbrq,
                     a.month,
@@ -49,7 +53,7 @@ async def query_kpi(p_month,p_market_id):
             WHERE a.market_id=b.market_id  AND a.`item_code`=c.`item_code`
               and a.item_code not in('9','13','2.1','2.2','12.1','12.2') 
               and a.month='{}' {}
-            ORDER BY b.sxh,a.item_code+0""".format(p_month,v_where)
+            ORDER BY b.sxh,a.item_code+0""".format(p_month, v_where)
     return await async_processer.query_list(sql)
 
 
@@ -78,7 +82,8 @@ async def query_kpi_hst(p_bbrq):
                    AND a.tjrq='{}' ORDER BY market_id""".format(p_bbrq)
     return await async_processer.query_list(sql)
 
-async def update_kpi(p_month,p_market_id):
+
+async def update_kpi(p_month, p_market_id):
     result = {}
     result['code'] = '0'
     result['message'] = '保存成功!'
@@ -86,15 +91,16 @@ async def update_kpi(p_month,p_market_id):
     if p_market_id != '':
         v_where = v_where + " and a.market_id='{0}'\n".format(p_market_id)
 
-    st0 = "SELECT DISTINCT market_name as market_name FROM kpi_item_plan a WHERE a.MONTH='2021-06' AND a.item_value='' {} ".format(v_where)
+    st0 = "SELECT DISTINCT market_name as market_name FROM kpi_item_plan a WHERE a.MONTH='2021-06' AND a.item_value='' {} ".format(
+        v_where)
     res = await async_processer.query_dict_list(st0)
-    print('update_kpi=',res)
-    if res !=[]:
-        s =''
+    print('update_kpi=', res)
+    if res != []:
+        s = ''
         for m in res:
-            s = s +m['market_name']+','
+            s = s + m['market_name'] + ','
         result['code'] = '-1'
-        result['message'] = '['+s[0:-1]+']月度指标未录入完成!'
+        result['message'] = '[' + s[0:-1] + ']月度指标未录入完成!'
         return result
 
     st1 = """
@@ -114,7 +120,7 @@ async def update_kpi(p_month,p_market_id):
                AND a.month=b.month
                AND a.item_code=b.item_code
                AND a.month='{}' {}
-               AND a.item_code IN(SELECT CODE FROM kpi_item WHERE TYPE='1')""".format(p_month,v_where)
+               AND a.item_code IN(SELECT CODE FROM kpi_item WHERE TYPE='1')""".format(p_month, v_where)
     st2 = """
          UPDATE  kpi_po_hz a ,kpi_item_plan b
            SET a.`annual_target`=b.item_value,
@@ -134,7 +140,7 @@ async def update_kpi(p_month,p_market_id):
            AND a.month=b.month
            AND a.item_code=b.item_code
            AND a.month='{}'  {}
-           AND a.item_code IN(SELECT CODE FROM kpi_item WHERE TYPE='2')""".format(p_month,v_where)
+           AND a.item_code IN(SELECT CODE FROM kpi_item WHERE TYPE='2')""".format(p_month, v_where)
     try:
         print(st1)
         print(st2)
@@ -147,12 +153,13 @@ async def update_kpi(p_month,p_market_id):
         result['message'] = '保存失败！'
         return result
 
-async def update_item_kpi(p_month,p_market_id,p_item_code,p_item_value):
+
+async def update_item_kpi(p_month, p_market_id, p_item_code, p_item_value):
     result = {}
     result['code'] = '0'
     result['message'] = '更新成功!'
     st1 = """UPDATE  kpi_item_plan a SET a.item_value='{}' WHERE a.month='{}'  AND a.market_id='{}' AND a.item_code='{}'
-          """.format(p_item_value,p_month,p_market_id,p_item_code)
+          """.format(p_item_value, p_month, p_market_id, p_item_code)
     try:
         print(st1)
         await async_processer.exec_sql(st1)
@@ -162,14 +169,15 @@ async def update_item_kpi(p_month,p_market_id,p_item_code,p_item_value):
         result['message'] = '保存失败！'
         return result
 
-async def update_item_data_kpi(p_month, p_market_id, p_item_code, p_item_month_value,p_item_sum_value):
+
+async def update_item_data_kpi(p_month, p_market_id, p_item_code, p_item_month_value, p_item_sum_value):
     result = {}
     result['code'] = '0'
     result['message'] = '更新成功!'
     st1 = """UPDATE  kpi_po_hz a
                SET a.`actual_completion`='{}', a.completion_sum_finish='{}' 
                   WHERE a.month='{}'  AND a.market_id='{}' AND a.item_code='{}'
-           """.format(p_item_month_value,p_item_sum_value, p_month, p_market_id, p_item_code)
+           """.format(p_item_month_value, p_item_sum_value, p_month, p_market_id, p_item_code)
     try:
         print(st1)
         await async_processer.exec_sql(st1)
@@ -179,34 +187,38 @@ async def update_item_data_kpi(p_month, p_market_id, p_item_code, p_item_month_v
         result['message'] = '保存失败！'
         return result
 
+
 async def check_kpi_item_plan(p_month):
     st = """SELECT count(0)  FROM kpi_item_plan where month='{}'""".format(p_month)
-    print("check_kpi_item_plan=",st)
-    return  await async_processer.query_one(st)
+    print("check_kpi_item_plan=", st)
+    return await async_processer.query_one(st)
+
 
 async def generate_item_kpi(p_month):
     st1 = """INSERT INTO kpi_item_plan(market_id,market_name,MONTH,item_code,item_name,item_value)
-              SELECT market_id,market_name,'{}',item_code,item_name,item_value FROM kpi_item_plan_templete""".format(p_month)
+              SELECT market_id,market_name,'{}',item_code,item_name,item_value FROM kpi_item_plan_templete""".format(
+        p_month)
     try:
         print(st1)
         res = await check_kpi_item_plan(p_month)
         if res[0] > 0:
-           print('res=',res)
-           return {"code": '-1', "message": p_month+'月数据已存在!' }
+            print('res=', res)
+            return {"code": '-1', "message": p_month + '月数据已存在!'}
 
         await async_processer.exec_sql(st1)
-        return {"code": '0', "message": '生成成功!' }
+        return {"code": '0', "message": '生成成功!'}
     except:
         traceback.print_exc()
         return {"code": '-1', "message": '生成失败!'}
 
-def set_header_styles(p_fontsize,p_color):
+
+def set_header_styles(p_fontsize, p_color):
     header_borders = xlwt.Borders()
-    header_styles  = xlwt.XFStyle()
+    header_styles = xlwt.XFStyle()
     # add table header style
-    header_borders.left   = xlwt.Borders.THIN
-    header_borders.right  = xlwt.Borders.THIN
-    header_borders.top    = xlwt.Borders.THIN
+    header_borders.left = xlwt.Borders.THIN
+    header_borders.right = xlwt.Borders.THIN
+    header_borders.top = xlwt.Borders.THIN
     header_borders.bottom = xlwt.Borders.THIN
     header_styles.borders = header_borders
     header_pattern = xlwt.Pattern()
@@ -218,7 +230,7 @@ def set_header_styles(p_fontsize,p_color):
     font.bold = True
     font.size = p_fontsize
     header_styles.font = font
-    #add alignment
+    # add alignment
     header_alignment = xlwt.Alignment()
     header_alignment.horz = xlwt.Alignment.HORZ_CENTER
     header_alignment.vert = xlwt.Alignment.VERT_CENTER
@@ -227,9 +239,10 @@ def set_header_styles(p_fontsize,p_color):
     header_styles.pattern = header_pattern
     return header_styles
 
-def set_row_styles(p_fontsize,p_color):
-    cell_borders   = xlwt.Borders()
-    cell_styles    = xlwt.XFStyle()
+
+def set_row_styles(p_fontsize, p_color):
+    cell_borders = xlwt.Borders()
+    cell_styles = xlwt.XFStyle()
 
     # add font
     font = xlwt.Font()
@@ -238,36 +251,37 @@ def set_row_styles(p_fontsize,p_color):
     font.size = p_fontsize
     cell_styles.font = font
 
-    #add col style
-    cell_borders.left     = xlwt.Borders.THIN
-    cell_borders.right    = xlwt.Borders.THIN
-    cell_borders.top      = xlwt.Borders.THIN
-    cell_borders.bottom   = xlwt.Borders.THIN
+    # add col style
+    cell_borders.left = xlwt.Borders.THIN
+    cell_borders.right = xlwt.Borders.THIN
+    cell_borders.top = xlwt.Borders.THIN
+    cell_borders.bottom = xlwt.Borders.THIN
 
-    row_pattern           = xlwt.Pattern()
-    row_pattern.pattern   = xlwt.Pattern.SOLID_PATTERN
+    row_pattern = xlwt.Pattern()
+    row_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
     row_pattern.pattern_fore_colour = p_color
 
     # add alignment
-    cell_alignment        = xlwt.Alignment()
-    cell_alignment.horz   = xlwt.Alignment.HORZ_LEFT
-    cell_alignment.vert   = xlwt.Alignment.VERT_CENTER
+    cell_alignment = xlwt.Alignment()
+    cell_alignment.horz = xlwt.Alignment.HORZ_LEFT
+    cell_alignment.vert = xlwt.Alignment.VERT_CENTER
 
     cell_styles.alignment = cell_alignment
-    cell_styles.borders   = cell_borders
-    cell_styles.pattern   = row_pattern
-    cell_styles.font      = font
+    cell_styles.borders = cell_borders
+    cell_styles.pattern = row_pattern
+    cell_styles.font = font
     return cell_styles
 
-async def exp_hst_kpi(static_path,p_bbrq):
-    row_data  = 0
-    workbook  = xlwt.Workbook(encoding='utf8')
+
+async def exp_hst_kpi(static_path, p_bbrq):
+    row_data = 0
+    workbook = xlwt.Workbook(encoding='utf8')
     worksheet = workbook.add_sheet('hst_kpi')
-    header_styles = set_header_styles(45,1)
+    header_styles = set_header_styles(45, 1)
     os.system('cd {0}'.format(static_path + '/downloads/kpi'))
-    file_name   = static_path + '/downloads/port/exp_hst_kpi_{0}.xls'.format(current_rq())
+    file_name = static_path + '/downloads/port/exp_hst_kpi_{0}.xls'.format(current_rq())
     file_name_s = 'exp_hst_kpi_{0}.xls'.format(current_rq())
-    sql_header  = """
+    sql_header = """
                  SELECT market_id     AS "项目编码",
                         b.dmmc        AS "项目名称",
                         a.tjrq        AS "报表日期",
@@ -306,18 +320,18 @@ async def exp_hst_kpi(static_path,p_bbrq):
             if i[j] is None:
                 worksheet.write(row_data, j, '', cell_styles)
             else:
-                cell_styles = set_row_styles(40,1)
+                cell_styles = set_row_styles(40, 1)
                 worksheet.write(row_data, j, str(i[j]), cell_styles)
         row_data = row_data + 1
 
     workbook.save(file_name)
     print("{0} export complete!".format(file_name))
 
-    #生成zip压缩文件
+    # 生成zip压缩文件
     zip_file = static_path + '/downloads/port/exp_hst_kpi_{0}.zip'.format(current_rq())
     rzip_file = '/static/downloads/port/exp_hst_kpi_{0}.zip'.format(current_rq())
 
-    #若文件存在则删除
+    # 若文件存在则删除
     if os.path.exists(zip_file):
         os.system('rm -f {0}'.format(zip_file))
 
@@ -329,13 +343,14 @@ async def exp_hst_kpi(static_path,p_bbrq):
     os.system('rm -f {0}'.format(file_name))
     return rzip_file
 
-async def exp_kpi(static_path,p_month,p_market_id):
-    row_data  = 0
-    workbook  = xlwt.Workbook(encoding='utf8')
+
+async def exp_kpi(static_path, p_month, p_market_id):
+    row_data = 0
+    workbook = xlwt.Workbook(encoding='utf8')
     worksheet = workbook.add_sheet('kpi')
-    header_styles = set_header_styles(45,1)
+    header_styles = set_header_styles(45, 1)
     os.system('cd {0}'.format(static_path + '/downloads/kpi'))
-    file_name   = static_path + '/downloads/port/exp_kpi_{0}.xls'.format(current_rq())
+    file_name = static_path + '/downloads/port/exp_kpi_{0}.xls'.format(current_rq())
     file_name_s = 'exp_kpi_{0}.xls'.format(current_rq())
 
     v_where = ' '
@@ -361,7 +376,6 @@ async def exp_kpi(static_path,p_month,p_market_id):
                  and a.month='{}' {}
                    ORDER BY b.sxh,a.item_code+0 limit 1""".format(p_month, v_where)
 
-
     sql_content = """select 
                        date_format(a.bbrq,'%Y-%m-%d') as bbrq,
                        a.month,
@@ -385,7 +399,7 @@ async def exp_kpi(static_path,p_month,p_market_id):
         else:
             worksheet.col(k).width = 4000
 
-    #循环项目写单元格
+    # 循环项目写单元格
     row_data = row_data + 1
     rs3 = await async_processer.query_list(sql_content)
     for i in rs3:
@@ -400,11 +414,11 @@ async def exp_kpi(static_path,p_month,p_market_id):
     workbook.save(file_name)
     print("{0} export complete!".format(file_name))
 
-    #生成zip压缩文件
+    # 生成zip压缩文件
     zip_file = static_path + '/downloads/port/exp_kpi_{0}.zip'.format(current_rq())
     rzip_file = '/static/downloads/port/exp_kpi_{0}.zip'.format(current_rq())
 
-    #若文件存在则删除
+    # 若文件存在则删除
     if os.path.exists(zip_file):
         os.system('rm -f {0}'.format(zip_file))
 

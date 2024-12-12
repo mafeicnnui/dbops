@@ -8,728 +8,739 @@
         }
 
         .modal-lg-templete {
-            width:60%;
-            height:20%;
-            margin-left:500px;
-            margin-top:10px;
-       }
-       .dbubble-text {
+            width: 60%;
+            height: 20%;
+            margin-left: 500px;
+            margin-top: 10px;
+        }
+
+        .dbubble-text {
             display: inline-block;
             font-size: 14px;
             color: #303030;
             line-height: 100%;
             width: 350px;
-            white-space:normal;
+            white-space: normal;
             word-wrap: break-word;
             word-break: break-all;
             overflow: hidden;
         }
+
         .modal-lg-detail {
-            width :60%;
-            height:10%;
+            width: 60%;
+            height: 10%;
         }
 
-       .modal-lg-detail-all {
-            width :65%;
-            height:50%;
+        .modal-lg-detail-all {
+            width: 65%;
+            height: 50%;
         }
 
     </style>
 </head>
 <body>
-      <p></p>
-      <div class="row">
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label"><span>源实例</span></label>
-                    </div>
-                    <div class="col-md-8">
-                        <select  class="form-control select" id="sour_db_server" >
-                            <option value='' selected = "selected">...</option>
-                            {% for var in db_server %}
-                               <option value={{var[0]}}>{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-         </div>
-         <div class="col-md-2">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-4 control-label">源库名</label>
-                </div>
-                <div class="col-md-8">
-                     <select  class="form-control select" id="sour_schema" >
-                         <option value='' selected = "selected">......</option>
-                     </select>
-                </div>
-           </div>
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label"><span>源实例</span></label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="sour_db_server">
+                    <option value='' selected="selected">...</option>
+                    {% for var in db_server %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
         </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label">目标实</label>
-                    </div>
-                   <div class="col-md-8">
-                        <select  class="form-control select" id="desc_db_server" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in db_server %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-          </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label">目标库</label>
-                    </div>
-                    <div class="col-md-8">
-                         <select class="form-control select" id="desc_schema" >
-                             <option value='' selected = "selected">......</option>
-                         </select>
-                    </div>
-               </div>
-          </div>
-          <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label">表名</label>
-                    </div>
-                    <div class="col-md-8">
-                         <select class="form-control select" id="sour_tab" >
-                             <option value='' selected = "selected">......</option>
-                         </select>
-                    </div>
-               </div>
-          </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <button id="compare_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">比较</button>&nbsp;
-                    <button id="gen_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">生成</button>
-               </div>
-         </div>
-      </div>
-      <p></p>
-      <input type="hidden" id='copy_statement'>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">源库名</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="sour_schema">
+                    <option value='' selected="selected">......</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">目标实</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="desc_db_server">
+                    <option value='' selected="selected">......</option>
+                    {% for var in db_server %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">目标库</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="desc_schema">
+                    <option value='' selected="selected">......</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">表名</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="sour_tab">
+                    <option value='' selected="selected">......</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <button id="compare_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">比较</button>&nbsp;
+            <button id="gen_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">生成</button>
+        </div>
+    </div>
+</div>
+<p></p>
+<input type="hidden" id='copy_statement'>
 
-       <!--比较情况 -->
-     <div class="panel panel-default">
-        <div class="panel-body">
-            <ul class="nav nav-pills m-b-30 pull-left">
-                <li id='id_sql' class="active">
-                    <a href="#cmp-tab" data-toggle="tab" aria-expanded="true">表</a>
-                </li>
-                <li id='id_wtd' class="">
-                    <a href="#cmp-idx" data-toggle="tab" aria-expanded="false">索引</a>
-                </li>
-            </ul>
-            <div class="tab-content br-n pn">
-                <div id="cmp-tab" class="tab-pane active">
-                    <div class="row">
-                     <div class="col-md-12">
-                            <div id="div-tab">
-                               <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
-                           </div>
-                      </div>
-                     </div>
+<!--比较情况 -->
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav nav-pills m-b-30 pull-left">
+            <li id='id_sql' class="active">
+                <a href="#cmp-tab" data-toggle="tab" aria-expanded="true">表</a>
+            </li>
+            <li id='id_wtd' class="">
+                <a href="#cmp-idx" data-toggle="tab" aria-expanded="false">索引</a>
+            </li>
+        </ul>
+        <div class="tab-content br-n pn">
+            <div id="cmp-tab" class="tab-pane active">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="div-tab">
+                            <table id="example" class="table table-striped table-bordered dt-responsive nowrap"
+                                   cellspacing="0"></table>
+                        </div>
+                    </div>
                 </div>
-                <div id="cmp-idx" class="tab-pane">
-                    <div class="row">
-                         <div id="div-tab2">
-                              <table id="example2" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
-                         </div>
+            </div>
+            <div id="cmp-idx" class="tab-pane">
+                <div class="row">
+                    <div id="div-tab2">
+                        <table id="example2" class="table table-striped table-bordered dt-responsive nowrap"
+                               cellspacing="0"></table>
                     </div>
                 </div>
             </div>
         </div>
-     </div>
+    </div>
+</div>
 
-      <!--比较详情[表] -->
-      <div id="con-close-modal-cmp-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-templete">
+<!--比较详情[表] -->
+<div id="con-close-modal-cmp-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-templete">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span id='modal_title'>比较详情[表]</span></h4>
             </div>
             <div class="modal-body">
-                 <div class="row">
-                     <div class="col-md-12">
-                          <table id="div-compare-detail" class="table table-striped table-bordered" style="width:100% !important;" cellspacing="0" ></table>
-                      </div>
-                 </div>
-                 <div class="row">
-                    <span id ='alter_sql' style="color:rgba(193,116,34,0.76)"></span>
-                 </div>
-             </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="div-compare-detail" class="table table-striped table-bordered"
+                               style="width:100% !important;" cellspacing="0"></table>
+                    </div>
+                </div>
+                <div class="row">
+                    <span id='alter_sql' style="color:rgba(193,116,34,0.76)"></span>
+                </div>
+            </div>
         </div>
-       </div>
-     </div>
+    </div>
+</div>
 
-      <!--比较详情[索引] -->
-      <div id="con-close-modal-cmp-detail-idx" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-templete">
+<!--比较详情[索引] -->
+<div id="con-close-modal-cmp-detail-idx" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-templete">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title"><span id='modal_title_idx'>比较详情[索引]</span></h4>
             </div>
             <div class="modal-body">
-                 <div class="row">
-                     <div class="col-md-12">
-                          <table id="div-compare-detail-idx" class="table table-striped table-bordered" style="width:100% !important;" cellspacing="0" ></table>
-                      </div>
-                 </div>
-                 <div class="row">
-                    <span id ='alter_sql-idx' style="color:rgba(193,116,34,0.76)"></span>
-                 </div>
-             </div>
-        </div>
-       </div>
-     </div>
-
-      <!--一键生成  -->
-      <div id="con-close-modal-all-statement" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-detail-all">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">一键生成</h4><br>
-                    <button  class="col-md-1 btn btn-sm text-left"  onclick="copy_all_statement()">复制</button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div id='ace-editor-all' class="col-md-12"></div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="div-compare-detail-idx" class="table table-striped table-bordered"
+                               style="width:100% !important;" cellspacing="0"></table>
                     </div>
                 </div>
+                <div class="row">
+                    <span id='alter_sql-idx' style="color:rgba(193,116,34,0.76)"></span>
+                </div>
             </div>
-      </div>
-   </div>
+        </div>
+    </div>
+</div>
 
-     <script>
+<!--一键生成  -->
+<div id="con-close-modal-all-statement" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail-all">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">一键生成</h4><br>
+                <button class="col-md-1 btn btn-sm text-left" onclick="copy_all_statement()">复制</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor-all' class="col-md-12"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        function format_sql(sql) {
-           var res='';
-           $.ajax({
-                type: 'post',
-                url: '/sql/_format',
-                async:false,
+<script>
+
+    function format_sql(sql) {
+        var res = '';
+        $.ajax({
+            type: 'post',
+            url: '/sql/_format',
+            async: false,
+            data: {
+                "sql": sql
+            },
+            success: function (dataSet) {
+                res = dataSet.message
+            },
+        })
+        return res
+    }
+
+    function show_info(p_row) {
+        db = p_row.split(',')[0]
+        tab = p_row.split(',')[1]
+        col = p_row.split(',')[2]
+        $('#alter_sql').text('')
+        $.ajax({
+            url: "/dbtools/_compare/detail",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                table: tab,
+                column: col,
+            },
+            success: function (dataSet) {
+                console.log(dataSet)
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-close-modal-cmp-detail').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+                $('#div-compare-detail').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: false,
+                    "autoWidth": false,
+                    iDisplayLength: 14,
+                    data: dataSet.message,
+                    columns: [
+                        {"title": "列属性"},
+                        {"title": "源值"},
+                        {"title": "目标值"},
+                        {"title": "结果"},
+                        {"title": "状态", "sClass": "hidden"},
+                        {"title": "语句", "sClass": "hidden"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 1,
+                            render: function (data, type, row) {
+                                return '<div class="dbubble-text">' + row[1] + '</div>'
+                            }
+                        },
+                        {
+                            targets: 2,
+                            render: function (data, type, row) {
+                                return '<div class="dbubble-text">' + row[2] + '</div>'
+                            }
+                        }
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+
+    }
+
+    function show_info_idx(p_row) {
+        db = p_row.split(',')[0]
+        tab = p_row.split(',')[1]
+        idx = p_row.split(',')[2]
+        $('#alter_sql-idx').text('')
+        $.ajax({
+            url: "/dbtools/_compare/detail/idx",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                table: tab,
+                index: idx,
+            },
+            success: function (dataSet) {
+                console.log(dataSet)
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-close-modal-cmp-detail-idx').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+                $('#div-compare-detail-idx').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: false,
+                    "autoWidth": false,
+                    iDisplayLength: 14,
+                    data: dataSet.message,
+                    columns: [
+                        {"title": "列属性"},
+                        {"title": "源值"},
+                        {"title": "目标值"},
+                        {"title": "结果"},
+                        {"title": "状态", "sClass": "hidden"},
+                        {"title": "语句", "sClass": "hidden"},
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 1,
+                            render: function (data, type, row) {
+                                return '<div class="dbubble-text">' + row[1] + '</div>'
+                            }
+                        },
+                        {
+                            targets: 2,
+                            render: function (data, type, row) {
+                                return '<div class="dbubble-text">' + row[2] + '</div>'
+                            }
+                        }
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+
+    }
+
+    function copyText(text, callback) {
+        var tag = document.createElement('input');
+        tag.setAttribute('id', 'cp_hgz_input');
+        tag.value = text;
+        document.getElementsByTagName('body')[0].appendChild(tag);
+        document.getElementById('cp_hgz_input').select();
+        document.execCommand('copy');
+        document.getElementById('cp_hgz_input').remove();
+        if (callback) {
+            callback()
+        }
+    }
+
+    function copy_statement(p_row) {
+        db = p_row.split(',')[0]
+        tab = p_row.split(',')[1]
+        col = p_row.split(',')[2]
+        $('#alter_sql').text('')
+        $.ajax({
+            url: "/dbtools/_compare/statement",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                table: tab,
+                column: col,
+            },
+            success: function (dataSet) {
+                let v = ''
+                for (i = 0; i < dataSet.message.length; i++) {
+                    v = v + dataSet.message[i] + '\n'
+                }
+                copyText(format_sql(v), function () {
+                    showtips('info', '', '复制成功!');
+                })
+            }
+        })
+    }
+
+    function copy_statement_idx(p_row) {
+        db = p_row.split(',')[0]
+        tab = p_row.split(',')[1]
+        idx = p_row.split(',')[2]
+        $('#alter_sql').text('')
+        $.ajax({
+            url: "/dbtools/_compare/statement/idx",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                table: tab,
+                index: idx,
+            },
+            success: function (dataSet) {
+                let v = ''
+                for (i = 0; i < dataSet.message.length; i++) {
+                    v = v + dataSet.message[i] + '\n'
+                }
+                console.log('v=', v)
+                copyText(v, function () {
+                    showtips('info', '', '复制成功!');
+                })
+            }
+        })
+    }
+
+    function copy_all_statement() {
+        var editor = ace.edit("ace-editor-all");
+        v_sql = editor.session.getValue()
+        console.log('v_sql=', v_sql)
+        copyText(format_sql(v_sql), function () {
+            showtips('info', '', '复制成功!');
+        })
+    }
+
+    function query_table() {
+        $.ajax({
+            url: "/dbtools/_compare",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                sour_tab: $('#sour_tab').val(),
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    bAutoWidth: true,
+                    iDisplayLength: 12,
+                    data: dataSet.message,
+                    columns: [
+                        {"title": "库名"},
+                        {"title": "表名"},
+                        {"title": "列名"},
+                        {"title": "可空"},
+                        {"title": "类型"},
+                        {"title": "默认值"},
+                        {"title": "字符集"},
+                        {"title": "校对集"},
+                        {"title": "主键"},
+                        {"title": "注释", "visible": false},
+                        {"title": "附加", "visible": false},
+                        {
+                            "title": "操作",
+                            "width": "25px",
+                            "render": function (data, type, row) {
+                                return '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="复制语句" onclick="copy_statement(\'' + row + '\');"/>' + '&nbsp;' +
+                                    '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info(\'' + row + '\');"/>' + '&nbsp;';
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+    }
+
+    function query_index() {
+        $.ajax({
+            url: "/dbtools/_compare/idx",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                sour_tab: $('#sour_tab').val(),
+            },
+            success: function (dataSet) {
+                $('#example2').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    bAutoWidth: true,
+                    iDisplayLength: 12,
+                    data: dataSet.message,
+                    columns: [
+                        {"title": "库名"},
+                        {"title": "表名"},
+                        {"title": "索引名"},
+                        {"title": "类型"},
+                        {"title": "是否唯一"},
+                        {"title": "列名"},
+                        {"title": "数据可空"},
+                        {
+                            "title": "操作",
+                            "width": "25px",
+                            "render": function (data, type, row) {
+                                return '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="复制语句" onclick="copy_statement_idx(\'' + row + '\');"/>' + '&nbsp;' +
+                                    '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info_idx(\'' + row + '\');"/>' + '&nbsp;';
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+    }
+
+    function gen_table() {
+        $.ajax({
+            url: "/dbtools/_compare/gen",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+                sour_tab: $('#sour_tab').val(),
+            },
+            success: function (dataSet) {
+                let v = ''
+                for (i = 0; i < dataSet.message.length; i++) {
+                    v = v + dataSet.message[i].statement + '\n'
+                }
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-close-modal-all-statement').modal({
+                    keyboard: false,
+                    backdrop: false
+                })
+                var editor = ace.edit("ace-editor-all");
+                editor.setValue('')
+                editor.insert(v)
+                editor.setReadOnly(true);
+            }
+        })
+    }
+
+    function check_valid() {
+        if ($('#sour_db_server').val() == '') {
+            swal("提示", "源实例不能为空!", "warning");
+            return false
+        }
+        if ($('#sour_schema').val() == '') {
+            swal("提示", "源库不能为空!", "warning");
+            return false
+        }
+        if ($('#desc_db_server').val() == '') {
+            swal("提示", "目标实例不能为空!", "warning");
+            return false
+        }
+        if ($('#desc_schema').val() == '') {
+            swal("提示", "目标库不能为空!", "warning");
+            return false
+        }
+
+        if ($('#login_name').val() != 'admin') {
+            if ($('#sour_tab').val() == '') {
+                swal("提示", "源表不能为空!", "warning");
+                return false
+            }
+        }
+
+        return true
+    }
+
+    $("#compare_btn").click(function () {
+        if (check_valid()) {
+            query_table()
+        }
+    });
+
+    $("#gen_btn").click(function () {
+        if (check_valid()) {
+            gen_table()
+        }
+    });
+
+    $('#sour_db_server').change(function () {
+        if ($('#sour_db_server').val() != '') {
+            $.ajax({
+                url: "/get_database",
+                type: "post",
+                datatype: "json",
+                async: false,
                 data: {
-                    "sql":sql
+                    dbid: $('#sour_db_server').val(),
                 },
                 success: function (dataSet) {
-                  res=dataSet.message
+                    $("#sour_schema").empty();
+                    $("#sour_schema").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#sour_schema").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                    // $("#sour_schema").selectpicker('refresh')
+                }
+            });
+        } else {
+            $("#sour_schema").empty();
+            $("#sour_schema").append("<option value=''>...</option>");
+        }
+    });
+
+    $('#sour_schema').change(function () {
+        if ($('#sour_schema').val() != '') {
+            $.ajax({
+                url: "/get_tables",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    db_name: $('#sour_schema').val(),
                 },
-            })
-            return res
-      }
+                success: function (dataSet) {
+                    $("#sour_tab").empty();
+                    $("#sour_tab").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#sour_tab").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
+        } else {
+            $("#sour_schema").empty();
+            $("#sour_schema").append("<option value=''>...</option>");
+        }
+    });
 
-        function show_info(p_row) {
-            db  = p_row.split(',')[0]
-            tab = p_row.split(',')[1]
-            col = p_row.split(',')[2]
-            $('#alter_sql').text('')
+    $('#desc_db_server').change(function () {
+        if ($('#desc_db_server').val() != '') {
             $.ajax({
-                  url: "/dbtools/_compare/detail",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      table         : tab,
-                      column        : col,
-                  },
-                  success: function (dataSet) {
-                      console.log(dataSet)
-                      $('.modal').on('show.bs.modal', centerModals);
-                      $(window).on('resize', centerModals);
-                      $('#con-close-modal-cmp-detail').modal({
-                           keyboard: false,
-                           backdrop:false
-                      });
-                      $('#div-compare-detail').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging      : false,
-                          "autoWidth" : false,
-                          iDisplayLength: 14,
-                          data: dataSet.message,
-                          columns: [
-                                { "title": "列属性"},
-                                { "title": "源值"},
-                                { "title": "目标值"},
-                                { "title": "结果"},
-                                { "title": "状态", "sClass":"hidden"},
-                                { "title": "语句", "sClass":"hidden"},
-                          ],
-                          columnDefs: [
-                              {
-                                     targets: 1,
-                                     render: function(data, type, row) {
-                                       return '<div class="dbubble-text">'+row[1]+'</div>'
-                                   }
-                              },
-                              {
-                                    targets: 2,
-                                    render: function(data, type, row) {
-                                       return '<div class="dbubble-text">'+row[2]+'</div>'
-                                   }
-                              }
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
-
+                url: "/get_database",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#desc_db_server').val(),
+                },
+                success: function (dataSet) {
+                    $("#desc_schema").empty();
+                    $("#desc_schema").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#desc_schema").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                    // $("#desc_schema").selectpicker('refresh')
+                }
+            });
+        } else {
+            $("#sour_schema").empty();
+            $("#sour_schema").append("<option value=''>...</option>");
         }
+    });
 
-        function show_info_idx(p_row) {
-            db  = p_row.split(',')[0]
-            tab = p_row.split(',')[1]
-            idx = p_row.split(',')[2]
-            $('#alter_sql-idx').text('')
-            $.ajax({
-                  url: "/dbtools/_compare/detail/idx",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      table         : tab,
-                      index         : idx,
-                  },
-                  success: function (dataSet) {
-                      console.log(dataSet)
-                      $('.modal').on('show.bs.modal', centerModals);
-                      $(window).on('resize', centerModals);
-                      $('#con-close-modal-cmp-detail-idx').modal({
-                           keyboard: false,
-                           backdrop:false
-                      });
-                      $('#div-compare-detail-idx').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging      : false,
-                          "autoWidth" : false,
-                          iDisplayLength: 14,
-                          data: dataSet.message,
-                          columns: [
-                                { "title": "列属性"},
-                                { "title": "源值"},
-                                { "title": "目标值"},
-                                { "title": "结果"},
-                                { "title": "状态", "sClass":"hidden"},
-                                { "title": "语句", "sClass":"hidden"},
-                          ],
-                          columnDefs: [
-                              {
-                                     targets: 1,
-                                     render: function(data, type, row) {
-                                       return '<div class="dbubble-text">'+row[1]+'</div>'
-                                   }
-                              },
-                              {
-                                    targets: 2,
-                                    render: function(data, type, row) {
-                                       return '<div class="dbubble-text">'+row[2]+'</div>'
-                                   }
-                              }
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
+    $("#div-compare-detail").on("click", "tr", function () {
+        var table = $("#div-compare-detail").DataTable();
+        var data = table.row(this).data();
+        $('#alter_sql').text(data[4])
+    })
 
-        }
+    $("#div-compare-detail-idx").on("click", "tr", function () {
+        var table = $("#div-compare-detail-idx").DataTable();
+        var data = table.row(this).data();
+        $('#alter_sql-idx').text(data[4])
+    })
 
-		function copyText(text, callback){
-            var tag = document.createElement('input');
-            tag.setAttribute('id', 'cp_hgz_input');
-            tag.value = text;
-            document.getElementsByTagName('body')[0].appendChild(tag);
-            document.getElementById('cp_hgz_input').select();
-            document.execCommand('copy');
-            document.getElementById('cp_hgz_input').remove();
-            if(callback) {callback()}
-		}
+    $(document).ready(function () {
+        var editor = ace.edit("ace-editor-all");
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/sql");
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(16);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setReadOnly(true);
 
-        function copy_statement(p_row) {
-            db  = p_row.split(',')[0]
-            tab = p_row.split(',')[1]
-            col = p_row.split(',')[2]
-            $('#alter_sql').text('')
-            $.ajax({
-                  url: "/dbtools/_compare/statement",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      table         : tab,
-                      column        : col,
-                  },
-                  success: function (dataSet) {
-                     let v=''
-                     for(i=0;i<dataSet.message.length;i++) {
-                          v=v+dataSet.message[i]+'\n'
-                     }
-                     copyText(format_sql(v) , function ()
-                      { showtips('info','','复制成功!');})
-                  }
-              })
-        }
-
-        function copy_statement_idx(p_row) {
-            db  = p_row.split(',')[0]
-            tab = p_row.split(',')[1]
-            idx = p_row.split(',')[2]
-            $('#alter_sql').text('')
-            $.ajax({
-                  url: "/dbtools/_compare/statement/idx",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      table         : tab,
-                      index         : idx,
-                  },
-                  success: function (dataSet) {
-                     let v=''
-                     for(i=0;i<dataSet.message.length;i++) {
-                          v=v+dataSet.message[i]+'\n'
-                     }
-                     console.log('v=',v)
-                     copyText(v , function ()
-                      { showtips('info','','复制成功!');})
-                  }
-              })
-        }
-
-        function copy_all_statement() {
-            var editor = ace.edit("ace-editor-all");
-             v_sql=editor.session.getValue()
-             console.log('v_sql=',v_sql)
-             copyText(format_sql(v_sql) , function (){
-                 showtips('info','','复制成功!');
-             })
-        }
-
-        function query_table() {
-            $.ajax({
-                  url: "/dbtools/_compare",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      sour_tab      : $('#sour_tab').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     : true,
-                          bAutoWidth : true,
-                          iDisplayLength: 12,
-                          data: dataSet.message,
-                          columns: [
-                            { "title": "库名"},
-                            { "title": "表名" },
-                            { "title": "列名"},
-                            { "title": "可空" },
-                            { "title": "类型" },
-                            { "title": "默认值" },
-                            { "title": "字符集" },
-                            { "title": "校对集" },
-                            { "title": "主键" },
-                            { "title": "注释" ,"visible":false},
-                            { "title": "附加","visible":false },
-                            {
-                            "title":"操作",
-                            "width": "25px",
-                            "render": function(data,type,row)
-                                {
-                                    return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="复制语句" onclick="copy_statement(\''+row+'\');"/>' +'&nbsp;'+
-                                          '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info(\''+row+'\');"/>' +'&nbsp;';
-                                }
-                            },
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
-        }
-
-        function query_index() {
-             $.ajax({
-                  url: "/dbtools/_compare/idx",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      sour_tab      : $('#sour_tab').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example2').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     : true,
-                          bAutoWidth : true,
-                          iDisplayLength: 12,
-                          data: dataSet.message,
-                          columns: [
-                            { "title": "库名"},
-                            { "title": "表名" },
-                            { "title": "索引名"},
-                            { "title": "类型" },
-                            { "title": "是否唯一" },
-                            { "title": "列名" },
-                            { "title": "数据可空" },
-                            {
-                            "title":"操作",
-                            "width": "25px",
-                            "render": function(data,type,row)
-                                {
-                                   return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="复制语句" onclick="copy_statement_idx(\''+row+'\');"/>' +'&nbsp;'+
-                                          '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_info_idx(\''+row+'\');"/>' +'&nbsp;';
-                                }
-                            },
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
-        }
-
-        function gen_table(){
-            $.ajax({
-                  url: "/dbtools/_compare/gen",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                      sour_tab      : $('#sour_tab').val(),
-                  },
-                  success: function (dataSet) {
-                      let v=''
-                      for(i=0;i<dataSet.message.length;i++) {
-                          v = v+dataSet.message[i].statement+'\n'
-                      }
-                      $('.modal').on('show.bs.modal', centerModals);
-                      $(window).on('resize', centerModals);
-                      $('#con-close-modal-all-statement').modal({
-                          keyboard: false,
-                          backdrop:false
-                     })
-                    var editor = ace.edit("ace-editor-all");
-                    editor.setValue('')
-                    editor.insert(v)
-                    editor.setReadOnly(true);
-                  }
-              })
-        }
-
-        function check_valid() {
-            if ($('#sour_db_server').val() == '') {
-                swal("提示", "源实例不能为空!", "warning");
-                return false
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            var activeTab = $(e.target).text();
+            var previousTab = $(e.relatedTarget).text();
+            console.log(activeTab, previousTab)
+            if (activeTab == '表') {
+                query_table()
             }
-            if ($('#sour_schema').val() == '') {
-                swal("提示", "源库不能为空!", "warning");
-                return false
+            if (activeTab == '索引') {
+                query_index()
             }
-            if ($('#desc_db_server').val() == '') {
-                swal("提示", "目标实例不能为空!", "warning");
-                return false
-            }
-            if ($('#desc_schema').val() == '') {
-                swal("提示", "目标库不能为空!", "warning");
-                return false
-            }
-
-            if ($('#login_name').val() != 'admin' ) {
-                  if ($('#sour_tab').val() == '') {
-                    swal("提示", "源表不能为空!", "warning");
-                    return false
-                  }
-            }
-
-            return true
-        }
-
-        $("#compare_btn").click(function() {
-            if (check_valid()) {
-                 query_table()
-            }
-         });
-
-        $("#gen_btn").click(function() {
-            if (check_valid()) {
-                 gen_table()
-            }
-         });
-
-        $('#sour_db_server').change(function() {
-            if ($('#sour_db_server').val()!='') {
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#sour_db_server').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#sour_schema").empty();
-                         $("#sour_schema").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#sour_schema").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                         // $("#sour_schema").selectpicker('refresh')
-                      }
-                });
-            } else {
-                $("#sour_schema").empty();
-                $("#sour_schema").append("<option value=''>...</option>");
-            }
-        });
-
-        $('#sour_schema').change(function() {
-            if ($('#sour_schema').val()!='') {
-                $.ajax({
-                      url: "/get_tables",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#sour_db_server').val(),
-                          db_name : $('#sour_schema').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#sour_tab").empty();
-                         $("#sour_tab").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#sour_tab").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-            } else {
-                $("#sour_schema").empty();
-                $("#sour_schema").append("<option value=''>...</option>");
-            }
-        });
-
-        $('#desc_db_server').change(function() {
-            if ($('#desc_db_server').val()!='') {
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#desc_db_server').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#desc_schema").empty();
-                         $("#desc_schema").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#desc_schema").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                         // $("#desc_schema").selectpicker('refresh')
-                      }
-                });
-            } else {
-                $("#sour_schema").empty();
-                $("#sour_schema").append("<option value=''>...</option>");
-            }
-        });
-
-        $("#div-compare-detail").on("click","tr",function(){
-            var table=$("#div-compare-detail").DataTable();
-            var data=table.row(this).data();
-            $('#alter_sql').text(data[4])
         })
 
-        $("#div-compare-detail-idx").on("click","tr",function(){
-            var table=$("#div-compare-detail-idx").DataTable();
-            var data=table.row(this).data();
-            $('#alter_sql-idx').text(data[4])
-        })
+    });
 
-        $(document).ready(function() {
-              var editor = ace.edit("ace-editor-all");
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/sql");
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(16);
-              editor.getSession().setUseSoftTabs(true);
-              editor.setReadOnly(true);
-
-              $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-                    var activeTab = $(e.target).text();
-                    var previousTab = $(e.relatedTarget).text();
-                    console.log(activeTab, previousTab)
-                    if (activeTab == '表') {
-                         query_table()
-                    }
-                    if (activeTab == '索引') {
-                        query_index()
-                    }
-              })
-
-       });
-
-   </script>
+</script>
 </body>
 
 </html>

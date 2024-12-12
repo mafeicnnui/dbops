@@ -5,16 +5,19 @@
 # @File : mysql_async.py.py
 # @Software: PyCharm
 
+import datetime
 import json
 import logging
 import re
-import datetime
-from  aiomysql import create_pool,DictCursor
+
+from aiomysql import create_pool, DictCursor
+
 
 def read_json(file):
     with open(file, 'r') as f:
-         cfg = json.loads(f.read())
+        cfg = json.loads(f.read())
     return cfg
+
 
 def capital_to_lower(dict_info):
     new_dict = {}
@@ -25,6 +28,7 @@ def capital_to_lower(dict_info):
             new_dict[i.lower()] = j
     return new_dict
 
+
 def datetime2str(dict_info):
     new_dict = {}
     for i, j in dict_info.items():
@@ -32,10 +36,11 @@ def datetime2str(dict_info):
             new_dict[i] = ''
         else:
             if isinstance(j, datetime.datetime):
-               new_dict[i] = str(j)
+                new_dict[i] = str(j)
             else:
-               new_dict[i] = j
+                new_dict[i] = j
     return new_dict
+
 
 db = read_json('./config/config.json')
 
@@ -113,10 +118,10 @@ class async_processer:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
                     await cur.execute(p_sql)
-                    id =  conn.insert_id()
+                    id = conn.insert_id()
         return id
 
-    async def exec_sql_by_ds(p_ds,p_sql):
+    async def exec_sql_by_ds(p_ds, p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']), user=p_ds['user'], password=p_ds['password'],
                                db=p_ds['service'], autocommit=True) as pool:
             async with pool.acquire() as conn:
@@ -146,19 +151,19 @@ class async_processer:
         return binlog_file, start_position, stop_position
 
     # match execute
-    async def exec_sql_by_ds_multi(p_ds,p_sql):
+    async def exec_sql_by_ds_multi(p_ds, p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
                                user=p_ds['user'], password=p_ds['password'],
                                db=p_ds['service'], autocommit=True) as pool:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
-                  #await cur.fetchone()
-                  for st in reReplace(p_sql):
-                       print('>>>>>>>>>>>>>>>>>:::',st)
-                       await cur.execute(st)
+                    # await cur.fetchone()
+                    for st in reReplace(p_sql):
+                        print('>>>>>>>>>>>>>>>>>:::', st)
+                        await cur.execute(st)
                 await conn.commit()
 
-    async def exec_sql_by_ds_multi_new(p_ds,p_sql):
+    async def exec_sql_by_ds_multi_new(p_ds, p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
                                user=p_ds['user'], password=p_ds['password'],
                                db=p_ds['service'], autocommit=False) as pool:
@@ -172,7 +177,7 @@ class async_processer:
                     binlog_file, start_position = (await cur.fetchone())[0:2]
                     await cur.execute('UNLOCK TABLES')
                     for st in reReplace(p_sql):
-                       await cur.execute(st)
+                        await cur.execute(st)
                     await cur.execute('FLUSH /*!40101 LOCAL */ TABLES')
                     await cur.execute('FLUSH TABLES WITH READ LOCK')
                     await cur.execute('show master status')
@@ -183,13 +188,13 @@ class async_processer:
 
         # match execute
 
-    async def exec_sql_by_ds_batch(p_ds, p_sql,p_data):
+    async def exec_sql_by_ds_batch(p_ds, p_sql, p_data):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']),
                                user=p_ds['user'], password=p_ds['password'],
                                db=p_ds['service'], autocommit=True) as pool:
             async with pool.acquire() as conn:
                 async with conn.cursor() as cur:
-                     await cur.executemany(p_sql,p_data)
+                    await cur.executemany(p_sql, p_data)
                 await conn.commit()
 
     async def query_dict_list(p_sql):
@@ -224,9 +229,9 @@ class async_processer:
                     await cur.execute(p_sql)
                     rs = await cur.fetchone()
         if rs is not None:
-           return capital_to_lower(rs)
+            return capital_to_lower(rs)
         else:
-           return None
+            return None
 
     async def query_dict_one2(p_sql):
         async with create_pool(host=db['db_ip'], port=int(db['db_port']), user=db['db_user'], password=db['db_pass'],
@@ -240,7 +245,7 @@ class async_processer:
         else:
             return None
 
-    async def query_dict_one_by_ds(p_ds,p_sql):
+    async def query_dict_one_by_ds(p_ds, p_sql):
         async with create_pool(host=p_ds['ip'], port=int(p_ds['port']), user=p_ds['user'], password=p_ds['password'],
                                db=p_ds['service'], autocommit=True) as pool:
             async with pool.acquire() as conn:
@@ -249,39 +254,42 @@ class async_processer:
                     rs = await cur.fetchone()
         return capital_to_lower(rs)
 
+
 def preProcesses(matched):
     value = matched.group(0)
-    return value.replace(';','^^^')
+    return value.replace(';', '^^^')
+
 
 def preProcesses2(matched):
     value = matched.group(0)
-    return value.replace(';',',')
+    return value.replace(';', ',')
+
 
 def reReplace(p_sql):
-    p_sql_pre=p_sql
+    p_sql_pre = p_sql
     pattern1 = re.compile(r'(COMMENT\s+\'[^\']*;[^\']*\')')
     if pattern1.findall(p_sql) != []:
-       logging.info('一: 将comment中的;替换为^^^ ...')
-       p_sql_pre = re.sub(pattern1,preProcesses,p_sql)
-       logging.info(('1:',str(p_sql_pre)))
+        logging.info('一: 将comment中的;替换为^^^ ...')
+        p_sql_pre = re.sub(pattern1, preProcesses, p_sql)
+        logging.info(('1:', str(p_sql_pre)))
 
     pattern2 = re.compile(r'(\s*\)\s*;\s*)')
-    if pattern2.findall(p_sql_pre)!=[]:
-       logging.info('二: 将);替换为)$$$ ...')
-       p_sql_pre = re.sub(pattern2, ')$$$', p_sql_pre)
-       logging.info(('2:', str(p_sql_pre)))
+    if pattern2.findall(p_sql_pre) != []:
+        logging.info('二: 将);替换为)$$$ ...')
+        p_sql_pre = re.sub(pattern2, ')$$$', p_sql_pre)
+        logging.info(('2:', str(p_sql_pre)))
 
     pattern3 = re.compile(r'(\s*\'\s*;\s*)')
     if pattern3.findall(p_sql_pre) != []:
-       logging.info('三: 将\';替换为\'$$$ ...')
-       p_sql_pre = re.sub(pattern3, "'$$$", p_sql_pre)
-       logging.info(('3:', str(p_sql_pre)))
+        logging.info('三: 将\';替换为\'$$$ ...')
+        p_sql_pre = re.sub(pattern3, "'$$$", p_sql_pre)
+        logging.info(('3:', str(p_sql_pre)))
 
     pattern4 = re.compile(r'(comment\s*\'.*;.*\')')
     if pattern4.findall(p_sql_pre) != []:
-       logging.info('四: 将comment中的;替换为, ...')
-       p_sql_pre = re.sub(pattern4, preProcesses2, p_sql_pre)
-       logging.info(('4:', str(p_sql_pre)))
+        logging.info('四: 将comment中的;替换为, ...')
+        p_sql_pre = re.sub(pattern4, preProcesses2, p_sql_pre)
+        logging.info(('4:', str(p_sql_pre)))
 
     pattern5 = re.compile(r'(\s*;\s*)')
     if pattern5.findall(p_sql_pre) != []:
@@ -290,7 +298,7 @@ def reReplace(p_sql):
         logging.info(('5:', str(p_sql_pre)))
 
     logging.info('六: 通过$$$将p_sql_pre处理为列表...')
-    p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i!='\n')]
+    p_sql_pre = [i for i in p_sql_pre.split('$$$') if (i != '' and i != '\n')]
     logging.info(('6=', str(p_sql_pre)))
     logging.info(('6-len=', len(p_sql_pre)))
 
@@ -300,6 +308,6 @@ def reReplace(p_sql):
     logging.info(('7-len=', len(p_sql_pre)))
 
     if len(p_sql_pre) == 1:
-       return [p_sql]
+        return [p_sql]
     else:
-       return  p_sql_pre
+        return p_sql_pre

@@ -4,1163 +4,1216 @@
     <meta charset="utf-8">
     <title>数据库用户查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
-        #add_sys_privs,#add_user_privs {
+
+        #add_sys_privs, #add_user_privs {
             height: 100px;
             max-height: 100px;
         }
-       .modal-lg {
-        width:50%;
-        height:65%;
-        margin-left:400px;
-        margin-top:80px;
+
+        .modal-lg {
+            width: 50%;
+            height: 65%;
+            margin-left: 400px;
+            margin-top: 80px;
         }
 
-       .modal-lg-detail {
-        width:40%;
-        height:65%;
-        margin-left:400px;
-        margin-top:80px;
+        .modal-lg-detail {
+            width: 40%;
+            height: 65%;
+            margin-left: 400px;
+            margin-top: 80px;
         }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-       <div class="row">
-           <div class="col-md-3">
-               <div class="input-group">
-                    <span class="input-group-addon"><i class="mdi mdi-server"></i></span>
-                    <input type="text" id="user_name" class="form-control" placeholder="请输入用户名">
-                </div>
-           </div>
-           <div class="col-md-3">
-               <div class="input-group">
-                 <span class="input-group-addon">数据库环境</span>
-                 <select class="form-control select" id="inst_env" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_env_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                 </select>
-               </div>
-           </div>
-           <div class="col-md-3">
-               <div class="input-group">
-                 <span class="input-group-addon">数据库实例</span>
-                 <select class="form-control select" id="inst_name" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_inst_names %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                 </select>
-               </div>
-           </div>
-           <div class="col-md-1">
-               <div class="input-group">
-                   <span class="input-group-btn">
-                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
-                    </span>
-                </div>
-           </div>
+<p></p>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="mdi mdi-server"></i></span>
+                <input type="text" id="user_name" class="form-control" placeholder="请输入用户名">
+            </div>
         </div>
-     </div>
-    <p></p>
-    <div id="div-tab">
-       <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">数据库环境</span>
+                <select class="form-control select" id="inst_env">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_env_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">数据库实例</span>
+                <select class="form-control select" id="inst_name">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_inst_names %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group">
+                   <span class="input-group-btn">
+                       <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                               class="fa fa-search"></i></button>
+                    </span>
+            </div>
+        </div>
     </div>
-    <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-       <input  id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
-    </div>
+</div>
+<p></p>
+<div id="div-tab">
+    <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"
+           height="100%"></table>
+</div>
+<div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+    <input id='add-btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
+</div>
 
-   <!--新增用户窗口 -->
-   <div id="con-modal-inst-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg">
+<!--新增用户窗口 -->
+<div id="con-modal-inst-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">新增用户</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-2 control-label" ><span id="s_add_inst_id">*</span>选择实例：</label>
-                            </div>
-                            <div class="col-md-10" >
-                                <select class="form-control select" id="add_inst_id">
-                                    <option value='' selected = "selected">...</option>
-                                     {% for var in dm_inst_list %}
-                                        <option value={{var[0]}}>{{var[1]}}</option>
-                                     {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label" ><span id="s_add_desc">*</span>用户描述：</label>
-                            </div>
-                            <div class="col-md-10" >
-                                <input id='add_desc' type="text" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_add_db_user">*</span>用户名称：</label>
-                            </div>
-                            <div class="col-md-10">
-                               <input type="text" id="add_db_user"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_add_db_pass">*</span>用户密码：</label>
-                            </div>
-                            <div class="col-md-10">
-                               <input type="password" id="add_db_pass"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label" ><span id="s_add_status">*</span>用户状态：</label>
-                            </div>
-                            <div class="col-md-10" >
-                                 <select class="form-control select" id="add_status">
-                                    <option value='' selected = "selected">...</option>
-                                     {% for var in dm_user_status %}
-                                        <option value={{var[0]}}>{{var[1]}}</option>
-                                     {% end %}
-                                 </select>
-                           </div>
-                       </div>
-                       <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">系统数据库：</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select multiple="multiple" class="form-control" id="add_sys_dbs" >
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                         <div class="col-md-12">
-                           <div class="form-group m-b-0">
-                                <div class="col-sm-offset-6 col-sm-9">
-                                    <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"   onclick=selectSysdbAll()><i class="ion-arrow-down-a"></i></button>
-                                    <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"   onclick=cancelSysdbAll()><i class="ion-arrow-up-a"></i></button>
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_add_inst_id">*</span>选择实例：</label>
                                 </div>
-                           </div>
-                          </div>
-                     </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_add_user_dbs">*</span>用户数据库：</label>
-                            </div>
-                            <div class="col-md-10">
-                                <select multiple="multiple" class="form-control" id="add_user_dbs" >
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">系统权限：</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select multiple="multiple" class="form-control" id="add_sys_privs" >
-                                    {% for var in mysql_sys_privs %}
-                                       <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                         <div class="col-md-12">
-                           <div class="form-group m-b-0">
-                                <div class="col-sm-offset-6 col-sm-9">
-                                    <button type="button" id='ion-arrow-down2' class="btn btn-xs waves-effect waves-light"   onclick=selectSysPrivAll()><i class="ion-arrow-down-a"></i></button>
-                                    <button type="button" id='ion-arrow-up2' class="btn btn-xs waves-effect waves-light"   onclick=cancelSysPrivAll()><i class="ion-arrow-up-a"></i></button>
+                                <div class="col-md-10">
+                                    <select class="form-control select" id="add_inst_id">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in dm_inst_list %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
                                 </div>
-                           </div>
-                          </div>
-                     </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_add_user_privs">*</span>用户权限：</label>
                             </div>
-                            <div class="col-md-10">
-                                <select multiple="multiple" class="form-control" id="add_user_privs" >
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">创建语句：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_add_desc">*</span>用户描述：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id='add_desc' type="text" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                <textarea class="form-control" readonly rows="3" style="min-width: 90%" id="add_statement"></textarea>
-                           </div>
-                      </div>
-                   </form>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_add_db_user">*</span>用户名称：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" id="add_db_user" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_add_db_pass">*</span>用户密码：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="password" id="add_db_pass" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_add_status">*</span>用户状态：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="form-control select" id="add_status">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in dm_user_status %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">系统数据库：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="add_sys_dbs">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-group m-b-0">
+                                        <div class="col-sm-offset-6 col-sm-9">
+                                            <button type="button" id='ion-arrow-down'
+                                                    class="btn btn-xs waves-effect waves-light"
+                                                    onclick=selectSysdbAll()><i class="ion-arrow-down-a"></i></button>
+                                            <button type="button" id='ion-arrow-up'
+                                                    class="btn btn-xs waves-effect waves-light"
+                                                    onclick=cancelSysdbAll()><i class="ion-arrow-up-a"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_add_user_dbs">*</span>用户数据库：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="add_user_dbs">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">系统权限：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="add_sys_privs">
+                                        {% for var in mysql_sys_privs %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-group m-b-0">
+                                        <div class="col-sm-offset-6 col-sm-9">
+                                            <button type="button" id='ion-arrow-down2'
+                                                    class="btn btn-xs waves-effect waves-light"
+                                                    onclick=selectSysPrivAll()><i class="ion-arrow-down-a"></i></button>
+                                            <button type="button" id='ion-arrow-up2'
+                                                    class="btn btn-xs waves-effect waves-light"
+                                                    onclick=cancelSysPrivAll()><i class="ion-arrow-up-a"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_add_user_privs">*</span>用户权限：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="add_user_privs">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">创建语句：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <textarea class="form-control" readonly rows="3" style="min-width: 90%"
+                                              id="add_statement"></textarea>
+                                </div>
+                            </div>
+                        </form>
 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="user_save_btn">
+                            保存
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
             </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="user_save_btn" >保存</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
-               </div>
-            </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-   <!--用户详情窗口 -->
-   <div id="con-modal-inst-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-detail">
+<!--用户详情窗口 -->
+<div id="con-modal-inst-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">用户详情</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-2 control-label" >选择实例：</label>
-                            </div>
-                            <div class="col-md-9" >
-                                <select class="form-control select" disabled id="query_inst_id">
-                                    <option value='' selected = "selected">...</option>
-                                     {% for var in dm_inst_list %}
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">选择实例：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" disabled id="query_inst_id">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in dm_inst_list %}
                                         <option value={{var[0]}}>{{var[1]}}</option>
-                                     {% end %}
-                                </select>
-                           </div>
-                           <div>
-                                <label class="col-md-1 control-label" ></label>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label" >用户描述：</label>
+                                        {% end %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input id='query_desc' type="text" readonly class="form-control">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">用户描述：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id='query_desc' type="text" readonly class="form-control">
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
-                            <div>
-                                <label class="col-md-1 control-label" ></label>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">用户名称：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">用户名称：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="query_db_user" readonly class="form-control">
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="query_db_user"  readonly class="form-control">
-                           </div>
-                           <div>
-                                <label class="col-md-1 control-label" ></label>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">用户密码：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">用户密码：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" readonly id="query_db_pass">
+                                </div>
+                                <div class="">
+                                    <span class="col-md-1 btn btn-sm text-left" id="copybtn"
+                                          onclick="copy_pass('#copybtn')" data-clipboard-action="copy"
+                                          data-clipboard-target="#query_db_pass">复制</span>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="password" class="form-control" readonly id="query_db_pass" >
-                           </div>
-                           <div class="">
-                               <span  class="col-md-1 btn btn-sm text-left" id="copybtn" onclick="copy_pass('#copybtn')"  data-clipboard-action="copy" data-clipboard-target="#query_db_pass">复制</span>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label" >用户状态：</label>
-                            </div>
-                            <div class="col-md-9" >
-                                 <select class="form-control select" disabled id="query_status">
-                                    <option value='' selected = "selected">...</option>
-                                     {% for var in dm_user_status %}
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">用户状态：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" disabled id="query_status">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in dm_user_status %}
                                         <option value={{var[0]}}>{{var[1]}}</option>
-                                     {% end %}
-                                 </select>
-                           </div>
-                           <div>
-                                <label class="col-md-1 control-label" ></label>
-                           </div>
-                      </div>
-                       <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">用户数据库：</label>
+                                        {% end %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <select multiple="multiple" readonly class="form-control" id="query_user_dbs" >
-                                </select>
-                           </div>
-                            <div>
-                                <label class="col-md-1 control-label" ></label>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">用户权限：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">用户数据库：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select multiple="multiple" readonly class="form-control" id="query_user_dbs">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <select multiple="multiple" readonly class="form-control" id="query_user_privs" >
-                                </select>
-                           </div>
-                           <div>
-                                <label class="col-md-1 control-label" ></label>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">创建语句：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">用户权限：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select multiple="multiple" readonly class="form-control" id="query_user_privs">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                                <textarea class="form-control" readonly rows="6" style="min-width: 90%" id="query_statement"></textarea>
-                           </div>
-                           <div>
-                                <span  class="col-md-1 btn btn-sm text-left" id="copybtn2" onclick="copy('#copybtn2')"  data-clipboard-action="copy" data-clipboard-target="#query_statement">复制</span>
-                           </div>
-                      </div>
-                   </form>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">创建语句：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" readonly rows="6" style="min-width: 90%"
+                                              id="query_statement"></textarea>
+                                </div>
+                                <div>
+                                    <span class="col-md-1 btn btn-sm text-left" id="copybtn2"
+                                          onclick="copy('#copybtn2')" data-clipboard-action="copy"
+                                          data-clipboard-target="#query_statement">复制</span>
+                                </div>
+                            </div>
+                        </form>
 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
             </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
-               </div>
-            </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-   <!--用户变更窗口 -->
-   <div id="con-modal-inst-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg">
+<!--用户变更窗口 -->
+<div id="con-modal-inst-upd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">用户变更</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-2 control-label" ><span id="s_upd_inst_id">*</span>选择实例：</label>
-                            </div>
-                            <div class="col-md-10" >
-                                <select class="form-control select" id="upd_inst_id">
-                                    <option value='' selected = "selected">...</option>
-                                     {% for var in dm_inst_list %}
-                                        <option value={{var[0]}}>{{var[1]}}</option>
-                                     {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label" ><span id="s_upd_desc">*</span>用户描述：</label>
-                            </div>
-                            <div class="col-md-10" >
-                                <input id='upd_desc' type="text" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_upd_db_user">*</span>用户名称：</label>
-                            </div>
-                            <div class="col-md-10">
-                               <input type="text" id="upd_db_user"  class="form-control">
-                               <input type="hidden" id="upd_db_user_id"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_upd_db_pass">*</span>用户密码：</label>
-                            </div>
-                            <div class="col-md-10">
-                               <input type="password" id="upd_db_pass"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <label class="col-md-2 control-label" ><span id="s_upd_status">*</span>用户状态：</label>
-                            </div>
-                            <div class="col-md-10" >
-                                 <select class="form-control select" id="upd_status">
-                                    <option value='' selected = "selected">...</option>
-                                     {% for var in dm_user_status %}
-                                        <option value={{var[0]}}>{{var[1]}}</option>
-                                     {% end %}
-                                 </select>
-                           </div>
-                       </div>
-                       <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">系统数据库：</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select multiple="multiple" class="form-control" id="upd_sys_dbs" >
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                         <div class="col-md-12">
-                           <div class="form-group m-b-0">
-                                <div class="col-sm-offset-6 col-sm-9">
-                                    <button type="button"  class="btn btn-xs waves-effect waves-light"  onclick=selectSysdbAll_Upd()><i class="ion-arrow-down-a"></i></button>
-                                    <button type="button"  class="btn btn-xs waves-effect waves-light"  onclick=cancelSysdbAll_Upd()><i class="ion-arrow-up-a"></i></button>
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_upd_inst_id">*</span>选择实例：</label>
                                 </div>
-                           </div>
-                          </div>
-                     </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_upd_user_dbs">*</span>用户数据库：</label>
-                            </div>
-                            <div class="col-md-10">
-                                <select multiple="multiple" class="form-control" id="upd_user_dbs" >
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">系统权限：</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select multiple="multiple" class="form-control" id="upd_sys_privs" >
-                                    {% for var in mysql_sys_privs %}
-                                       <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                         <div class="col-md-12">
-                           <div class="form-group m-b-0">
-                                <div class="col-sm-offset-6 col-sm-9">
-                                    <button type="button"  class="btn btn-xs waves-effect waves-light"   onclick=selectSysPrivAll_Upd()><i class="ion-arrow-down-a"></i></button>
-                                    <button type="button"  class="btn btn-xs waves-effect waves-light"   onclick=cancelSysPrivAll_Upd()><i class="ion-arrow-up-a"></i></button>
+                                <div class="col-md-10">
+                                    <select class="form-control select" id="upd_inst_id">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in dm_inst_list %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
                                 </div>
-                           </div>
-                          </div>
-                     </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label"><span id="s_upd_user_privs">*</span>用户权限：</label>
                             </div>
-                            <div class="col-md-10">
-                                <select multiple="multiple" class="form-control" id="upd_user_privs" >
-                                </select>
-                           </div>
-                      </div>
-                      <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">创建语句：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_upd_desc">*</span>用户描述：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input id='upd_desc' type="text" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                <textarea class="form-control"  readonly rows="4" style="min-width: 90%" id="upd_statement"></textarea>
-                           </div>
-                      </div>
-                   </form>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_upd_db_user">*</span>用户名称：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" id="upd_db_user" class="form-control">
+                                    <input type="hidden" id="upd_db_user_id" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_upd_db_pass">*</span>用户密码：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="password" id="upd_db_pass" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span
+                                            id="s_upd_status">*</span>用户状态：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="form-control select" id="upd_status">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in dm_user_status %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">系统数据库：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="upd_sys_dbs">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-group m-b-0">
+                                        <div class="col-sm-offset-6 col-sm-9">
+                                            <button type="button" class="btn btn-xs waves-effect waves-light"
+                                                    onclick=selectSysdbAll_Upd()><i class="ion-arrow-down-a"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-xs waves-effect waves-light"
+                                                    onclick=cancelSysdbAll_Upd()><i class="ion-arrow-up-a"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_user_dbs">*</span>用户数据库：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="upd_user_dbs">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">系统权限：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="upd_sys_privs">
+                                        {% for var in mysql_sys_privs %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-group m-b-0">
+                                        <div class="col-sm-offset-6 col-sm-9">
+                                            <button type="button" class="btn btn-xs waves-effect waves-light"
+                                                    onclick=selectSysPrivAll_Upd()><i class="ion-arrow-down-a"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-xs waves-effect waves-light"
+                                                    onclick=cancelSysPrivAll_Upd()><i class="ion-arrow-up-a"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label"><span id="s_upd_user_privs">*</span>用户权限：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select multiple="multiple" class="form-control" id="upd_user_privs">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">创建语句：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <textarea class="form-control" readonly rows="4" style="min-width: 90%"
+                                              id="upd_statement"></textarea>
+                                </div>
+                            </div>
+                        </form>
 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="user_upd_btn">
+                            更新
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
             </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="user_upd_btn" >更新</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
-               </div>
-            </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-   <script>
+<script>
 
 
-        function init_user(){
-             $('#add_inst_id').val('')
-             $('#add_db_user').val('')
-             $('#add_db_pass').val('')
-             $('#add_status').val('')
-             $('#s_add_desc').val('')
-        }
+    function init_user() {
+        $('#add_inst_id').val('')
+        $('#add_db_user').val('')
+        $('#add_db_pass').val('')
+        $('#add_status').val('')
+        $('#s_add_desc').val('')
+    }
 
-        function showDetail_win(p_user_id){
-            $.ajax({
-                  url: "/db/user/query/id",
-                  type: "post",
-                  datatype: "json",
-                  data: {
-                      user_id  :p_user_id
-                  },
-                  success: function (instObj) {
-                        $('#query_inst_id').val(instObj['inst_id'])
-                        $('#query_desc').val(instObj['description'])
-                        $('#query_db_user').val(instObj['db_user'])
-                        $('#query_db_pass').val(instObj['db_pass'])
-                        $('#query_status').val(instObj['status'])
+    function showDetail_win(p_user_id) {
+        $.ajax({
+            url: "/db/user/query/id",
+            type: "post",
+            datatype: "json",
+            data: {
+                user_id: p_user_id
+            },
+            success: function (instObj) {
+                $('#query_inst_id').val(instObj['inst_id'])
+                $('#query_desc').val(instObj['description'])
+                $('#query_db_user').val(instObj['db_user'])
+                $('#query_db_pass').val(instObj['db_pass'])
+                $('#query_status').val(instObj['status'])
 
-                        $('#query_user_dbs').empty();
-                        for (var i=0;i<instObj['user_dbs'].split(',').length;i++){
-                              val=instObj['user_dbs'].split(',')[i]
-                              $('#query_user_dbs').append("<option value='"+val+"'>"+val+"</option>");
-                        }
-
-                        $('#query_user_privs').empty();
-                        for (var i=0;i<instObj['user_privs_zh'].split(',').length;i++){
-                              val=instObj['user_privs_zh'].split(',')[i]
-                              $('#query_user_privs').append("<option value='"+val+"'>"+val+"</option>");
-                        }
-
-                        $('#query_statement').val(instObj['statement'])
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-modal-inst-detail').modal({
-                              keyboard: false,
-                              backdrop:false
-                         });
-
-                        var content = $("#query_db_pass").val();
-
-                  },
-             })
-        }
-
-        function showUpd_win(p_user_id){
-            $.ajax({
-                  url: "/db/user/query/id",
-                  type: "post",
-                  datatype: "json",
-                  data: {
-                      user_id  :p_user_id
-                  },
-                  success: function (instObj) {
-                        $('#upd_inst_id').val(instObj['inst_id'])
-                        $('#upd_desc').val(instObj['description'])
-                        $('#upd_db_user').val(instObj['db_user'])
-                        $('#upd_db_user_id').val(instObj['id'])
-                        $('#upd_db_pass').val(instObj['db_pass'])
-                        $('#upd_status').val(instObj['status'])
-
-                        $.ajax({
-                              url: "/db/user/dbs",
-                              type: "post",
-                              datatype: "json",
-                              async:false,
-                              data:{
-                                  inst_id : $('#upd_inst_id').val(),
-                              },
-                              success: function (dataSet) {
-                                   $("#upd_sys_dbs").empty()
-                                   for(i=0;i<dataSet['message'].length;i++){
-                                      var val  = dataSet['message'][i];
-                                      var text = dataSet['message'][i];
-                                      if (instObj['user_dbs'].indexOf(val)==-1) {
-                                          $("#upd_sys_dbs").append("<option value='" + val + "'>" + text + "</option>");
-                                      }
-                                   }
-                              }
-                        });
-
-                        $('#upd_user_dbs').empty();
-                        for (var i=0;i<instObj['user_dbs'].split(',').length;i++){
-                              val=instObj['user_dbs'].split(',')[i]
-                              $('#upd_user_dbs').append("<option value='"+val+"'>"+val+"</option>");
-                        }
-
-                        $('#upd_user_privs').empty();
-                        for (var i=0;i<instObj['user_privs'].split(',').length;i++){
-                              val=instObj['user_privs'].split(',')[i]
-                              txt=instObj['user_privs_zh'].split(',')[i]
-                              $('#upd_user_privs').append("<option value='"+val+"'>"+txt+"</option>");
-                        }
-
-                        upd_sys_privs_options=$('#upd_sys_privs option');
-                        for (var i=0;i<upd_sys_privs_options.length;i++){
-                              val=$(upd_sys_privs_options[i]).val();
-                              if (instObj['user_privs'].indexOf(val)!=-1) {
-                                 $("#upd_sys_privs option[value='"+val+"']").remove();
-                              }
-                        }
-
-                        $('#upd_statement').val(instObj['statement'])
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-modal-inst-upd').modal({
-                              keyboard: false,
-                              backdrop:false
-                         });
-
-                  },
-             })
-        }
-
-        function del_user(p_user) {
-            var userid=unescape(p_user).split(',')[4];
-            var username=unescape(p_user).split(',')[5];
-            swal({
-                title: "确认要删除吗?",
-                text: "数据库用户["+username+"]元数据信息将删除！",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 取消!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                    $.ajax({
-                            url: "/db/user/del?user_id="+userid,
-                            type: "post",
-                            datatype: "json",
-                            success: function (dataSet) {
-                                if (dataSet.code=='0') {
-                                    swal("已删除!", "用户["+username+"]元数据已删除!", "success");
-                                    $("#query_btn").click();
-                                } else {
-                                    swal("删除失败!", "用户["+username+"]"+dataSet.message+"!", "error");
-                                }
-                            },
-                       });
-
-                } else {
-                    swal("已取消", "用户["+username+"]未注销！", "error");
+                $('#query_user_dbs').empty();
+                for (var i = 0; i < instObj['user_dbs'].split(',').length; i++) {
+                    val = instObj['user_dbs'].split(',')[i]
+                    $('#query_user_dbs').append("<option value='" + val + "'>" + val + "</option>");
                 }
-            });
 
-        }
+                $('#query_user_privs').empty();
+                for (var i = 0; i < instObj['user_privs_zh'].split(',').length; i++) {
+                    val = instObj['user_privs_zh'].split(',')[i]
+                    $('#query_user_privs').append("<option value='" + val + "'>" + val + "</option>");
+                }
 
-        function get_add_privs(){
-             var tmp='';
-             var val='';
-             $('#add_user_privs option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-        }
-
-        function get_add_dbs(){
-             var tmp='';
-             var val='';
-             $('#add_user_dbs option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-        }
-
-        function get_upd_privs(){
-             var tmp='';
-             var val='';
-             $('#upd_user_privs option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-        }
-
-        function get_upd_dbs(){
-             var tmp='';
-             var val='';
-             $('#upd_user_dbs option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-        }
-
-        function get_user_sql() {
-             if ($('#add_user_privs').val()!=''){
-                $.ajax({
-                      url: "/db/user/sql",
-                      type: "post",
-                      datatype: "text",
-                      async:false,
-                      data:{
-                          mysql_db_user  : $('#add_db_user').val(),
-                          mysql_privs    : get_add_privs(),
-                          mysql_dbs      : get_add_dbs(),
-                      },
-                      success: function (dataSet) {
-                           console.log(dataSet)
-                           $('#add_statement').val(dataSet)
-                      }
+                $('#query_statement').val(instObj['statement'])
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-modal-inst-detail').modal({
+                    keyboard: false,
+                    backdrop: false
                 });
-            } else {
-                $("#add_statement").val('')
-            }
-        }
 
-        function get_user_sql_upd() {
-             if ($('#upd_user_privs').val()!=''){
-                $.ajax({
-                      url: "/db/user/sql",
-                      type: "post",
-                      datatype: "text",
-                      async:false,
-                      data:{
-                          mysql_db_user  : $('#upd_db_user').val(),
-                          mysql_privs    : get_upd_privs(),
-                          mysql_dbs      : get_upd_dbs(),
-                      },
-                      success: function (dataSet) {
-                           console.log('vvvvvvvvvvvvvvvvvv=',dataSet)
-                           $('#upd_statement').val(dataSet)
-                      }
-                });
-            } else {
-                $("#upd_statement").val('')
-            }
-        }
+                var content = $("#query_db_pass").val();
 
-
-        $("#user_name").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
-
-        $('#add-btn').click(function(){
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-modal-inst-add').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-            init_user()
+            },
         })
+    }
 
-        $('#user_save_btn').click(function(){
-           $.ajax({
-                url: "/db/user/save",
-                type: "post",
-                datatype: "json",
-                data: {
-                     add_inst_id        : $('#add_inst_id').val(),
-                     add_db_user        : $('#add_db_user').val(),
-                     add_db_pass        : $('#add_db_pass').val(),
-                     add_user_dbs       : get_add_dbs(),
-                     add_user_privs     : get_add_privs(),
-                     add_statement      : $('#add_statement').val(),
-                     add_status         : $('#add_status').val(),
-                     add_desc           : $('#add_desc').val(),
-                },
-                success: function (dataSet) {
-                    if (dataSet.code == 0) {
-                        swal("保存成功", "", "success")
-                        $("#query_btn").click()
-                    } else {
-                        swal(dataSet.message, "", "error")
+    function showUpd_win(p_user_id) {
+        $.ajax({
+            url: "/db/user/query/id",
+            type: "post",
+            datatype: "json",
+            data: {
+                user_id: p_user_id
+            },
+            success: function (instObj) {
+                $('#upd_inst_id').val(instObj['inst_id'])
+                $('#upd_desc').val(instObj['description'])
+                $('#upd_db_user').val(instObj['db_user'])
+                $('#upd_db_user_id').val(instObj['id'])
+                $('#upd_db_pass').val(instObj['db_pass'])
+                $('#upd_status').val(instObj['status'])
+
+                $.ajax({
+                    url: "/db/user/dbs",
+                    type: "post",
+                    datatype: "json",
+                    async: false,
+                    data: {
+                        inst_id: $('#upd_inst_id').val(),
+                    },
+                    success: function (dataSet) {
+                        $("#upd_sys_dbs").empty()
+                        for (i = 0; i < dataSet['message'].length; i++) {
+                            var val = dataSet['message'][i];
+                            var text = dataSet['message'][i];
+                            if (instObj['user_dbs'].indexOf(val) == -1) {
+                                $("#upd_sys_dbs").append("<option value='" + val + "'>" + text + "</option>");
+                            }
+                        }
+                    }
+                });
+
+                $('#upd_user_dbs').empty();
+                for (var i = 0; i < instObj['user_dbs'].split(',').length; i++) {
+                    val = instObj['user_dbs'].split(',')[i]
+                    $('#upd_user_dbs').append("<option value='" + val + "'>" + val + "</option>");
+                }
+
+                $('#upd_user_privs').empty();
+                for (var i = 0; i < instObj['user_privs'].split(',').length; i++) {
+                    val = instObj['user_privs'].split(',')[i]
+                    txt = instObj['user_privs_zh'].split(',')[i]
+                    $('#upd_user_privs').append("<option value='" + val + "'>" + txt + "</option>");
+                }
+
+                upd_sys_privs_options = $('#upd_sys_privs option');
+                for (var i = 0; i < upd_sys_privs_options.length; i++) {
+                    val = $(upd_sys_privs_options[i]).val();
+                    if (instObj['user_privs'].indexOf(val) != -1) {
+                        $("#upd_sys_privs option[value='" + val + "']").remove();
                     }
                 }
-            })
-        })
 
-        $('#user_upd_btn').click(function(){
-           $.ajax({
-                url: "/db/user/update",
-                type: "post",
-                datatype: "json",
-                data: {
-                     upd_user_id        : $('#upd_db_user_id').val(),
-                     upd_inst_id        : $('#upd_inst_id').val(),
-                     upd_db_user        : $('#upd_db_user').val(),
-                     upd_db_pass        : $('#upd_db_pass').val(),
-                     upd_user_dbs       : get_upd_dbs(),
-                     upd_user_privs     : get_upd_privs(),
-                     upd_statement      : $('#upd_statement').val(),
-                     upd_status         : $('#upd_status').val(),
-                     upd_desc           : $('#upd_desc').val(),
-                },
-                success: function (dataSet) {
-                    if (dataSet.code == 0) {
-                        swal("更新成功", "", "success")
-                        $("#query_btn").click()
-                    } else {
-                        swal(dataSet.message, "", "error")
-                    }
-                }
-            })
-        })
+                $('#upd_statement').val(instObj['statement'])
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-modal-inst-upd').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
 
-        $("#add_sys_privs").click(function () {
-           options=$('#add_sys_privs option:selected');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#add_user_privs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#add_sys_privs option:selected').remove();
-                get_user_sql()
-           }
+            },
+        })
+    }
+
+    function del_user(p_user) {
+        var userid = unescape(p_user).split(',')[4];
+        var username = unescape(p_user).split(',')[5];
+        swal({
+            title: "确认要删除吗?",
+            text: "数据库用户[" + username + "]元数据信息将删除！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 取消!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/db/user/del?user_id=" + userid,
+                    type: "post",
+                    datatype: "json",
+                    success: function (dataSet) {
+                        if (dataSet.code == '0') {
+                            swal("已删除!", "用户[" + username + "]元数据已删除!", "success");
+                            $("#query_btn").click();
+                        } else {
+                            swal("删除失败!", "用户[" + username + "]" + dataSet.message + "!", "error");
+                        }
+                    },
+                });
+
+            } else {
+                swal("已取消", "用户[" + username + "]未注销！", "error");
+            }
         });
 
-        $("#add_user_privs").click(function () {
-           options=$('#add_user_privs option:selected');
-           if(options.length>0){
-            for (var i=0;i<options.length;i++){
-                  value=$(options[i]).val();
-                  text =$(options[i]).text();
-                  $('#add_sys_privs').append("<option value='"+value+"'>"+text+"</option>");
+    }
+
+    function get_add_privs() {
+        var tmp = '';
+        var val = '';
+        $('#add_user_privs option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
+
+    function get_add_dbs() {
+        var tmp = '';
+        var val = '';
+        $('#add_user_dbs option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
+
+    function get_upd_privs() {
+        var tmp = '';
+        var val = '';
+        $('#upd_user_privs option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
+
+    function get_upd_dbs() {
+        var tmp = '';
+        var val = '';
+        $('#upd_user_dbs option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
+
+    function get_user_sql() {
+        if ($('#add_user_privs').val() != '') {
+            $.ajax({
+                url: "/db/user/sql",
+                type: "post",
+                datatype: "text",
+                async: false,
+                data: {
+                    mysql_db_user: $('#add_db_user').val(),
+                    mysql_privs: get_add_privs(),
+                    mysql_dbs: get_add_dbs(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet)
+                    $('#add_statement').val(dataSet)
+                }
+            });
+        } else {
+            $("#add_statement").val('')
+        }
+    }
+
+    function get_user_sql_upd() {
+        if ($('#upd_user_privs').val() != '') {
+            $.ajax({
+                url: "/db/user/sql",
+                type: "post",
+                datatype: "text",
+                async: false,
+                data: {
+                    mysql_db_user: $('#upd_db_user').val(),
+                    mysql_privs: get_upd_privs(),
+                    mysql_dbs: get_upd_dbs(),
+                },
+                success: function (dataSet) {
+                    console.log('vvvvvvvvvvvvvvvvvv=', dataSet)
+                    $('#upd_statement').val(dataSet)
+                }
+            });
+        } else {
+            $("#upd_statement").val('')
+        }
+    }
+
+
+    $("#user_name").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $('#add-btn').click(function () {
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-inst-add').modal({
+            keyboard: false,
+            backdrop: false
+        });
+        init_user()
+    })
+
+    $('#user_save_btn').click(function () {
+        $.ajax({
+            url: "/db/user/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                add_inst_id: $('#add_inst_id').val(),
+                add_db_user: $('#add_db_user').val(),
+                add_db_pass: $('#add_db_pass').val(),
+                add_user_dbs: get_add_dbs(),
+                add_user_privs: get_add_privs(),
+                add_statement: $('#add_statement').val(),
+                add_status: $('#add_status').val(),
+                add_desc: $('#add_desc').val(),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("保存成功", "", "success")
+                    $("#query_btn").click()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            }
+        })
+    })
+
+    $('#user_upd_btn').click(function () {
+        $.ajax({
+            url: "/db/user/update",
+            type: "post",
+            datatype: "json",
+            data: {
+                upd_user_id: $('#upd_db_user_id').val(),
+                upd_inst_id: $('#upd_inst_id').val(),
+                upd_db_user: $('#upd_db_user').val(),
+                upd_db_pass: $('#upd_db_pass').val(),
+                upd_user_dbs: get_upd_dbs(),
+                upd_user_privs: get_upd_privs(),
+                upd_statement: $('#upd_statement').val(),
+                upd_status: $('#upd_status').val(),
+                upd_desc: $('#upd_desc').val(),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("更新成功", "", "success")
+                    $("#query_btn").click()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            }
+        })
+    })
+
+    $("#add_sys_privs").click(function () {
+        options = $('#add_sys_privs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_user_privs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#add_sys_privs option:selected').remove();
+            get_user_sql()
+        }
+    });
+
+    $("#add_user_privs").click(function () {
+        options = $('#add_user_privs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_sys_privs').append("<option value='" + value + "'>" + text + "</option>");
             }
             $('#add_user_privs option:selected').remove();
             get_user_sql()
-           }
-        });
+        }
+    });
 
-        $("#add_sys_dbs").click(function () {
-           options=$('#add_sys_dbs option:selected');
-           if(options.length>0){
-            for (var i=0;i<options.length;i++){
-                  value=$(options[i]).val();
-                  text =$(options[i]).text();
-                  $('#add_user_dbs').append("<option value='"+value+"'>"+text+"</option>");
+    $("#add_sys_dbs").click(function () {
+        options = $('#add_sys_dbs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_user_dbs').append("<option value='" + value + "'>" + text + "</option>");
             }
             $('#add_sys_dbs option:selected').remove();
             get_user_sql();
-           }
-       });
+        }
+    });
 
-        $("#add_user_dbs").click(function () {
-           options=$('#add_user_dbs option:selected');
-           if(options.length>0){
-            for (var i=0;i<options.length;i++){
-                  value=$(options[i]).val();
-                  text =$(options[i]).text();
-                  $('#add_sys_dbs').append("<option value='"+value+"'>"+text+"</option>");
+    $("#add_user_dbs").click(function () {
+        options = $('#add_user_dbs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_sys_dbs').append("<option value='" + value + "'>" + text + "</option>");
             }
             $('#add_user_dbs option:selected').remove();
             get_user_sql();
-           }
-        });
+        }
+    });
 
-        $("#add_db_user").bind("input propertychange",function(){
-           get_user_sql();
-        });
+    $("#add_db_user").bind("input propertychange", function () {
+        get_user_sql();
+    });
 
-        $("#upd_db_user").bind("input propertychange",function(){
-           get_user_sql_upd();
-        });
+    $("#upd_db_user").bind("input propertychange", function () {
+        get_user_sql_upd();
+    });
 
-        $('#add_inst_id').change(function() {
+    $('#add_inst_id').change(function () {
 
-            if ($('#add_inst_id').val()!=''){
-                 $.ajax({
-                      url: "/db/user/dbs",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          inst_id : $('#add_inst_id').val(),
-                      },
-                      success: function (dataSet) {
-                           $("#add_sys_dbs").empty()
-                           $('#add_user_dbs').empty();
-                           for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#add_sys_dbs").append("<option value='"+val+"'>"+text+"</option>");
-                           }
-                      }
-                 });
-            } else {
-                $("#add_sys_dbs").empty();
-                $("#add_user_dbs").empty();
-            }
-        });
-
-        $('#upd_inst_id').change(function() {
-            if ($('#upd_inst_id').val()!=''){
-                 $.ajax({
-                      url: "/db/user/dbs",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          inst_id : $('#upd_inst_id').val(),
-                      },
-                      success: function (dataSet) {
-                           $("#upd_sys_dbs").empty()
-                           $('#upd_user_dbs').empty();
-                           for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#upd_sys_dbs").append("<option value='"+val+"'>"+text+"</option>");
-                           }
-                      }
-                 });
-            } else {
-                $("#upd_sys_dbs").empty();
-                $("#upd_user_dbs").empty();
-            }
-        });
-
-        $("#upd_sys_privs").click(function () {
-           options=$('#upd_sys_privs option:selected');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#upd_user_privs').append("<option value='"+value+"'>"+text+"</option>");
+        if ($('#add_inst_id').val() != '') {
+            $.ajax({
+                url: "/db/user/dbs",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    inst_id: $('#add_inst_id').val(),
+                },
+                success: function (dataSet) {
+                    $("#add_sys_dbs").empty()
+                    $('#add_user_dbs').empty();
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#add_sys_dbs").append("<option value='" + val + "'>" + text + "</option>");
+                    }
                 }
-                $('#upd_sys_privs option:selected').remove();
-                get_user_sql_upd()
-           }
-        });
+            });
+        } else {
+            $("#add_sys_dbs").empty();
+            $("#add_user_dbs").empty();
+        }
+    });
 
-        $("#upd_user_privs").click(function () {
-           options=$('#upd_user_privs option:selected');
-           if(options.length>0){
-            for (var i=0;i<options.length;i++){
-                  value=$(options[i]).val();
-                  text =$(options[i]).text();
-                  $('#upd_sys_privs').append("<option value='"+value+"'>"+text+"</option>");
+    $('#upd_inst_id').change(function () {
+        if ($('#upd_inst_id').val() != '') {
+            $.ajax({
+                url: "/db/user/dbs",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    inst_id: $('#upd_inst_id').val(),
+                },
+                success: function (dataSet) {
+                    $("#upd_sys_dbs").empty()
+                    $('#upd_user_dbs').empty();
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#upd_sys_dbs").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
+        } else {
+            $("#upd_sys_dbs").empty();
+            $("#upd_user_dbs").empty();
+        }
+    });
+
+    $("#upd_sys_privs").click(function () {
+        options = $('#upd_sys_privs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_user_privs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#upd_sys_privs option:selected').remove();
+            get_user_sql_upd()
+        }
+    });
+
+    $("#upd_user_privs").click(function () {
+        options = $('#upd_user_privs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_sys_privs').append("<option value='" + value + "'>" + text + "</option>");
             }
             $('#upd_user_privs option:selected').remove();
             get_user_sql_upd()
-           }
-        });
+        }
+    });
 
-        $("#upd_sys_dbs").click(function () {
-           options=$('#upd_sys_dbs option:selected');
-           if(options.length>0){
-            for (var i=0;i<options.length;i++){
-                  value=$(options[i]).val();
-                  text =$(options[i]).text();
-                  $('#upd_user_dbs').append("<option value='"+value+"'>"+text+"</option>");
+    $("#upd_sys_dbs").click(function () {
+        options = $('#upd_sys_dbs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_user_dbs').append("<option value='" + value + "'>" + text + "</option>");
             }
             $('#upd_sys_dbs option:selected').remove();
             get_user_sql_upd();
-           }
-       });
+        }
+    });
 
-        $("#upd_user_dbs").click(function () {
-           options=$('#upd_user_dbs option:selected');
-           if(options.length>0){
-            for (var i=0;i<options.length;i++){
-                  value=$(options[i]).val();
-                  text =$(options[i]).text();
-                  $('#upd_sys_dbs').append("<option value='"+value+"'>"+text+"</option>");
+    $("#upd_user_dbs").click(function () {
+        options = $('#upd_user_dbs option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_sys_dbs').append("<option value='" + value + "'>" + text + "</option>");
             }
             $('#upd_user_dbs option:selected').remove();
             get_user_sql_upd();
-           }
+        }
+    });
+
+    $("#query_db_pass").on({
+        mouseover: function () {
+            $("#query_db_pass").attr("type", "text");
+        },
+        mouseout: function () {
+            $("#query_db_pass").attr("type", "password");
+        },
+    });
+
+    function selectSysdbAll() {
+        options = $('#add_sys_dbs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_user_dbs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#add_sys_dbs option').remove();
+        }
+        get_user_sql()
+    }
+
+    function cancelSysdbAll() {
+        options = $('#add_user_dbs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_sys_dbs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#add_user_dbs option').remove();
+        }
+        get_user_sql()
+    }
+
+    function selectSysPrivAll() {
+        options = $('#add_sys_privs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_user_privs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#add_sys_privs option').remove();
+        }
+        get_user_sql()
+    }
+
+    function cancelSysPrivAll() {
+        options = $('#add_user_privs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#add_sys_privs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#add_user_privs option').remove();
+        }
+        get_user_sql()
+    }
+
+    function selectSysdbAll_Upd() {
+        options = $('#upd_sys_dbs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_user_dbs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#upd_sys_dbs option').remove();
+        }
+        get_user_sql_upd()
+    }
+
+    function cancelSysdbAll_Upd() {
+        options = $('#upd_user_dbs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_sys_dbs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#upd_user_dbs option').remove();
+        }
+        get_user_sql_upd()
+    }
+
+    function selectSysPrivAll_Upd() {
+        options = $('#upd_sys_privs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_user_privs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#upd_sys_privs option').remove();
+        }
+        get_user_sql_upd()
+    }
+
+    function cancelSysPrivAll_Upd() {
+        options = $('#upd_user_privs option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#upd_sys_privs').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#upd_user_privs option').remove();
+        }
+        get_user_sql_upd()
+    }
+
+    function copy(copyid) {
+        var clipboard = new ClipboardJS(copyid)
+        clipboard.on("success", function (e) {
+            showtips('info', '', '复制成功!');
+            clipboard.destroy();
         });
 
-        $("#query_db_pass").on({
-           mouseover:function(){$("#query_db_pass").attr("type","text");},
-           mouseout :function(){$("#query_db_pass").attr("type","password");},
-       });
+        clipboard.on('error', function (e) {
+            showtips('error', '', '复制失败!');
+        });
+    }
 
-        function selectSysdbAll() {
-           options=$('#add_sys_dbs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#add_user_dbs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#add_sys_dbs option').remove();
-           }
-           get_user_sql()
-        }
+    function copy_pass(copyid) {
+        $("#query_db_pass").attr("type", "text");
+        var clipboard = new ClipboardJS(copyid)
+        clipboard.on("success", function (e) {
+            showtips('info', '', '复制成功!');
+            $("#query_db_pass").attr("type", "password");
+            clipboard.destroy();
+        });
 
-        function cancelSysdbAll() {
-           options=$('#add_user_dbs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#add_sys_dbs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#add_user_dbs option').remove();
-           }
-           get_user_sql()
-       }
+        clipboard.on('error', function (e) {
+            showtips('error', '', '复制失败!');
+        });
+    }
 
-        function selectSysPrivAll() {
-           options=$('#add_sys_privs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#add_user_privs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#add_sys_privs option').remove();
-           }
-           get_user_sql()
-        }
-
-        function cancelSysPrivAll() {
-           options=$('#add_user_privs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#add_sys_privs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#add_user_privs option').remove();
-           }
-           get_user_sql()
-      }
-
-        function selectSysdbAll_Upd() {
-           options=$('#upd_sys_dbs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#upd_user_dbs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#upd_sys_dbs option').remove();
-           }
-           get_user_sql_upd()
-        }
-
-        function cancelSysdbAll_Upd() {
-           options=$('#upd_user_dbs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#upd_sys_dbs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#upd_user_dbs option').remove();
-           }
-           get_user_sql_upd()
-       }
-
-        function selectSysPrivAll_Upd() {
-           options=$('#upd_sys_privs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#upd_user_privs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#upd_sys_privs option').remove();
-           }
-           get_user_sql_upd()
-        }
-
-        function cancelSysPrivAll_Upd() {
-           options=$('#upd_user_privs option');
-           if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#upd_sys_privs').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#upd_user_privs option').remove();
-           }
-           get_user_sql_upd()
-      }
-
-        function copy(copyid){
-            var clipboard = new ClipboardJS(copyid)
-            clipboard.on("success", function (e) {
-                showtips('info','','复制成功!');
-                clipboard.destroy();
-            });
-
-            clipboard.on('error', function(e) {
-                showtips('error','','复制失败!');
-            });
-      }
-
-        function copy_pass(copyid){
-            $("#query_db_pass").attr("type","text");
-            var clipboard = new ClipboardJS(copyid)
-            clipboard.on("success", function (e) {
-                showtips('info','','复制成功!');
-                $("#query_db_pass").attr("type","password");
-                clipboard.destroy();
-            });
-
-           clipboard.on('error', function(e) {
-              showtips('error','','复制失败!');
-           });
-      }
-
-      $(document).keydown(function(event){
-         if (event.keyCode == 13) { //判断为Enter键
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
-         }
-      })
+        }
+    })
 
-      $(document).ready(function() {
-            set_selected()
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/db/user/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      user_name: $('#user_name').val(),
-                      inst_env: $('#inst_env').val(),
-                      inst_id : $('#inst_name').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                      destroy    :true,
-                      async      :true,
-                      scrollY    :"600px",
-                      scrollX    :true,
-                      scrollCollapse: true,
-                      paging:     false,
-                      iDisplayLength: 16,
-                      data: dataSet,
-                      columns: [
-                        { "title": "实例标识","width":"8%" },
-                        { "title": "实例名称" },
-                        { "title": "实例类型" },
-                        { "title": "实例环境" },
-                        { "title": "用户标识","width":"8%"},
-                        { "title": "用户名称" },
-                        { "title": "用户状态" },
-                        { "title": "用户描述" },
-                        { "title": "创建时间","width":"12%"},
-                        { "title": "操作"},
-                      ],
-                      columnDefs: [
-                        {
-                            targets: 9,
-                            render: function(data, type, row, meta){
-                                var btn ='&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showDetail_win(\''+row[4]+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showUpd_win(\''+row[4]+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_user(\''+escape(row)+'\');"/>' +'&nbsp;'
-                                return btn
+    $(document).ready(function () {
+        set_selected()
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/db/user/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    user_name: $('#user_name').val(),
+                    inst_env: $('#inst_env').val(),
+                    inst_id: $('#inst_name').val()
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        scrollY: "600px",
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "实例标识", "width": "8%"},
+                            {"title": "实例名称"},
+                            {"title": "实例类型"},
+                            {"title": "实例环境"},
+                            {"title": "用户标识", "width": "8%"},
+                            {"title": "用户名称"},
+                            {"title": "用户状态"},
+                            {"title": "用户描述"},
+                            {"title": "创建时间", "width": "12%"},
+                            {"title": "操作"},
+                        ],
+                        columnDefs: [
+                            {
+                                targets: 9,
+                                render: function (data, type, row, meta) {
+                                    var btn = '&nbsp;' +
+                                        '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showDetail_win(\'' + row[4] + '\');"/>' + '&nbsp;' +
+                                        '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="showUpd_win(\'' + row[4] + '\');"/>' + '&nbsp;' +
+                                        '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_user(\'' + escape(row) + '\');"/>' + '&nbsp;'
+                                    return btn
+                                }
                             }
-                         }
-                      ],
+                        ],
 
-                      "language": get_languages()
-                     });
-                 },
-             });
+                        "language": get_languages()
+                    });
+                },
             });
-
-            $("#query_btn").click();
         });
 
-   </script>
+        $("#query_btn").click();
+    });
+
+</script>
 </body>
 
 </html>

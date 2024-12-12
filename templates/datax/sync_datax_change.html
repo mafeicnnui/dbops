@@ -4,29 +4,31 @@
     <meta charset="utf-8">
     <title>dataX同步维护</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
         table.datatable tr th, table.datatable tr td {
             white-space: nowrap;
         }
-         .modal-lg-detail {
-            width:65%;
-            height:80%;
+
+        .modal-lg-detail {
+            width: 65%;
+            height: 80%;
         }
 
         .modal-lg-templete {
-            width:60%;
-            height:80%;
-            margin-left:400px;
-            margin-top:10px;
+            width: 60%;
+            height: 80%;
+            margin-left: 400px;
+            margin-top: 10px;
         }
 
-        #ace-editor-full,#ace-editor-incr{
-           height:600px;
-           overflow-x:auto;
-           overflow-y:auto;
-       }
+        #ace-editor-full, #ace-editor-incr {
+            height: 600px;
+            overflow-x: auto;
+            overflow-y: auto;
+        }
 
         #sele_sour_tab_cols {
             height: 290px;
@@ -35,7 +37,7 @@
 
         #ace-editor {
             color: #59aed5;
-            overflow:auto;
+            overflow: auto;
             height: 400px;
         }
 
@@ -46,413 +48,418 @@
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-         <div class="row">
-         <div class="col-md-3">
-             <div class="input-group">
+<p></p>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">业务类型</span>
-                 <select class="form-control select" id="sync_ywlx" >
-                    <option value='' selected = "selected">.....</option>
+                <input type="text" id="tagname" class="form-control" placeholder="请输入标签名">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">业务类型</span>
+                <select class="form-control select" id="sync_ywlx">
+                    <option value='' selected="selected">.....</option>
                     {% for var in dm_sync_ywlx %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
+                    <option value={{var[0]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据方向</span>
-                 <select class="form-control select" id="sync_type" >
-                    <option value='' selected = "selected">.....</option>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据方向</span>
+                <select class="form-control select" id="sync_type">
+                    <option value='' selected="selected">.....</option>
                     {% for var in dm_sync_data_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
+                    <option value={{var[0]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">大数据环境</span>
-                 <select class="form-control select" id="sync_env" >
-                     <option value='' selected = "selected">.....</option>
-                     <option  value='prod' >大数据生产</option>
-                     <option value='dev' >大数据开发</option>
-                     <option value='uat'>大数据测试</option>
-                     <option value='doris_prod'>doris生产</option>
-                     <option value='doris_dev_test'>doris开发测试</option>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">大数据环境</span>
+                <select class="form-control select" id="sync_env">
+                    <option value='' selected="selected">.....</option>
+                    <option value='prod'>大数据生产</option>
+                    <option value='dev'>大数据开发</option>
+                    <option value='uat'>大数据测试</option>
+                    <option value='doris_prod'>doris生产</option>
+                    <option value='doris_dev_test'>doris开发测试</option>
                 </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-                 <div class="input-group">
-                     <span class="input-group-addon">任务状态</span>
-                        <select class="form-control select" id="sync_status">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
-                    </select>
-                 </div>
-         </div>
-         <div class="col-md-1">
-             <div class="input-group">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">任务状态</span>
+                <select class="form-control select" id="sync_status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group">
               <span class="input-group-btn">
-                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                        class="fa fa-search"></i></button>
               </span>
             </div>
         </div>
-      </div>
-         <p></p>
-         <div class="row">
-             <div class="col-md-12">
-                  <div id="div-tab">
-                       <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
-                  </div>
-             </div>
-         </div>
-        <input  id="sync_tag_tmp" type="hidden"  value= >
-        <div class="row">
-              <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
-                   <input  id='dsupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
-                   <input  id='dsdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
-                   <input  id='push' type='button' class="btn waves-effect waves-light btn-primary"  value="推送"/>
-                   <!--<input  id='pushAll' type='button' class="btn waves-effect waves-light btn-primary"  value="推送全部"/>-->
-                   <input  id='run' type='button' class="btn waves-effect waves-light btn-primary"   value="启动"/>
-                   <input  id='stop' type='button' class="btn waves-effect waves-light btn-primary"   value="停止"/>
-                   <input  id='clone' type='button' class="btn waves-effect waves-light btn-primary"  value="克隆"/>
-             </div>
-         </div>
     </div>
-    <span>&nbsp;</span>
+    <p></p>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="div-tab">
+                <table id="example" class="table table-striped table-bordered dt-responsive nowrap"
+                       cellspacing="0"></table>
+            </div>
+        </div>
+    </div>
+    <input id="sync_tag_tmp" type="hidden" value=>
+    <div class="row">
+        <div class="col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
+            <input id='dsupd' type='button' class="btn waves-effect waves-light btn-primary" value="变更"/>
+            <input id='dsdel' type='button' class="btn waves-effect waves-light btn-primary" value="删除"/>
+            <input id='push' type='button' class="btn waves-effect waves-light btn-primary" value="推送"/>
+            <!--<input  id='pushAll' type='button' class="btn waves-effect waves-light btn-primary"  value="推送全部"/>-->
+            <input id='run' type='button' class="btn waves-effect waves-light btn-primary" value="启动"/>
+            <input id='stop' type='button' class="btn waves-effect waves-light btn-primary" value="停止"/>
+            <input id='clone' type='button' class="btn waves-effect waves-light btn-primary" value="克隆"/>
+        </div>
+    </div>
+</div>
+<span>&nbsp;</span>
 
-    <!--远程任务详情 -->
-    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg-detail">
+<!--远程任务详情 -->
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">任务详情</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
-                  <div id='ace-editor' class="col-md-12"></div>
+                    <div id='ace-editor' class="col-md-12"></div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
-      </div>
-    </div><!-- /.modal -->
+    </div>
+</div><!-- /.modal -->
 
-    <script>
+<script>
 
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
+            $("#query_btn").click();
+        }
+    });
 
-        $("#tagname").bind("input propertychange",function(){
-           set_button_status(true);
-           $("#query_btn").click();
+    $("#tagname").bind("input propertychange", function () {
+        set_button_status(true);
+        $("#query_btn").click();
+    });
+
+    $("#sync_ywlx").bind("input propertychange", function () {
+        set_button_status(true);
+        $("#query_btn").click();
+    });
+
+    $("#sync_type").bind("input propertychange", function () {
+        set_button_status(true);
+        $("#query_btn").click();
+    });
+
+    function set_button_status(p_status) {
+        $('#dsupd').attr("disabled", p_status);
+        $('#dsdel').attr("disabled", p_status);
+        $('#push').attr("disabled", p_status);
+        $('#run').attr("disabled", p_status);
+        $('#stop').attr("disabled", p_status);
+        $('#clone').attr("disabled", p_status);
+    }
+
+    function isSelect(v) {
+        $('#sync_tag_tmp').val(v)
+        var rec = 0;
+        $("#example tbody tr td input:checked").each(function () {
+            rec = rec + 1;
         });
-
-        $("#sync_ywlx").bind("input propertychange",function(){
+        if (rec == 1) {
+            set_button_status(false);
+        } else {
             set_button_status(true);
-           $("#query_btn").click();
-        });
-
-        $("#sync_type").bind("input propertychange",function(){
-           set_button_status(true);
-           $("#query_btn").click();
-        });
-
-        function set_button_status(p_status) {
-               $('#dsupd').attr("disabled",p_status);
-               $('#dsdel').attr("disabled",p_status);
-               $('#push').attr("disabled",p_status);
-               $('#run').attr("disabled",p_status);
-               $('#stop').attr("disabled",p_status);
-               $('#clone').attr("disabled",p_status);
         }
+    }
 
-        function isSelect(v) {
-           $('#sync_tag_tmp').val(v)
-           var rec=0;
-           $("#example tbody tr td input:checked").each( function() {
-              rec=rec+1;
-           });
-           if ( rec==1 ){
-               set_button_status(false);
-           } else {
-               set_button_status(true);
-           }
-        }
+    $("#query_btn").click(function () {
+        $.ajax({
+            url: "/datax/_query",
+            type: "post",
+            datatype: "json",
+            data: {
+                sync_tag: $('#tagname').val(),
+                sync_ywlx: $('#sync_ywlx').val(),
+                sync_type: $('#sync_type').val(),
+                sync_env: $('#sync_env').val(),
+                sync_status: $('#sync_status').val(),
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: "550px",
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: false,
+                    iDisplayLength: 12,
+                    data: dataSet,
+                    columns: [
+                        {"title": "标识符"},
+                        {"title": "同步标识号"},
+                        {"title": "同步标识号", "visible": false},
+                        {"title": "任务描述"},
+                        {"title": "同步服务器", "visible": false},
+                        {"title": "同步方向"},
+                        {"title": "运行时间"},
+                        {"title": "接口服务器"},
+                        {"title": "状态"},
+                        {
+                            "title": "选择",
+                            "width": "25px",
+                            "render": function (data, type, row) {
+                                return '<input type="radio"  name="datax_selec_id"  onclick=isSelect("' + row[2] + '")>'
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+                set_button_status(true);
+            },
+        });
+    });
 
-        $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/datax/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sync_tag   : $('#tagname').val(),
-                      sync_ywlx  : $('#sync_ywlx').val(),
-                      sync_type  : $('#sync_type').val(),
-                      sync_env   : $('#sync_env').val(),
-                      sync_status : $('#sync_status').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :"550px",
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging:     false,
-                          iDisplayLength: 12,
-                          data: dataSet,
-                          columns: [
-                            { "title": "标识符"},
-                            { "title": "同步标识号"},
-                            { "title": "同步标识号","visible":false},
-                            { "title": "任务描述"},
-                            { "title": "同步服务器","visible":false },
-                            { "title": "同步方向" },
-                            { "title": "运行时间" },
-                            { "title": "接口服务器"},
-                            { "title": "状态"},
-                            {
-                                "title":"选择",
-                                "width": "25px",
-                                "render": function(data,type,row) {
-                                    return '<input type="radio"  name="datax_selec_id"  onclick=isSelect("' + row[2] + '")>'
-                                   }
-                            },
-                          ],
-                          "language": get_languages()
-                         });
-                      set_button_status(true);
-                 },
-             });
+    $("#push").click(function () {
+        var v_tag = '';
+        var v_desc = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            v_desc = row[2].innerHTML.replace(/&gt;/g, '>');
+            v_tag = $('#sync_tag_tmp').val()
+            v_api = row[6].innerHTML;
+            console.log("v_tag=", v_tag, "v_api=", v_api)
+            $.ajax({
+                url: "/datax/edit/push",
+                type: "post",
+                datatype: "json",
+                data: {
+                    tag: v_tag,
+                    api: v_api
+                },
+                beforeSend: function () {
+                    swal({
+                        title: "正在推送中...",
+                        text: "任务[" + v_desc + "]正在推送中...",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                },
+                success: function (dataSet) {
+                    if (dataSet['code'] == 200) {
+                        swal("推送成功!", "任务[" + v_desc + "]已推送成功!", "success");
+                        $('#ace-editor').html(dataSet['msg'])
+                        $('.modal').on('show.bs.modal', centerModals);
+                        $(window).on('resize', centerModals);
+                        $('#con-close-modal').modal({keyboard: false, backdrop: false});
+                        $("#query_btn").click();
+                    } else {
+                        swal("推送失败!", "任务[" + v_desc + "]推送失败!", "error");
+                    }
+                    set_button_status(true);
+                },
             });
+        });
 
-        $("#push").click(function() {
-              var v_tag='';
-              var v_desc='';
-              $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
-                  v_tag=$('#sync_tag_tmp').val()
-                  v_api=row[6].innerHTML;
-                  console.log("v_tag=",v_tag,"v_api=",v_api)
-                  $.ajax({
-                          url: "/datax/edit/push",
-                          type: "post",
-                          datatype: "json",
-                          data:{
-                              tag: v_tag,
-                              api: v_api
-                          },
-                          beforeSend: function () {
-                              swal({
-                                    title: "正在推送中...",
-                                    text: "任务["+v_desc+"]正在推送中...",
-                                    type: "info",
-                                    showConfirmButton: false
-                               });
-                          },
-                          success: function (dataSet) {
-                              if (dataSet['code']== 200) {
-                                  swal("推送成功!", "任务["+v_desc+"]已推送成功!", "success");
-                                  $('#ace-editor').html(dataSet['msg'])
-                                  $('.modal').on('show.bs.modal', centerModals);
-                                  $(window).on('resize', centerModals);
-                                  $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                                  $("#query_btn").click();
-                              } else {
-                                  swal("推送失败!", "任务["+v_desc+"]推送失败!", "error");
-                              }
-                              set_button_status(true);
-                          },
-                  });
-              });
+    })
 
+    $("#run").click(function () {
+        var v_tag = '';
+        var v_desc = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            v_desc = row[2].innerHTML.replace(/&gt;/g, '>');
+            v_tag = $('#sync_tag_tmp').val()
+            v_api = row[6].innerHTML;
+            console.log("v_tag=", v_tag)
+            $.ajax({
+                url: "/datax/edit/run",
+                type: "post",
+                datatype: "json",
+                data: {
+                    tag: v_tag,
+                    api: v_api
+                },
+                beforeSend: function () {
+                    swal({
+                        title: "正在运行中...",
+                        text: "任务[" + v_desc + "]正在运行中...",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                },
+                success: function (dataSet) {
+                    if (dataSet['code'] == 200) {
+                        swal("运行成功!", "任务[" + v_desc + "]已运行成功!", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("运行失败!", "任务[" + v_desc + "]" + dataSet.message + "!", "error");
+                    }
+                    set_button_status(true);
+                },
+            });
+        });
+
+    });
+
+    $("#stop").click(function () {
+        var v_tag = '';
+        var v_desc = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            v_desc = row[2].innerHTML.replace(/&gt;/g, '>');
+            v_tag = $('#sync_tag_tmp').val()
+            v_api = row[6].innerHTML;
+            $.ajax({
+                url: "/datax/edit/stop",
+                type: "post",
+                datatype: "json",
+                data: {
+                    tag: v_tag,
+                    api: v_api
+                },
+                beforeSend: function () {
+                    swal({
+                        title: "正在停止中...",
+                        text: "任务[" + v_desc + "]正在停止中...",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("停止成功!", "任务[" + v_desc + "]已停止成功!", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("停止失败!", "任务[" + v_desc + "]" + dataSet.message + "!", "error");
+                    }
+                    set_button_status(true);
+                },
+            });
+        });
+
+    });
+
+    $('#dsupd').on('click', function () {
+        var syncid = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            syncid = row[0].innerHTML;
+        });
+
+        $.ajax({
+            url: "/datax/edit",
+            type: "get",
+            datatype: "html",
+            data: {
+                sync_id: syncid
+            },
+            success: function () {
+                $('#main-container-div').load("/datax/edit?sync_id=" + syncid);
+            },
+        })
+    });
+
+    $('#dsdel').on('click', function () {
+        var syncid = '';
+        var syncdesc = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            syncid = row[0].innerHTML;
+            syncdesc = row[2].innerHTML.replace(/&gt;/g, '>');
+        });
+        swal({
+            title: "确认要删除吗?",
+            text: "数据源[" + syncdesc + "]将被删除了！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 撤销!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/datax/edit/del?syncid=" + syncid,
+                    type: "post",
+                    datatype: "json",
+                    success: function (dataSet) {
+                        if (dataSet.code == '0') {
+                            swal("已删除!", "dataX同步任务[" + syncdesc + "]已删除!", "success");
+                            $("#query_btn").click();
+                        } else {
+                            swal("删除失败!", "dataX同步任务[" + syncdesc + "]" + dataSet.message + "!", "error");
+                        }
+                    },
+                });
+
+            } else {
+                swal("已取消", "dataX同步任务[" + syncdesc + "]未删除！", "error");
+            }
+        });
+    });
+
+    $('#clone').on('click', function () {
+        var syncid = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            syncid = row[0].innerHTML;
+        });
+
+        $.ajax({
+            url: "/datax/clone",
+            type: "get",
+            datatype: "html",
+            data: {
+                sync_id: syncid
+            },
+            success: function () {
+                $('#main-container-div').load("/datax/clone?sync_id=" + syncid);
+            },
         })
 
-        $("#run").click(function() {
-              var v_tag='';
-              var v_desc='';
-              $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
-                  v_tag=$('#sync_tag_tmp').val()
-                  v_api=row[6].innerHTML;
-                  console.log("v_tag=",v_tag)
-                  $.ajax({
-                          url: "/datax/edit/run",
-                          type: "post",
-                          datatype: "json",
-                          data:{
-                              tag: v_tag,
-                              api: v_api
-                          },
-                         beforeSend: function () {
-                              swal({
-                                    title:"正在运行中...",
-                                    text: "任务["+v_desc+"]正在运行中...",
-                                    type: "info",
-                                    showConfirmButton: false
-                               });
-                          },
-                          success: function (dataSet) {
-                              if (dataSet['code']== 200 ) {
-                                     swal("运行成功!", "任务["+v_desc+"]已运行成功!", "success");
-                                     $("#query_btn").click();
-                              } else {
-                                  swal("运行失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
-                              }
-                              set_button_status(true);
-                          },
-                  });
-              });
+    });
 
-        });
+    $(document).ready(function () {
+        $("#query_btn").click();
+    });
 
-        $("#stop").click(function() {
-              var v_tag='';
-              var v_desc='';
-              $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  v_desc=row[2].innerHTML.replace(/&gt;/g,'>');
-                  v_tag=$('#sync_tag_tmp').val()
-                  v_api=row[6].innerHTML;
-                  $.ajax({
-                          url: "/datax/edit/stop",
-                          type: "post",
-                          datatype: "json",
-                          data:{
-                              tag: v_tag,
-                              api: v_api
-                          },
-                          beforeSend: function () {
-                              swal({
-                                    title:"正在停止中...",
-                                    text: "任务["+v_desc+"]正在停止中...",
-                                    type: "info",
-                                    showConfirmButton: false
-                               });
-                          },
-                          success: function (dataSet) {
-                              if (dataSet.code=='0') {
-                                     swal("停止成功!", "任务["+v_desc+"]已停止成功!", "success");
-                                     $("#query_btn").click();
-                              } else {
-                                  swal("停止失败!", "任务["+v_desc+"]"+dataSet.message+"!", "error");
-                              }
-                              set_button_status(true);
-                          },
-                  });
-              });
-
-        });
-
-        $('#dsupd').on('click', function() {
-             var syncid='';
-             $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  syncid=row[0].innerHTML;
-             });
-
-             $.ajax({
-                url: "/datax/edit",
-                type: "get",
-                datatype: "html",
-                data: {
-                    sync_id:syncid
-                },
-                success: function () {
-                   $('#main-container-div').load("/datax/edit?sync_id="+syncid);
-                },
-             })
-        });
-
-        $('#dsdel').on('click', function() {
-             var syncid='';
-             var syncdesc='';
-             $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  syncid=row[0].innerHTML;
-                  syncdesc=row[2].innerHTML.replace(/&gt;/g,'>');
-             });
-            swal({
-                title: "确认要删除吗?",
-                text: "数据源["+syncdesc+"]将被删除了！",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 撤销!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                    $.ajax({
-                            url: "/datax/edit/del?syncid="+syncid,
-                            type: "post",
-                            datatype: "json",
-                            success: function (dataSet) {
-                                if (dataSet.code=='0') {
-                                    swal("已删除!", "dataX同步任务["+syncdesc+"]已删除!", "success");
-                                    $("#query_btn").click();
-                                } else {
-                                    swal("删除失败!", "dataX同步任务["+syncdesc+"]"+dataSet.message+"!", "error");
-                                }
-                            },
-                       });
-
-                } else {
-                    swal("已取消", "dataX同步任务["+syncdesc+"]未删除！", "error");
-                }
-            });
-        });
-
-        $('#clone').on('click', function() {
-             var syncid='';
-             $("#example tbody tr td input:checked").each( function() {
-                  var row=$(($(this).parent().parent().html()));
-                  syncid=row[0].innerHTML;
-             });
-
-             $.ajax({
-                url: "/datax/clone",
-                type: "get",
-                datatype: "html",
-                data: {
-                    sync_id:syncid
-                },
-                success: function () {
-                   $('#main-container-div').load("/datax/clone?sync_id="+syncid);
-                },
-             })
-
-        });
-
-        $(document).ready(function() {
-            $("#query_btn").click();
-        });
-
-   </script>
+</script>
 </body>
 
 </html>

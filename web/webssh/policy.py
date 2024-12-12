@@ -12,9 +12,10 @@ def load_host_keys(path):
 
 def get_policy_dictionary():
     dic = {
-       k.lower(): v for k, v in vars(paramiko.client).items() if type(v)
-       is type and issubclass(v, paramiko.client.MissingHostKeyPolicy)
-       and v is not paramiko.client.MissingHostKeyPolicy
+        k.lower(): v for k, v in vars(paramiko.client).items() if type(v)
+                                                                  is type and issubclass(v,
+                                                                                         paramiko.client.MissingHostKeyPolicy)
+                                                                  and v is not paramiko.client.MissingHostKeyPolicy
     }
     return dic
 
@@ -57,7 +58,7 @@ class AutoAddPolicy(paramiko.client.MissingHostKeyPolicy):
 
     def is_missing_host_key(self, client, hostname, key):
         k = client._system_host_keys.lookup(hostname) or \
-                client._host_keys.lookup(hostname)
+            client._host_keys.lookup(hostname)
         if k is None:
             return True
         host_key = k.get(key.get_name(), None)

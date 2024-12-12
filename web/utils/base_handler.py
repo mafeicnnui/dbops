@@ -5,20 +5,23 @@
 # @File : base_handler.py.py
 # @Software: PyCharm
 
-import jwt
-import json
 import datetime
+import json
+
+import jwt
 import tornado.web
-from web.utils import jwt_auth
+from jwt import exceptions
 from tornado.web import HTTPError
-from web.model.t_xtqx  import check_url
+
+from web.model.t_xtqx import check_url
+from web.utils import jwt_auth
 from web.utils.common import get_sys_settings_sync
 from web.utils.mysql_async import async_processer
-from jwt import exceptions
 
 JWT_SALT = 'Hopson2021@abcd'
-ISS_UER  = 'zhitbar.cn'
-TIMEOUT  = int(get_sys_settings_sync()['TOKEN_EXPIRE_TIME'])
+ISS_UER = 'zhitbar.cn'
+TIMEOUT = int(get_sys_settings_sync()['TOKEN_EXPIRE_TIME'])
+
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -128,7 +131,8 @@ class BaseHandler(tornado.web.RequestHandler):
         await async_processer.exec_sql(st)
 
     async def kickout_session_log(self, p_username, p_session_id):
-        st = """update t_session  set state='6' where username='{}' and session_id!={}""".format(p_username,p_session_id)
+        st = """update t_session  set state='6' where username='{}' and session_id!={}""".format(p_username,
+                                                                                                 p_session_id)
         await async_processer.exec_sql(st)
         st = """insert into t_session_history(session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time) 
                       select session_id,userid,username,logon_time,login_ip,state,online_time,last_update_time
@@ -145,8 +149,10 @@ class BaseHandler(tornado.web.RequestHandler):
 
     async def check_sess_exists(self, p_session_id):
         return (await async_processer.query_one("select count(0) "
-                "from t_session where session_id={} "
-                " AND TIMESTAMPDIFF(MINUTE,last_update_time,NOW())<={}".format(p_session_id,TIMEOUT)))[0]
+                                                "from t_session where session_id={} "
+                                                " AND TIMESTAMPDIFF(MINUTE,last_update_time,NOW())<={}".format(
+            p_session_id, TIMEOUT)))[0]
+
 
 class TokenHandler(BaseHandler):
 
@@ -190,7 +196,6 @@ class TokenHandler(BaseHandler):
             self.userid = ''
             self.session_id = ''
             raise HTTPError(result['code'], json.dumps(result, ensure_ascii=False))
-
 
         userid = result['data']['userid']
         username = result['data']['username']

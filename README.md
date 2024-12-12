@@ -192,8 +192,8 @@
     
 
 ### 4.2 安装python3及依赖  
-
-    pip3 install -r requirements.txt -i https://pypi.douban.com/simple
+    cd dbops
+    pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
     
 ### 4.3  数据库连接配置
 

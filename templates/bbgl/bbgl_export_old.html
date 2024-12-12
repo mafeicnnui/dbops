@@ -4,576 +4,586 @@
     <meta charset="utf-8">
     <title>报表导出</title>
     <style>
-       .modal-dialog {
-           width :70%;
-       }
-       #modal-exp-filter{
-           margin-top:10px;
-           padding-top:10px;
-           margin-left:120px;
-       }
+        .modal-dialog {
+            width: 70%;
+        }
+
+        #modal-exp-filter {
+            margin-top: 10px;
+            padding-top: 10px;
+            margin-left: 120px;
+        }
     </style>
 </head>
 <body>
-  <form class="form-horizontal" role="form">
-       <div class="row">
-            <div class="col-md-3">
-                 <div class="input-group">
-                    <span class="input-group-addon">报表代码</span>
-                    <select class="form-control select" id="bbdm" name="bbdm">
-                        <option value='' selected = "selected">请选择报表</option>
-                        {% for var in dm_bbdm %}
-                          <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-                 </div>
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">报表代码</span>
+                <select class="form-control select" id="bbdm" name="bbdm">
+                    <option value='' selected="selected">请选择报表</option>
+                    {% for var in dm_bbdm %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
             </div>
-            <div class="col-md-1">
+        </div>
+        <div class="col-md-1">
                  <span class="input-group-btn">
-                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                   <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                           class="fa fa-search"></i></button>
                 </span>
-                <span class="input-group-btn">
-                  <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>
+            <span class="input-group-btn">
+                  <button type="button" id='exp_btn' class="btn waves-effect waves-light btn-primary"><i
+                          class="ion-archive"></i></button>
                 </span>
-            </div>
-      </div>
-  </form>
-  <br>
-  <div id='div-table'>
-      <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%" ></table>
-  </div>
+        </div>
+    </div>
+</form>
+<br>
+<div id='div-table'>
+    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%"></table>
+</div>
 
-  <!-- 导出输入条件窗口 -->
-  <div id="modal-exp-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog">
+<!-- 导出输入条件窗口 -->
+<div id="modal-exp-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">选择条件</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
-                  <div class="panel-body">
-                      <form class="form-horizontal" role="form" id="form_export_filter">
-                      </form>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="export_data_btn" >导出</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form" id="form_export_filter">
+                        </form>
                     </div>
-              </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="export_data_btn">导出
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-  <!--导出详情窗口 -->
-  <div id="modal-exp-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-dialog-small">
+<!--导出详情窗口 -->
+<div id="modal-exp-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-small">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">导出详情</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
-                  <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                       <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" >条件：</label>
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">条件：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="exp_filter" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="exp_filter"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group" >
-                            <div>
-                                <label class="col-md-3 control-label" >文件名：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">文件名：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="exp_file_name" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9" >
-                                <input type="text" id="exp_file_name"  class="form-control">
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-3 control-label">大小：</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-3 control-label">大小：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="exp_file_size" class="form-control">
+                                </div>
                             </div>
-                            <div class="col-md-9">
-                               <input type="text" id="exp_file_size"  class="form-control">
-                           </div>
-                        </div>
-                      </form>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        </form>
                     </div>
-              </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-  <input id='cur_bbdm' type="hidden">
-  <input type="hidden" id="notnull_filter">
-  <input type="hidden" id="rq_range_filter">
+<input id='cur_bbdm' type="hidden">
+<input type="hidden" id="notnull_filter">
+<input type="hidden" id="rq_range_filter">
 
-  <script>
-      function open_model(p_model_name) {
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#'+p_model_name).modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-      }
+<script>
+    function open_model(p_model_name) {
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#' + p_model_name).modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
 
-      function open_model2(p_model_name) {
-            $('.modal').on('show.bs.modal', topModals);
-            $(window).on('resize', topModals);
-            $('#'+p_model_name).modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-      }
+    function open_model2(p_model_name) {
+        $('.modal').on('show.bs.modal', topModals);
+        $(window).on('resize', topModals);
+        $('#' + p_model_name).modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
 
-      function show_config(p_id) {
-           $.ajax({
-                url: "/bbgl/download",
-                type: "post",
-                datatype: "json",
-                data:{
-                   id  : p_id,
-                },
-                success: function (dataSet) {
-                    $('#exp_filter').val(dataSet.filter);
-                    $('#exp_file_name').val(dataSet.file);
-                    $('#exp_file_size').val(dataSet.size+'b');
-                    open_model('modal-exp-detail')
-                },
-            })
-      }
+    function show_config(p_id) {
+        $.ajax({
+            url: "/bbgl/download",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: p_id,
+            },
+            success: function (dataSet) {
+                $('#exp_filter').val(dataSet.filter);
+                $('#exp_file_name').val(dataSet.file);
+                $('#exp_file_size').val(dataSet.size + 'b');
+                open_model('modal-exp-detail')
+            },
+        })
+    }
 
-      function downloads_data(p_id){
-            $.ajax({
-                url: "/bbgl/download",
-                type: "post",
-                datatype: "json",
-                data:{
-                   id  : p_id,
-                },
-                success: function (dataSet) {
-                    var link = $("<a/>")
-                    link.html('　');
-                    link.attr('href', dataSet.file);
-                    link.attr('class', 'link');
-                    link.attr('id', 'download_id');
-                    link.attr('name', 'download_name');
-                    link.appendTo('body')
-                    link[0].click();
-                },
-            })
-      }
+    function downloads_data(p_id) {
+        $.ajax({
+            url: "/bbgl/download",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: p_id,
+            },
+            success: function (dataSet) {
+                var link = $("<a/>")
+                link.html('　');
+                link.attr('href', dataSet.file);
+                link.attr('class', 'link');
+                link.attr('id', 'download_id');
+                link.attr('name', 'download_name');
+                link.appendTo('body')
+                link[0].click();
+            },
+        })
+    }
 
-      function del_export(p_id) {
-             swal({
-                    title: "确认要删除吗?",
-                    text: "删除导出信息["+p_id+']',
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "是, 删除!",
-                    cancelButtonText:  "否, 取消!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-             }, function (isConfirm) {
-                    if (isConfirm) {
-                        $.ajax({
-                                url: "/bbgl/delete/export",
-                                type: "post",
-                                datatype: "json",
-                                data: {
-                                    id : p_id,
-                                },
-                                success: function (dataSet) {
-                                     if (dataSet.code=='0') {
-                                        swal("已删除!", "导出["+p_id+"]已删除!", "success");
-                                        $("#query_btn").click();
-                                     } else {
-                                        swal("删除失败!", "导出["+p_id+"]"+dataSet.message+"!", "error");
-                                     }
-                                },
-                           });
-
-                    } else {
-                        swal("已取消", "导出["+p_id+"]未删除!", "error");
-                    }
-                });
-         }
-
-      function export_no_filter(){
-           if ($('#bbdm').val()=='') {
-                swal("请选择报表!", '报表不能为空!', "error");
-                return false;
-           }
-
-           $.ajax({
-                url: "/bbgl/export/data",
-                type: "post",
-                datatype: "json",
-                data: {
-                    bbdm  : $('#bbdm').val(),
-                    param : '[]',
-                },
-                success: function (dataSet) {
-                    console.log('export=',dataSet)
-                    if (dataSet.code == 0) {
-                        swal("导出成功", "", "success")
-                         $("#query_btn").click();
-                    } else {
-                        swal(dataSet.message, "", "error")
-                    }
-                },
-            })
-      }
-
-      function check_bbgl(){
-               $.ajax({
-                    url     : "/bbgl/filter",
-                    type    : "post",
+    function del_export(p_id) {
+        swal({
+            title: "确认要删除吗?",
+            text: "删除导出信息[" + p_id + ']',
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 取消!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/bbgl/delete/export",
+                    type: "post",
                     datatype: "json",
-                    async   : false,
                     data: {
-                        bbdm : $('#bbdm').val(),
+                        id: p_id,
                     },
-                    success: function (filter) {
-                      var notnull_filter =''
-                      var rq_range_filter=''
-                      for (i=0;i<filter.length;i++){
-                          if (filter[i].is_null=='Y') {
-                              notnull_filter = notnull_filter +filter[i].filter_code+'#'+filter[i].filter_name+','
-                          }
-                          if (filter[i].is_range=='Y') {
-                              rq_range_filter = rq_range_filter +filter[i].filter_code+'#'+filter[i].filter_name+'#'+filter[i].rq_range+','
-                          }
-                      }
-                      $('#notnull_filter').val(notnull_filter.slice(0,-1))
-                      $('#rq_range_filter').val(rq_range_filter.slice(0,-1))
-                   },
+                    success: function (dataSet) {
+                        if (dataSet.code == '0') {
+                            swal("已删除!", "导出[" + p_id + "]已删除!", "success");
+                            $("#query_btn").click();
+                        } else {
+                            swal("删除失败!", "导出[" + p_id + "]" + dataSet.message + "!", "error");
+                        }
+                    },
                 });
-          }
 
-      $('#exp_btn').click(function(){
-            if ($('#bbdm').val()=='') {
-                swal("请选择报表!", '报表不能为空!', "error");
+            } else {
+                swal("已取消", "导出[" + p_id + "]未删除!", "error");
+            }
+        });
+    }
+
+    function export_no_filter() {
+        if ($('#bbdm').val() == '') {
+            swal("请选择报表!", '报表不能为空!', "error");
+            return false;
+        }
+
+        $.ajax({
+            url: "/bbgl/export/data",
+            type: "post",
+            datatype: "json",
+            data: {
+                bbdm: $('#bbdm').val(),
+                param: '[]',
+            },
+            success: function (dataSet) {
+                console.log('export=', dataSet)
+                if (dataSet.code == 0) {
+                    swal("导出成功", "", "success")
+                    $("#query_btn").click();
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            },
+        })
+    }
+
+    function check_bbgl() {
+        $.ajax({
+            url: "/bbgl/filter",
+            type: "post",
+            datatype: "json",
+            async: false,
+            data: {
+                bbdm: $('#bbdm').val(),
+            },
+            success: function (filter) {
+                var notnull_filter = ''
+                var rq_range_filter = ''
+                for (i = 0; i < filter.length; i++) {
+                    if (filter[i].is_null == 'Y') {
+                        notnull_filter = notnull_filter + filter[i].filter_code + '#' + filter[i].filter_name + ','
+                    }
+                    if (filter[i].is_range == 'Y') {
+                        rq_range_filter = rq_range_filter + filter[i].filter_code + '#' + filter[i].filter_name + '#' + filter[i].rq_range + ','
+                    }
+                }
+                $('#notnull_filter').val(notnull_filter.slice(0, -1))
+                $('#rq_range_filter').val(rq_range_filter.slice(0, -1))
+            },
+        });
+    }
+
+    $('#exp_btn').click(function () {
+        if ($('#bbdm').val() == '') {
+            swal("请选择报表!", '报表不能为空!', "error");
+            return false;
+        }
+
+        $.ajax({
+            url: "/bbgl/filter",
+            type: "post",
+            datatype: "json",
+            data: {
+                bbdm: $('#bbdm').val()
+            },
+            success: function (filter) {
+                console.log('filter=', filter, filter.length)
+                if (filter.length == 0) {
+                    export_no_filter();
+                } else {
+                    var htmlFilter = '<div class="row">'
+                    $('#form_export_filter').empty();
+                    var htmlFilter = ''
+                    var rowFilter = '<div class="row">'
+                    var filter_number = 0;
+                    for (i = 0; i < filter.length; i++) {
+
+                        filter_number = filter_number + 1
+
+                        if (filter[i].filter_type == '1') {
+
+                            if (filter[i].is_item == 'Y') {
+                                var options = ''
+                                $.ajax({
+                                    url: "/bbgl/query/dm",
+                                    type: "post",
+                                    datatype: "json",
+                                    async: false,
+                                    data: {
+                                        dm: filter[i].item_value,
+                                    },
+                                    success: function (dataSet) {
+                                        for (dm = 0; dm < dataSet.length; dm++) {
+                                            options = options + "<option value='" + dataSet[dm][0] + "'>" + dataSet[dm][1] + "</option>\n"
+                                        }
+                                    },
+                                });
+
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '</span>\n' +
+                                    '            <select class="form-control select" id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '">\n' +
+                                    '                <option value="" selected = "selected">...</option>\n' + options +
+                                    '            </select> ' +
+                                    '      </div>\n' +
+                                    '</div>'
+                            } else {
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '" type="text" class="form-control" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '       </div>\n' +
+                                    '</div>'
+                            }
+
+                        } else if (filter[i].filter_type == '2') {
+
+                            if (filter[i].is_range == 'Y') {
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '_begin" name="' + filter[i].filter_code + '_begin"   type="text" class="form-control datepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '      </div>' +
+                                    '</div>\n'
+
+                                if (filter_number % 4 == 0) {
+                                    rowFilter = rowFilter + '</div>\n'
+                                    htmlFilter = htmlFilter + rowFilter + '<br>'
+                                    rowFilter = '<div class="row">'
+                                }
+
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '止</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '_end" name="' + filter[i].filter_code + '_end"   type="text" class="form-control datepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '      </div>\n' +
+                                    '</div>'
+                                filter_number = filter_number + 1
+                                console.log('range.....')
+                            } else {
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '"   type="text" class="form-control datepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '      </div>\n' +
+                                    '</div>'
+                            }
+
+                        } else if (filter[i].filter_type == '3') {
+                            if (filter[i].is_range == 'Y') {
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '_begin" name="' + filter[i].filter_code + '_begin"   type="text" class="form-control datetimepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '      </div>' +
+                                    '</div>\n'
+
+                                if (filter_number % 4 == 0) {
+                                    rowFilter = rowFilter + '</div>\n'
+                                    htmlFilter = htmlFilter + rowFilter + '<br>'
+                                    rowFilter = '<div class="row">'
+                                }
+
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '止</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '_end" name="' + filter[i].filter_code + '_end"   type="text" class="form-control datetimepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '      </div>\n' +
+                                    '</div>'
+                                filter_number = filter_number + 1
+                                console.log('range.....')
+                            } else {
+                                rowFilter = rowFilter +
+                                    '<div class="col-md-3">\n' +
+                                    '       <div class="input-group">\n' +
+                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <input id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '"   type="text" class="form-control datetimepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
+                                    '      </div>\n' +
+                                    '</div>'
+                            }
+
+                        }
+
+                        if (filter_number % 4 == 0) {
+                            rowFilter = rowFilter + '</div>\n'
+                            htmlFilter = htmlFilter + rowFilter + '<br>'
+                            rowFilter = '<div class="row">'
+                        }
+                    }
+
+                    if (filter_number % 4 != 0) {
+                        rowFilter = rowFilter + '</div>\n'
+                        htmlFilter = htmlFilter + rowFilter + '<br>'
+                    }
+                    $('#form_export_filter').append(htmlFilter)
+                    $.fn.datepicker.dates['zh-CN'] = {
+                        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+                        daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+                        daysMin: ["日", "一", "二", "三", "四", "五", "六"],
+                        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                        monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+                        today: "今天",
+                        monthsTitle: "选择月份",
+                        clear: "清除",
+                        format: "yyyy-mm-dd",
+                        titleFormat: "yyyy年mm月",
+                        weekStart: 1
+                    };
+                    $('.datepicker').datepicker({
+                        language: 'zh-CN',
+                        format: "yyyy-mm-dd",
+                        autoclose: true,
+                        todayBtn: true,
+                        todayHighlight: true,
+                        defaultTIme: false
+                    });
+                    $('.datetimepicker').datetimepicker({
+                        language: 'zh-CN',
+                        CustomFormat: 'yyyy-mm-dd HH:ii:ss',
+                        weekStart: 1,
+                        todayBtn: 1,            //显示当天按钮，点击则选择当天当天时间
+                        autoclose: 1,           //选完时间自动关闭
+                        todayHighlight: 1,      //当天时间高亮
+                        startView: 2,           //从月视图开始，选天
+                        minView: 0,             //提供选择分钟的视图
+                        forceParse: 0,
+                        minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
+                    });
+                    $('#cur_bbdm').val($('#bbdm').val())
+
+                    open_model2('modal-exp-filter')
+                }
+            },
+        });
+
+    });
+
+    $("#query_btn").click(function () {
+        $.ajax({
+            url: "/bbgl/query/export",
+            type: "post",
+            datatype: "json",
+            data: {
+                bbdm: $('#bbdm').val(),
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: true,
+                    scrollX: false,
+                    scrollCollapse: true,
+                    paging: true,
+                    iDisplayLength: 12,
+                    data: dataSet,
+                    columns: [
+                        {"title": "报表ID"},
+                        {"title": "报表代码"},
+                        {"title": "报表名称"},
+                        {"title": "导出状态"},
+                        {"title": "导出进度"},
+                        {"title": "创建人"},
+                        {"title": "创建日期"},
+                        {
+                            "title": "功能",
+                            "width": "60px",
+                            "render": function (data, type, row) {
+                                bbdm = row[0]
+                                msg = '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_config(\'' + bbdm + '\');"/>' + '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_export(\'' + bbdm + '\');"/>' + '&nbsp;' +
+                                    '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloads_data(\'' + bbdm + '\');"/>';
+                                return msg;
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+            },
+        });
+    });
+
+    $('#export_data_btn').click(function () {
+        check_bbgl();
+
+        //检测条件是否为空值
+        var nullstr = $('#notnull_filter').val()
+        var nullstr2 = nullstr.split(',')
+        var rq_range = $('#rq_range_filter').val()
+        for (var i in nullstr2) {
+            var c = nullstr2[i].split('#')[0]
+            var n = nullstr2[i].split('#')[1]
+
+            if ($('#' + c).val() == '') {
+                showtips('error', n + '不能为空!');
                 return false;
             }
 
-            $.ajax({
-                url     : "/bbgl/filter",
-                type    : "post",
-                datatype: "json",
-                data: {
-                    bbdm   :  $('#bbdm').val()
-                },
-                success: function (filter) {
-                  console.log('filter=',filter,filter.length)
-                  if (filter.length == 0) {
-                      export_no_filter();
-                  } else {
-                     var htmlFilter='<div class="row">'
-                      $('#form_export_filter').empty();
-                      var htmlFilter=''
-                      var rowFilter='<div class="row">'
-                      var filter_number =0;
-                      for (i=0;i<filter.length;i++){
+            if ($('#' + c + '_begin').val() == '') {
+                showtips('error', n + '起不能为空!');
+                return false;
+            }
 
-                          filter_number = filter_number +1
+            if ($('#' + c + '_end').val() == '') {
+                showtips('error', n + '止不能为空!');
+                return false;
+            }
+        }
 
-                          if (filter[i].filter_type=='1') {
+        //检测日期范围是否超过配置值
+        var rq_range = $('#rq_range_filter').val()
+        var rq_range2 = $('#rq_range_filter').val().split(',')
+        for (var i in rq_range2) {
+            var c = rq_range2[i].split('#')[0]
+            var n = rq_range2[i].split('#')[1]
+            var d = rq_range2[i].split('#')[2]
+            var rqq = $('#' + c + '_begin').val()
+            var rqz = $('#' + c + '_end').val()
+            if (rqq != undefined && rqz != undefined) {
+                if (GetDateDiff(rqq, rqz, "day") > parseInt(d)) {
+                    showtips('error', n + '查询范围不能超过' + d + '天');
+                    return false;
+                }
+            }
+        }
 
-                              if (filter[i].is_item=='Y') {
-                                  var options = ''
-                                  $.ajax({
-                                        url     : "/bbgl/query/dm",
-                                        type    : "post",
-                                        datatype: "json",
-                                        async   :false,
-                                        data: {
-                                            dm   :  filter[i].item_value,
-                                        },
-                                        success: function (dataSet) {
-                                            for (dm=0;dm<dataSet.length;dm++) {
-                                                options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
-                                            }
-                                       },
-                                   });
+        obj = $('#form_export_filter').serializeObject();
+        $.ajax({
+            url: "/bbgl/export/data",
+            type: "post",
+            datatype: "json",
+            data: {
+                bbdm: $('#cur_bbdm').val(),
+                param: JSON.stringify(obj),
+            },
+            success: function (dataSet) {
+                console.log('export=', dataSet)
+                if (dataSet.code == 0) {
+                    swal("导出成功", "", "success")
+                    $("#query_btn").click();
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            },
+        })
+    });
 
-                                   rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <select class="form-control select" id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'">\n' +
-                                     '                <option value="" selected = "selected">...</option>\n' +options+
-                                     '            </select> '+
-                                     '      </div>\n' +
-                                     '</div>'
-                              } else {
-                                   rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'" type="text" class="form-control" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '       </div>\n' +
-                                     '</div>'
-                              }
-
-                          }  else if (filter[i].filter_type=='2') {
-
-                              if (filter[i].is_range=='Y') {
-                                  rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'_begin" name="'+filter[i].filter_code+'_begin"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '      </div>' +
-                                     '</div>\n'
-
-                                  if (filter_number % 4 == 0) {
-                                      rowFilter=rowFilter+'</div>\n'
-                                      htmlFilter = htmlFilter +rowFilter+'<br>'
-                                      rowFilter='<div class="row">'
-                                  }
-
-                                  rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'止</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'_end" name="'+filter[i].filter_code+'_end"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '      </div>\n' +
-                                     '</div>'
-                                  filter_number = filter_number +1
-                                  console.log('range.....')
-                              } else {
-                                   rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"   type="text" class="form-control datepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '      </div>\n' +
-                                     '</div>'
-                              }
-
-                          }  else if  (filter[i].filter_type=='3') {
-                                 if (filter[i].is_range=='Y') {
-                                  rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'_begin" name="'+filter[i].filter_code+'_begin"   type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '      </div>' +
-                                     '</div>\n'
-
-                                  if (filter_number % 4 == 0) {
-                                      rowFilter=rowFilter+'</div>\n'
-                                      htmlFilter = htmlFilter +rowFilter+'<br>'
-                                      rowFilter='<div class="row">'
-                                  }
-
-                                  rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'止</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'_end" name="'+filter[i].filter_code+'_end"   type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '      </div>\n' +
-                                     '</div>'
-                                  filter_number = filter_number +1
-                                  console.log('range.....')
-                              } else {
-                                   rowFilter=rowFilter+
-                                     '<div class="col-md-3">\n' +
-                                     '       <div class="input-group">\n' +
-                                     '            <span class="input-group-addon">'+filter[i].filter_name+'起</span>\n' +
-                                     '            <input id="'+filter[i].filter_code+'" name="'+filter[i].filter_code+'"   type="text" class="form-control datetimepicker" placeholder="请输入'+filter[i].filter_name+'">\n' +
-                                     '      </div>\n' +
-                                     '</div>'
-                              }
-
-                          }
-
-                          if (filter_number % 4 == 0) {
-                              rowFilter=rowFilter+'</div>\n'
-                              htmlFilter = htmlFilter +rowFilter+'<br>'
-                              rowFilter='<div class="row">'
-                          }
-                      }
-
-                      if (filter_number % 4 != 0) {
-                           rowFilter=rowFilter+'</div>\n'
-                           htmlFilter = htmlFilter +rowFilter+'<br>'
-                      }
-                      $('#form_export_filter').append(htmlFilter)
-                      $.fn.datepicker.dates['zh-CN'] = {
-                            days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-                            daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
-                            daysMin: ["日", "一", "二", "三", "四", "五", "六"],
-                            months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-                            monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-                            today: "今天",
-                            monthsTitle: "选择月份",
-                            clear: "清除",
-                            format: "yyyy-mm-dd",
-                            titleFormat: "yyyy年mm月",
-                            weekStart: 1
-                        };
-                      $('.datepicker').datepicker({
-                            language: 'zh-CN',
-                            format: "yyyy-mm-dd",
-                            autoclose: true,
-                            todayBtn: true,
-                            todayHighlight: true,
-                            defaultTIme: false
-                      });
-                      $('.datetimepicker').datetimepicker({
-                            language: 'zh-CN',
-                            CustomFormat: 'yyyy-mm-dd HH:ii:ss',
-                            weekStart: 1,
-                            todayBtn: 1,            //显示当天按钮，点击则选择当天当天时间
-                            autoclose: 1,           //选完时间自动关闭
-                            todayHighlight: 1,      //当天时间高亮
-                            startView: 2,           //从月视图开始，选天
-                            minView: 0,             //提供选择分钟的视图
-                            forceParse: 0,
-                            minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
-                      });
-                      $('#cur_bbdm').val($('#bbdm').val())
-
-                      open_model2('modal-exp-filter')
-                  }
-               },
-          });
-
-      });
-
-      $("#query_btn").click(function() {
-                $.ajax({
-                    url     : "/bbgl/query/export",
-                    type    : "post",
-                    datatype: "json",
-                    data: {
-                        bbdm :  $('#bbdm').val(),
-                    },
-                    success: function (dataSet) {
-                       $('#example').DataTable( {
-                              "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                              destroy    :true,
-                              async      :true,
-                              scrollY    :true,
-                              scrollX    :false,
-                              scrollCollapse: true,
-                              paging:     true,
-                              iDisplayLength: 12,
-                              data: dataSet,
-                              columns: [
-                                { "title": "报表ID" },
-                                { "title": "报表代码" },
-                                { "title": "报表名称"},
-                                { "title": "导出状态" },
-                                { "title": "导出进度" },
-                                { "title": "创建人" },
-                                { "title": "创建日期" },
-                                {
-                                    "title":"功能",
-                                    "width": "60px",
-                                    "render": function(data,type,row)
-                                    {
-                                       bbdm = row[0]
-                                       msg ='&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="show_config(\''+bbdm+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_export(\''+bbdm+'\');"/>' +'&nbsp;'+
-                                          '<input class="btn btn-xs btn-primary"  type="button"  value="下载" onclick="downloads_data(\''+bbdm+'\');"/>';
-                                       return msg;
-                                    }
-                                },
-                              ],
-                              "language": get_languages()
-                       });
-                   },
-                });
-           });
-
-      $('#export_data_btn').click(function(){
-           check_bbgl();
-
-           //检测条件是否为空值
-           var nullstr  = $('#notnull_filter').val()
-           var nullstr2 = nullstr.split(',')
-           var rq_range = $('#rq_range_filter').val()
-           for( var i in nullstr2) {
-               var c = nullstr2[i].split('#')[0]
-               var n = nullstr2[i].split('#')[1]
-
-               if ($('#'+c).val() =='') {
-                  showtips('error',n+'不能为空!');
-                  return false;
-               }
-
-               if ($('#'+c+'_begin').val() =='') {
-                  showtips('error',n+'起不能为空!');
-                  return false;
-               }
-
-               if ($('#'+c+'_end').val() =='') {
-                  showtips('error',n+'止不能为空!');
-                  return false;
-               }
-           }
-
-           //检测日期范围是否超过配置值
-           var rq_range = $('#rq_range_filter').val()
-           var rq_range2 = $('#rq_range_filter').val().split(',')
-           for( var i in rq_range2) {
-               var c = rq_range2[i].split('#')[0]
-               var n = rq_range2[i].split('#')[1]
-               var d = rq_range2[i].split('#')[2]
-               var rqq = $('#'+c+'_begin').val()
-               var rqz = $('#'+c+'_end').val()
-               if (rqq != undefined && rqz != undefined){
-                    if (GetDateDiff(rqq, rqz, "day")>parseInt(d)) {
-                        showtips('error',n+'查询范围不能超过'+d+'天');
-                        return false;
-                   }
-               }
-           }
-
-           obj = $('#form_export_filter').serializeObject();
-           $.ajax({
-                url: "/bbgl/export/data",
-                type: "post",
-                datatype: "json",
-                data: {
-                    bbdm  : $('#cur_bbdm').val(),
-                    param : JSON.stringify(obj),
-                },
-                success: function (dataSet) {
-                    console.log('export=',dataSet)
-                    if (dataSet.code == 0) {
-                        swal("导出成功", "", "success")
-                         $("#query_btn").click();
-                    } else {
-                        swal(dataSet.message, "", "error")
-                    }
-                },
-            })
-      });
-
-      $(document).ready(function() {
-          $("#query_btn").click();
-      });
-   </script>
+    $(document).ready(function () {
+        $("#query_btn").click();
+    });
+</script>
 
 </body>
 

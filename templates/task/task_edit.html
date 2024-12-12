@@ -5,189 +5,196 @@
     <title>任务变更</title>
 </head>
 <body>
-   <p></p>
-   <form class="form-horizontal" role="form">
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>任务标识</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="task_tag"  type="text" class="form-control" value="{{task_tag}}" disabled placeholder="请输入任务标识">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>任务描述</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="task_desc"  type="text" class="form-control" value="{{task_desc}}"  placeholder="请输入任务描述">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_sync_server">*</span>部署服务器</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select class="form-control select" id="task_server" >
-                             {% for var in dm_task_server %}
-                                {% if (var[0] == task_server) %}
-                                   <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                                {% else %}
-                                   <option value={{var[0]}} >{{var[1]}}</option>
-                                {% end %}
-                             {% end %}
-                             <option value='' >......</option>
-                        </select>
-                   </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label">PYTHON3目录</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="python3_home"  type="text" class="form-control" value="{{python3_home}}" placeholder="请输入PYTHON3目录">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_script_base">*</span>脚本目录</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="script_base"  type="text" class="form-control" value="{{script_base}}" placeholder="请输入脚本目录">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_script_name">*</span>备份名称</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="script_name"  type="text" class="form-control" value="{{script_name}}" placeholder="请输入备份名称">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="run_time"  type="text" class="form-control" value="{{run_time}}" placeholder="请输入备份运行时间">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="api_server"  type="text" class="form-control" value="{{api_server}}" placeholder="请输入API服务器">
-                    </div>
-               </div>
-           </div>
-       </div>
-
-       <div class="row">
-          <div class="col-md-6">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
-                    </div>
-                    <div class="col-md-10">
-                        <select class="form-control select" id="status" name="status">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
-                    </div>
+<p></p>
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>任务标识</label>
                 </div>
-           </div>
-       </div>
-       <br>
-       <div class="form-group m-b-0">
-            <div class="col-sm-offset-3 col-sm-3">
-              <button id="upd" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
+                <div class="col-md-10">
+                    <input id="task_tag" type="text" class="form-control" value="{{task_tag}}" disabled
+                           placeholder="请输入任务标识">
+                </div>
             </div>
-       </div>
-   </form>
+        </div>
+    </div>
 
-    <script>
-        $('#task_server').change(function() {
-            if ($('#task_server').val()!=''){
-                var options=$('#task_server option:selected');
-                $("#task_desc").val('任务['+$(options[0]).text()+']');
-                $("#task_tag").val('task_'+$(options[0]).val());
-            } else {
-                $("#task_desc").val('');
-                $("#task_tag").val('');
-            }
-        });
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span>*</span>任务描述</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="task_desc" type="text" class="form-control" value="{{task_desc}}"
+                           placeholder="请输入任务描述">
+                </div>
+            </div>
+        </div>
+    </div>
 
-        $(document).ready(function() {
-           set_selected();
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_sync_server">*</span>部署服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="task_server">
+                        {% for var in dm_task_server %}
+                        {% if (var[0] == task_server) %}
+                        <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                        {% else %}
+                        <option value={{var[0]}}>{{var[1]}}</option>
+                        {% end %}
+                        {% end %}
+                        <option value=''>......</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 
-          $("#upd").click(function () {
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label">PYTHON3目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="python3_home" type="text" class="form-control" value="{{python3_home}}"
+                           placeholder="请输入PYTHON3目录">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>脚本目录</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_base" type="text" class="form-control" value="{{script_base}}"
+                           placeholder="请输入脚本目录">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>备份名称</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="script_name" type="text" class="form-control" value="{{script_name}}"
+                           placeholder="请输入备份名称">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="run_time" type="text" class="form-control" value="{{run_time}}"
+                           placeholder="请输入备份运行时间">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="api_server" type="text" class="form-control" value="{{api_server}}"
+                           placeholder="请输入API服务器">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+                </div>
+                <div class="col-md-10">
+                    <select class="form-control select" id="status" name="status">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="form-group m-b-0">
+        <div class="col-sm-offset-3 col-sm-3">
+            <button id="upd" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $('#task_server').change(function () {
+        if ($('#task_server').val() != '') {
+            var options = $('#task_server option:selected');
+            $("#task_desc").val('任务[' + $(options[0]).text() + ']');
+            $("#task_tag").val('task_' + $(options[0]).val());
+        } else {
+            $("#task_desc").val('');
+            $("#task_tag").val('');
+        }
+    });
+
+    $(document).ready(function () {
+        set_selected();
+
+        $("#upd").click(function () {
             $.ajax({
                 url: "/task/edit/save",
                 type: "post",
                 datatype: "json",
                 data: {
-                    task_tag         : $('#task_tag').val(),
-                    task_desc        : $('#task_desc').val(),
-                    task_server      : $('#task_server').val(),
-                    python3_home     : $('#python3_home').val(),
-                    script_base      : $('#script_base').val(),
-                    script_name      : $('#script_name').val(),
-                    run_time         : $('#run_time').val(),
-                    api_server       : $('#api_server').val(),
-                    status           : $('#status').val(),
+                    task_tag: $('#task_tag').val(),
+                    task_desc: $('#task_desc').val(),
+                    task_server: $('#task_server').val(),
+                    python3_home: $('#python3_home').val(),
+                    script_base: $('#script_base').val(),
+                    script_name: $('#script_name').val(),
+                    run_time: $('#run_time').val(),
+                    api_server: $('#api_server').val(),
+                    status: $('#status').val(),
                 },
                 success: function (dataSet) {
                     console.log(dataSet.code, dataSet.message);
-                    if (dataSet.code==0) {
-                       swal("更新成功", "", "success")
+                    if (dataSet.code == 0) {
+                        swal("更新成功", "", "success")
                     } else {
-                       swal(dataSet.message, "", "error")
+                        swal(dataSet.message, "", "error")
                     }
                 },
-             });
-          });
-
+            });
         });
 
-   </script>
+    });
+
+</script>
 </body>
 
 </html>

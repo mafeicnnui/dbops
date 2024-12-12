@@ -26,228 +26,228 @@
     </style>
 </head>
 <body>
-   <p></p>
-   <form class="form-horizontal" role="form" >
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_login">*</span>用户名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="login"  type="text" class="form-control" placeholder="请输入用户名">
-                </div>
-           </div>
+<p></p>
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_login">*</span>用户名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="login" type="text" class="form-control" placeholder="请输入用户名">
+            </div>
         </div>
-   </form>
+    </div>
+</form>
 
-   <form class="form-horizontal" action=""  method="POST" enctype="multipart/form-data" >
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label">用户头像</label>
-                </div>
-                <div class="col-md-10">
-                    <input type="file" name="files[]" id="filer_input1"  multiple="multiple">
-                </div>
-           </div>
-           <div class="col-md-1">
-                <input  id="image_path" type="hidden" >
-                <image  id="image_file" width="50px" src='' alt=''></image>
-           </div>
+<form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label">用户头像</label>
+            </div>
+            <div class="col-md-10">
+                <input type="file" name="files[]" id="filer_input1" multiple="multiple">
+            </div>
         </div>
-   </form>
+        <div class="col-md-1">
+            <input id="image_path" type="hidden">
+            <image id="image_file" width="50px" src='' alt=''></image>
+        </div>
+    </div>
+</form>
 
-   <form class="form-horizontal" role="form" >
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_user">*</span>姓名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="user" name="user" type="text" class="form-control" placeholder="请输入姓名">
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_user">*</span>姓名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="user" name="user" type="text" class="form-control" placeholder="请输入姓名">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_wkno">*</span>工号</label>
+            </div>
+            <div class="col-md-10">
+                <input id="wkno" name="user" type="text" class="form-control" placeholder="请输入工号">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_pass">*</span>密码</label>
+            </div>
+            <div class="col-md-10">
+                <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入密码">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_gender">*</span>性别</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="gender" name="gender">
+                    <option value='' selected="selected">请选择性别</option>
+                    {% for var in gender %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_proj_group">*</span>项目组</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="proj_group" name="dept">
+                    <option value='' selected="selected">请选择项目组</option>
+                    {% for var in proj_group %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_dept">*</span>部门</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="dept" name="dept">
+                    <option value='' selected="selected">请选择部门</option>
+                    {% for var in dept %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_email">*</span>电子邮箱</label>
+            </div>
+            <div class="col-md-10">
+                <input id="email" name="email" type="text" class="form-control" placeholder="请输入电子邮箱">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_phone">*</span>联系方式</label>
+            </div>
+            <div class="col-md-10">
+                <input id="phone" name="phone" type="text" class="form-control" placeholder="请输入联系方式">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_expire_date">*</span>过期日期</label>
+            </div>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input id="expire_date" name="expire_date" type="text" class="form-control datepicker">
+                    <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
                 </div>
             </div>
-         </div>
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_wkno">*</span>工号</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="wkno" name="user" type="text" class="form-control" placeholder="请输入工号">
-                </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_status">*</span>用户状态</label>
             </div>
-         </div>
-         <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_pass">*</span>密码</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入密码">
-                </div>
-           </div>
-         </div>
-         <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_gender">*</span>性别</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="gender" name="gender">
-                            <option value='' selected = "selected">请选择性别</option>
-                            {% for var in gender %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-
-                        </select>
-                   </div>
-               </div>
-           </div>
-           <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_proj_group">*</span>项目组</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="proj_group" name="dept">
-                            <option value='' selected = "selected">请选择项目组</option>
-                            {% for var in proj_group %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-                </div>
-          </div>
-           <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_dept">*</span>部门</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="dept" name="dept">
-                            <option value='' selected = "selected">请选择部门</option>
-                            {% for var in dept %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-                </div>
-          </div>
-          <div class="row">
-             <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_email">*</span>电子邮箱</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="email" name="email" type="text" class="form-control" placeholder="请输入电子邮箱">
-                </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
             </div>
-          </div>
-          <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_phone">*</span>联系方式</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="phone" name="phone" type="text" class="form-control" placeholder="请输入联系方式">
-                    </div>
-                </div>
-          </div>
-          <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_expire_date">*</span>过期日期</label>
-                    </div>
-                    <div class="col-md-10">
-                        <div class="input-group">
-                            <input  id="expire_date" name="expire_date" type="text" class="form-control datepicker" >
-                            <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-                        </div>
-                    </div>
-                </div>
-          </div>
-          <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_status">*</span>用户状态</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="status" name="status">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
-                   </div>
-                </div>
-          </div>
-          <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv2">*</span>用户角色</label>
-                    </div>
-                    <div class="col-md-10">
-                         <select class="selectpicker" multiple data-style="btn-default" id="ua_sele_role_priv2"  >
-                             {% for var in roles %}
-                                <option value={{var[0]}} >{{var[1]}}</option>
-                             {% end %}
-                         </select>
-                    </div>
-               </div>
-          </div>
-          <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span>*</span>查询授权</label>
-                    </div>
-                   <div class="col-md-10">
-                        <select class="form-control select" id="query_grants" name="query_grants">
-                            {% for var in query_grants %}
-                                <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-                </div>
-          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv2">*</span>用户角色</label>
+            </div>
+            <div class="col-md-10">
+                <select class="selectpicker" multiple data-style="btn-default" id="ua_sele_role_priv2">
+                    {% for var in roles %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>查询授权</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="query_grants" name="query_grants">
+                    {% for var in query_grants %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
 
 
-          <br>
-          <div class="form-group m-b-0">
-                <div class="col-sm-offset-3 col-sm-9">
-                    <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-                </div>
-           </div>
-           <br>
-       </form>
+    <br>
+    <div class="form-group m-b-0">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+        </div>
+    </div>
+    <br>
+</form>
 
-    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-    <script>
-        $(document).ready(function() {
+<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+<script>
+    $(document).ready(function () {
 
-          set_selected();
+        set_selected();
 
-          $('#add3').click(function(){
-               $('.selectpicker').selectpicker(
-                   'val' ,['1','2']
-               );
-          })
+        $('#add3').click(function () {
+            $('.selectpicker').selectpicker(
+                'val', ['1', '2']
+            );
+        })
 
-          function get_privs(){
-              var tmp='';
-              arr = $('#ua_sele_role_priv2').val()
-              if (arr.length>0) {
-                 for (let i = 0, len = arr.length; i < len; i++) {
-                   tmp=tmp+','+arr[i];
-                 }
-              } else {
-                  return ''
-              }
-              return tmp.substr(1);
-          }
+        function get_privs() {
+            var tmp = '';
+            arr = $('#ua_sele_role_priv2').val()
+            if (arr.length > 0) {
+                for (let i = 0, len = arr.length; i < len; i++) {
+                    tmp = tmp + ',' + arr[i];
+                }
+            } else {
+                return ''
+            }
+            return tmp.substr(1);
+        }
 
-          $('#expire_date').attr("readonly", "readonly");
+        $('#expire_date').attr("readonly", "readonly");
 
-          $("#add").click(function () {
-            if ($("#filer_input1").get(0).files.length>0) {
+        $("#add").click(function () {
+            if ($("#filer_input1").get(0).files.length > 0) {
                 var fd = new FormData();
                 files = $("#filer_input1").get(0).files;
                 fd.append("file", files[0]);
@@ -270,21 +270,21 @@
                                 type: "post",
                                 datatype: "json",
                                 data: {
-                                    login      : $('#login').val(),
-                                    wkno       : $('#wkno').val(),
-                                    user       : $('#user').val(),
-                                    pass       : $('#pass').val(),
-                                    gender     : $('#gender').val(),
-                                    email      : $('#email').val(),
-                                    phone      : $('#phone').val(),
-                                    proj_group : $('#proj_group').val(),
-                                    dept       : $('#dept').val(),
+                                    login: $('#login').val(),
+                                    wkno: $('#wkno').val(),
+                                    user: $('#user').val(),
+                                    pass: $('#pass').val(),
+                                    gender: $('#gender').val(),
+                                    email: $('#email').val(),
+                                    phone: $('#phone').val(),
+                                    proj_group: $('#proj_group').val(),
+                                    dept: $('#dept').val(),
                                     expire_date: $('#expire_date').val(),
-                                    status     : $('#status').val(),
-                                    privs      : get_privs(),
-                                    file_path  : dataSet.file_path,
-                                    file_name  : dataSet.file_name,
-                                    query_grants:$('#query_grants').val(),
+                                    status: $('#status').val(),
+                                    privs: get_privs(),
+                                    file_path: dataSet.file_path,
+                                    file_name: dataSet.file_name,
+                                    query_grants: $('#query_grants').val(),
                                 },
                                 success: function (dataSet) {
                                     if (dataSet.code == 0) {
@@ -302,54 +302,54 @@
                     }
                 });
             } else {
-                   $.ajax({
-                        url: "/user/add/save",
-                        type: "post",
-                        datatype: "json",
-                        data: {
-                            login  : $('#login').val(),
-                            wkno   : $('#wkno').val(),
-                            user   : $('#user').val(),
-                            pass   : $('#pass').val(),
-                            gender : $('#gender').val(),
-                            email  : $('#email').val(),
-                            phone  : $('#phone').val(),
-                            proj_group: $('#proj_group').val(),
-                            dept: $('#dept').val(),
-                            expire_date: $('#expire_date').val(),
-                            status: $('#status').val(),
-                            privs: get_privs(),
-                            file_path: '',
-                            file_name: '',
-                            query_grants:$('#query_grants').val(),
-                        },
-                        success: function (dataSet) {
-                            if (dataSet.code == 0) {
-                                swal("保存成功", "", "success")
-                            } else {
-                                swal(dataSet.message, "", "error")
-                            }
+                $.ajax({
+                    url: "/user/add/save",
+                    type: "post",
+                    datatype: "json",
+                    data: {
+                        login: $('#login').val(),
+                        wkno: $('#wkno').val(),
+                        user: $('#user').val(),
+                        pass: $('#pass').val(),
+                        gender: $('#gender').val(),
+                        email: $('#email').val(),
+                        phone: $('#phone').val(),
+                        proj_group: $('#proj_group').val(),
+                        dept: $('#dept').val(),
+                        expire_date: $('#expire_date').val(),
+                        status: $('#status').val(),
+                        privs: get_privs(),
+                        file_path: '',
+                        file_name: '',
+                        query_grants: $('#query_grants').val(),
+                    },
+                    success: function (dataSet) {
+                        if (dataSet.code == 0) {
+                            swal("保存成功", "", "success")
+                        } else {
+                            swal(dataSet.message, "", "error")
                         }
-                    });
+                    }
+                });
             }
 
-          });
+        });
 
-          $('#filer_input1').filer({
-                limit: 1,
-                maxSize: 3,
-                extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
-                changeInput: true,
-                showThumbs: true,
-                addMore: true
-           });
+        $('#filer_input1').filer({
+            limit: 1,
+            maxSize: 3,
+            extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+            changeInput: true,
+            showThumbs: true,
+            addMore: true
+        });
 
-          $('.selectpicker').selectpicker({
-               noneSelectedText : '请选择角色...'
-          });
-       });
+        $('.selectpicker').selectpicker({
+            noneSelectedText: '请选择角色...'
+        });
+    });
 
-   </script>
+</script>
 </body>
 
 </html>

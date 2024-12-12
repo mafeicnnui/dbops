@@ -5,154 +5,154 @@
     <title>新增服务器</title>
 </head>
 <body>
-   <p></p>
-   <div class="col-md-6">
-       <form class="form-horizontal" role="form">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_desc">*</span>服务器描述</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_desc"  type="text" class="form-control" placeholder="请输入服务器描述">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_market_id">*</span>项目编码名</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="market_id" >
-                        <option value='' selected = "selected">......</option>
-                         {% for var in dm_proj_type %}
-                          <option value={{var[0]}} >{{var[1]}}</option>
-                         {% end %}
-                    </select>
-               </div>
+<p></p>
+<div class="col-md-6">
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_desc">*</span>服务器描述</label>
             </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_type">*</span>服务器类型</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="server_type">
-                        <option value='' selected = "selected">......</option>
-                        {% for var in dm_server_type %}
-                          <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_ip">*</span>服务器地址</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_ip"  type="text" class="form-control" placeholder="请输入服务器地址">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_port">*</span>服务器端口</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_port"  type="text" class="form-control" placeholder="请输入服务器端口">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_user">*</span>服务器用户</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_user"  type="text" class="form-control" placeholder="请输入服务器用户">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_pass">*</span>服务器密码</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_pass" name="pass" type="password" class="form-control" placeholder="请输入服务器密码">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_os">*</span>服务器系统</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_os"  type="text" class="form-control" placeholder="请输入服务器系统">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_cpu">*</span>服务器CPU</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_cpu"  type="text" class="form-control" placeholder="请输入服务器CPU">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_server_mem">*</span>服务器内存</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="server_mem"  type="text" class="form-control" placeholder="请输入服务器内存" >
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_status">*</span>服务器状态</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="status" name="status">
-                        <option value="1">启用</option>
-                        <option value="0">禁用</option>
-                    </select>
-               </div>
-           </div>
-           <br>
-           <div class="form-group m-b-0">
-                <div class="col-sm-offset-6 col-sm-9">
-                  <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-                </div>
-           </div>
-       </form>
-    </div>
+            <div class="col-md-10">
+                <input id="server_desc" type="text" class="form-control" placeholder="请输入服务器描述">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_market_id">*</span>项目编码名</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="market_id">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_proj_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_type">*</span>服务器类型</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="server_type">
+                    <option value='' selected="selected">......</option>
+                    {% for var in dm_server_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_ip">*</span>服务器地址</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_ip" type="text" class="form-control" placeholder="请输入服务器地址">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_port">*</span>服务器端口</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_port" type="text" class="form-control" placeholder="请输入服务器端口">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_user">*</span>服务器用户</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_user" type="text" class="form-control" placeholder="请输入服务器用户">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_pass">*</span>服务器密码</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_pass" name="pass" type="password" class="form-control" placeholder="请输入服务器密码">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_os">*</span>服务器系统</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_os" type="text" class="form-control" placeholder="请输入服务器系统">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_cpu">*</span>服务器CPU</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_cpu" type="text" class="form-control" placeholder="请输入服务器CPU">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_server_mem">*</span>服务器内存</label>
+            </div>
+            <div class="col-md-10">
+                <input id="server_mem" type="text" class="form-control" placeholder="请输入服务器内存">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_status">*</span>服务器状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="form-group m-b-0">
+            <div class="col-sm-offset-6 col-sm-9">
+                <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
 
-    <script>
+<script>
 
-        $(document).ready(function() {
-          set_selected()
-          $("#add").click(function () {
+    $(document).ready(function () {
+        set_selected()
+        $("#add").click(function () {
             $.ajax({
                 url: "/server/add/save",
                 type: "post",
                 datatype: "json",
                 data: {
-                    market_id   : $('#market_id').val(),
-                    server_desc : $('#server_desc').val(),
-                    server_type : $('#server_type').val(),
-                    server_ip   : $('#server_ip').val(),
-                    server_port : $('#server_port').val(),
-                    server_user : $('#server_user').val(),
-                    server_pass : $('#server_pass').val(),
-                    server_os   : $('#server_os').val(),
-                    server_cpu  : $('#server_cpu').val(),
-                    server_mem  : $('#server_mem').val(),
-                    status      : $('#status').val(),
+                    market_id: $('#market_id').val(),
+                    server_desc: $('#server_desc').val(),
+                    server_type: $('#server_type').val(),
+                    server_ip: $('#server_ip').val(),
+                    server_port: $('#server_port').val(),
+                    server_user: $('#server_user').val(),
+                    server_pass: $('#server_pass').val(),
+                    server_os: $('#server_os').val(),
+                    server_cpu: $('#server_cpu').val(),
+                    server_mem: $('#server_mem').val(),
+                    status: $('#status').val(),
                 },
                 success: function (dataSet) {
-                    if (dataSet.code==0) {
-                       swal("保存成功", "", "success")
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
                     } else {
-                       swal(dataSet.message, "", "error")
+                        swal(dataSet.message, "", "error")
                     }
                 },
-             });
-          });
-
+            });
         });
 
-   </script>
+    });
+
+</script>
 </body>
 
 </html>

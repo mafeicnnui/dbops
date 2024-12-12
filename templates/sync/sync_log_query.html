@@ -4,88 +4,95 @@
     <meta charset="utf-8">
     <title>日志查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
         table.datatable tr th, table.datatable tr td {
             white-space: nowrap;
         }
-         .modal-lg {
-            width:86%;
-            height:80%;
-            margin-left:240px;
-            margin-right:50px;
-            margin-top:80px;
+
+        .modal-lg {
+            width: 86%;
+            height: 80%;
+            margin-left: 240px;
+            margin-right: 50px;
+            margin-top: 80px;
         }
 
     </style>
 </head>
 <body>
-     <p></p>
-     <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">项目名</span>
-                 <select class="form-control select" id="market_id" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_proj_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">业务类型</span>
-                 <select class="form-control select" id="sync_ywlx" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_sync_ywlx %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">同步日期起</span>
-              <input  id="begin_date"  type="text" class="form-control datepicker" placeholder="同步日期起" value="{{begin_date}}">
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-            </div>
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" id="tagname" class="form-control" placeholder="请输入标签名">
         </div>
-        <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">止</span>
-              <input  id="end_date"  type="text" class="form-control datepicker" placeholder="同步日期起" value="{{end_date}}">
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-            </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">项目名</span>
+            <select class="form-control select" id="market_id">
+                <option value='' selected="selected">.....</option>
+                {% for var in dm_proj_type %}
+                <option value={{var[0]}}>{{var[1]}}</option>
+                {% end %}
+            </select>
         </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">业务类型</span>
+            <select class="form-control select" id="sync_ywlx">
+                <option value='' selected="selected">.....</option>
+                {% for var in dm_sync_ywlx %}
+                <option value={{var[0]}}>{{var[1]}}</option>
+                {% end %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">同步日期起</span>
+            <input id="begin_date" type="text" class="form-control datepicker" placeholder="同步日期起"
+                   value="{{begin_date}}">
+            <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">止</span>
+            <input id="end_date" type="text" class="form-control datepicker" placeholder="同步日期起"
+                   value="{{end_date}}">
+            <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+        </div>
+    </div>
 
-         <div class="col-md-1">
-             <div class="input-group">
+    <div class="col-md-1">
+        <div class="input-group">
               <span class="input-group-btn">
-                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                        class="fa fa-search"></i></button>
               </span>
-            </div>
         </div>
-      </div>
-     <p></p>
-     <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-         </div>
-     </div>
-   </div>
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                   width="100%" height="100%"></table>
+        </div>
+    </div>
+</div>
+</div>
 
-   <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg">
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -93,175 +100,180 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                     <div class="col-md-3">
-                         <div class="input-group">
+                    <div class="col-md-3">
+                        <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                            <input type="text" id="sync_tag2"  disabled class="form-control" placeholder="请输入标签名">
-                         </div>
-                     </div>
+                            <input type="text" id="sync_tag2" disabled class="form-control" placeholder="请输入标签名">
+                        </div>
+                    </div>
 
-                     <div class="col-md-3">
-                         <div class="input-group">
-                              <span class="input-group-addon">同步日期起</span>
-                              <input  id="sync_rqq"  type="text" class="form-control datepicker" placeholder="同步日期起">
-                              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-                            </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">同步日期起</span>
+                            <input id="sync_rqq" type="text" class="form-control datepicker" placeholder="同步日期起">
+                            <span class="input-group-addon bg-custom b-0"><i
+                                    class="mdi mdi-calendar text-white"></i></span>
                         </div>
-                        <div class="col-md-2">
-                             <div class="input-group">
-                              <span class="input-group-addon">止</span>
-                              <input  id="sync_rqz"  type="text" class="form-control datepicker" placeholder="同步日期起">
-                              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-                            </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group">
+                            <span class="input-group-addon">止</span>
+                            <input id="sync_rqz" type="text" class="form-control datepicker" placeholder="同步日期起">
+                            <span class="input-group-addon bg-custom b-0"><i
+                                    class="mdi mdi-calendar text-white"></i></span>
                         </div>
+                    </div>
 
                     <div class="col-md-1">
-                         <div class="input-group">
+                        <div class="input-group">
                           <span class="input-group-btn">
-                            <button type="button"  id='query_btn2' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                            <button type="button" id='query_btn2' class="btn waves-effect waves-light btn-primary"><i
+                                    class="fa fa-search"></i></button>
                           </span>
                         </div>
-                   </div>
+                    </div>
 
                 </div>
                 <br>
                 <div class="row">
-                     <div class="col-md-12">
-                          <div id="div-tab2">
-                               <table id="example2" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" ></table>
-                          </div>
-                     </div>
+                    <div class="col-md-12">
+                        <div id="div-tab2">
+                            <table id="example2" style="white-space: nowrap;"
+                                   class="table table-striped table-bordered nowrap"></table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-   </div><!-- /.modal -->
+</div><!-- /.modal -->
 
-   <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-   <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
+<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
+            $("#query_btn").click();
+        }
+    });
 
 
-        $("#query_btn2").click(function() {
-              $.ajax({
-                  url: "/sync/log/_query/detail",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sync_tag   : $('#sync_tag2').val(),
-                      sync_rqq   : $('#sync_rqq').val(),
-                      sync_rqz   : $('#sync_rqz').val(),
-                  },
-                  success: function (dataSet) {
-                       $('#con-close-modal').modal({
-                         keyboard: false,
-                         backdrop:false
-                       });
+    $("#query_btn2").click(function () {
+        $.ajax({
+            url: "/sync/log/_query/detail",
+            type: "post",
+            datatype: "json",
+            data: {
+                sync_tag: $('#sync_tag2').val(),
+                sync_rqq: $('#sync_rqq').val(),
+                sync_rqz: $('#sync_rqz').val(),
+            },
+            success: function (dataSet) {
+                $('#con-close-modal').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
 
-                      $('#example2').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :false,
-                          ordering   :true,
-                          bAutoWidth :true,
-                          scrollX    :true,
-                          paging:     true,
-                          iDisplayLength: 12,
-                          data: dataSet,
-                          columns: [
-                            { "title": "任务描述"},
-                            { "title": "标签名" },
-                            { "title": "同步表名" },
-                            { "title": "同步时间" },
-                            { "title": "同步记录数" },
-                            { "title": "同步耗时(s)" }
-                          ],
-                          "language": get_languages()
-                      });
-                  },
-             });
-            });
+                $('#example2').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: false,
+                    ordering: true,
+                    bAutoWidth: true,
+                    scrollX: true,
+                    paging: true,
+                    iDisplayLength: 12,
+                    data: dataSet,
+                    columns: [
+                        {"title": "任务描述"},
+                        {"title": "标签名"},
+                        {"title": "同步表名"},
+                        {"title": "同步时间"},
+                        {"title": "同步记录数"},
+                        {"title": "同步耗时(s)"}
+                    ],
+                    "language": get_languages()
+                });
+            },
+        });
+    });
 
-        $(document).ready(function() {
+    $(document).ready(function () {
 
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/sync/log/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sync_tag  : $('#tagname').val(),
-                      market_id : $('#market_id').val(),
-                      sync_ywlx : $('#sync_ywlx').val(),
-                      begin_date: $('#begin_date').val(),
-                      end_date  : $('#end_date').val()
-                  },
-                  beforeSend: function () {
-                          swal({title: "正在查询中...",type: "info",showConfirmButton: false});
-                  },
-                  complete: function () {
-                          swal({title: "正在查询中...",type: "info",timer: 1000,showConfirmButton: false});
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                      destroy    :true,
-                      async      :true,
-                      scrollY    :false,
-                      ordering   :true,
-                      scrollX    :false,
-                      scrollCollapse: true,
-                      paging:     true,
-                      iDisplayLength: 16,
-                      //bAutoWidth: true,
-                      data: dataSet,
-                      columns: [
-                        { "title": "标识符"},
-                        { "title": "项目名"},
-                        { "title": "任务描述"},
-                        { "title": "标签名" },
-                        { "title": "最近同步日期" },
-                        { "title": "同步时长(s)" },
-                        { "title": "同步记录数" },
-                        {
-                            "title":"详情",
-                            "width": "25px",
-                            "render": function(data,type,row)
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/sync/log/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    sync_tag: $('#tagname').val(),
+                    market_id: $('#market_id').val(),
+                    sync_ywlx: $('#sync_ywlx').val(),
+                    begin_date: $('#begin_date').val(),
+                    end_date: $('#end_date').val()
+                },
+                beforeSend: function () {
+                    swal({title: "正在查询中...", type: "info", showConfirmButton: false});
+                },
+                complete: function () {
+                    swal({title: "正在查询中...", type: "info", timer: 1000, showConfirmButton: false});
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        scrollY: false,
+                        ordering: true,
+                        scrollX: false,
+                        scrollCollapse: true,
+                        paging: true,
+                        iDisplayLength: 16,
+                        //bAutoWidth: true,
+                        data: dataSet,
+                        columns: [
+                            {"title": "标识符"},
+                            {"title": "项目名"},
+                            {"title": "任务描述"},
+                            {"title": "标签名"},
+                            {"title": "最近同步日期"},
+                            {"title": "同步时长(s)"},
+                            {"title": "同步记录数"},
                             {
-                               p_val=row[3]+','+row[4].substring(0,10)
-                               return  '<button class="btn btn-xs waves-effect waves-light"  onclick=isSelect("'+p_val+'")><i class="ion-skip-forward"></i></button>'
-                            }
-                        },
-                      ],
-                      "language": get_languages()
-                     });
-                   },
-               });
+                                "title": "详情",
+                                "width": "25px",
+                                "render": function (data, type, row) {
+                                    p_val = row[3] + ',' + row[4].substring(0, 10)
+                                    return '<button class="btn btn-xs waves-effect waves-light"  onclick=isSelect("' + p_val + '")><i class="ion-skip-forward"></i></button>'
+                                }
+                            },
+                        ],
+                        "language": get_languages()
+                    });
+                },
             });
-
         });
 
-        function isSelect(v) {
-            $('#sync_tag2').val(v.split(',')[0])
-            $('#sync_rqq').val(v.split(',')[1])
-            $('#sync_rqz').val(v.split(',')[1])
-            $('#example2').empty();
-            $("#query_btn2").click()
-        }
+    });
 
-   </script>
+    function isSelect(v) {
+        $('#sync_tag2').val(v.split(',')[0])
+        $('#sync_rqq').val(v.split(',')[1])
+        $('#sync_rqz').val(v.split(',')[1])
+        $('#example2').empty();
+        $("#query_btn2").click()
+    }
+
+</script>
 </body>
 
 </html>

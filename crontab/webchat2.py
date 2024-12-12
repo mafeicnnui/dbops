@@ -18,62 +18,75 @@ import json
   功能：全局配置
 '''
 config = {
-    "chat_interface":"https://alarm.lifeat.cn/wx/cp/msg/1000012",
-    "mysql":"10.2.39.17:23306:puppet:puppet:Puppet@123",
-    "warn_level":"紧急"
+    "chat_interface": "https://alarm.lifeat.cn/wx/cp/msg/1000012",
+    "mysql": "10.2.39.17:23306:puppet:puppet:Puppet@123",
+    "warn_level": "紧急"
 }
 
 '''
   功能：获取mysql连接，以元组返回
 '''
-def get_ds_mysql(ip,port,service ,user,password):
+
+
+def get_ds_mysql(ip, port, service, user, password):
     conn = pymysql.connect(host=ip, port=int(port), user=user, passwd=password, db=service, charset='utf8')
     return conn
+
 
 '''
   功能：获取mysql连接，以字典返回
 '''
-def get_ds_mysql_dict(ip,port,service ,user,password):
+
+
+def get_ds_mysql_dict(ip, port, service, user, password):
     conn = pymysql.connect(host=ip, port=int(port), user=user, passwd=password, db=service,
-                           charset='utf8',cursorclass = pymysql.cursors.DictCursor)
+                           charset='utf8', cursorclass=pymysql.cursors.DictCursor)
     return conn
 
 
 '''
  功能：获取数据库连接
 '''
+
+
 def get_config(config):
-    db_ip                   = config['mysql'].split(':')[0]
-    db_port                 = config['mysql'].split(':')[1]
-    db_service              = config['mysql'].split(':')[2]
-    db_user                 = config['mysql'].split(':')[3]
-    db_pass                 = config['mysql'].split(':')[4]
-    config['db_mysql']      = get_ds_mysql(db_ip,db_port,db_service,db_user,db_pass)
+    db_ip = config['mysql'].split(':')[0]
+    db_port = config['mysql'].split(':')[1]
+    db_service = config['mysql'].split(':')[2]
+    db_user = config['mysql'].split(':')[3]
+    db_pass = config['mysql'].split(':')[4]
+    config['db_mysql'] = get_ds_mysql(db_ip, db_port, db_service, db_user, db_pass)
     config['db_mysql_dict'] = get_ds_mysql_dict(db_ip, db_port, db_service, db_user, db_pass)
     return config
+
 
 '''
   功能：调用接口发送消息
 '''
-def send_message(config,message):
+
+
+def send_message(config, message):
     try:
         r = requests.post(config['chat_interface'], data=bytes(message, 'UTF-8'))
         print(r.text)
     except:
         print(traceback.print_exc())
 
+
 '''
   功能：发送邮件
   send_mail465('190343@lifeat.cn', 'Hhc5HBtAuYTPGHQ8', '190343@lifeat.cn', v_title, v_content)
 '''
-def send_mail465(p_from_user,p_from_pass,p_to_user,p_title,p_content):
-    to_user=p_to_user.split(",")
+
+
+def send_mail465(p_from_user, p_from_pass, p_to_user, p_title, p_content):
+    to_user = p_to_user.split(",")
     try:
-        msg            = MIMEText(p_content,'html','utf-8')
+        msg = MIMEText(p_content, 'html', 'utf-8')
         msg["Subject"] = p_title
-        msg["From"]    = p_from_user
-        msg["To"]      = ",".join(to_user)
-        server         = smtplib.SMTP_SSL("smtp.exmail.qq.com", 465)
+        msg["From"] = p_from_user
+        msg["To"] = ",".join(to_user)
+        server = smtplib.SMTP_SSL("smtp.exmail.qq.com", 465)
         server.set_debuglevel(0)
         server.login(p_from_user, p_from_pass)
         server.sendmail(p_from_user, to_user, msg.as_string())
@@ -85,42 +98,50 @@ def send_mail465(p_from_user,p_from_pass,p_to_user,p_title,p_content):
 '''
  功能：获取server信息
 '''
-def get_server_info(config,server_id):
+
+
+def get_server_info(config, server_id):
     db = config['db_mysql_dict']
     cr = db.cursor()
     st = 'SELECT * FROM t_server where id={}'.format(server_id)
     cr.execute(st)
-    rs=cr.fetchone()
+    rs = cr.fetchone()
     return rs
 
 
 '''
  功能：获取db信息
 '''
-def get_db_info(config,db_id):
+
+
+def get_db_info(config, db_id):
     db = config['db_mysql_dict']
     cr = db.cursor()
-    st = "SELECT a.*,b.dmmc as db_type_name FROM t_db_source a,t_dmmx b where a.db_type=b.dmm and b.dm='02' and a.id={}".format(db_id)
+    st = "SELECT a.*,b.dmmc as db_type_name FROM t_db_source a,t_dmmx b where a.db_type=b.dmm and b.dm='02' and a.id={}".format(
+        db_id)
     cr.execute(st)
-    rs=cr.fetchone()
+    rs = cr.fetchone()
     return rs
 
 
 '''
  功能：写告警日志
 '''
-def write_warn_log(config,server_id,index_code,index_name,index_value,flag):
+
+
+def write_warn_log(config, server_id, index_code, index_name, index_value, flag):
     db = config['db_mysql_dict']
     cr = db.cursor()
     if flag == 'failure':
-        st ='''select count(0) as rec from t_monitor_server_warn_log where server_id={} and index_code='{}' '''.format(server_id,index_code)
+        st = '''select count(0) as rec from t_monitor_server_warn_log where server_id={} and index_code='{}' '''.format(
+            server_id, index_code)
         cr.execute(st)
         rs = cr.fetchone()
-        if rs['rec']==0:
+        if rs['rec'] == 0:
             st = '''insert into t_monitor_server_warn_log(server_id,server_desc,fail_times,succ_times,create_time,is_send_rcv_mail,index_code,index_name,index_value) 
                      values({},'{}',{},{},'{}','{}','{}','{}','{}')
                  '''.format(server_id,
-                            get_server_info(config,server_id)['server_desc'],
+                            get_server_info(config, server_id)['server_desc'],
                             1,
                             0,
                             get_time(),
@@ -138,13 +159,13 @@ def write_warn_log(config,server_id,index_code,index_name,index_value,flag):
                           is_send_rcv_mail='N',
                           update_time=now() 
                       where server_id={} 
-                 '''.format(index_value,server_id)
-        print('write_warn_log=>failure=',st)
+                 '''.format(index_value, server_id)
+        print('write_warn_log=>failure=', st)
         cr.execute(st)
         db.commit()
 
-    if flag =='success':
-        st ='''select count(0) as rec from t_monitor_server_warn_log where server_id={} '''.format(server_id)
+    if flag == 'success':
+        st = '''select count(0) as rec from t_monitor_server_warn_log where server_id={} '''.format(server_id)
         cr.execute(st)
         rs = cr.fetchone()
         if rs['rec'] > 0:
@@ -155,13 +176,13 @@ def write_warn_log(config,server_id,index_code,index_name,index_value,flag):
                                   fail_times=0,
                                   update_time=now() 
                               where server_id={} 
-                         '''.format(index_value,server_id)
-            #print('write_warn_log=>success=', st)
+                         '''.format(index_value, server_id)
+            # print('write_warn_log=>success=', st)
             cr.execute(st)
             db.commit()
 
-    if flag =='recover':
-        st ='''select count(0) as rec from t_monitor_server_warn_log 
+    if flag == 'recover':
+        st = '''select count(0) as rec from t_monitor_server_warn_log 
                   where server_id={} and succ_times=1'''.format(server_id)
         cr.execute(st)
         rs = cr.fetchone()
@@ -181,7 +202,9 @@ def write_warn_log(config,server_id,index_code,index_name,index_value,flag):
 '''
  功能：统计某个服务失败次数
 '''
-def stat_warn_times(config,server_id):
+
+
+def stat_warn_times(config, server_id):
     try:
         db = config['db_mysql_dict']
         cr = db.cursor()
@@ -192,29 +215,37 @@ def stat_warn_times(config,server_id):
     except:
         return 0
 
+
 '''
  功能：获取某个指标阀值
 '''
-def get_index_threshold(config,p_index_code):
+
+
+def get_index_threshold(config, p_index_code):
     try:
         db = config['db_mysql_dict']
         cr = db.cursor()
-        st = "SELECT index_threshold*100 as index_threshold FROM t_monitor_index WHERE index_code='{}'".format(p_index_code)
+        st = "SELECT index_threshold*100 as index_threshold FROM t_monitor_index WHERE index_code='{}'".format(
+            p_index_code)
         cr.execute(st)
         rs = cr.fetchone()
         return float(rs['index_threshold'])
     except:
         return 0
 
+
 def get_time():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 
 def str2datetime(p_rq):
     return datetime.datetime.strptime(p_rq, '%Y-%m-%d %H:%M:%S')
 
+
 def get_seconds(b):
-    a=datetime.datetime.now()
-    return int((a-b).total_seconds())
+    a = datetime.datetime.now()
+    return int((a - b).total_seconds())
+
 
 def server_warning(config):
     cfg = get_config(config)
@@ -252,7 +283,7 @@ def server_warning(config):
     print('>>>>>>>服务器连接异常告警....')
     for r in rs:
         server_info = get_server_info(cfg, r['server_id'])
-        fail_times  = stat_warn_times(cfg, r['server_id'])
+        fail_times = stat_warn_times(cfg, r['server_id'])
         if r['index_value'] == '0':
             print(server_info)
             v_title = '{}服务器告警({})'.format(server_info['server_desc'], fail_times + 1)
@@ -301,18 +332,19 @@ def server_warning(config):
 
 
 def get_max_disk_usage(d_disk):
-    n_max_val =0.0
+    n_max_val = 0.0
     for key in d_disk:
-        if n_max_val <= float (d_disk[key]):
-           n_max_val = float (d_disk[key])
+        if n_max_val <= float(d_disk[key]):
+            n_max_val = float(d_disk[key])
     result = str(n_max_val)
     return result
 
+
 def disk_warning(config):
     cfg = get_config(config)
-    db  = cfg['db_mysql_dict']
-    cr  = db.cursor()
-    ft  = '''
+    db = cfg['db_mysql_dict']
+    cr = db.cursor()
+    ft = '''
       服务器名：{0}:{1}
       告警时间：{2}
       告警级别：{3}
@@ -345,27 +377,27 @@ def disk_warning(config):
     rs = cr.fetchall()
     print('>>>>>>>磁盘使用率告警....')
     for r in rs:
-        server_info     = get_server_info(cfg, r['server_id'])
-        fail_times      = stat_warn_times(cfg, r['server_id'])
+        server_info = get_server_info(cfg, r['server_id'])
+        fail_times = stat_warn_times(cfg, r['server_id'])
         index_threshold = get_index_threshold(config, r['index_code'])
-        max_disk_usage  = get_max_disk_usage(json.loads(r['index_value']))
+        max_disk_usage = get_max_disk_usage(json.loads(r['index_value']))
 
         if float(max_disk_usage) > index_threshold:
             print(server_info)
-            v_title   = '{}服务器告警({})'.format(server_info['server_desc'], fail_times + 1)
+            v_title = '{}服务器告警({})'.format(server_info['server_desc'], fail_times + 1)
             v_content = ft.format(server_info['server_ip'], server_info['server_port'],
                                   get_time(),
                                   cfg['warn_level'],
-                                  '{}{}% (阀值{}%)'.format(r['index_name'], max_disk_usage+'%', index_threshold),
+                                  '{}{}% (阀值{}%)'.format(r['index_name'], max_disk_usage + '%', index_threshold),
                                   fail_times + 1
                                   )
             if fail_times in (3, 4, 5):
                 send_message(cfg, v_title + v_content)
 
-            write_warn_log(cfg, r['server_id'], r['index_code'], r['index_name'], max_disk_usage+'%', 'failure')
+            write_warn_log(cfg, r['server_id'], r['index_code'], r['index_name'], max_disk_usage + '%', 'failure')
         else:
             # 写恢复告警日志
-            write_warn_log(cfg, r['server_id'], r['index_code'], r['index_name'], max_disk_usage+'%', 'success')
+            write_warn_log(cfg, r['server_id'], r['index_code'], r['index_name'], max_disk_usage + '%', 'success')
 
     '''发送异恢复邮件或微信'''
     cr.execute("""SELECT * FROM t_monitor_server_warn_log a,t_server b
@@ -377,8 +409,8 @@ def disk_warning(config):
     rs = cr.fetchall()
     for r in rs:
         server_info = get_server_info(cfg, r['server_id'])
-        v_title     = '{}服务告警已恢复'.format(server_info['server_desc'])
-        v_content   = st.format(server_info['server_ip'],
+        v_title = '{}服务告警已恢复'.format(server_info['server_desc'])
+        v_content = st.format(server_info['server_ip'],
                               server_info['server_port'],
                               get_time(),
                               cfg['warn_level'],
@@ -395,6 +427,7 @@ def disk_warning(config):
     '''关送数据库连接'''
     cfg['db_mysql'].close()
     cfg['db_mysql_dict'].close()
+
 
 def cpu_warning(config):
     cfg = get_config(config)
@@ -433,11 +466,11 @@ def cpu_warning(config):
     rs = cr.fetchall()
     print('>>>>>>>cpu告警....')
     for r in rs:
-        server_info     = get_server_info(cfg, r['server_id'])
-        fail_times      = stat_warn_times(cfg, r['server_id'])
+        server_info = get_server_info(cfg, r['server_id'])
+        fail_times = stat_warn_times(cfg, r['server_id'])
         index_threshold = get_index_threshold(config, r['index_code'])
 
-        if float(r['index_value']) > index_threshold :
+        if float(r['index_value']) > index_threshold:
             print(server_info)
             v_title = '{}服务器告警({})'.format(server_info['server_desc'], fail_times + 1)
             v_content = ft.format(server_info['server_ip'], server_info['server_port'],
@@ -447,7 +480,7 @@ def cpu_warning(config):
                                   fail_times + 1
                                   )
             if fail_times in (3, 4, 5):
-               send_message(cfg, v_title + v_content)
+                send_message(cfg, v_title + v_content)
 
             write_warn_log(cfg, r['server_id'], r['index_code'], r['index_name'], r['index_value'], 'failure')
         else:
@@ -482,6 +515,7 @@ def cpu_warning(config):
     '''关送数据库连接'''
     cfg['db_mysql'].close()
     cfg['db_mysql_dict'].close()
+
 
 def mem_warning(config):
     cfg = get_config(config)
@@ -519,10 +553,10 @@ def mem_warning(config):
     rs = cr.fetchall()
     print('>>>>>>>内存告警....')
     for r in rs:
-        server_info     = get_server_info(cfg, r['server_id'])
-        fail_times      = stat_warn_times(cfg, r['server_id'])
+        server_info = get_server_info(cfg, r['server_id'])
+        fail_times = stat_warn_times(cfg, r['server_id'])
         index_threshold = get_index_threshold(config, r['index_code'])
-        if float(r['index_value']) > index_threshold :
+        if float(r['index_value']) > index_threshold:
             print(server_info)
             v_title = '{}服务器告警({})'.format(server_info['server_desc'], fail_times + 1)
             v_content = ft.format(server_info['server_ip'], server_info['server_port'],
@@ -532,8 +566,8 @@ def mem_warning(config):
                                   fail_times + 1
                                   )
             if fail_times in (3, 4, 5):
-               print(v_title)
-               send_message(cfg, v_title + v_content)
+                print(v_title)
+                send_message(cfg, v_title + v_content)
 
             write_warn_log(cfg, r['server_id'], r['index_code'], r['index_name'], r['index_value'], 'failure')
         else:
@@ -568,8 +602,8 @@ def mem_warning(config):
     cfg['db_mysql'].close()
     cfg['db_mysql_dict'].close()
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     # 服务器告警
     server_warning(config)
 

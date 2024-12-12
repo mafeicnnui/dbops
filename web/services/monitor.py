@@ -315,7 +315,7 @@ class monitortask_stop(base_handler.TokenHandler):
         self.write(v_json)
 
 
-#图表展示
+# 图表展示
 class monitorgraphquery(base_handler.TokenHandler):
     async def get(self):
         self.render("./monitor/monitor_log_analyze.html",
@@ -579,9 +579,9 @@ class monitor_power_full(base_handler.BaseHandler):
 class monitor_power_offline_warn(base_handler.BaseHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
-        #batch_id = self.get_query_argument("pid")
+        # batch_id = self.get_query_argument("pid")
         batch_id = self.get_argument("batch_id")
-        print('batch_id2222=',batch_id)
+        print('batch_id2222=', batch_id)
         v_list = await query_power_offline(batch_id)
         v_json = json.dumps(v_list)
         print(v_json)

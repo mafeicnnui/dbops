@@ -6,187 +6,190 @@
         #example {
             width: 100% !important;
         }
+
         .modal-lg-templete {
-            width:60%;
-            height:20%;
-            margin-left:500px;
-            margin-top:10px;
-       }
-        .modal-lg-detail {
-            width :60%;
-            height:10%;
+            width: 60%;
+            height: 20%;
+            margin-left: 500px;
+            margin-top: 10px;
         }
-       .modal-lg-detail-all {
-            width :65%;
-            height:50%;
+
+        .modal-lg-detail {
+            width: 60%;
+            height: 10%;
+        }
+
+        .modal-lg-detail-all {
+            width: 65%;
+            height: 50%;
         }
 
     </style>
 </head>
 <body>
-      <p></p>
-      <div class="row">
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-3 control-label"><span>实例</span></label>
-                    </div>
-                    <div class="col-md-9">
-                        <select  class="form-control select" id="db_server" >
-                            <option value='' selected = "selected">...</option>
-                            {% for var in db_server %}
-                               <option value={{var[0]}}>{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-         </div>
-         <div class="col-md-2">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-3 control-label">库名</label>
-                </div>
-                <div class="col-md-9">
-                     <select  class="form-control select" id="db_schema" >
-                         <option value='' selected = "selected">......</option>
-                     </select>
-                </div>
-           </div>
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-3 control-label"><span>实例</span></label>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control select" id="db_server">
+                    <option value='' selected="selected">...</option>
+                    {% for var in db_server %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
         </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <button id="gen_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">生成</button>&nbsp;
-                    <button id="exp_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">导出</button>&nbsp;
-               </div>
-         </div>
-      </div>
-      <p></p>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-3 control-label">库名</label>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control select" id="db_schema">
+                    <option value='' selected="selected">......</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <button id="gen_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">生成</button>&nbsp;
+            <button id="exp_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">导出</button>&nbsp;
+        </div>
+    </div>
+</div>
+<p></p>
 
-      <div class="row">
-         <div class="col-md-12">
-                <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
-               </div>
-          </div>
-     </div>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+        </div>
+    </div>
+</div>
 
-     <script>
+<script>
 
-        $('#db_server').change(function() {
-            if ($('#db_server').val()!='') {
-                $.ajax({
-                      url: "/get_database",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#db_server').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#db_schema").empty();
-                         $("#db_schema").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#db_schema").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-            } else {
-                $("#db_schema").empty();
-                $("#db_schema").append("<option value=''>...</option>");
-            }
-        });
-
-        function query_table() {
+    $('#db_server').change(function () {
+        if ($('#db_server').val() != '') {
             $.ajax({
-                  url: "/dbtools/_dict",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      db_server: $('#db_server').val(),
-                      db_schema: $('#db_schema').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     : true,
-                          bAutoWidth : true,
-                          iDisplayLength: 14,
-                          data: dataSet.message,
-                          columns: [
-                            { "title": "表名" },
-                            { "title": "列名"},
-                            { "title": "类型" },
-                            { "title": "可空" },
-                            { "title": "默认值" },
-                            { "title": "字符集" },
-                            { "title": "校对集" },
-                            { "title": "主键" },
-                            { "title": "附加",},
-                            { "title": "注释"},
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
+                url: "/get_database",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#db_server').val(),
+                },
+                success: function (dataSet) {
+                    $("#db_schema").empty();
+                    $("#db_schema").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#db_schema").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
+        } else {
+            $("#db_schema").empty();
+            $("#db_schema").append("<option value=''>...</option>");
+        }
+    });
+
+    function query_table() {
+        $.ajax({
+            url: "/dbtools/_dict",
+            type: "post",
+            datatype: "json",
+            data: {
+                db_server: $('#db_server').val(),
+                db_schema: $('#db_schema').val(),
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    bAutoWidth: true,
+                    iDisplayLength: 14,
+                    data: dataSet.message,
+                    columns: [
+                        {"title": "表名"},
+                        {"title": "列名"},
+                        {"title": "类型"},
+                        {"title": "可空"},
+                        {"title": "默认值"},
+                        {"title": "字符集"},
+                        {"title": "校对集"},
+                        {"title": "主键"},
+                        {"title": "附加",},
+                        {"title": "注释"},
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+    }
+
+    function check_valid() {
+        if ($('#db_server').val() == '') {
+            swal("提示", "实例不能为空!", "warning");
+            return false
         }
 
-        function check_valid() {
-            if ($('#db_server').val() == '') {
-                swal("提示", "实例不能为空!", "warning");
-                return false
-            }
-
-           if ($('#db_schema').val() == '') {
-                swal("提示", "库名不能为空!", "warning");
-                return false
-            }
-            return true
+        if ($('#db_schema').val() == '') {
+            swal("提示", "库名不能为空!", "warning");
+            return false
         }
+        return true
+    }
 
-        $("#gen_btn").click(function() {
-            if (check_valid()) {
-                 query_table()
-            }
-        });
+    $("#gen_btn").click(function () {
+        if (check_valid()) {
+            query_table()
+        }
+    });
 
-        $('#exp_btn').on('click',function () {
-             if (check_valid()) {
-                     $.ajax({
-                         url: "/dbtools/_dict_exp",
-                         type: "post",
-                         datatype: "json",
-                         data: {
-                             db_server: $('#db_server').val(),
-                             db_schema: $('#db_schema').val(),
-                         },
-                         success: function (dataSet) {
-                             var link = $("<a/>")
-                             link.html('　');
-                             link.attr('href', dataSet.message);
-                             link.attr('class', 'link');
-                             link.attr('id', 'download_id');
-                             link.attr('name', 'download_name');
-                             link.appendTo('body')
-                             link[0].click();
-                         },
-                     })
-             }
-         })
+    $('#exp_btn').on('click', function () {
+        if (check_valid()) {
+            $.ajax({
+                url: "/dbtools/_dict_exp",
+                type: "post",
+                datatype: "json",
+                data: {
+                    db_server: $('#db_server').val(),
+                    db_schema: $('#db_schema').val(),
+                },
+                success: function (dataSet) {
+                    var link = $("<a/>")
+                    link.html('　');
+                    link.attr('href', dataSet.message);
+                    link.attr('class', 'link');
+                    link.attr('id', 'download_id');
+                    link.attr('name', 'download_name');
+                    link.appendTo('body')
+                    link[0].click();
+                },
+            })
+        }
+    })
 
-       $(document).ready(function() {
+    $(document).ready(function () {
 
-       });
+    });
 
-   </script>
+</script>
 </body>
 
 </html>

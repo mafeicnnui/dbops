@@ -4,289 +4,293 @@
     <meta charset="utf-8">
     <title>角色变更</title>
     <style>
-        #re_sele_sys_priv,#re_sele_role_priv,#re_sele_func_priv,#re_sele_role_func_priv {
+        #re_sele_sys_priv, #re_sele_role_priv, #re_sele_func_priv, #re_sele_role_func_priv {
             height: 290px;
             max-height: 290px;
         }
     </style>
 </head>
 <body>
-   <p></p>
-   <div class="col-md-6">
-       <form class="form-horizontal" role="form">
-           <input  id="roleid" type="hidden"  value={{roleid}} >
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_role_name">*</span>角色名称</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="name"  type="text" class="form-control" value={{name}}>
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_role_status">*</span>角色状态</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="status" name="status">
-                        {% if status=='1' %}
-                           <option value={{status}} selected = "selected">启用</option>
-                           <option value="0">禁用</option>
-                        {% end %}
-
-                       {% if status=='0' %}
-                            <option value='1' selected = "selected">禁用</option>
-                            <option value={{status}}>启用</option>
-                       {% end %}
-                    </select>
-               </div>
+<p></p>
+<div class="col-md-6">
+    <form class="form-horizontal" role="form">
+        <input id="roleid" type="hidden" value={{roleid}}>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_role_name">*</span>角色名称</label>
             </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">系统权限</label>
-                </div>
-                <div class="col-md-10">
-                    <select multiple="multiple" class="form-control" id="re_sele_sys_priv" >
-                        {% for var in priv_sys %}
-                           <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-           </div>
-           <div class="form-group">
-             <div class="col-md-12">
-               <div class="form-group m-b-0">
+            <div class="col-md-10">
+                <input id="name" type="text" class="form-control" value={{name}}>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_role_status">*</span>角色状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    {% if status=='1' %}
+                    <option value={{status}} selected="selected">启用</option>
+                    <option value="0">禁用</option>
+                    {% end %}
+
+                    {% if status=='0' %}
+                    <option value='1' selected="selected">禁用</option>
+                    <option value={{status}}>启用</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">系统权限</label>
+            </div>
+            <div class="col-md-10">
+                <select multiple="multiple" class="form-control" id="re_sele_sys_priv">
+                    {% for var in priv_sys %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <div class="form-group m-b-0">
                     <div class="col-sm-offset-6 col-sm-9">
-                        <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"   onclick=selectSysAll()><i class="ion-arrow-down-a"></i></button>
-                        <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"   onclick=cancelSysAll()><i class="ion-arrow-up-a"></i></button>
+                        <button type="button" id='ion-arrow-down' class="btn btn-xs waves-effect waves-light"
+                                onclick=selectSysAll()><i class="ion-arrow-down-a"></i></button>
+                        <button type="button" id='ion-arrow-up' class="btn btn-xs waves-effect waves-light"
+                                onclick=cancelSysAll()><i class="ion-arrow-up-a"></i></button>
                     </div>
-               </div>
-              </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_re_sele_role_priv">*</span>角色权限</label>
                 </div>
-                <div class="col-md-10">
-                    <select multiple="multiple" class="form-control" id="re_sele_role_priv" >
-                     {% for var in priv_role %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                     {% end %}
-                    </select>
-                </div>
-           </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_re_sele_role_priv">*</span>角色权限</label>
+            </div>
+            <div class="col-md-10">
+                <select multiple="multiple" class="form-control" id="re_sele_role_priv">
+                    {% for var in priv_role %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">功能权限</label>
-                </div>
-                <div class="col-md-10">
-                    <select multiple="multiple" class="form-control" id="re_sele_func_priv" >
-                        {% for var in func_privs %}
-                           <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-           </div>
-           <div class="form-group">
-             <div class="col-md-12">
-               <div class="form-group m-b-0">
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">功能权限</label>
+            </div>
+            <div class="col-md-10">
+                <select multiple="multiple" class="form-control" id="re_sele_func_priv">
+                    {% for var in func_privs %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <div class="form-group m-b-0">
                     <div class="col-sm-offset-6 col-sm-9">
-                        <button type="button" id='ion-arrow-down2' class="btn btn-xs waves-effect waves-light"   onclick=selectFuncAll()><i class="ion-arrow-down-a"></i></button>
-                        <button type="button" id='ion-arrow-up2' class="btn btn-xs waves-effect waves-light"   onclick=cancelFuncAll()><i class="ion-arrow-up-a"></i></button>
+                        <button type="button" id='ion-arrow-down2' class="btn btn-xs waves-effect waves-light"
+                                onclick=selectFuncAll()><i class="ion-arrow-down-a"></i></button>
+                        <button type="button" id='ion-arrow-up2' class="btn btn-xs waves-effect waves-light"
+                                onclick=cancelFuncAll()><i class="ion-arrow-up-a"></i></button>
                     </div>
-               </div>
-              </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_re_sele_role_func_priv">*</span>角色功能</label>
                 </div>
-                <div class="col-md-10">
-                    <select multiple="multiple" class="form-control" id="re_sele_role_func_priv" >
-                         {% for var in func_privs_role %}
-                           <option value={{var[0]}} >{{var[1]}}</option>
-                         {% end %}
-                    </select>
-                </div>
-           </div>
+            </div>
+        </div>
 
-           <br>
-           <div class="form-group m-b-0">
-                <div class="col-sm-offset-6 col-sm-9">
-                  <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
-                  <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
-                </div>
-           </div>
-       </form>
-    </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_re_sele_role_func_priv">*</span>角色功能</label>
+            </div>
+            <div class="col-md-10">
+                <select multiple="multiple" class="form-control" id="re_sele_role_func_priv">
+                    {% for var in func_privs_role %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-   <script>
-        function set_selected(){
-            document.all['s_role_name'].style.color="#ff0000";
-            document.all['s_role_status'].style.color="#ff0000";
-            document.all['s_re_sele_role_priv'].style.color="#ff0000";
-            document.all['s_re_sele_role_func_priv'].style.color="#ff0000";
-        }
+        <br>
+        <div class="form-group m-b-0">
+            <div class="col-sm-offset-6 col-sm-9">
+                <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
+                <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+            </div>
+        </div>
+    </form>
+</div>
 
-        $(document).ready(function() {
-          set_selected()
-          $("#re_sele_sys_priv").click(function () {
-               options=$('#re_sele_sys_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#re_sele_role_priv').append("<option value='"+value+"'>"+text+"</option>");
+<script>
+    function set_selected() {
+        document.all['s_role_name'].style.color = "#ff0000";
+        document.all['s_role_status'].style.color = "#ff0000";
+        document.all['s_re_sele_role_priv'].style.color = "#ff0000";
+        document.all['s_re_sele_role_func_priv'].style.color = "#ff0000";
+    }
+
+    $(document).ready(function () {
+        set_selected()
+        $("#re_sele_sys_priv").click(function () {
+            options = $('#re_sele_sys_priv option:selected');
+            if (options.length > 0) {
+                for (var i = 0; i < options.length; i++) {
+                    value = $(options[i]).val();
+                    text = $(options[i]).text();
+                    $('#re_sele_role_priv').append("<option value='" + value + "'>" + text + "</option>");
                 }
                 $('#re_sele_sys_priv option:selected').remove();
-               }
-          });
-          $("#re_sele_role_priv").click(function () {
-               options=$('#re_sele_role_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#re_sele_sys_priv').append("<option value='"+value+"'>"+text+"</option>");
+            }
+        });
+        $("#re_sele_role_priv").click(function () {
+            options = $('#re_sele_role_priv option:selected');
+            if (options.length > 0) {
+                for (var i = 0; i < options.length; i++) {
+                    value = $(options[i]).val();
+                    text = $(options[i]).text();
+                    $('#re_sele_sys_priv').append("<option value='" + value + "'>" + text + "</option>");
                 }
                 $('#re_sele_role_priv option:selected').remove();
-               }
-          });
+            }
         });
+    });
 
-        $('#return').on('click', function() {
-           $('#main-container-div').load('/role/change');
-        })
+    $('#return').on('click', function () {
+        $('#main-container-div').load('/role/change');
+    })
 
-        function get_privs(){
-             var tmp='';
-             var val='';
-             $('#re_sele_role_priv option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-         }
+    function get_privs() {
+        var tmp = '';
+        var val = '';
+        $('#re_sele_role_priv option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
 
-         $("#re_sele_func_priv").click(function () {
-               options=$('#re_sele_func_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#re_sele_role_func_priv').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#re_sele_func_priv option:selected').remove();
-               }
-          })
+    $("#re_sele_func_priv").click(function () {
+        options = $('#re_sele_func_priv option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#re_sele_role_func_priv').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#re_sele_func_priv option:selected').remove();
+        }
+    })
 
-          $("#re_sele_role_func_priv").click(function () {
-               options=$('#re_sele_role_func_priv option:selected');
-               if(options.length>0){
-                for (var i=0;i<options.length;i++){
-                      value=$(options[i]).val();
-                      text =$(options[i]).text();
-                      $('#re_sele_func_priv').append("<option value='"+value+"'>"+text+"</option>");
-                }
-                $('#re_sele_role_func_priv option:selected').remove();
-               }
-          })
+    $("#re_sele_role_func_priv").click(function () {
+        options = $('#re_sele_role_func_priv option:selected');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#re_sele_func_priv').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#re_sele_role_func_priv option:selected').remove();
+        }
+    })
 
-         function get_func_privs(){
-             var tmp='';
-             var val='';
-             $('#re_sele_role_func_priv option').each(function(){
-               val=$(this).val();
-               tmp=tmp+','+val;
-             });
-             return tmp.substr(1);
-         }
+    function get_func_privs() {
+        var tmp = '';
+        var val = '';
+        $('#re_sele_role_func_priv option').each(function () {
+            val = $(this).val();
+            tmp = tmp + ',' + val;
+        });
+        return tmp.substr(1);
+    }
 
-        $("#save").click(function () {
-          $.ajax({
+    $("#save").click(function () {
+        $.ajax({
             url: "/role/edit/save",
             type: "post",
             datatype: "json",
             data: {
-                roleid:   $('#roleid').val(),
-                name  :   $('#name').val(),
-                status:   $('#status').val(),
-                privs:    get_privs(),
-                func_privs:get_func_privs()
+                roleid: $('#roleid').val(),
+                name: $('#name').val(),
+                status: $('#status').val(),
+                privs: get_privs(),
+                func_privs: get_func_privs()
             },
             success: function (dataSet) {
                 console.log(dataSet.code, dataSet.message);
-                if (dataSet.code==0) {
-                   swal("变更成功", "", "success")
+                if (dataSet.code == 0) {
+                    swal("变更成功", "", "success")
                 } else {
-                   swal(dataSet.message, "", "error")
+                    swal(dataSet.message, "", "error")
                 }
             },
-         })
-      })
+        })
+    })
 
-      function selectSysAll() {
-            try {
-               options=$('#re_sele_sys_priv option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#re_sele_role_priv').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#re_sele_sys_priv option').remove();
-               }
-            } catch(err){
-                console.log(err)
-                console.log(err.message);
+    function selectSysAll() {
+        try {
+            options = $('#re_sele_sys_priv option');
+            if (options.length > 0) {
+                for (var i = 0; i < options.length; i++) {
+                    value = $(options[i]).val();
+                    text = $(options[i]).text();
+                    $('#re_sele_role_priv').append("<option value='" + value + "'>" + text + "</option>");
+                }
+                $('#re_sele_sys_priv option').remove();
             }
+        } catch (err) {
+            console.log(err)
+            console.log(err.message);
         }
+    }
 
-        function cancelSysAll() {
-               options=$('#re_sele_role_priv option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#re_sele_sys_priv').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#re_sele_role_priv option').remove();
-               }
-        }
-
-       function selectFuncAll() {
-            try {
-               options=$('#re_sele_func_priv option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          console.log('i=',i,'val=',$(options[i]).val(),'text=',$(options[i]).val())
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#re_sele_role_func_priv').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#re_sele_func_priv option').remove();
-               }
-            } catch(err){
-                console.log(err)
-                console.log(err.message);
+    function cancelSysAll() {
+        options = $('#re_sele_role_priv option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#re_sele_sys_priv').append("<option value='" + value + "'>" + text + "</option>");
             }
+            $('#re_sele_role_priv option').remove();
         }
+    }
 
-        function cancelFuncAll() {
-               options=$('#re_sele_role_func_priv option');
-               if(options.length>0){
-                    for (var i=0;i<options.length;i++){
-                          value=$(options[i]).val();
-                          text =$(options[i]).text();
-                          $('#re_sele_func_priv').append("<option value='"+value+"'>"+text+"</option>");
-                    }
-                    $('#re_sele_role_func_priv option').remove();
-               }
+    function selectFuncAll() {
+        try {
+            options = $('#re_sele_func_priv option');
+            if (options.length > 0) {
+                for (var i = 0; i < options.length; i++) {
+                    console.log('i=', i, 'val=', $(options[i]).val(), 'text=', $(options[i]).val())
+                    value = $(options[i]).val();
+                    text = $(options[i]).text();
+                    $('#re_sele_role_func_priv').append("<option value='" + value + "'>" + text + "</option>");
+                }
+                $('#re_sele_func_priv option').remove();
+            }
+        } catch (err) {
+            console.log(err)
+            console.log(err.message);
         }
+    }
 
-   </script>
+    function cancelFuncAll() {
+        options = $('#re_sele_role_func_priv option');
+        if (options.length > 0) {
+            for (var i = 0; i < options.length; i++) {
+                value = $(options[i]).val();
+                text = $(options[i]).text();
+                $('#re_sele_func_priv').append("<option value='" + value + "'>" + text + "</option>");
+            }
+            $('#re_sele_role_func_priv option').remove();
+        }
+    }
+
+</script>
 </body>
 
 </html>

@@ -4,361 +4,359 @@
     <title>redis查询</title>
 </head>
 <style>
-    #ace-editor{
-        height:200px;
+    #ace-editor {
+        height: 200px;
     }
 </style>
 <body>
-   <p></p>
-   <div class="row">
-        <form class="form-horizontal" role="form">
-           <div class="col-md-3">
-                <div class="form-group">
-                    <div>
-                        <label class="col-md-3 control-label">数据源：</label>
-                    </div>
-                    <div class="col-md-8">
-                         <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
-                            <option value='' selected = "selected">...</option>
-                            {% for var in dss %}
-                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                            {% end %}
-                         </select>
-                   </div>
+<p></p>
+<div class="row">
+    <form class="form-horizontal" role="form">
+        <div class="col-md-3">
+            <div class="form-group">
+                <div>
+                    <label class="col-md-3 control-label">数据源：</label>
                 </div>
-           </div>
-           <div  class="col-md-3">
-                <div class="col-md-1">
-                    <button type="button"  class="btn btn-xs waves-effect waves-light" ><i class="ti-layout-menu-v"></i></i></button>
-                </div>
-                <div class="col-md-11">
-                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="curr_db">
-                          <option value='' selected = "selected">...</option>
-                      </select>
-                </div>
-            </div>
-            <div  class="col-md-3">
-                <div class="form-group">
-                      <button type="button" id='query_btn'  class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i></button>
-                      <button type="button" id='demo_btn'   class="btn btn-xs waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="帮助" data-original-title="帮助"><i class="mdi mdi-help"></i></button>
-
-                </div>
-           </div>
-         </form>
-    </div>
-   <p></p>
-   <div class="row">
-       <div class="col-lg-12">
-            <div id='ace-editor-panal' class="panel panel-border panel-primary" >
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <div id="ace-editor" ></div>
-                </div>
-            </div>
-
-            <div id='div-table-panal' class="panel panel-border panel-primary" >
-                <div class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <div id="div-table" ></div>
+                <div class="col-md-8">
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="db_source">
+                        <option value='' selected="selected">...</option>
+                        {% for var in dss %}
+                        <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                        {% end %}
+                    </select>
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="col-md-1">
+                <button type="button" class="btn btn-xs waves-effect waves-light"><i class="ti-layout-menu-v"></i></i>
+                </button>
+            </div>
+            <div class="col-md-11">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="curr_db">
+                    <option value='' selected="selected">...</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <button type="button" id='query_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip"
+                        data-placement="top" title="查询" data-original-title="查询"><i class="fa fa-search"></i>
+                </button>
+                <button type="button" id='demo_btn' class="btn btn-xs waves-effect waves-light" data-toggle="tooltip"
+                        data-placement="top" title="帮助" data-original-title="帮助"><i class="mdi mdi-help"></i>
+                </button>
+
+            </div>
+        </div>
+    </form>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-lg-12">
+        <div id='ace-editor-panal' class="panel panel-border panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <div id="ace-editor"></div>
+            </div>
+        </div>
+
+        <div id='div-table-panal' class="panel panel-border panel-primary">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <div id="div-table"></div>
+            </div>
+        </div>
     </div>
+</div>
 
-   <script type="text/javascript">
+<script type="text/javascript">
 
-        function set_screen_size(n_height){
-             if (n_height <= 657)
-             {
-                   //set ace_editor style
-                   console.log('1366*768(100%):'+n_height)
-                   $("#ace-editor-panal").css("height",n_height*0.20);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+    function set_screen_size(n_height) {
+        if (n_height <= 657) {
+            //set ace_editor style
+            console.log('1366*768(100%):' + n_height)
+            $("#ace-editor-panal").css("height", n_height * 0.20);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.4);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.55)+'px')
-                   return
-             }
-              //1366*768(80%)
-             if (n_height ==821)
-             {
-                   //set ace_editor style
-                   console.log('1366*768(80%):'+n_height)
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.4);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.55) + 'px')
+            return
+        }
+        //1366*768(80%)
+        if (n_height == 821) {
+            //set ace_editor style
+            console.log('1366*768(80%):' + n_height)
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.45);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   // console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
-
-             //1440*1050(100%)、1680*1050（100%）
-             if (n_height==939)
-             {
-                   console.log('1440*1050(100%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.45);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   return
-             }
-
-             //1440*1050(80%)、1680*1050（100%）
-             if (n_height==1174) {
-                   console.log('1440*1050(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.53);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   // console.log('h_tab_height=',$("#h_tab_height").val())
-                   return
-             }
-
-            //1440*900(100%)、1600*900（100%）
-             if (n_height == 789 )
-             {
-                   console.log('1440*900(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.43);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.7)+'px')
-                   return
-             }
-
-             //1440*900(80%)、1600*900（80%）
-             if (n_height == 986 )
-             {
-                   console.log('1440*900(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.48);
-                   $("#div-table").css("height",$("#div-table-panal").height()*1);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   $("#h_tab_height").val(Math.trunc($("#div-table-panal").height()*0.75)+'px')
-                   return
-             }
-
-             //1920*1080(100%)
-             if (n_height == 969 )
-             {
-                   console.log('1920*1080(100%) :'+n_height+'px')
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.4);
-                   $("#div-table").css("height",$("#div-table-panal").height()*0.88);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   return
-             }
-
-             //1920*1080(80%)
-             if (n_height == 1211 )
-             {
-                   console.log('1920*1080(80%):'+n_height)
-                   //set ace_editor style
-                   $("#ace-editor-panal").css("height",n_height*0.25);
-                   $("#ace-editor").css("height",$("#ace-editor-panal").height()*0.8);
-                   $("#ace-editor").css("width","100%");
-                   $("#ace-editor").css("border",1);
-                   $("#ace-editor").css("overflow-x","auto");
-
-                   //set div_table style
-                   $("#div-table-panal").css("height",n_height*0.3);
-                   $("#div-table").css("height",$("#div-table-panal").height()*0.8);
-                   $("#div-table").css("width","100%");
-                   $("#div-table").css("border",1);
-                   $("#div-table").css("overflow-x","auto");
-                   return
-             }
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.45);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.7) + 'px')
+            // console.log('h_tab_height=',$("#h_tab_height").val())
+            return
         }
 
-        function set_styles() {
-             set_screen_size($(window).height())
-             $('#ace-editor-panal').show()
-             $('#div-table-panal').show()
+        //1440*1050(100%)、1680*1050（100%）
+        if (n_height == 939) {
+            console.log('1440*1050(100%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.45);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.7) + 'px')
+            return
         }
 
-        function set_editor(p_editor) {
-                  var editor = ace.edit(p_editor);
-                  editor.setTheme("ace/theme/xcode");
-                  editor.getSession().setMode("ace/mode/text");
-                  editor.getSession().setUseSoftTabs(true);
-                  editor.getSession().setUseWrapMode(true);
-                  editor.setShowPrintMargin(false);
-                  editor.setFontSize(14);
-                  editor.setOption("wrap", "free");
-                  ace.require("ace/ext/language_tools");
-                  editor.setOptions({
-                     enableBasicAutocompletion: true,
-                     enableSnippets: true,
-                     enableLiveAutocompletion: true
-                  });
-                  editor.setHighlightActiveLine(true);
-              }
+        //1440*1050(80%)、1680*1050（100%）
+        if (n_height == 1174) {
+            console.log('1440*1050(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-        function set_editor_result(p_editor) {
-                  var editor = ace.edit(p_editor);
-                  editor.setTheme("ace/theme/xcode");
-                  editor.getSession().setMode("ace/mode/json");
-                  editor.getSession().setUseSoftTabs(true);
-                  editor.getSession().setUseWrapMode(true);
-                  editor.setShowPrintMargin(false);
-                  editor.setFontSize(14);
-                  editor.setOption("wrap", "free");
-                  editor.setReadOnly(true);
-                  editor.setHighlightActiveLine(true);
-              }
-
-        function query_table(sql){
-              $.ajax({
-                    url     : "/redis/_query",
-                    type    : "post",
-                    datatype: "text",
-                    data: {
-                        dbid  :  $('#db_source').val(),
-                        db_name :  $('#curr_db').val(),
-                        key_name:sql
-                    },
-                    success: function (dataSet) {
-                       set_styles()
-                       var editor = ace.edit("div-table")
-                       editor.setValue('')
-                       editor.insert(JSON.stringify(dataSet.data, null, "\t"))
-                    },
-              })
-          }
-
-        function upd_curr_db(dataSet){
-               $("#curr_db").empty();
-               $("#curr_db").append("<option value=''>...</option>");
-                for (i=0;i<dataSet['data'].length;i++){
-                   var val  = dataSet['data'][i];
-                   var text = dataSet['data'][i];
-                   $("#curr_db").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-               }
-               $("#curr_db").selectpicker('refresh')
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.53);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.75) + 'px')
+            // console.log('h_tab_height=',$("#h_tab_height").val())
+            return
         }
 
-        $("#query_btn").click(function() {
-                var editor = ace.edit("ace-editor");
-                v_sql=editor.session.getTextRange(editor.getSelectionRange())
+        //1440*900(100%)、1600*900（100%）
+        if (n_height == 789) {
+            console.log('1440*900(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-                if(v_sql=='') {
-                  v_sql=editor.session.getValue()
-                }
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.43);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.7) + 'px')
+            return
+        }
 
-                if($('#db_source').val()=='') {
-                   showtips('info','请选择数据源!');
-                   return false;
-                }
-                if($('#curr_db').val()=='') {
-                   showtips('info','请选择库名!');
-                   return false;
-                }
+        //1440*900(80%)、1600*900（80%）
+        if (n_height == 986) {
+            console.log('1440*900(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
 
-                if(v_sql=='' ) {
-                    showtips('info','请输入Key名!');
-                    return false;
-                }
-                query_table(v_sql)
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.48);
+            $("#div-table").css("height", $("#div-table-panal").height() * 1);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            $("#h_tab_height").val(Math.trunc($("#div-table-panal").height() * 0.75) + 'px')
+            return
+        }
+
+        //1920*1080(100%)
+        if (n_height == 969) {
+            console.log('1920*1080(100%) :' + n_height + 'px')
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.4);
+            $("#div-table").css("height", $("#div-table-panal").height() * 0.88);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            return
+        }
+
+        //1920*1080(80%)
+        if (n_height == 1211) {
+            console.log('1920*1080(80%):' + n_height)
+            //set ace_editor style
+            $("#ace-editor-panal").css("height", n_height * 0.25);
+            $("#ace-editor").css("height", $("#ace-editor-panal").height() * 0.8);
+            $("#ace-editor").css("width", "100%");
+            $("#ace-editor").css("border", 1);
+            $("#ace-editor").css("overflow-x", "auto");
+
+            //set div_table style
+            $("#div-table-panal").css("height", n_height * 0.3);
+            $("#div-table").css("height", $("#div-table-panal").height() * 0.8);
+            $("#div-table").css("width", "100%");
+            $("#div-table").css("border", 1);
+            $("#div-table").css("overflow-x", "auto");
+            return
+        }
+    }
+
+    function set_styles() {
+        set_screen_size($(window).height())
+        $('#ace-editor-panal').show()
+        $('#div-table-panal').show()
+    }
+
+    function set_editor(p_editor) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/text");
+        editor.getSession().setUseSoftTabs(true);
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(14);
+        editor.setOption("wrap", "free");
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
         });
+        editor.setHighlightActiveLine(true);
+    }
 
-        $("#demo_btn").click(function() {
-               showtips('info','请输入KEY名，多个KEY用逗号隔开!');
-               return false;
-         });
+    function set_editor_result(p_editor) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/json");
+        editor.getSession().setUseSoftTabs(true);
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(14);
+        editor.setOption("wrap", "free");
+        editor.setReadOnly(true);
+        editor.setHighlightActiveLine(true);
+    }
 
-        $("#db_source").on("changed.bs.select",function(){
-               $.ajax({
-                    url     :"/redis/_db",
-                    type    :"post",
-                    datatype:"json",
-                    data: {
-                        dbid : $('#db_source').val(),
-                    },
-                    success: function (dataSet) {
-                        console.log('dataset=',dataSet)
-                        upd_curr_db(dataSet)
-                    }
-               });
-        });
-
-        $(window).resize(function () {
-            set_styles()
+    function query_table(sql) {
+        $.ajax({
+            url: "/redis/_query",
+            type: "post",
+            datatype: "text",
+            data: {
+                dbid: $('#db_source').val(),
+                db_name: $('#curr_db').val(),
+                key_name: sql
+            },
+            success: function (dataSet) {
+                set_styles()
+                var editor = ace.edit("div-table")
+                editor.setValue('')
+                editor.insert(JSON.stringify(dataSet.data, null, "\t"))
+            },
         })
+    }
 
-        $(document).ready(function() {
-              set_editor("ace-editor")
-              set_editor_result("div-table")
-              $("#db_source").selectpicker('refresh')
-              $("#curr_db").selectpicker('refresh')
-              set_styles()
+    function upd_curr_db(dataSet) {
+        $("#curr_db").empty();
+        $("#curr_db").append("<option value=''>...</option>");
+        for (i = 0; i < dataSet['data'].length; i++) {
+            var val = dataSet['data'][i];
+            var text = dataSet['data'][i];
+            $("#curr_db").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+        }
+        $("#curr_db").selectpicker('refresh')
+    }
+
+    $("#query_btn").click(function () {
+        var editor = ace.edit("ace-editor");
+        v_sql = editor.session.getTextRange(editor.getSelectionRange())
+
+        if (v_sql == '') {
+            v_sql = editor.session.getValue()
+        }
+
+        if ($('#db_source').val() == '') {
+            showtips('info', '请选择数据源!');
+            return false;
+        }
+        if ($('#curr_db').val() == '') {
+            showtips('info', '请选择库名!');
+            return false;
+        }
+
+        if (v_sql == '') {
+            showtips('info', '请输入Key名!');
+            return false;
+        }
+        query_table(v_sql)
+    });
+
+    $("#demo_btn").click(function () {
+        showtips('info', '请输入KEY名，多个KEY用逗号隔开!');
+        return false;
+    });
+
+    $("#db_source").on("changed.bs.select", function () {
+        $.ajax({
+            url: "/redis/_db",
+            type: "post",
+            datatype: "json",
+            data: {
+                dbid: $('#db_source').val(),
+            },
+            success: function (dataSet) {
+                console.log('dataset=', dataSet)
+                upd_curr_db(dataSet)
+            }
         });
- </script>
+    });
+
+    $(window).resize(function () {
+        set_styles()
+    })
+
+    $(document).ready(function () {
+        set_editor("ace-editor")
+        set_editor_result("div-table")
+        $("#db_source").selectpicker('refresh')
+        $("#curr_db").selectpicker('refresh')
+        set_styles()
+    });
+</script>
 
 </body>
 

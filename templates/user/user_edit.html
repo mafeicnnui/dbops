@@ -27,391 +27,400 @@
 </head>
 
 <body>
-   <p></p>
-   <form class="form-horizontal" role="form">
-        <div class="row">
-           <input  id="userid" type="hidden" name="userid" value={{userid}} >
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_login">*</span>用户名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="login"  type="text" class="form-control" placeholder="请输入用户名" value={{loginname}}>
-                </div>
-           </div>
+<p></p>
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <input id="userid" type="hidden" name="userid" value={{userid}}>
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_login">*</span>用户名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="login" type="text" class="form-control" placeholder="请输入用户名" value={{loginname}}>
+            </div>
         </div>
-    </form>
+    </div>
+</form>
 
-    <form class="form-horizontal" action=""  method="POST" enctype="multipart/form-data" >
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label">用户头像</label>
-                </div>
-                <div class="col-md-10">
-                    <input type="file" name="files[]" id="filer_input1"  multiple="multiple">
-                </div>
-           </div>
-           <div class="col-md-1">
-                <input  id="image_path" type="hidden" value="{{image_path}}" >
-                <input  id="image_name" type="hidden" value="{{image_name}}" >
-                <image  id="user_image" width="50px"  src="{{user_image}}" alt=''></image>
-           </div>
+<form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label">用户头像</label>
+            </div>
+            <div class="col-md-10">
+                <input type="file" name="files[]" id="filer_input1" multiple="multiple">
+            </div>
         </div>
-   </form>
+        <div class="col-md-1">
+            <input id="image_path" type="hidden" value="{{image_path}}">
+            <input id="image_name" type="hidden" value="{{image_name}}">
+            <image id="user_image" width="50px" src="{{user_image}}" alt=''></image>
+        </div>
+    </div>
+</form>
 
-   <form class="form-horizontal" role="form">
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_user">*</span>姓名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="user" name="user" type="text" class="form-control" placeholder="请输入姓名" value={{username}}>
+<form class="form-horizontal" role="form">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_user">*</span>姓名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="user" name="user" type="text" class="form-control" placeholder="请输入姓名"
+                       value={{username}}>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_wkno">*</span>工号</label>
+            </div>
+            <div class="col-md-10">
+                <input id="wkno" name="user" type="text" class="form-control" placeholder="请输入工号" value={{wkno}}>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_pass">*</span>密码</label>
+            </div>
+            <div class="col-md-10">
+                <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入密码"
+                       value={{password}}>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_gender">*</span>性别</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="gender" name="gender">
+                    {% if gender=='1' %}
+                    <option value="1" selected="selected">男</option>
+                    <option value="2">女</option>
+                    {% end %}
+                    {% if gender=='2' %}
+                    <option value='2' selected="selected">女</option>
+                    <option value={{gender}}>男</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_proj_group">*</span>项目组</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="proj_group">
+                    {% for var in proj_groups %}
+                    {% if proj_group==var[0] %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_dept">*</span>部门</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="dept" name="dept">
+                    {% for var in depts %}
+                    {% if dept==var[0] %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_email">*</span>电子邮箱</label>
+            </div>
+            <div class="col-md-10">
+                <input id="email" name="email" type="text" class="form-control" placeholder="请输入电子邮箱"
+                       value={{email}}>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_phone">*</span>联系方式</label>
+            </div>
+            <div class="col-md-10">
+                <input id="phone" name="phone" type="text" class="form-control" placeholder="请输入联系方式"
+                       value={{phone}}>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_expire_date">*</span>过期日期</label>
+            </div>
+            <div class="col-md-10">
+                <div class="input-group">
+                    <input id="expire_date" name="expire_date" type="text" class="form-control datepicker"
+                           placeholder="yyyy/mm/dd" id="datepicker" value={{expire_date}}>
+                    <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
                 </div>
             </div>
         </div>
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_wkno">*</span>工号</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="wkno" name="user" type="text" class="form-control" placeholder="请输入工号" value={{wkno}}>
-                </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_status">*</span>用户状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    {% if status=='1' %}
+                    <option value="1" selected="selected">启用</option>
+                    <option value="0">禁用</option>
+                    {% end %}
+                    {% if status=='0' %}
+                    <option value="1">启用</option>
+                    <option value="0" selected="selected">禁用</option>
+                    {% end %}
+                </select>
             </div>
         </div>
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_pass">*</span>密码</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="pass" name="pass" type="password" class="form-control" placeholder="请输入密码" value={{password}}>
-                </div>
-           </div>
-        </div>
-
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_gender">*</span>性别</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="gender" name="gender">
-                        {% if gender=='1' %}
-                            <option value="1" selected = "selected">男</option>
-                            <option value="2">女</option>
-                        {% end %}
-                        {% if gender=='2' %}
-                            <option value='2' selected = "selected">女</option>
-                            <option value={{gender}}>男</option>
-                        {% end %}
-                    </select>
-               </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv2">*</span>用户角色</label>
+            </div>
+            <div class="col-md-10">
+                <select class="selectpicker" multiple data-style="btn-default" id="ua_sele_role_priv2">
+                    {% for var in sys_roles %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+                <input id="sys_roles" type="hidden" value="{{sys_roles}}">
+                <input id="user_roles" type="hidden" value="{{user_roles}}">
             </div>
         </div>
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_proj_group">*</span>项目组</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="proj_group">
-                       {% for var in proj_groups %}
-                           {% if proj_group==var[0] %}
-                              <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                           {% else %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                           {% end  %}
-                      {% end %}
-                    </select>
-               </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>查询授权</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="query_grants">
+                    {% for var in query_grants %}
+                    {% if user_query_grant==var[0] %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
             </div>
         </div>
+    </div>
 
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_dept">*</span>部门</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="dept" name="dept">
-                       {% for var in depts %}
-                           {% if dept==var[0] %}
-                              <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                           {% else %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                           {% end  %}
-                      {% end %}
-                    </select>
-               </div>
-            </div>
+
+    <br>
+    <div class="form-group m-b-0">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
+            <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
         </div>
+    </div>
+</form>
 
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_email">*</span>电子邮箱</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="email" name="email" type="text" class="form-control" placeholder="请输入电子邮箱" value={{email}}>
-                </div>
-            </div>
-        </div>
+<!-- Init js -->
+<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
 
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_phone">*</span>联系方式</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="phone" name="phone" type="text" class="form-control" placeholder="请输入联系方式" value={{phone}}>
-                </div>
-            </div>
-        </div>
+<script>
 
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_expire_date">*</span>过期日期</label>
-                </div>
-                <div class="col-md-10">
-                    <div class="input-group">
-                        <input  id="expire_date" name="expire_date" type="text" class="form-control datepicker" placeholder="yyyy/mm/dd" id="datepicker" value={{expire_date}}>
-                        <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    $(document).ready(function () {
 
-        <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_status">*</span>用户状态</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="status" name="status">
-                        {% if status=='1' %}
-                            <option value="1" selected = "selected">启用</option>
-                            <option value="0">禁用</option>
-                        {% end %}
-                        {% if status=='0' %}
-                            <option value="1" >启用</option>
-                            <option value="0" selected = "selected">禁用</option>
-                        {% end %}
-                    </select>
-               </div>
-            </div>
-        </div>
-        <div class="row">
-               <div class="form-group col-md-6">
-                    <div>
-                        <label class="col-md-2 control-label"><span id="s_ua_sele_role_priv2">*</span>用户角色</label>
-                    </div>
-                    <div class="col-md-10">
-                         <select class="selectpicker" multiple data-style="btn-default" id="ua_sele_role_priv2"  >
-                             {% for var in sys_roles %}
-                                <option value={{var[0]}} >{{var[1]}}</option>
-                             {% end %}
-                         </select>
-                         <input  id="sys_roles" type="hidden" value="{{sys_roles}}" >
-                         <input  id="user_roles" type="hidden" value="{{user_roles}}" >
-                    </div>
-               </div>
-          </div>
-          <div class="row">
-           <div class="form-group col-md-6">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>查询授权</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="query_grants">
-                       {% for var in query_grants %}
-                           {% if user_query_grant==var[0] %}
-                              <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                           {% else %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                           {% end  %}
-                      {% end %}
-                    </select>
-               </div>
-            </div>
-          </div>
+        set_selected()
 
+        $('#expire_date').attr("readonly", "readonly");
 
-        <br>
-        <div class="form-group m-b-0">
-            <div class="col-sm-offset-3 col-sm-9">
-              <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
-              <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
-            </div>
-        </div>
-     </form>
+        $('.selectpicker').selectpicker({
+            noneSelectedText: '请选择角色...'
+        })
 
-    <!-- Init js -->
-    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+        $('.selectpicker').selectpicker(
+            'val', get_privs_init()
+        )
 
-    <script>
+    });
 
-        $(document).ready(function() {
+    $('#return').on('click', function () {
+        $('#main-container-div').load('/user/change');
+    });
 
-          set_selected()
+    function get_privs() {
+        var tmp = '';
+        arr = $('#ua_sele_role_priv2').val()
+        if (arr.length > 0) {
+            for (let i = 0, len = arr.length; i < len; i++) {
+                tmp = tmp + ',' + arr[i];
+            }
+        } else {
+            return ''
+        }
+        return tmp.substr(1);
+    }
 
-          $('#expire_date').attr("readonly", "readonly");
+    function get_privs_init() {
+        arr = $('#user_roles').val()
+        return arr.split(',')
+    }
 
-          $('.selectpicker').selectpicker({
-               noneSelectedText : '请选择角色...'
-          })
+    $("#save").click(function () {
+        if ($("#filer_input1").get(0).files.length > 0) {
+            var fd = new FormData();
+            files = $("#filer_input1").get(0).files;
+            fd.append("file", files[0]);
+            fd.append("username", $('#login').val());
+            $.ajax({
+                url: "/user/add/uploadImage",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: fd,
+                async: false,
+                dataType: 'JSON',
+                success: function (dataSet) {
+                    if (dataSet.code == 0) {
+                        console.log('/user/add/uploadImage1=', dataSet);
+                        console.log('/user/add/uploadImage2=', dataSet.file_path + '/' + dataSet.file_name)
+                        $('#image_path').val(dataSet.file_path)
+                        $('#image_file').attr('src', dataSet.file_path + '/' + dataSet.file_name)
 
-          $('.selectpicker').selectpicker(
-              'val' ,get_privs_init()
-          )
+                        $.ajax({
+                            url: "/user/edit/save",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                userid: $('#userid').val(),
+                                loginname: $('#login').val(),
+                                wkno: $('#wkno').val(),
+                                username: $('#user').val(),
+                                password: $('#pass').val(),
+                                gender: $('#gender').val(),
+                                email: $('#email').val(),
+                                phone: $('#phone').val(),
+                                proj_group: $('#proj_group').val(),
+                                dept: $('#dept').val(),
+                                expire_date: $('#expire_date').val(),
+                                status: $('#status').val(),
+                                roles: get_privs(),
+                                file_path: dataSet.file_path,
+                                file_name: dataSet.file_name,
+                                query_grants: $('#query_grants').val(),
+                            },
+                            success: function (dataSet) {
+                                console.log(dataSet.code, dataSet.message);
+                                if (dataSet.code == 0) {
+                                    swal("变更成功", "", "success")
+                                } else {
+                                    swal(dataSet.message, "", "error")
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log('jqXHR.responseText=', jqXHR.responseText);
+                                console.log('jqXHR.status=', jqXHR.status);
+                                console.log('jqXHR.readyState=', jqXHR.readyState);
+                                console.log('jqXHR.statusText=', jqXHR.statusText);
+                                console.log('textStatus=', textStatus);
+                                console.log('errorThrown=', errorThrown);
+                                if (jqXHR.status == 403) {
+                                    swal({
+                                        title: "您的登陆信息已过期，自动重新登陆!",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+                                    setTimeout(" window.location.href='/login'", 3000);
+                                } else if (jqXHR.status == 502) {
+                                    swal("用户无权访问权限此功能!", "", "error")
+                                } else {
+                                    swal("系统不可用,请稍后重试!", "", "error")
+                                }
+                            }
+                        });
 
-        });
-
-        $('#return').on('click', function() {
-            $('#main-container-div').load('/user/change');
-        });
-
-        function get_privs(){
-              var tmp='';
-              arr = $('#ua_sele_role_priv2').val()
-              if (arr.length>0) {
-                 for (let i = 0, len = arr.length; i < len; i++) {
-                   tmp=tmp+','+arr[i];
-                 }
-              } else {
-                  return ''
-              }
-              return tmp.substr(1);
-          }
-
-        function get_privs_init(){
-              arr = $('#user_roles').val()
-              return arr.split(',')
+                    } else {
+                        console.log('/user/add/uploadImage=', dataSet.message);
+                    }
+                }
+            });
+        } else {
+            $.ajax({
+                url: "/user/edit/save",
+                type: "post",
+                datatype: "json",
+                data: {
+                    userid: $('#userid').val(),
+                    loginname: $('#login').val(),
+                    wkno: $('#wkno').val(),
+                    username: $('#user').val(),
+                    password: $('#pass').val(),
+                    gender: $('#gender').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val(),
+                    proj_group: $('#proj_group').val(),
+                    dept: $('#dept').val(),
+                    expire_date: $('#expire_date').val(),
+                    status: $('#status').val(),
+                    roles: get_privs(),
+                    file_path: $('#image_path').val(),
+                    file_name: $('#image_name').val(),
+                    query_grants: $('#query_grants').val(),
+                },
+                success: function (dataSet) {
+                    console.log(dataSet.code, dataSet.message);
+                    if (dataSet.code == 0) {
+                        swal("变更成功", "", "success")
+                    } else {
+                        swal(dataSet.message, "", "error")
+                    }
+                }
+            });
         }
 
-        $("#save").click(function () {
-          if ($("#filer_input1").get(0).files.length>0){
-              var fd = new FormData();
-              files  = $("#filer_input1").get(0).files;
-              fd.append("file", files[0]);
-              fd.append("username", $('#login').val());
-              $.ajax({
-                    url: "/user/add/uploadImage",
-                    type: "POST",
-                    processData: false,
-                    contentType: false,
-                    data : fd,
-                    async:false,
-                    dataType: 'JSON',
-                    success: function (dataSet) {
-                        if (dataSet.code==0) {
-                            console.log('/user/add/uploadImage1=', dataSet);
-                            console.log('/user/add/uploadImage2=',dataSet.file_path+'/'+dataSet.file_name)
-                            $('#image_path').val(dataSet.file_path)
-                            $('#image_file').attr('src',dataSet.file_path+'/'+dataSet.file_name)
+    });
 
-                            $.ajax({
-                                url: "/user/edit/save",
-                                type: "post",
-                                datatype: "json",
-                                data: {
-                                    userid     : $('#userid').val(),
-                                    loginname  : $('#login').val(),
-                                    wkno       : $('#wkno').val(),
-                                    username   : $('#user').val(),
-                                    password   : $('#pass').val(),
-                                    gender     : $('#gender').val(),
-                                    email      : $('#email').val(),
-                                    phone      : $('#phone').val(),
-                                    proj_group : $('#proj_group').val(),
-                                    dept       : $('#dept').val(),
-                                    expire_date: $('#expire_date').val(),
-                                    status     : $('#status').val(),
-                                    roles      : get_privs(),
-                                    file_path  : dataSet.file_path,
-                                    file_name  : dataSet.file_name,
-                                    query_grants:$('#query_grants').val(),
-                                },
-                                success: function (dataSet) {
-                                    console.log(dataSet.code, dataSet.message);
-                                    if (dataSet.code==0) {
-                                       swal("变更成功", "", "success")
-                                    } else {
-                                       swal(dataSet.message, "", "error")
-                                    }
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.log('jqXHR.responseText=',jqXHR.responseText);
-                                    console.log('jqXHR.status=',jqXHR.status);
-                                    console.log('jqXHR.readyState=',jqXHR.readyState);
-                                    console.log('jqXHR.statusText=',jqXHR.statusText);
-                                    console.log('textStatus=',textStatus);
-                                    console.log('errorThrown=',errorThrown);
-                                    if (jqXHR.status==403){
-                                        swal({title:"您的登陆信息已过期，自动重新登陆!",timer: 3000,showConfirmButton: false});
-                                        setTimeout(" window.location.href='/login'",3000);
-                                    } else if (jqXHR.status==502){
-                                        swal("用户无权访问权限此功能!", "", "error")
-                                    } else {
-                                        swal("系统不可用,请稍后重试!", "", "error")
-                                    }
-                                }
-                             });
+    $('#filer_input1').filer({
+        limit: 1,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: true
+    });
 
-                        } else {
-                            console.log('/user/add/uploadImage=', dataSet.message);
-                        }
-                    }
-               });
-          } else {
-              $.ajax({
-                    url: "/user/edit/save",
-                    type: "post",
-                    datatype: "json",
-                    data: {
-                        userid     : $('#userid').val(),
-                        loginname  : $('#login').val(),
-                        wkno       : $('#wkno').val(),
-                        username   : $('#user').val(),
-                        password   : $('#pass').val(),
-                        gender     : $('#gender').val(),
-                        email      : $('#email').val(),
-                        phone      : $('#phone').val(),
-                        proj_group : $('#proj_group').val(),
-                        dept       : $('#dept').val(),
-                        expire_date: $('#expire_date').val(),
-                        status     : $('#status').val(),
-                        roles      : get_privs(),
-                        file_path  : $('#image_path').val(),
-                        file_name  : $('#image_name').val(),
-                        query_grants:$('#query_grants').val(),
-                    },
-                    success: function (dataSet) {
-                        console.log(dataSet.code, dataSet.message);
-                        if (dataSet.code==0) {
-                           swal("变更成功", "", "success")
-                        } else {
-                           swal(dataSet.message, "", "error")
-                        }
-                    }
-                 });
-          }
-
-      });
-
-        $('#filer_input1').filer({
-            limit: 1,
-            maxSize: 3,
-            extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
-            changeInput: true,
-            showThumbs: true,
-            addMore: true
-       });
-
-   </script>
+</script>
 </body>
 
 </html>

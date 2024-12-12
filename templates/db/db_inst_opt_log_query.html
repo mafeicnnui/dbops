@@ -4,169 +4,177 @@
     <meta charset="utf-8">
     <title>操作日志</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
         .color-warning {
-            color:red;
+            color: red;
             font-size: 30px;
         }
+
         .color-success {
-             color: #44d954;
-             font-size: 30px;
-         }
-        .modal-lg-detail {
-            width:60%;
-            height:30%;
-            margin-left:500px;
-            margin-top:200px;
+            color: #44d954;
+            font-size: 30px;
         }
-        .table th{
+
+        .modal-lg-detail {
+            width: 60%;
+            height: 30%;
+            margin-left: 500px;
+            margin-top: 200px;
+        }
+
+        .table th {
             text-align: center;
-            vertical-align: middle!important;
+            vertical-align: middle !important;
         }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-       <div class="col-md-3 input-group">
-            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-            <input type="text" id="log_name" class="form-control" placeholder="请输入关键字">
-            <span class="input-group-btn">
-               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+<p></p>
+<div class="col-md-12">
+    <div class="col-md-3 input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input type="text" id="log_name" class="form-control" placeholder="请输入关键字">
+        <span class="input-group-btn">
+               <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                       class="fa fa-search"></i></button>
             </span>
-      </div>
-      <p></p>
-      <div id="div-tab">
-           <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
-      </div>
     </div>
+    <p></p>
+    <div id="div-tab">
+        <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+    </div>
+</div>
 
-     <!--发布语句详情 -->
-     <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg-detail">
+<!--发布语句详情 -->
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 id='log_title' class="modal-title">发布语句</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
-                  <div id='ace-editor' class="col-md-12"></div>
+                    <div id='ace-editor' class="col-md-12"></div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-   </div><!-- /.modal -->
+</div><!-- /.modal -->
 
-   <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        $("#logname").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
-
-        function showSql(row){
-            console.log('showSql=',unescape(row));
-            var editor = ace.edit("ace-editor");
-            editor.setValue('')
-            editor.insert(unescape(row));
-            editor.setReadOnly(true);
-            $('#log_title').text('发布语句')
-            $('#con-close-modal').modal({
-               keyboard: false,
-               backdrop:false
-            });
-        }
-
-         function showErr(row){
-            console.log('showSql=',unescape(row));
-            var editor = ace.edit("ace-editor");
-            editor.setValue('')
-            editor.insert(unescape(row));
-            editor.setReadOnly(true);
-            $('#log_title').text('错误日志')
-            $('#con-close-modal').modal({
-               keyboard: false,
-               backdrop:false
-            });
-        }
-
-        $(document).ready(function() {
-            //ace editor
-            var editor = ace.edit("ace-editor");
-            editor.setTheme("ace/theme/xcode");
-            editor.getSession().setMode("ace/mode/sql");
-            editor.setShowPrintMargin(false);
-            editor.setFontSize(16);
-            editor.getSession().setUseSoftTabs(true);
-            editor.setReadOnly(true);
-
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/db/inst/opt/log/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      log_name: $('#log_name').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging:     true,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                            { "title": "日志ID"},
-                            { "title": "用户名" },
-                            { "title": "实例名"},
-                            { "title": "数据库" },
-                            { "title": "开始时间" },
-                            { "title": "完成时间" },
-                            { "title": "状态" },
-                            { "title": "语句" ,"visible":false},
-                            { "title": "错误" ,"visible":false},
-                            { "title": "详情" },
-                          ],
-                          columnDefs: [
-                           {
-                            targets: 9,
-                            render: function(data, type, row, meta){
-                                 console.log('row='+row);
-                                 msg ='&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="语句" onclick="showSql(\''+escape(row[7])+'\');"/>' +'&nbsp;'+
-                                      '<input class="btn btn-xs btn-primary"  type="button"  value="错误" onclick="showErr(\''+escape(row[8])+'\');"/>' +'&nbsp;';
-                                 return msg;
-                            }
-                         }
-                        ],
-                         "language": get_languages()
-                         });
-                  },
-              })
-            });
-
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
+        }
+    });
 
+    $("#logname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    function showSql(row) {
+        console.log('showSql=', unescape(row));
+        var editor = ace.edit("ace-editor");
+        editor.setValue('')
+        editor.insert(unescape(row));
+        editor.setReadOnly(true);
+        $('#log_title').text('发布语句')
+        $('#con-close-modal').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
+
+    function showErr(row) {
+        console.log('showSql=', unescape(row));
+        var editor = ace.edit("ace-editor");
+        editor.setValue('')
+        editor.insert(unescape(row));
+        editor.setReadOnly(true);
+        $('#log_title').text('错误日志')
+        $('#con-close-modal').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
+
+    $(document).ready(function () {
+        //ace editor
+        var editor = ace.edit("ace-editor");
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/sql");
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(16);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setReadOnly(true);
+
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/db/inst/opt/log/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    log_name: $('#log_name').val()
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        ordering: false,
+                        scrollY: true,
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: true,
+                        iDisplayLength: 14,
+                        data: dataSet,
+                        columns: [
+                            {"title": "日志ID"},
+                            {"title": "用户名"},
+                            {"title": "实例名"},
+                            {"title": "数据库"},
+                            {"title": "开始时间"},
+                            {"title": "完成时间"},
+                            {"title": "状态"},
+                            {"title": "语句", "visible": false},
+                            {"title": "错误", "visible": false},
+                            {"title": "详情"},
+                        ],
+                        columnDefs: [
+                            {
+                                targets: 9,
+                                render: function (data, type, row, meta) {
+                                    console.log('row=' + row);
+                                    msg = '&nbsp;' +
+                                        '<input class="btn btn-xs btn-primary"  type="button"  value="语句" onclick="showSql(\'' + escape(row[7]) + '\');"/>' + '&nbsp;' +
+                                        '<input class="btn btn-xs btn-primary"  type="button"  value="错误" onclick="showErr(\'' + escape(row[8]) + '\');"/>' + '&nbsp;';
+                                    return msg;
+                                }
+                            }
+                        ],
+                        "language": get_languages()
+                    });
+                },
+            })
         });
 
-   </script>
+        $("#query_btn").click();
+
+    });
+
+</script>
 </body>
 
 </html>

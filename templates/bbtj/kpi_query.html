@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <title>KPI报表</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
         table.datatable tr th, table.datatable tr td {
             white-space: nowrap;
         }
@@ -14,359 +15,369 @@
     </style>
 </head>
 <body>
-     <p></p>
-     <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
-                <span class="input-group-addon">报表月</span>
-                <input  id="month"  type="text" class="form-control datepicker_kpi"  placeholder="请选择报表月">
-             </div>
-         </div>
-         <div class="col-md-3">
-             <div class="input-group">
-                 <span class="input-group-addon">项目名称</span>
-                 <select class="form-control select" id="market_id" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_item_market %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-1">
-           <div class="input-group">
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">报表月</span>
+            <input id="month" type="text" class="form-control datepicker_kpi" placeholder="请选择报表月">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <span class="input-group-addon">项目名称</span>
+            <select class="form-control select" id="market_id">
+                <option value='' selected="selected">.....</option>
+                {% for var in dm_item_market %}
+                <option value={{var[0]}}>{{var[1]}}</option>
+                {% end %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-1">
+        <div class="input-group">
                   <span class="input-group-btn">
-                    <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                            class="fa fa-search"></i></button>
                   </span>
-                      &nbsp;&nbsp;
-                  <span class="input-group-btn">
-                    <button type="button"  id='upd_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-refresh"></i></button>
+            &nbsp;&nbsp;
+            <span class="input-group-btn">
+                    <button type="button" id='upd_btn' class="btn waves-effect waves-light btn-primary"><i
+                            class="ion-refresh"></i></button>
                   </span>
-                     &nbsp;&nbsp;
-                  <span class="input-group-btn">
-                    <button type="button"  id='exp_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-archive"></i></button>
+            &nbsp;&nbsp;
+            <span class="input-group-btn">
+                    <button type="button" id='exp_btn' class="btn waves-effect waves-light btn-primary"><i
+                            class="ion-archive"></i></button>
                   </span>
-            </div>
-          </div>
-         <div class="col-md-2"></div>
-         <div class="col-md-3">
-              <div class="input-group">
-                  <span class="input-group-addon">最近更新时间</span>
-                  <input  id="last_update_time"  type="text" style="color:red" class="form-control"  disabled value="">
-              </div>
-          </div>
-      </div>
-     <p></p>
-     <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-         </div>
-     </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <span class="input-group-addon">最近更新时间</span>
+            <input id="last_update_time" type="text" style="color:red" class="form-control" disabled value="">
+        </div>
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                   width="100%" height="100%"></table>
+        </div>
+    </div>
+</div>
 
-   <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-sm">
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">正在查询中，请稍候...</h4>
             </div>
         </div>
-     </div>
-   </div>
+    </div>
+</div>
 
-   <!--编辑窗口 -->
-   <div id="con-modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-detail">
+<!--编辑窗口 -->
+<div id="con-modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">数据录入</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                           <input type="hidden" id="edit_market_id">
-                           <input type="hidden" id="edit_item_code">
-                           <input type="hidden" id="edit_item_type">
-<!--                           <input type="hidden" id="edit_item_if_stat">-->
+                        <form class="form-horizontal" role="form">
+                            <input type="hidden" id="edit_market_id">
+                            <input type="hidden" id="edit_item_code">
+                            <input type="hidden" id="edit_item_type">
+                            <!--                           <input type="hidden" id="edit_item_if_stat">-->
 
-                           <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" >报表月：</label>
+                                    <label class="col-md-3 control-label">报表月：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_month"  readonly class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_month" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" >项目名称：</label>
+                                    <label class="col-md-3 control-label">项目名称：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_market_name"  readonly class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_market_name" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" >指标名称：</label>
+                                    <label class="col-md-3 control-label">指标名称：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_item_name"  readonly  class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_item_name" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" ><span id="s_edit_month_value">*</span>月度完成：</label>
+                                    <label class="col-md-3 control-label"><span id="s_edit_month_value">*</span>月度完成：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_month_value"  class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_month_value" class="form-control">
+                                </div>
                             </div>
-                           <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" ><span id="s_edit_sum_value">*</span>年度完成：</label>
+                                    <label class="col-md-3 control-label"><span id="s_edit_sum_value">*</span>年度完成：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_sum_value"  class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_sum_value" class="form-control">
+                                </div>
                             </div>
-                   </form>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="upd_item_value">变更
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
             </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="upd_item_value" >变更</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
-               </div>
-            </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-   <script>
-         $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
+            $("#query_btn").click();
+        }
+    });
 
-          $('#month').change(function(){
-              $("#query_btn").click();
-          })
+    $('#month').change(function () {
+        $("#query_btn").click();
+    })
 
-          $('#market_id').change(function(){
-              $("#query_btn").click();
-          })
+    $('#market_id').change(function () {
+        $("#query_btn").click();
+    })
 
-         function edit_item(row){
-            v =unescape(row).split(',')
-            console.log('v=',v)
-            $('#edit_month').val(v[1])
-            $('#edit_market_id').val(v[2])
-            $('#edit_market_name').val(v[3])
-            $('#edit_item_code').val(v[4])
-            $('#edit_item_type').val(v[6])
-            $('#edit_item_name').val(v[5])
-            $('#edit_month_value').val(v[8])
-            $('#edit_sum_value').val(v[11])
+    function edit_item(row) {
+        v = unescape(row).split(',')
+        console.log('v=', v)
+        $('#edit_month').val(v[1])
+        $('#edit_market_id').val(v[2])
+        $('#edit_market_name').val(v[3])
+        $('#edit_item_code').val(v[4])
+        $('#edit_item_type').val(v[6])
+        $('#edit_item_name').val(v[5])
+        $('#edit_month_value').val(v[8])
+        $('#edit_sum_value').val(v[11])
 
-            // if ($('#edit_item_type').val()=='当月考核') {
-            //      document.all['s_edit_month_value'].style.color="#ff0000";
-            //      document.all['s_edit_sum_value'].style.color="black";
-            //      $('#edit_month_value').attr("disabled",false);
-            //      $('#edit_sum_value').attr("disabled",true);
-            // }
-            //
-            //  if ($('#edit_item_type').val()=='累计考核') {
-            //      document.all['s_edit_month_value'].style.color="black";
-            //      document.all['s_edit_sum_value'].style.color="#ff0000";
-            //      $('#edit_month_value').attr("disabled",true);
-            //      $('#edit_sum_value').attr("disabled",false);
-            //  }
+        // if ($('#edit_item_type').val()=='当月考核') {
+        //      document.all['s_edit_month_value'].style.color="#ff0000";
+        //      document.all['s_edit_sum_value'].style.color="black";
+        //      $('#edit_month_value').attr("disabled",false);
+        //      $('#edit_sum_value').attr("disabled",true);
+        // }
+        //
+        //  if ($('#edit_item_type').val()=='累计考核') {
+        //      document.all['s_edit_month_value'].style.color="black";
+        //      document.all['s_edit_sum_value'].style.color="#ff0000";
+        //      $('#edit_month_value').attr("disabled",true);
+        //      $('#edit_sum_value').attr("disabled",false);
+        //  }
 
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-modal-edit').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-         }
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-edit').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
 
-         function centerModals() {
-          $('.modal').each(function(i) {
+    function centerModals() {
+        $('.modal').each(function (i) {
             var $clone = $(this).clone().css('display', 'block').appendTo('body');
             var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
             top = top > 50 ? top : 0;
             $clone.remove();
             $(this).find('.modal-content').css("margin-top", top - 50);
-          });
-         }
+        });
+    }
 
-         $('#exp_btn').on('click',function () {
+    $('#exp_btn').on('click', function () {
+        $.ajax({
+            url: "/bbtj/kpi/_export",
+            type: "post",
+            datatype: "json",
+            data: {
+                month: $('#month').val(),
+                market_id: $('#market_id').val(),
+            },
+            success: function (dataSet) {
+                var link = $("<a/>")
+                link.html('　');
+                link.attr('href', dataSet.message);
+                link.attr('class', 'link');
+                link.attr('id', 'download_id');
+                link.attr('name', 'download_name');
+                link.appendTo('body')
+                link[0].click();
+            },
+        })
+    })
+
+    $(document).ready(function () {
+        set_selected();
+        $('#month').val(GetDate(4))
+        $("#query_btn").click(function () {
             $.ajax({
-                url: "/bbtj/kpi/_export",
+                url: "/bbtj/kpi/_query",
                 type: "post",
                 datatype: "json",
-                data:{
-                      month     : $('#month').val(),
-                      market_id : $('#market_id').val(),
+                data: {
+                    month: $('#month').val(),
+                    market_id: $('#market_id').val(),
                 },
                 success: function (dataSet) {
-                    var link = $("<a/>")
-                    link.html('　');
-                    link.attr('href', dataSet.message);
-                    link.attr('class', 'link');
-                    link.attr('id', 'download_id');
-                    link.attr('name', 'download_name');
-                    link.appendTo('body')
-                    link[0].click();
-                },
-            })
-         })
-
-        $(document).ready(function() {
-            set_selected();
-            $('#month').val(GetDate(4))
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/bbtj/kpi/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      month   : $('#month').val(),
-                      market_id  : $('#market_id').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          ordering   :false,
-                          async      :true,
-                          scrollY    :false,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     :false,
-                          iDisplayLength: 16,
-                          data: dataSet,
-                          columns: [
-                            { "title": "报表日期"},
-                            { "title": "报表月"},
-                            { "title": "项目编码" },
-                            { "title": "项目名称" },
-                            { "title": "指标编码" },
-                            { "title": "指标名称" },
-                            { "title": "指标说明" },
-                            { "title": "月度指标" },
-                            { "title": "月度完成"},
-                            { "title": "月度完成率"},
-                            { "title": "年度指标" },
-                            { "title": "年度完成"},
-                            { "title": "年度完成率"},
-                            { "title": "是否统计","visible":false},
-                            { "title": "最近更新时间","visible":false},
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        ordering: false,
+                        async: true,
+                        scrollY: false,
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "报表日期"},
+                            {"title": "报表月"},
+                            {"title": "项目编码"},
+                            {"title": "项目名称"},
+                            {"title": "指标编码"},
+                            {"title": "指标名称"},
+                            {"title": "指标说明"},
+                            {"title": "月度指标"},
+                            {"title": "月度完成"},
+                            {"title": "月度完成率"},
+                            {"title": "年度指标"},
+                            {"title": "年度完成"},
+                            {"title": "年度完成率"},
+                            {"title": "是否统计", "visible": false},
+                            {"title": "最近更新时间", "visible": false},
                             {
-                                "title":"功能",
+                                "title": "功能",
                                 "width": "25px",
-                                "render": function(data,type,row){
-                                    if ($('#last_update_time').val()<row[14]) {
+                                "render": function (data, type, row) {
+                                    if ($('#last_update_time').val() < row[14]) {
                                         $('#last_update_time').val(row[14])
                                     }
 
                                     // if (row[13] == 'N') {
-                                         var btn = '<input class="btn btn-xs btn-primary"  type="button"  value="编辑"  onclick="edit_item(\''+escape(row)+'\');"/>' +'&nbsp;'
-                                         return btn;
+                                    var btn = '<input class="btn btn-xs btn-primary"  type="button"  value="编辑"  onclick="edit_item(\'' + escape(row) + '\');"/>' + '&nbsp;'
+                                    return btn;
                                     // } else {
                                     //     return ''
                                     // }
                                 }
                             },
-                          ],
-                          "language": get_languages()
-                      });
-                  },
-             });
+                        ],
+                        "language": get_languages()
+                    });
+                },
             });
-
-            $("#upd_btn").click(function() {
-
-              if($('#month').val()=='') {
-                  swal("报表月不能为空!", "", "error")
-                  return false;
-              }
-
-              $.ajax({
-                  url: "/bbtj/kpi/_update",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      month   : $('#month').val(),
-                      market_id   : $('#market_id').val()
-                  },
-                 beforeSend: function () {
-                     $('.modal').on('show.bs.modal', centerModals);
-                     $(window).on('resize', centerModals);
-                     $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                  },
-                  success: function (dataSet) {
-                    if (dataSet.code=='0') {
-                        swal("已更新!", $('#month').val()+"月-KPI报表更新完成!", "success");
-                        $("#query_btn").click();
-                    } else {
-                        swal("更新失败!", $('#month').val()+"月-KPI报表更新失败!\n"+dataSet.message, "error");
-                    }
-                 },
-                 complete: function () {
-                      $('#con-close-modal').modal('hide');
-                 },
-             });
-            });
-
-            $("#query_btn").click();
-
-            $("#upd_item_value").click(function() {
-
-              if ($('#edit_item_type')=='当月考核') {
-                if ($('#edit_month_value').val()=='') {
-                  swal("月度完成不能为空!", "", "error")
-                  return false;
-                 }
-              }
-
-              if ($('#edit_item_type')=='累计考核') {
-                 if ($('#edit_sum_value').val() == '') {
-                     swal("累计完成不能为空!", "", "error")
-                     return false;
-                 }
-             }
-
-              $.ajax({
-                  url: "/bbtj/kpi/item/data/_update",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                       month       : $('#edit_month').val(),
-                       market_id   : $('#edit_market_id').val(),
-                       item_code   : $('#edit_item_code').val(),
-                       item_month_value  : $('#edit_month_value').val(),
-                       item_sum_value  : $('#edit_sum_value').val(),
-                  },
-                  success: function (dataSet) {
-                        if (dataSet.code=='0') {
-                            swal("已更新!", "更新完成!", "success");
-                            $("#query_btn").click();
-                        } else {
-                            swal("更新失败!", "更新失败!"+dataSet.message+"!", "error");
-                        }
-                  },
-             });
-           });
-
         });
 
-   </script>
+        $("#upd_btn").click(function () {
+
+            if ($('#month').val() == '') {
+                swal("报表月不能为空!", "", "error")
+                return false;
+            }
+
+            $.ajax({
+                url: "/bbtj/kpi/_update",
+                type: "post",
+                datatype: "json",
+                data: {
+                    month: $('#month').val(),
+                    market_id: $('#market_id').val()
+                },
+                beforeSend: function () {
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal').modal({keyboard: false, backdrop: false});
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("已更新!", $('#month').val() + "月-KPI报表更新完成!", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("更新失败!", $('#month').val() + "月-KPI报表更新失败!\n" + dataSet.message, "error");
+                    }
+                },
+                complete: function () {
+                    $('#con-close-modal').modal('hide');
+                },
+            });
+        });
+
+        $("#query_btn").click();
+
+        $("#upd_item_value").click(function () {
+
+            if ($('#edit_item_type') == '当月考核') {
+                if ($('#edit_month_value').val() == '') {
+                    swal("月度完成不能为空!", "", "error")
+                    return false;
+                }
+            }
+
+            if ($('#edit_item_type') == '累计考核') {
+                if ($('#edit_sum_value').val() == '') {
+                    swal("累计完成不能为空!", "", "error")
+                    return false;
+                }
+            }
+
+            $.ajax({
+                url: "/bbtj/kpi/item/data/_update",
+                type: "post",
+                datatype: "json",
+                data: {
+                    month: $('#edit_month').val(),
+                    market_id: $('#edit_market_id').val(),
+                    item_code: $('#edit_item_code').val(),
+                    item_month_value: $('#edit_month_value').val(),
+                    item_sum_value: $('#edit_sum_value').val(),
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("已更新!", "更新完成!", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("更新失败!", "更新失败!" + dataSet.message + "!", "error");
+                    }
+                },
+            });
+        });
+
+    });
+
+</script>
 </body>
 
 </html>

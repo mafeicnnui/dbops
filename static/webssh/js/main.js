@@ -120,14 +120,14 @@ jQuery(function($){
   }
 
   function parse_url_data(string, form_keys, opts_keys, form_map, opts_map) {
-    console.log('parse_url_data>>>>')
-    console.log('---------------------------')
-    console.log('string>',string)
-    console.log('form_keys>',form_keys)
-    console.log('opts_keys>',opts_keys)
-    console.log('form_map>',form_map)
-    console.log('opts_map>',opts_map)
-    console.log('---------------------------')
+    // console.log('parse_url_data>>>>')
+    // console.log('---------------------------')
+    // console.log('string>',string)
+    // console.log('form_keys>',form_keys)
+    // console.log('opts_keys>',opts_keys)
+    // console.log('form_map>',form_map)
+    // console.log('opts_map>',opts_map)
+    // console.log('---------------------------')
 
     var i, pair, key, val,
         arr = string.split('&');
@@ -348,21 +348,43 @@ jQuery(function($){
       return;
     }
 
-    var ws_url = window.location.href.split(/\?|#/, 1)[0].replace('http', 'ws'),
-        join = (ws_url[ws_url.length-1] === '/' ? '' : '/'),
-        url = ws_url + join + 'ws?id=' + msg.id+'&token='+$('#token').val(),
-        //url = ws_url + join + 'ws?id=' + msg.id,
-        sock = new window.WebSocket(url),
-        encoding = 'utf-8',
-        decoder = window.TextDecoder ? new window.TextDecoder(encoding) : encoding,
-        terminal = document.getElementById('terminal'),
-        termOptions = {
+    // var ws_url = window.location.href.split(/\?|#/, 1)[0].replace('http', 'ws'),
+    //     join = (ws_url[ws_url.length-1] === '/' ? '' : '/'),
+    //     url = ws_url + join + 'ws?id=' + msg.id+'&token='+$('#token').val(),
+    //     //url = ws_url + join + 'ws?id=' + msg.id,
+    //     sock = new window.WebSocket(url),
+    //     encoding = 'utf-8',
+    //     decoder = window.TextDecoder ? new window.TextDecoder(encoding) : encoding,
+    //     terminal = document.getElementById('terminal'),
+    //     termOptions = {
+    //       cursorBlink: true,
+    //       theme: {
+    //         background: url_opts_data.bgcolor || 'black',
+    //         foreground: url_opts_data.fontcolor || 'white'
+    //       }
+    //     };
+
+     var ws_url = window.location.href.split(/\?|#/, 1)[0].replace('http', 'ws');
+     // console.log('ws_url=',ws_url);
+     var   join = (ws_url[ws_url.length-1] === '/' ? '' : '/');
+     // console.log('join=',join);
+     var   url = ws_url + join + 'ws?id=' + msg.id+'&token='+$('#token').val();
+     // console.log('url=',url);
+
+     //url = ws_url + join + 'ws?id=' + msg.id,
+     var    sock = new window.WebSocket(url);
+     var   encoding = 'utf-8';
+     var   decoder = window.TextDecoder ? new window.TextDecoder(encoding) : encoding;
+     var   terminal = document.getElementById('terminal');
+     var    termOptions = {
           cursorBlink: true,
           theme: {
             background: url_opts_data.bgcolor || 'black',
             foreground: url_opts_data.fontcolor || 'white'
           }
         };
+
+
 
     if (url_opts_data.fontsize) {
       var fontsize = window.parseInt(url_opts_data.fontsize);
@@ -376,7 +398,6 @@ jQuery(function($){
     term.fitAddon = new window.FitAddon.FitAddon();
     term.loadAddon(term.fitAddon);
 
-    console.log(url);
     if (!msg.encoding) {
       console.log('Unable to detect the default encoding of your server');
       msg.encoding = encoding;
@@ -447,7 +468,7 @@ jQuery(function($){
       }
 
       try {
-        console.log('wssh.send>>>>>>>:',data)
+        // console.log('wssh.send>>>>>>>:',data)
         JSON.parse(data);
         sock.send(data);
       } catch (SyntaxError) {
@@ -533,7 +554,7 @@ jQuery(function($){
     };
 
     sock.onmessage = function(msg) {
-      console.log('sock.onmessage>>>>',msg.data)
+      // console.log('sock.onmessage>>>>',msg.data)
       read_file_as_text(msg.data, term_write, decoder);
     };
 
@@ -635,7 +656,7 @@ jQuery(function($){
       result.title = username + '@' + hostname + ':'  + port;
     }
     result.errors = errors;
-    console.log('validate_form_data=',result)
+    // console.log('validate_form_data=',result)
     return result;
   }
 
@@ -691,7 +712,7 @@ jQuery(function($){
     }
 
     var result = validate_form_data(data);
-    console.log('ajax_post=>result=',result.data.get('username'))
+    // console.log('ajax_post=>result=',result.data.get('username'))
     if (!result.valid) {
       log_status(result.errors.join('\n'));
       return;
@@ -723,7 +744,7 @@ jQuery(function($){
         _xsrf = form.querySelector('input[name="_xsrf"]');
 
     var result = validate_form_data(wrap_object(data));
-    console.log('connect_with_options:',result)
+    // console.log('connect_with_options:',result)
 
     if (!result.valid) {
       log_status(result.errors.join('\n'));
@@ -776,10 +797,10 @@ jQuery(function($){
       } else {
         opts = hostname;
       }
-      console.log('connect->connect_with_options->')
-      console.log('opts>>>>',opts)
+      // console.log('connect->connect_with_options->')
+      // console.log('opts>>>>',opts)
       result = connect_with_options(opts);
-      console.log('connect->connect_with_options->result:',result)
+      // console.log('connect->connect_with_options->result:',result)
     }
 
     if (result) {
@@ -795,30 +816,42 @@ jQuery(function($){
   wssh.connect = connect;
 
   $(form_id).submit(function(event){
-    console.log('form.submit....')
+    // console.log('form.submit....')
     event.preventDefault();
     connect();
-    console.log('form.submit.connect....')
+    // console.log('form.submit.connect....')
   });
 
   $('#ssh').click(function(){
-     console.log('ssh click!')
+     // console.log('ssh click!')
      //connect();
+     // console.log('>>>>>>>>>>>>>>>>>>>>>>>>:',
+     //           $('#hostname').val(),
+     //           $('#port').val(),
+     //           $('#username').val(),
+     //           $('#password').val())
      connect($('#hostname').val(),
              $('#port').val(),
              $('#username').val(),
              $('#password').val())
   })
 
+  function isEmptyString(obj) {
+    return (typeof obj === 'string' || obj instanceof String) && obj.length === 0;
+  }
+
   function cross_origin_connect(event) {
-    console.log(event.origin);
     var prop = 'connect',
         args;
 
     try {
-      args = JSON.parse(event.data);
+      if (!isEmptyString(event.data)) {
+         args = event.data;
+      }
     } catch (SyntaxError) {
-      args = event.data.split('|');
+       if (!isEmptyString(event.data)) {
+          args = event.data;
+       }
     }
 
     if (!Array.isArray(args)) {

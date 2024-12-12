@@ -6,12 +6,15 @@
 # @Software: PyCharm
 
 import traceback
+
 import requests
-from web.utils.common      import format_sql
+
+from web.utils.common import format_sql
 from web.utils.mysql_async import async_processer
 
+
 async def query_transfer(sync_tag):
-    v_where=' and  1=1 '
+    v_where = ' and  1=1 '
     if sync_tag != '':
         v_where = v_where + " and a.transfer_tag='{0}'\n".format(sync_tag)
     sql = """SELECT  a.id,
@@ -24,6 +27,7 @@ async def query_transfer(sync_tag):
                 FROM t_db_transfer_config a,t_server b 
                 WHERE a.server_id=b.id AND b.status='1'  {0} """.format(v_where)
     return await async_processer.query_list(sql)
+
 
 async def query_transfer_detail(transfer_id):
     sql = """SELECT   a.transfer_tag,
@@ -53,16 +57,17 @@ async def query_transfer_detail(transfer_id):
              """.format(transfer_id)
     return await async_processer.query_one(sql)
 
-async def query_transfer_log(transfer_tag,begin_date,end_date,task_status):
-    v_where=' and 1=1 '
+
+async def query_transfer_log(transfer_tag, begin_date, end_date, task_status):
+    v_where = ' and 1=1 '
     if transfer_tag != '':
         v_where = v_where + " and a.transfer_tag='{0}'\n".format(transfer_tag)
     if begin_date != '':
-        v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date+' 0:0:0')
+        v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date + ' 0:0:0')
     else:
         v_where = v_where + " and a.create_date>=DATE_ADD(NOW(),INTERVAL -1 hour)\n"
     if end_date != '':
-        v_where = v_where + " and a.create_date<='{0}'\n".format(end_date+' 23:59:59')
+        v_where = v_where + " and a.create_date<='{0}'\n".format(end_date + ' 23:59:59')
     if task_status == 'running':
         v_where = v_where + " and a.percent!=100.00 \n"
     if task_status == 'history':
@@ -83,41 +88,42 @@ async def query_transfer_log(transfer_tag,begin_date,end_date,task_status):
                  and b.status='1'  {0} order by a.create_date desc,a.transfer_tag """.format(v_where)
     return await async_processer.query_list(sql)
 
+
 async def save_transfer(p_transfer):
-    val=check_transfer(p_transfer)
-    if val['code']=='-1':
+    val = check_transfer(p_transfer)
+    if val['code'] == '-1':
         return val
     try:
-        result                  = {}
-        transfer_tag            = p_transfer['transfer_tag']
-        task_desc               = p_transfer['task_desc']
-        transfer_server         = p_transfer['transfer_server']
-        transfer_type           = p_transfer['transfer_type']
-        sour_db_server          = p_transfer['sour_db_server']
-        sour_db_name            = p_transfer['sour_db_name']
-        sour_tab_name           = p_transfer['sour_tab_name']
-        sour_tab_where          = format_sql(p_transfer['sour_tab_where'])
-        dest_db_server          = p_transfer['dest_db_server']
-        dest_db_name            = p_transfer['dest_db_name']
-        python3_home            = p_transfer['python3_home']
-        script_base             = p_transfer['script_base']
-        script_name             = p_transfer['script_name']
-        batch_size              = p_transfer['batch_size']
-        api_server              = p_transfer['api_server']
-        status                  = p_transfer['status']
-        sql="""insert into t_db_transfer_config(
+        result = {}
+        transfer_tag = p_transfer['transfer_tag']
+        task_desc = p_transfer['task_desc']
+        transfer_server = p_transfer['transfer_server']
+        transfer_type = p_transfer['transfer_type']
+        sour_db_server = p_transfer['sour_db_server']
+        sour_db_name = p_transfer['sour_db_name']
+        sour_tab_name = p_transfer['sour_tab_name']
+        sour_tab_where = format_sql(p_transfer['sour_tab_where'])
+        dest_db_server = p_transfer['dest_db_server']
+        dest_db_name = p_transfer['dest_db_name']
+        python3_home = p_transfer['python3_home']
+        script_base = p_transfer['script_base']
+        script_name = p_transfer['script_name']
+        batch_size = p_transfer['batch_size']
+        api_server = p_transfer['api_server']
+        status = p_transfer['status']
+        sql = """insert into t_db_transfer_config(
                       transfer_tag,server_id,comments,sour_db_id,sour_schema,
                       sour_table,sour_where,dest_db_id,dest_schema,script_path,
                       script_file,python3_home,api_server,batch_size,status,transfer_type)
                values('{0}','{1}','{2}','{3}','{4}',
                       '{5}','{6}','{7}','{8}','{9}',
                       '{10}','{11}','{12}','{13}','{14}','{15}')
-            """.format(transfer_tag,transfer_server,task_desc,sour_db_server,sour_db_name,
-                       sour_tab_name,sour_tab_where,dest_db_server,dest_db_name,script_base,
-                       script_name,python3_home,api_server,batch_size,status,transfer_type)
+            """.format(transfer_tag, transfer_server, task_desc, sour_db_server, sour_db_name,
+                       sour_tab_name, sour_tab_where, dest_db_server, dest_db_name, script_base,
+                       script_name, python3_home, api_server, batch_size, status, transfer_type)
         async_processer.exec_sql(sql)
-        result['code']='0'
-        result['message']='保存成功！'
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except:
         result = {}
@@ -126,30 +132,31 @@ async def save_transfer(p_transfer):
         result['message'] = '保存失败！'
         return result
 
+
 async def upd_transfer(p_transfer):
     val = check_transfer(p_transfer)
-    if  val['code'] == '-1':
+    if val['code'] == '-1':
         return val
     try:
-        transfer_id     = p_transfer['transfer_id']
-        transfer_tag    = p_transfer['transfer_tag']
-        task_desc       = p_transfer['task_desc']
+        transfer_id = p_transfer['transfer_id']
+        transfer_tag = p_transfer['transfer_tag']
+        task_desc = p_transfer['task_desc']
         transfer_server = p_transfer['transfer_server']
-        transfer_type   = p_transfer['transfer_type']
-        sour_db_server  = p_transfer['sour_db_server']
-        sour_db_name    = p_transfer['sour_db_name']
-        sour_tab_name   = p_transfer['sour_tab_name']
-        sour_tab_where  = p_transfer['sour_tab_where']
-        dest_db_server  = p_transfer['dest_db_server']
-        dest_db_name    = p_transfer['dest_db_name']
-        script_base     = p_transfer['script_base']
-        script_name     = p_transfer['script_name']
-        python3_home    = p_transfer['python3_home']
-        batch_size      = p_transfer['batch_size']
-        api_server      = p_transfer['api_server']
-        status          = p_transfer['status']
+        transfer_type = p_transfer['transfer_type']
+        sour_db_server = p_transfer['sour_db_server']
+        sour_db_name = p_transfer['sour_db_name']
+        sour_tab_name = p_transfer['sour_tab_name']
+        sour_tab_where = p_transfer['sour_tab_where']
+        dest_db_server = p_transfer['dest_db_server']
+        dest_db_name = p_transfer['dest_db_name']
+        script_base = p_transfer['script_base']
+        script_name = p_transfer['script_name']
+        python3_home = p_transfer['python3_home']
+        batch_size = p_transfer['batch_size']
+        api_server = p_transfer['api_server']
+        status = p_transfer['status']
 
-        sql="""update t_db_transfer_config 
+        sql = """update t_db_transfer_config 
                   set  
                       transfer_tag      ='{0}',
                       server_id         ='{1}', 
@@ -167,39 +174,43 @@ async def upd_transfer(p_transfer):
                       status            ='{13}',
                       batch_size        ='{14}',
                       transfer_type     ='{15}'
-                where id={16}""".format(transfer_tag,transfer_server,task_desc,sour_db_server,sour_db_name,
-                                        sour_tab_name,format_sql(sour_tab_where),dest_db_server,dest_db_name,script_base,
-                                        script_name,python3_home,api_server,status,batch_size,transfer_type,transfer_id)
+                where id={16}""".format(transfer_tag, transfer_server, task_desc, sour_db_server, sour_db_name,
+                                        sour_tab_name, format_sql(sour_tab_where), dest_db_server, dest_db_name,
+                                        script_base,
+                                        script_name, python3_home, api_server, status, batch_size, transfer_type,
+                                        transfer_id)
         async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='更新成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '更新成功！'
+    except:
         result = {}
         traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '更新失败！'
     return result
 
+
 async def del_transfer(p_transferid):
     try:
         sql = "delete from t_db_transfer_config  where id='{0}'".format(p_transferid)
         await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '删除成功！'
+    except:
         result = {}
         result['code'] = '-1'
         result['message'] = '删除失败！'
     return result
 
+
 def check_transfer(p_transfer):
     result = {}
 
-    if p_transfer["transfer_tag"]=="":
-        result['code']='-1'
-        result['message']='传输标识号不能为空！'
+    if p_transfer["transfer_tag"] == "":
+        result['code'] = '-1'
+        result['message'] = '传输标识号不能为空！'
         return result
 
     if p_transfer["task_desc"] == "":
@@ -207,14 +218,14 @@ def check_transfer(p_transfer):
         result['message'] = '任务描述不能为空！'
         return result
 
-    if p_transfer["transfer_server"]=="":
-        result['code']='-1'
-        result['message']='传输服务器不能为空！'
+    if p_transfer["transfer_server"] == "":
+        result['code'] = '-1'
+        result['message'] = '传输服务器不能为空！'
         return result
 
-    if p_transfer["sour_db_server"]=="":
-        result['code']='-1'
-        result['message']='源数据库实例不能为空！'
+    if p_transfer["sour_db_server"] == "":
+        result['code'] = '-1'
+        result['message'] = '源数据库实例不能为空！'
         return result
 
     if p_transfer["sour_tab_name"] == "":
@@ -222,9 +233,9 @@ def check_transfer(p_transfer):
         result['message'] = '源数据库表名不能为空！'
         return result
 
-    if p_transfer["dest_db_server"]=="":
-        result['code']='-1'
-        result['message']='目标数据库实例不能为空！'
+    if p_transfer["dest_db_server"] == "":
+        result['code'] = '-1'
+        result['message'] = '目标数据库实例不能为空！'
         return result
 
     if p_transfer["dest_db_name"] == "":
@@ -266,6 +277,7 @@ def check_transfer(p_transfer):
     result['message'] = '验证通过'
     return result
 
+
 async def get_transfer_by_transferid(p_transferid):
     sql = """select   id  as server_id,
                       transfer_tag,
@@ -288,7 +300,8 @@ async def get_transfer_by_transferid(p_transferid):
           """.format(p_transferid)
     return await async_processer.query_dict_one(sql)
 
-def push_transfer_task(p_tag,p_api):
+
+def push_transfer_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
@@ -305,7 +318,8 @@ def push_transfer_task(p_tag,p_api):
     jres['msg']['crontab'] = v
     return jres
 
-def run_transfer_task(p_tag,p_api):
+
+def run_transfer_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
@@ -322,7 +336,8 @@ def run_transfer_task(p_tag,p_api):
     jres['msg']['crontab'] = v
     return jres
 
-def stop_transfer_task(p_tag,p_api):
+
+def stop_transfer_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }

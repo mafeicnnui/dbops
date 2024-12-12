@@ -5,90 +5,90 @@
     <title>功能新增</title>
 </head>
 <body>
-   <p></p>
-   <div class="col-md-6">
-       <form class="form-horizontal" role="form">
-            <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_priv_id">*</span>模块名称</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control" id="priv_id" >
-                       <option value='' selected = "selected">......</option>
-                        {% for var in menus %}
-                           <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-                </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_func_name">*</span>功能名称</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="func_name"  type="text" class="form-control" placeholder="请输入功能名称">
-                </div>
-           </div>
-            <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_func_url">*</span>功能URL</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="func_url"  type="text" class="form-control" placeholder="请输入功能URL">
-                </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_func_status">*</span>功能状态</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="func_status" >
-                        <option value="1">启用</option>
-                        <option value="0">禁用</option>
-                    </select>
-               </div>
+<p></p>
+<div class="col-md-6">
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_priv_id">*</span>模块名称</label>
             </div>
+            <div class="col-md-10">
+                <select class="form-control" id="priv_id">
+                    <option value='' selected="selected">......</option>
+                    {% for var in menus %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_func_name">*</span>功能名称</label>
+            </div>
+            <div class="col-md-10">
+                <input id="func_name" type="text" class="form-control" placeholder="请输入功能名称">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_func_url">*</span>功能URL</label>
+            </div>
+            <div class="col-md-10">
+                <input id="func_url" type="text" class="form-control" placeholder="请输入功能URL">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_func_status">*</span>功能状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="func_status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+            </div>
+        </div>
 
 
-           <br>
-           <div class="form-group m-b-0">
-                <div class="col-sm-offset-6 col-sm-9">
-                  <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-                </div>
-           </div>
-       </form>
-    </div>
+        <br>
+        <div class="form-group m-b-0">
+            <div class="col-sm-offset-6 col-sm-9">
+                <button id="add" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
 
-    <script>
+<script>
 
-        $(document).ready(function() {
-          set_selected()
-          $("#add").click(function () {
+    $(document).ready(function () {
+        set_selected()
+        $("#add").click(function () {
             $.ajax({
                 url: "/func/add/save",
                 type: "post",
                 datatype: "json",
                 data: {
-                     priv_id:      $('#priv_id').val(),
-                     func_name:    $('#func_name').val(),
-                     func_url:     $('#func_url').val(),
-                     status:       $('#func_status').val()
+                    priv_id: $('#priv_id').val(),
+                    func_name: $('#func_name').val(),
+                    func_url: $('#func_url').val(),
+                    status: $('#func_status').val()
                 },
                 success: function (dataSet) {
-                    if (dataSet.code==0) {
-                       swal("保存成功", "", "success")
+                    if (dataSet.code == 0) {
+                        swal("保存成功", "", "success")
                     } else {
-                       swal(dataSet.message, "", "error")
+                        swal(dataSet.message, "", "error")
                     }
                 },
-             });
-          });
-
+            });
         });
 
-   </script>
+    });
+
+</script>
 </body>
 
 </html>

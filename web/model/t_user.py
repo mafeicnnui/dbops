@@ -5,19 +5,21 @@
 # @File    : t_user.py
 # @Software: PyCharm
 
-import traceback
 import datetime
-from web.utils.common      import current_rq,aes_encrypt,aes_decrypt,aes_decrypt_sync
-from web.model.t_user_role import del_user_roles,save_user_role,upd_user_role
-from web.utils.common      import now,exception_info
-from web.model.t_dmmx      import get_dmmc_from_dm,get_dmmc_from_dm_sync
+import traceback
+
+from web.model.t_dmmx import get_dmmc_from_dm, get_dmmc_from_dm_sync
+from web.model.t_user_role import del_user_roles, save_user_role, upd_user_role
+from web.utils.common import current_rq, aes_encrypt, aes_decrypt, aes_decrypt_sync
+from web.utils.common import now, exception_info
 from web.utils.jwt_auth import kill_session_log
 from web.utils.mysql_async import async_processer
-from web.utils.mysql_sync  import sync_processer
+from web.utils.mysql_sync import sync_processer
 
-def check_modify_password(user,newpass,reppass,auth_str):
-    result={}
-    result['code']='0'
+
+def check_modify_password(user, newpass, reppass, auth_str):
+    result = {}
+    result['code'] = '0'
     if newpass == "":
         result['code'] = '-1'
         result['message'] = '新口令不能为空！'
@@ -28,22 +30,24 @@ def check_modify_password(user,newpass,reppass,auth_str):
         result['message'] = '重复口令不能为空！'
         return result
 
-    if  not (newpass == reppass) :
+    if not (newpass == reppass):
         result['code'] = '-1'
         result['message'] = '口令输入不一致！'
         return result
     return result
 
+
 def dif_time(p_tm):
     now_time = datetime.datetime.now()
     now_time = now_time.strftime('%Y%m%d%H%M%S')
-    d1       = datetime.datetime.strptime(p_tm, '%Y%m%d%H%M%S')
-    d2       = datetime.datetime.strptime(now_time,'%Y%m%d%H%M%S')
-    sec      = (d2 - d1).seconds
+    d1 = datetime.datetime.strptime(p_tm, '%Y%m%d%H%M%S')
+    d2 = datetime.datetime.strptime(now_time, '%Y%m%d%H%M%S')
+    sec = (d2 - d1).seconds
     return sec
 
-async def logon_user_check(login_name,password,verify_code,verify_img):
-    result={}
+
+async def logon_user_check(login_name, password, verify_code, verify_img):
+    result = {}
     if login_name == "":
         result['code'] = '-1'
         result['message'] = '用户名不能为空！'
@@ -64,24 +68,24 @@ async def logon_user_check(login_name,password,verify_code,verify_img):
         result['message'] = '验证码不正确！'
         return result
 
-    if await check_user_exist(login_name)==0:
+    if await check_user_exist(login_name) == 0:
         result['code'] = '-1'
         result['message'] = '用户名不存在！'
         return result
 
     user = await get_user_by_loginame(login_name)
 
-    if user['password']!=password:
+    if user['password'] != password:
         result['code'] = '-1'
         result['message'] = '口令有误！'
         return result
 
-    if user['status']=='0':
+    if user['status'] == '0':
         result['code'] = '-1'
         result['message'] = '用户已禁用，请联系管理员！'
         return result
 
-    if user['expire_date']<now():
+    if user['expire_date'] < now():
         result['code'] = '-1'
         result['message'] = '该用户已过期，请联系管理员！'
         return result
@@ -90,22 +94,23 @@ async def logon_user_check(login_name,password,verify_code,verify_img):
                                            from t_session 
                                            where username='{}' 
                                              and TIMESTAMPDIFF(SECOND,last_update_time,NOW())<60 
-                                             order by last_update_time desc limit 1""".format(login_name)))[0]>0:
+                                             order by last_update_time desc limit 1""".format(login_name)))[0] > 0:
         sec = (await async_processer.query_one("""select 60-TIMESTAMPDIFF(SECOND,last_update_time,NOW())  
                                                  from t_session 
-                                                 where username='{}' order by last_update_time desc limit 1""".format(login_name)))[0]
+                                                 where username='{}' order by last_update_time desc limit 1""".format(
+            login_name)))[0]
         result['code'] = '-1'
         result['message'] = '用户已登陆,请{}秒后重试!'.format(sec)
         return result
 
-
     result['code'] = '0'
-    result['message'] ='验证成功！'
+    result['message'] = '验证成功！'
     return result
 
-async def check_forget_password(login_name,email):
-    result={}
-    result['url']=''
+
+async def check_forget_password(login_name, email):
+    result = {}
+    result['url'] = ''
     if login_name == "":
         result['code'] = '-1'
         result['message'] = '用户名不能为空！'
@@ -116,33 +121,34 @@ async def check_forget_password(login_name,email):
         result['message'] = '邮箱不能为空！'
         return result
 
-    if (await check_user_exist(login_name))==0:
+    if (await check_user_exist(login_name)) == 0:
         result['code'] = '-1'
         result['message'] = '用户名不存在！'
         return result
 
-    if (await check_email_exist(login_name,email)) == 0:
+    if (await check_email_exist(login_name, email)) == 0:
         result['code'] = '-1'
         result['message'] = '非注册邮箱！'
         return result
 
-    if (await get_user_by_loginame(login_name))['status']=='0':
+    if (await get_user_by_loginame(login_name))['status'] == '0':
         result['code'] = '-1'
         result['message'] = '用户已禁用，请联系管理员！'
         return result
 
-    if (await get_user_by_loginame(login_name))['expire_date']<now():
+    if (await get_user_by_loginame(login_name))['expire_date'] < now():
         result['code'] = '-1'
         result['message'] = '该用户已过期，请联系管理员！'
         return result
 
     result['code'] = '0'
-    result['message'] ='验证成功！'
+    result['message'] = '验证成功！'
     return result
 
-async def check_authcode(user,auth_str):
+
+async def check_authcode(user, auth_str):
     result = {}
-    result['code']='0'
+    result['code'] = '0'
     result['message'] = '认证成功!'
 
     if auth_str == '' or auth_str is None:
@@ -151,25 +157,26 @@ async def check_authcode(user,auth_str):
         return result
 
     if not await check_auth_str_exist(auth_str):
-       result['code'] = '-1'
-       result['message'] = '授权码不正确!'
-       return result
+        result['code'] = '-1'
+        result['message'] = '授权码不正确!'
+        return result
 
-    v_max_rq = await get_create_date_by_auth((await get_user_by_loginame(user))['userid'],auth_str)
-    if dif_time(v_max_rq)>60:
-       result['code'] = '-1'
-       result['message'] = '授权码已过期!'
-       return result
+    v_max_rq = await get_create_date_by_auth((await get_user_by_loginame(user))['userid'], auth_str)
+    if dif_time(v_max_rq) > 60:
+        result['code'] = '-1'
+        result['message'] = '授权码已过期!'
+        return result
 
     return result
 
-async def save_forget_authention_string(p_username,p_auth_string):
+
+async def save_forget_authention_string(p_username, p_auth_string):
     result = {}
     try:
-        userid= (await get_user_by_loginame(p_username))['userid']
+        userid = (await get_user_by_loginame(p_username))['userid']
         sql = """insert into t_forget_password(user_id,authentication_string,creation_date,creator) 
                        values('{0}','{1}',now(),'{2}')
-                    """.format(userid, p_auth_string,p_username)
+                    """.format(userid, p_auth_string, p_username)
         await async_processer.exec_sql(sql)
         result = {}
         result['code'] = '0'
@@ -182,10 +189,11 @@ async def save_forget_authention_string(p_username,p_auth_string):
 
     return result
 
+
 async def query_user(p_name):
     v_where = ''
     if p_name != "":
-       v_where =  " where binary name like '%{0}%' or a.login_name like '%{1}%' ".format(p_name,p_name)
+        v_where = " where binary name like '%{0}%' or a.login_name like '%{1}%' ".format(p_name, p_name)
     sql = """select a.id,a.login_name,
                  CONCAT(a.file_path,'/',a.file_name) as user_image,
                  a.wkno, 
@@ -205,14 +213,15 @@ async def query_user(p_name):
     v_list = await async_processer.query_list(sql)
     return v_list
 
-async def query_user_proj_privs(p_name,p_dsid,is_grants):
+
+async def query_user_proj_privs(p_name, p_dsid, is_grants):
     if p_name == "":
         sql = """select u.id,u.login_name,u.name,u.email,u.phone,u.dept,
                        (select count(0) from t_user_proj_privs 
                         where proj_id='{0}' and user_id=u.id and priv_id='1') as query_priv,
                        (select count(0) from t_user_proj_privs 
                         where proj_id='{1}' and user_id=u.id and priv_id='2') as release_priv         
-              from t_user  u order by convert(name using gbk) asc""".format(p_dsid,p_dsid)
+              from t_user  u order by convert(name using gbk) asc""".format(p_dsid, p_dsid)
     else:
         sql = """select u.id,u.login_name,u.name,u.email,u.phone,u.dept,
                        (select count(0) from t_user_proj_privs 
@@ -221,44 +230,52 @@ async def query_user_proj_privs(p_name,p_dsid,is_grants):
                         where proj_id='{1}' and user_id=u.id and priv_id='2') as release_priv  
                  from t_user u 
                 where binary u.name like '%{2}%'              
-                 order by convert(name using gbk) asc""".format(p_dsid,p_dsid,p_name)
+                 order by convert(name using gbk) asc""".format(p_dsid, p_dsid, p_name)
     return await async_processer.query_list(sql)
+
 
 async def get_userid():
     sql = "select max(id)+1 from t_user"
     rs = await async_processer.query_one(sql)
     return rs[0]
 
+
 async def get_userid_by_auth(v_str):
-    sql="select max(user_id) from t_forget_password where authentication_string='{0}'".format(v_str)
+    sql = "select max(user_id) from t_forget_password where authentication_string='{0}'".format(v_str)
     rs = await async_processer.query_one(sql)
     return rs[0]
 
-async def get_create_date_by_auth(v_userid,v_str):
-    sql="select date_format(creation_date,'%Y%m%d%H%i%s')  from t_forget_password where user_id='{}' and authentication_string='{}'".format(v_userid,v_str)
+
+async def get_create_date_by_auth(v_userid, v_str):
+    sql = "select date_format(creation_date,'%Y%m%d%H%i%s')  from t_forget_password where user_id='{}' and authentication_string='{}'".format(
+        v_userid, v_str)
     rs = await async_processer.query_one(sql)
     return rs[0]
+
 
 async def check_user_exist(p_login_name):
-    sql="select count(0) from t_user where login_name='{0}'".format(p_login_name)
+    sql = "select count(0) from t_user where login_name='{0}'".format(p_login_name)
     rs = await async_processer.query_one(sql)
     return rs[0]
 
-async def check_email_exist(p_login_name,p_email):
-    sql="select count(0) from t_user where login_name='{0}' and email='{1}'".format(p_login_name,p_email)
+
+async def check_email_exist(p_login_name, p_email):
+    sql = "select count(0) from t_user where login_name='{0}' and email='{1}'".format(p_login_name, p_email)
     rs = await async_processer.query_one(sql)
     return rs[0]
+
 
 async def check_auth_str_exist(p_auth_str):
-    sql="select count(0) from t_forget_password where authentication_string='{0}'".format(p_auth_str)
+    sql = "select count(0) from t_forget_password where authentication_string='{0}'".format(p_auth_str)
     rs = await async_processer.query_one(sql)
-    if rs[0]==0:
+    if rs[0] == 0:
         return False
     else:
         return True
 
+
 async def get_user_by_userid(p_userid):
-    sql="""select cast(id as char) as userid,
+    sql = """select cast(id as char) as userid,
                   login_name as loginname, 
                   name as username,
                   password,
@@ -274,11 +291,12 @@ async def get_user_by_userid(p_userid):
                   query_grants
         from t_user where id={0}""".format(p_userid)
     user = await async_processer.query_dict_one(sql)
-    user['password'] = await aes_decrypt(user['password'],user['loginname'])
+    user['password'] = await aes_decrypt(user['password'], user['loginname'])
     return user
 
+
 def get_user_by_userid_sync(p_userid):
-    sql="""select cast(id as char) as userid,
+    sql = """select cast(id as char) as userid,
                   login_name as loginname, 
                   name as username,
                   password,
@@ -293,15 +311,17 @@ def get_user_by_userid_sync(p_userid):
                   wkno
         from t_user where id={0}""".format(p_userid)
     user = sync_processer.query_dict_one(sql)
-    user['password'] = aes_decrypt_sync(user['password'],user['loginname'])
+    user['password'] = aes_decrypt_sync(user['password'], user['loginname'])
     return user
+
 
 async def get_users(p_dept):
     sql = """select id,name from t_user  WHERE dept='{0}' order by id""".format(p_dept)
     return await async_processer.query_list(sql)
 
+
 async def get_user_by_loginame(p_login_name):
-    sql= """select cast(id as char) as id,
+    sql = """select cast(id as char) as id,
                 name,
                 login_name,
                 password,
@@ -317,16 +337,17 @@ async def get_user_by_loginame(p_login_name):
                 wkno
          from t_user where login_name='{0}'
         """.format(p_login_name)
-    d_user              = await async_processer.query_dict_one(sql)
-    d_user['userid']    = d_user['id']
-    d_user['username']  = d_user['name']
-    d_user['password']  = await aes_decrypt(d_user['password'], d_user['login_name'])
+    d_user = await async_processer.query_dict_one(sql)
+    d_user['userid'] = d_user['id']
+    d_user['username'] = d_user['name']
+    d_user['password'] = await aes_decrypt(d_user['password'], d_user['login_name'])
     d_user['gender_cn'] = await get_dmmc_from_dm('04', d_user['gender'])
-    d_user['dept_cn']   = await get_dmmc_from_dm('01', d_user['dept'])
+    d_user['dept_cn'] = await get_dmmc_from_dm('01', d_user['dept'])
     return d_user
 
+
 def get_user_by_loginame_sync(p_login_name):
-    sql= """select cast(id as char) as id,
+    sql = """select cast(id as char) as id,
                 name,
                 login_name,
                 password,
@@ -342,13 +363,14 @@ def get_user_by_loginame_sync(p_login_name):
                 wkno
          from t_user where login_name='{0}'
         """.format(p_login_name)
-    d_user              = sync_processer.query_dict_one(sql)
-    d_user['userid']    = d_user['id']
-    d_user['username']  = d_user['name']
-    d_user['password']  = aes_decrypt_sync(d_user['password'], d_user['login_name'])
+    d_user = sync_processer.query_dict_one(sql)
+    d_user['userid'] = d_user['id']
+    d_user['username'] = d_user['name']
+    d_user['password'] = aes_decrypt_sync(d_user['password'], d_user['login_name'])
     d_user['gender_cn'] = get_dmmc_from_dm_sync('04', d_user['gender'])
-    d_user['dept_cn']   = get_dmmc_from_dm_sync('01', d_user['dept'])
+    d_user['dept_cn'] = get_dmmc_from_dm_sync('01', d_user['dept'])
     return d_user
+
 
 async def check_user(p_user):
     result = {}
@@ -392,17 +414,17 @@ async def check_user(p_user):
         result['message'] = '过期日期不能为空！'
         return result
 
-    if p_user["privs"][0] is None or p_user["privs"][0]=='':
+    if p_user["privs"][0] is None or p_user["privs"][0] == '':
         result['code'] = '-1'
         result['message'] = '用户角色不能为空！'
         return result
 
-    if p_user["query_grants"] is None or p_user["query_grants"]=='':
+    if p_user["query_grants"] is None or p_user["query_grants"] == '':
         result['code'] = '-1'
         result['message'] = '查询授权不能为空！'
         return result
 
-    if await check_user_exist(p_user["login"] ) > 0:
+    if await check_user_exist(p_user["login"]) > 0:
         result['code'] = '-1'
         result['message'] = '用户名已存在！'
         return result
@@ -411,7 +433,8 @@ async def check_user(p_user):
     result['message'] = '验证通过'
     return result
 
-async def check_user_query_grants(p_user,p_flag='I'):
+
+async def check_user_query_grants(p_user, p_flag='I'):
     result = {}
     if p_user["dbid"] == "":
         result['code'] = '-1'
@@ -432,7 +455,7 @@ async def check_user_query_grants(p_user,p_flag='I'):
         result['code'] = '-1'
         result['message'] = '授权列不能为空！'
         return result
-    if p_flag=='I':
+    if p_flag == 'I':
         r = await async_processer.query_dict_one(
             """select count(0) as cnt 
                from t_user_query_grants
@@ -443,8 +466,8 @@ async def check_user_query_grants(p_user,p_flag='I'):
                                                 p_user['dbid'],
                                                 p_user['db'],
                                                 p_user['tab'])
-            )
-        if r['cnt'] >0:
+        )
+        if r['cnt'] > 0:
             result['code'] = '-1'
             result['message'] = '表授权信息已存在!'
             return result
@@ -453,71 +476,77 @@ async def check_user_query_grants(p_user,p_flag='I'):
     result['message'] = '验证通过'
     return result
 
+
 async def save_user(p_user):
     result = {}
     val = await check_user(p_user)
     if val['code'] == '-1':
         return val
     try:
-        userid       = await get_userid()
-        loginname    = p_user['login']
-        wkno         = p_user['wkno']
-        username     = p_user['user']
-        password     = await aes_encrypt(p_user['pass'],loginname)
-        gender       = p_user['gender']
-        email        = p_user['email']
-        phone        = p_user['phone']
-        proj_group   = p_user['proj_group']
-        dept         = p_user['dept']
-        expire_date  = p_user['expire_date']
-        status       = p_user['status']
-        privs        = p_user['privs']
-        file_path    = p_user['file_path']
-        file_name    = p_user['file_name']
+        userid = await get_userid()
+        loginname = p_user['login']
+        wkno = p_user['wkno']
+        username = p_user['user']
+        password = await aes_encrypt(p_user['pass'], loginname)
+        gender = p_user['gender']
+        email = p_user['email']
+        phone = p_user['phone']
+        proj_group = p_user['proj_group']
+        dept = p_user['dept']
+        expire_date = p_user['expire_date']
+        status = p_user['status']
+        privs = p_user['privs']
+        file_path = p_user['file_path']
+        file_name = p_user['file_name']
         query_grants = p_user['query_grants']
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>.privs:',privs)
-        if file_path=='':
-           file_path = '/static/assets/images/users'
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>.privs:', privs)
+        if file_path == '':
+            file_path = '/static/assets/images/users'
 
-        if  file_name=='':
-            if gender=='1':
+        if file_name == '':
+            if gender == '1':
                 file_name = 'boy.png'
             else:
                 file_name = 'girl.png'
 
-        sql="""insert into t_user(id,login_name,wkno,name,password,gender,email,phone,project_group,dept,expire_date,status,file_path,file_name,query_grants,creation_date,creator,last_update_date,updator) 
+        sql = """insert into t_user(id,login_name,wkno,name,password,gender,email,phone,project_group,dept,expire_date,status,file_path,file_name,query_grants,creation_date,creator,last_update_date,updator) 
                     values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}')
-            """.format(userid,loginname,wkno,username,password,gender,email,phone,proj_group,dept,expire_date,status,file_path,file_name,query_grants,current_rq(),'DBA',current_rq(),'DBA');
+            """.format(userid, loginname, wkno, username, password, gender, email, phone, proj_group, dept, expire_date,
+                       status, file_path, file_name, query_grants, current_rq(), 'DBA', current_rq(), 'DBA');
 
         await async_processer.exec_sql(sql)
-        await save_user_role(userid,privs)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        await save_user_role(userid, privs)
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except Exception as e:
         result['code'] = '-1'
         result['message'] = '保存失败！'
         return result
 
+
 async def save_user_proj_privs(d_proj):
     result = {}
-    dsid   = d_proj['dsid']
+    dsid = d_proj['dsid']
     userid = d_proj['userid']
-    priv_query   = d_proj['priv_query']
+    priv_query = d_proj['priv_query']
     priv_release = d_proj['priv_release']
-    priv_audit   = d_proj['priv_audit']
+    priv_audit = d_proj['priv_audit']
     priv_execute = d_proj['priv_execute']
-    priv_order   = d_proj['priv_order']
-    priv_export  = d_proj['priv_export']
+    priv_order = d_proj['priv_order']
+    priv_export = d_proj['priv_export']
 
     try:
         # process query privs
-        if priv_query=='1':
-           sql = """delete from  t_user_proj_privs where proj_id='{0}' and user_id='{1}' and priv_id='1'""".format(dsid,userid)
-           await async_processer.exec_sql(sql)
-           sql = """insert into t_user_proj_privs(proj_id,user_id,priv_id) values('{0}','{1}','{2}') """.format(dsid,userid, '1')
-           await async_processer.exec_sql(sql)
+        if priv_query == '1':
+            sql = """delete from  t_user_proj_privs where proj_id='{0}' and user_id='{1}' and priv_id='1'""".format(
+                dsid, userid)
+            await async_processer.exec_sql(sql)
+            sql = """insert into t_user_proj_privs(proj_id,user_id,priv_id) values('{0}','{1}','{2}') """.format(dsid,
+                                                                                                                 userid,
+                                                                                                                 '1')
+            await async_processer.exec_sql(sql)
         else:
             sql = """delete from  t_user_proj_privs 
                         where proj_id='{0}' and user_id='{1}' and priv_id='1'""".format(dsid, userid)
@@ -549,7 +578,7 @@ async def save_user_proj_privs(d_proj):
                             where proj_id='{0}' and user_id='{1}' and priv_id='3'""".format(dsid, userid)
             await async_processer.exec_sql(sql)
 
-        #process execute privs
+        # process execute privs
         if priv_execute == '1':
             sql = """delete from  t_user_proj_privs 
                          where proj_id='{0}' and user_id='{1}' and priv_id='4'""".format(dsid, userid)
@@ -562,7 +591,7 @@ async def save_user_proj_privs(d_proj):
                           where proj_id='{0}' and user_id='{1}' and priv_id='4'""".format(dsid, userid)
             await async_processer.exec_sql(sql)
 
-        #process order privs
+        # process order privs
         if priv_order == '1':
             sql = """delete from  t_user_proj_privs 
                             where proj_id='{0}' and user_id='{1}' and priv_id='5'""".format(dsid, userid)
@@ -588,9 +617,9 @@ async def save_user_proj_privs(d_proj):
                                where proj_id='{0}' and user_id='{1}' and priv_id='6'""".format(dsid, userid)
             await async_processer.exec_sql(sql)
 
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except:
         exception_info()
@@ -598,25 +627,26 @@ async def save_user_proj_privs(d_proj):
         result['message'] = '保存失败！'
     return result
 
+
 async def upd_user(p_user):
-    result={}
+    result = {}
     try:
-        userid      = p_user['userid']
-        loginname   = p_user['loginname']
-        wkno        = p_user['wkno']
-        username    = p_user['username']
-        password    = await aes_encrypt(p_user['password'],loginname)
-        gender      = p_user['gender']
-        email       = p_user['email']
-        phone       = p_user['phone']
-        proj_group  = p_user['proj_group']
-        dept        = p_user['dept']
+        userid = p_user['userid']
+        loginname = p_user['loginname']
+        wkno = p_user['wkno']
+        username = p_user['username']
+        password = await aes_encrypt(p_user['password'], loginname)
+        gender = p_user['gender']
+        email = p_user['email']
+        phone = p_user['phone']
+        proj_group = p_user['proj_group']
+        dept = p_user['dept']
         expire_date = p_user['expire_date']
-        status      = p_user['status']
-        roles       = p_user['roles']
-        file_path   = p_user['file_path']
-        file_name   = p_user['file_name']
-        query_grants= p_user['query_grants']
+        status = p_user['status']
+        roles = p_user['roles']
+        file_path = p_user['file_path']
+        file_name = p_user['file_name']
+        query_grants = p_user['query_grants']
 
         if file_path == '':
             file_path = '/static/assets/images/users'
@@ -627,7 +657,7 @@ async def upd_user(p_user):
             else:
                 file_name = 'girl.png'
 
-        sql="""update t_user 
+        sql = """update t_user 
                   set  name ='{0}',
                        login_name='{1}',
                        password ='{2}',
@@ -644,80 +674,88 @@ async def upd_user(p_user):
                        project_group = '{13}',
                        wkno          = '{14}',
                        query_grants =  '{15}'
-                where id='{16}'""".format(username,loginname,password,gender,email,phone,dept,expire_date,status,
-                                          current_rq(),'DBA',file_path,file_name,proj_group,wkno,query_grants,userid)
+                where id='{16}'""".format(username, loginname, password, gender, email, phone, dept, expire_date,
+                                          status,
+                                          current_rq(), 'DBA', file_path, file_name, proj_group, wkno, query_grants,
+                                          userid)
         await async_processer.exec_sql(sql)
-        await upd_user_role(userid,roles)
-        result={}
-        result['code']='0'
-        result['message']='更新成功！'
-    except :
+        await upd_user_role(userid, roles)
+        result = {}
+        result['code'] = '0'
+        result['message'] = '更新成功！'
+    except:
         exception_info()
         result['code'] = '-1'
         result['message'] = '更新失败！'
     return result
 
+
 async def upd_password(p_user):
-    result={}
+    result = {}
     try:
-        userid      = p_user['userid']
-        loginname   = p_user['loginname']
-        password    = await aes_encrypt(p_user['password'],loginname)
-        sql="""update t_user 
+        userid = p_user['userid']
+        loginname = p_user['loginname']
+        password = await aes_encrypt(p_user['password'], loginname)
+        sql = """update t_user 
                   set  password ='{0}',                    
                        last_update_date ='{1}' ,
                        updator='{2}'
-                where id='{3}'""".format(password,current_rq(),'DBA',userid)
+                where id='{3}'""".format(password, current_rq(), 'DBA', userid)
         await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='修改成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '修改成功！'
+    except:
         exception_info()
         result['code'] = '-1'
         result['message'] = '修改失败！'
     return result
 
+
 async def del_user(p_user):
-    result={}
+    result = {}
     try:
-        userid   = p_user['userid']
-        sql="delete from t_user  where id='{0}'".format(userid)
+        userid = p_user['userid']
+        sql = "delete from t_user  where id='{0}'".format(userid)
         await async_processer.exec_sql(sql)
         await del_user_roles(userid)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '删除成功！'
+    except:
         result['code'] = '-1'
         result['message'] = '删除失败！'
     return result
 
+
 async def get_sys_roles():
-    sql="""select cast(id as char) as id,name from t_role where status='1'"""
+    sql = """select cast(id as char) as id,name from t_role where status='1'"""
     return await async_processer.query_list(sql)
+
 
 async def get_user_roles(p_userid):
-    sql="""select cast(id as char) as id,name
+    sql = """select cast(id as char) as id,name
            from t_role 
             where status='1'  
               and id  in(select role_id from t_user_role where user_id='{0}')    
         """.format(p_userid)
     return await async_processer.query_list(sql)
 
+
 async def get_user_roles_n(p_userid):
-    st="""select cast(id as char) as id
+    st = """select cast(id as char) as id
            from t_role 
             where status='1'  
               and id  in(select role_id from t_user_role where user_id='{0}')    
         """.format(p_userid)
-    rs =  await async_processer.query_list(st)
+    rs = await async_processer.query_list(st)
     return ','.join([i[0] for i in rs])
+
 
 async def query_session(p_name):
     v_where = ''
     if p_name != "":
-       v_where =  " where binary username like '%{0}%'  ".format(p_name)
+        v_where = " where binary username like '%{0}%'  ".format(p_name)
 
     sql = """select 
                 a.session_id,
@@ -735,25 +773,26 @@ async def query_session(p_name):
     v_list = await async_processer.query_list(sql)
     return v_list
 
+
 async def kill_session(p_session_id):
-     try:
-       await kill_session_log(p_session_id)
-       return {'code':0,'message':'success'}
-     except:
-       traceback.print_exc()
-       return {'code': -1, 'message': 'failure'}
+    try:
+        await kill_session_log(p_session_id)
+        return {'code': 0, 'message': 'success'}
+    except:
+        traceback.print_exc()
+        return {'code': -1, 'message': 'failure'}
 
 
 async def query_user_grants(p_name):
     v_where = ''
     if p_name != "":
-       v_where = """and( b.name like '%{}%' 
+        v_where = """and( b.name like '%{}%' 
                        or b.login_name like '%{}%' 
                          or instr(c.db_desc,'{}')>0 
                            or instr(a.schema,'{}')>0 
-                             or instr(a.table,'{}')>0)""".format(p_name,p_name,p_name,p_name,p_name)
+                             or instr(a.table,'{}')>0)""".format(p_name, p_name, p_name, p_name, p_name)
 
-    st ="""SELECT a.id,
+    st = """SELECT a.id,
                   b.login_name,
                   concat(b.name,'(',b.wkno,')') as name,
                   c.db_desc,
@@ -768,8 +807,9 @@ async def query_user_grants(p_name):
     v_list = await async_processer.query_list(st)
     return v_list
 
+
 async def get_user_grants(p_id):
-    st ="""SELECT a.id,
+    st = """SELECT a.id,
                   a.uid,
                   a.dbid,
                   concat(b.id,',',b.db_desc) as db_desc,
@@ -783,26 +823,29 @@ async def get_user_grants(p_id):
     v_list = await async_processer.query_dict_one(st)
     return v_list
 
+
 async def save_user_query_grants(p_user):
     result = {}
     val = await check_user_query_grants(p_user)
     if val['code'] == '-1':
         return val
     try:
-        st = """insert into t_user_query_grants(`uid`,`dbid`,`schema`,`table`,`columns`) values('{userid}','{dbid}','{db}','{tab}','{cols}')""".format(**p_user)
+        st = """insert into t_user_query_grants(`uid`,`dbid`,`schema`,`table`,`columns`) values('{userid}','{dbid}','{db}','{tab}','{cols}')""".format(
+            **p_user)
         await async_processer.exec_sql(st)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except Exception as e:
         result['code'] = '-1'
         result['message'] = '保存失败！'
         return result
 
+
 async def upd_user_query_grants(p_user):
     result = {}
-    val = await check_user_query_grants(p_user,'U')
+    val = await check_user_query_grants(p_user, 'U')
     if val['code'] == '-1':
         return val
     try:
@@ -813,11 +856,11 @@ async def upd_user_query_grants(p_user):
                         `table`='{tab}',
                         `columns`='{cols}'
                     where id={id}""".format(**p_user)
-        print('upd_user_query_grants=',st)
+        print('upd_user_query_grants=', st)
         await async_processer.exec_sql(st)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except Exception as e:
         traceback.print_exc()
@@ -825,18 +868,20 @@ async def upd_user_query_grants(p_user):
         result['message'] = '保存失败！'
         return result
 
+
 async def del_user_query_grants(p_id):
-    result={}
+    result = {}
     try:
-        sql="delete from t_user_query_grants  where id='{0}'".format(p_id)
+        sql = "delete from t_user_query_grants  where id='{0}'".format(p_id)
         await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '删除成功！'
+    except:
         result['code'] = '-1'
         result['message'] = '删除失败！'
     return result
+
 
 async def save_dict_group_grants(p_dict):
     result = {}
@@ -845,20 +890,21 @@ async def save_dict_group_grants(p_dict):
         return val
     try:
         st = """insert into t_dict_group(`group_id`,`dm`,`dmm`) values({id},'{dm}','{dmm}')""".format(**p_dict)
-        print('st=',st)
+        print('st=', st)
         await async_processer.exec_sql(st)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
-    except :
+    except:
         traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '保存失败！'
         return result
 
-async def check_dict_group(p_dict,p_flag='I'):
-    print('p_dict>>>',p_dict)
+
+async def check_dict_group(p_dict, p_flag='I'):
+    print('p_dict>>>', p_dict)
     result = {}
     if p_dict["id"] == "":
         result['code'] = '-1'
@@ -875,13 +921,13 @@ async def check_dict_group(p_dict,p_flag='I'):
         result['message'] = '字典小类不能为空！'
         return result
 
-    if p_flag=='I':
+    if p_flag == 'I':
         r = await async_processer.query_dict_one(
             """select count(0) as cnt 
                from t_dict_group
                 where group_id='{id}' and dm='{dm}'""".format(**p_dict)
-            )
-        if r['cnt'] >0:
+        )
+        if r['cnt'] > 0:
             result['code'] = '-1'
             result['message'] = '字典组大类已存在!'
             return result
@@ -890,12 +936,13 @@ async def check_dict_group(p_dict,p_flag='I'):
     result['message'] = '验证通过'
     return result
 
+
 async def query_dict_groups(p_name):
     v_where = ''
     if p_name != "":
-       v_where = """and b.dmmc like '%{}%'""".format(p_name)
+        v_where = """and b.dmmc like '%{}%'""".format(p_name)
 
-    st ="""SELECT 
+    st = """SELECT 
               a.id,
               a.group_id,
               b.dmmc AS  "group_name",
@@ -910,21 +957,23 @@ async def query_dict_groups(p_name):
     v_list = await async_processer.query_list(st)
     return v_list
 
+
 async def del_user_dict_group(p_id):
-    result={}
+    result = {}
     try:
-        sql="delete from t_dict_group  where id='{0}'".format(p_id)
+        sql = "delete from t_dict_group  where id='{0}'".format(p_id)
         await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '删除成功！'
+    except:
         result['code'] = '-1'
         result['message'] = '删除失败！'
     return result
 
+
 async def get_dict_group(p_id):
-    st ="""SELECT 
+    st = """SELECT 
               a.id,
               a.group_id,
               b.dmmc AS  "group_name",
@@ -938,9 +987,10 @@ async def get_dict_group(p_id):
     v_list = await async_processer.query_dict_one(st)
     return v_list
 
+
 async def upd_user_dict_group(p_dict):
     result = {}
-    val = await check_dict_group(p_dict,'U')
+    val = await check_dict_group(p_dict, 'U')
     if val['code'] == '-1':
         return val
     try:
@@ -949,11 +999,11 @@ async def upd_user_dict_group(p_dict):
                         `dm`='{dm}',
                         `dmm`='{dmm}'
                     where id={id}""".format(**p_dict)
-        print('upd_user_dict_group=',st)
+        print('upd_user_dict_group=', st)
         await async_processer.exec_sql(st)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except Exception as e:
         traceback.print_exc()
@@ -961,7 +1011,8 @@ async def upd_user_dict_group(p_dict):
         result['message'] = '保存失败！'
         return result
 
-async def check_dict_grants(p_dict,p_flag='I'):
+
+async def check_dict_grants(p_dict, p_flag='I'):
     result = {}
     if p_dict["group_id"] == "":
         result['code'] = '-1'
@@ -978,13 +1029,13 @@ async def check_dict_grants(p_dict,p_flag='I'):
         result['message'] = '字典小类不能为空！'
         return result
 
-    if p_flag=='I':
+    if p_flag == 'I':
         r = await async_processer.query_dict_one(
             """select count(0) as cnt 
                from t_dict_group_user
                 where user_id={user_id} and group_id='{group_id}' and dm='{dm}'""".format(**p_dict)
-            )
-        if r['cnt'] >0:
+        )
+        if r['cnt'] > 0:
             result['code'] = '-1'
             result['message'] = '用户字典组大类已存在!'
             return result
@@ -993,31 +1044,34 @@ async def check_dict_grants(p_dict,p_flag='I'):
     result['message'] = '验证通过'
     return result
 
+
 async def save_dict_grant_grants(p_dict):
     result = {}
     val = await check_dict_grants(p_dict)
     if val['code'] == '-1':
         return val
     try:
-        st = """insert into t_dict_group_user(`user_id`,`group_id`,`dm`,`dmm`) values({user_id},{group_id},'{dm}','{dmm}')""".format(**p_dict)
-        print('st=',st)
+        st = """insert into t_dict_group_user(`user_id`,`group_id`,`dm`,`dmm`) values({user_id},{group_id},'{dm}','{dmm}')""".format(
+            **p_dict)
+        print('st=', st)
         await async_processer.exec_sql(st)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
-    except :
+    except:
         traceback.print_exc()
         result['code'] = '-1'
         result['message'] = '保存失败！'
         return result
 
+
 async def query_dict_grant(p_name):
     v_where = ''
     if p_name != "":
-       v_where = """and b.dmmc like '%{}%'""".format(p_name)
+        v_where = """and b.dmmc like '%{}%'""".format(p_name)
 
-    st ="""SELECT 
+    st = """SELECT 
               a.id,
               a.user_id,
                (SELECT NAME FROM t_user WHERE id=a.user_id) AS "user_name",
@@ -1034,8 +1088,9 @@ async def query_dict_grant(p_name):
     v_list = await async_processer.query_list(st)
     return v_list
 
+
 async def get_dict_grant(p_id):
-    st ="""SELECT 
+    st = """SELECT 
               a.id,
               a.user_id,
                (SELECT NAME FROM t_user WHERE id=a.user_id) AS "user_name",
@@ -1051,22 +1106,24 @@ async def get_dict_grant(p_id):
     v_list = await async_processer.query_dict_one(st)
     return v_list
 
+
 async def del_user_dict_grant(p_id):
-    result={}
+    result = {}
     try:
-        sql="delete from t_dict_group_user  where id='{0}'".format(p_id)
+        sql = "delete from t_dict_group_user  where id='{0}'".format(p_id)
         await async_processer.exec_sql(sql)
-        result={}
-        result['code']='0'
-        result['message']='删除成功！'
-    except :
+        result = {}
+        result['code'] = '0'
+        result['message'] = '删除成功！'
+    except:
         result['code'] = '-1'
         result['message'] = '删除失败！'
     return result
 
+
 async def upd_user_dict_grant(p_dict):
     result = {}
-    val = await check_dict_grants(p_dict,'U')
+    val = await check_dict_grants(p_dict, 'U')
     if val['code'] == '-1':
         return val
     try:
@@ -1076,11 +1133,11 @@ async def upd_user_dict_grant(p_dict):
                         `dm`='{dm}',
                         `dmm`='{dmm}'
                     where id={id}""".format(**p_dict)
-        print('upd_user_dict_grant=',st)
+        print('upd_user_dict_grant=', st)
         await async_processer.exec_sql(st)
-        result={}
-        result['code']='0'
-        result['message']='保存成功！'
+        result = {}
+        result['code'] = '0'
+        result['message'] = '保存成功！'
         return result
     except Exception as e:
         traceback.print_exc()

@@ -5,18 +5,19 @@
 # @File    : t_user.py
 # @Software: PyCharm
 
-import os,json
+import json
+import os
 import traceback
+
 import requests
 
-from web.utils.common     import exception_info
-from web.utils.common     import get_connection,get_connection_dict
 from web.utils.mysql_async import async_processer
+
 
 async def query_minio(tagname):
     v_where = ' and 1=1 '
-    if  tagname!='':
-        v_where=v_where+" and a.sync_tag='{0}'\n".format(tagname)
+    if tagname != '':
+        v_where = v_where + " and a.sync_tag='{0}'\n".format(tagname)
     sql = """SELECT   a.sync_tag,a.comments,
                       concat(b.server_ip,':',b.server_port),
                       (select dmmc from t_dmmx x where x.dm='34' and x.dmm=a.sync_type) as sync_type,
@@ -26,6 +27,7 @@ async def query_minio(tagname):
               WHERE a.server_id=b.id 
                 AND b.status='1' {0} """.format(v_where)
     return await async_processer.query_list(sql)
+
 
 async def query_minio_case(p_db_env):
     res = {}
@@ -48,7 +50,7 @@ async def query_minio_case(p_db_env):
                AND d.db_tag=e.db_tag
                AND e.db_id=a.id
                AND create_date=DATE_SUB(DATE(NOW()),INTERVAL 1 DAY) ORDER BY a.db_env,a.db_type""".format(p_db_env)
-    res['data']=await async_processer.query_list(sql)
+    res['data'] = await async_processer.query_list(sql)
 
     sql = """SELECT 
                       cast(SUM(CASE WHEN d.status='0' THEN 1 ELSE 0 END) as char) AS  success,       
@@ -66,14 +68,15 @@ async def query_minio_case(p_db_env):
     res['failure'] = rs[1]
     return res
 
-async def query_minio_log(tagname,begin_date,end_date):
+
+async def query_minio_log(tagname, begin_date, end_date):
     v_where = ' and 1=1 '
-    if  tagname != '':
-        v_where = v_where+" and a.sync_tag='{0}'\n".format(tagname)
-    if  begin_date != '':
-        v_where = v_where+" and b.create_date>='{0}'\n".format(begin_date+' 0:0:0')
-    if  end_date != '':
-        v_where = v_where+" and b.create_date<='{0}'\n".format(end_date+' 23:59:59')
+    if tagname != '':
+        v_where = v_where + " and a.sync_tag='{0}'\n".format(tagname)
+    if begin_date != '':
+        v_where = v_where + " and b.create_date>='{0}'\n".format(begin_date + ' 0:0:0')
+    if end_date != '':
+        v_where = v_where + " and b.create_date<='{0}'\n".format(end_date + ' 23:59:59')
     sql = """SELECT a.sync_tag,
                     a.comments,
                     b.sync_day,
@@ -87,20 +90,26 @@ async def query_minio_log(tagname,begin_date,end_date):
               AND a.status='1' {} ORDER BY b.sync_tag,b.create_date """.format(v_where)
     return await async_processer.query_list(sql)
 
-async def query_minio_log_analyze(tagname,begin_date,end_date):
+
+async def query_minio_log_analyze(tagname, begin_date, end_date):
     v_where = " where a.sync_tag=b.sync_tag and a.status='1'"
     if tagname != '':
         v_where = v_where + " and a.sync_tag='{0}'\n".format(tagname)
     if begin_date != '':
-        v_where = v_where + " and b.create_date>='{0}'\n".format(begin_date+' 0:0:0')
+        v_where = v_where + " and b.create_date>='{0}'\n".format(begin_date + ' 0:0:0')
     if end_date != '':
-        v_where = v_where + " and b.create_date<='{0}'\n".format(end_date+' 23:59:59')
-    sql1 = """SELECT cast(b.create_date as char) as create_date,b.download_time FROM t_minio_config a,t_minio_log b {0} ORDER BY b.sync_tag,b.create_date""".format(v_where)
-    sql2 = """SELECT cast(b.create_date as char) as create_date,b.upload_time FROM t_minio_config a,t_minio_log b {0} ORDER BY b.sync_tag,b.create_date""".format(v_where)
-    sql3 = """SELECT cast(b.create_date as char) as create_date, b.transfer_file FROM t_minio_config a,t_minio_log b {0} ORDER BY b.sync_tag,b.create_date""".format(v_where)
-    return await async_processer.query_list(sql1),await async_processer.query_list(sql2),await async_processer.query_list(sql3)
+        v_where = v_where + " and b.create_date<='{0}'\n".format(end_date + ' 23:59:59')
+    sql1 = """SELECT cast(b.create_date as char) as create_date,b.download_time FROM t_minio_config a,t_minio_log b {0} ORDER BY b.sync_tag,b.create_date""".format(
+        v_where)
+    sql2 = """SELECT cast(b.create_date as char) as create_date,b.upload_time FROM t_minio_config a,t_minio_log b {0} ORDER BY b.sync_tag,b.create_date""".format(
+        v_where)
+    sql3 = """SELECT cast(b.create_date as char) as create_date, b.transfer_file FROM t_minio_config a,t_minio_log b {0} ORDER BY b.sync_tag,b.create_date""".format(
+        v_where)
+    return await async_processer.query_list(sql1), await async_processer.query_list(
+        sql2), await async_processer.query_list(sql3)
 
-async def query_minio_log_detail(tagname,backup_date):
+
+async def query_minio_log_detail(tagname, backup_date):
     v_where = ' and 1=1 '
     if tagname != '':
         v_where = v_where + " and b.db_tag='{0}'\n".format(tagname)
@@ -125,12 +134,13 @@ async def query_minio_log_detail(tagname,backup_date):
              AND a.status='1' {0} order by b.create_date,b.db_tag """.format(v_where)
     return await async_processer.query_list(sql)
 
+
 async def save_minio(p_sync):
-    val = check_minio(p_sync,'I')
-    if val['code']=='-1':
+    val = check_minio(p_sync, 'I')
+    if val['code'] == '-1':
         return val
     try:
-        sql      = """insert into t_minio_config(
+        sql = """insert into t_minio_config(
                            sync_tag,comments,sync_type,
                            server_id,sync_path,sync_service,
                            minio_server, python3_home,script_path,
@@ -140,24 +150,26 @@ async def save_minio(p_sync):
                     values('{}','{}','{}','{}','{}','{}',
                            '{}','{}','{}','{}','{}','{}',
                            '{}','{}','{}','{}','{}','{}','{}')
-                   """.format(p_sync['sync_tag'],p_sync['task_desc'],p_sync['sync_type'],
-                              p_sync['server_id'],p_sync['sync_dir'],p_sync['sync_service'],
-                              p_sync['minio_server'],p_sync['python3_home'],p_sync['script_base'],
-                              p_sync['script_name'],p_sync['api_server'],p_sync['run_time'],
-                              p_sync['status'],p_sync['minio_user'],p_sync['minio_pass'],
-                              p_sync['minio_bucket'], p_sync['minio_dpath'], p_sync['minio_incr'],p_sync['minio_incr_type'])
+                   """.format(p_sync['sync_tag'], p_sync['task_desc'], p_sync['sync_type'],
+                              p_sync['server_id'], p_sync['sync_dir'], p_sync['sync_service'],
+                              p_sync['minio_server'], p_sync['python3_home'], p_sync['script_base'],
+                              p_sync['script_name'], p_sync['api_server'], p_sync['run_time'],
+                              p_sync['status'], p_sync['minio_user'], p_sync['minio_pass'],
+                              p_sync['minio_bucket'], p_sync['minio_dpath'], p_sync['minio_incr'],
+                              p_sync['minio_incr_type'])
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '保存成功!'}
     except:
         traceback.print_exc()
         return {'code': '-1', 'message': '保存失败!'}
 
+
 async def upd_minio(p_sync):
-    val = check_minio(p_sync,'U')
-    if  val['code'] == '-1':
+    val = check_minio(p_sync, 'U')
+    if val['code'] == '-1':
         return val
     try:
-        sql="""update t_minio_config 
+        sql = """update t_minio_config 
                   set  comments          ='{}',
                        sync_type         ='{}',
                        server_id         ='{}',                        
@@ -176,66 +188,69 @@ async def upd_minio(p_sync):
                        minio_dpath       ='{}',
                        minio_incr        ='{}',
                        minio_incr_type   ='{}'
-                where sync_tag='{}'""".format(p_sync['task_desc'],p_sync['sync_type'],p_sync['server_id'],
-                                              p_sync['sync_dir'],p_sync['sync_service'],p_sync['minio_server'],
-                                              p_sync['python3_home'],p_sync['script_base'], p_sync['script_name'],
-                                              p_sync['api_server'],p_sync['run_time'],p_sync['status'],
-                                              p_sync['minio_user'],p_sync['minio_pass'],p_sync['minio_bucket'],
-                                              p_sync['minio_dpath'], p_sync['minio_incr'],p_sync['minio_incr_type'],
+                where sync_tag='{}'""".format(p_sync['task_desc'], p_sync['sync_type'], p_sync['server_id'],
+                                              p_sync['sync_dir'], p_sync['sync_service'], p_sync['minio_server'],
+                                              p_sync['python3_home'], p_sync['script_base'], p_sync['script_name'],
+                                              p_sync['api_server'], p_sync['run_time'], p_sync['status'],
+                                              p_sync['minio_user'], p_sync['minio_pass'], p_sync['minio_bucket'],
+                                              p_sync['minio_dpath'], p_sync['minio_incr'], p_sync['minio_incr_type'],
                                               p_sync['sync_tag'])
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '更新成功!'}
-    except :
+    except:
         traceback.print_exc()
         return {'code': '-1', 'message': '更新失败!'}
 
+
 async def del_minio(p_sync_tag):
     try:
-        sql="delete from t_minio_config  where sync_tag='{0}'".format(p_sync_tag)
+        sql = "delete from t_minio_config  where sync_tag='{0}'".format(p_sync_tag)
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '删除成功!'}
-    except :
+    except:
         traceback.print_exc()
         return {'code': '-1', 'message': '删除失败!'}
+
 
 async def check_sync_tag_rep(p_sync):
     sql = "select count(0) from t_minio_config  where  sync_tag='{0}'".format(p_sync["sync_tag"])
     rs = await async_processer.query_one(sql)
     return rs[0]
 
-def check_minio(p_sync,p_flag):
+
+def check_minio(p_sync, p_flag):
     result = {}
-    if p_sync["sync_tag"]=="":
-        result['code']='-1'
-        result['message']='同步标识不能为空！'
+    if p_sync["sync_tag"] == "":
+        result['code'] = '-1'
+        result['message'] = '同步标识不能为空！'
         return result
 
-    if check_sync_tag_rep(p_sync)>0 and p_flag=='I':
+    if check_sync_tag_rep(p_sync) > 0 and p_flag == 'I':
         result['code'] = '-1'
         result['message'] = '同步标识重复!'
         return result
 
-    if p_sync["task_desc"]=="":
-        result['code']='-1'
-        result['message']='任务描述不能为空！'
+    if p_sync["task_desc"] == "":
+        result['code'] = '-1'
+        result['message'] = '任务描述不能为空！'
         return result
 
-    if p_sync["server_id"]=="":
-        result['code']='-1'
-        result['message']='同步服务器不能为空！'
+    if p_sync["server_id"] == "":
+        result['code'] = '-1'
+        result['message'] = '同步服务器不能为空！'
         return result
 
-    if p_sync["sync_type"]=="":
-        result['code']='-1'
-        result['message']='同步类型不能为空！'
+    if p_sync["sync_type"] == "":
+        result['code'] = '-1'
+        result['message'] = '同步类型不能为空！'
         return result
 
-    if p_sync["sync_type"]=="1" and p_sync["sync_dir"] == "":
+    if p_sync["sync_type"] == "1" and p_sync["sync_dir"] == "":
         result['code'] = '-1'
         result['message'] = '同步目录不能为空！'
         return result
 
-    if p_sync["sync_type"]=="2" and p_sync["sync_service"] == "":
+    if p_sync["sync_type"] == "2" and p_sync["sync_service"] == "":
         result['code'] = '-1'
         result['message'] = '同步服务不能为空！'
         return result
@@ -299,11 +314,13 @@ def check_minio(p_sync,p_flag):
     result['message'] = '验证通过'
     return result
 
+
 async def get_minio_by_minioid(p_sync_tag):
     sql = "select * from t_minio_config where sync_tag='{0}'".format(p_sync_tag)
     return await async_processer.query_dict_one(sql)
 
-def push_minio_task(p_tag,p_api):
+
+def push_minio_task(p_tag, p_api):
     url = 'http://{}/push_minio_remote'.format(p_api)
     res = requests.post(url, data={'tag': p_tag})
     jres = res.json()
@@ -318,14 +335,14 @@ def push_minio_task(p_tag,p_api):
     return jres
 
 
-def run_minio_task(p_tag,p_api):
+def run_minio_task(p_tag, p_api):
     try:
         result = {}
         result['code'] = '0'
         result['message'] = '执行成功！'
-        v_cmd = "curl -XPOST {0}/run_script_remote -d 'tag={1}'".format(p_api,p_tag)
-        r  = os.popen(v_cmd).read()
-        d  = json.loads(r)
+        v_cmd = "curl -XPOST {0}/run_script_remote -d 'tag={1}'".format(p_api, p_tag)
+        r = os.popen(v_cmd).read()
+        d = json.loads(r)
         if d['code'] == 200:
             return result
         else:
@@ -333,16 +350,17 @@ def run_minio_task(p_tag,p_api):
             result['message'] = '{0}!'.format(d['msg'])
             return result
     except Exception as e:
-         result['code'] = '-1'
-         result['message'] = '{0!'.format(str(e))
-         return result
+        result['code'] = '-1'
+        result['message'] = '{0!'.format(str(e))
+        return result
 
-def stop_minio_task(p_tag,p_api):
+
+def stop_minio_task(p_tag, p_api):
     try:
         result = {}
         result['code'] = '0'
         result['message'] = '执行成功！'
-        r = os.system("curl -XPOST {0}/stop_script_remote -d 'tag={1}'".format(p_api,p_tag))
+        r = os.system("curl -XPOST {0}/stop_script_remote -d 'tag={1}'".format(p_api, p_tag))
         if r == 0:
             return result
         else:

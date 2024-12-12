@@ -4,915 +4,955 @@
     <meta charset="utf-8">
     <title>字典授权</title>
     <style>
-        #example,#example2{
+        #example, #example2 {
             width: 100% !important;
         }
-      .modal-lg {
-        width:75%;
-        height:65%;
-        margin-left:350px;
-        margin-top:80px;
+
+        .modal-lg {
+            width: 75%;
+            height: 65%;
+            margin-left: 350px;
+            margin-top: 80px;
         }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="row">
-        <div class="col-md-12">
-           <div class="col-md-3 input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" id="qname"  class="form-control" placeholder="请输入字典组名、字典名称">
-                <span class="input-group-btn">
-                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-3 input-group">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" id="qname" class="form-control" placeholder="请输入字典组名、字典名称">
+            <span class="input-group-btn">
+                   <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                           class="fa fa-search"></i></button>
                 </span>
-          </div>
         </div>
     </div>
-    <br>
+</div>
+<br>
 
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <ul class="nav nav-pills m-b-30 pull-left">
-                <li id='id_dict_group' class="active">
-                    <a href="#dict_group" data-toggle="tab" aria-expanded="true">字典组</a>
-                </li>
-                <li id='id_group_priv' class="">
-                    <a href="#group_priv" data-toggle="tab" aria-expanded="false">组授权</a>
-                </li>
-            </ul>
-            <div class="tab-content br-n pn">
-                <div id="dict_group" class="tab-pane active">
-                    <div class="row">
-                     <div class="col-md-12">
-                          <div>
-                              <div id="div-tab">
-                                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-                              </div>
-                              <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-                                   <input  id='add_group_btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
-                              </div>
-                          </div>
-                      </div>
-                     </div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav nav-pills m-b-30 pull-left">
+            <li id='id_dict_group' class="active">
+                <a href="#dict_group" data-toggle="tab" aria-expanded="true">字典组</a>
+            </li>
+            <li id='id_group_priv' class="">
+                <a href="#group_priv" data-toggle="tab" aria-expanded="false">组授权</a>
+            </li>
+        </ul>
+        <div class="tab-content br-n pn">
+            <div id="dict_group" class="tab-pane active">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div id="div-tab">
+                                <table id="example" class="table table-striped table-bordered dt-responsive nowrap"
+                                       cellspacing="0" width="100%" height="100%"></table>
+                            </div>
+                            <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                                <input id='add_group_btn' type='button' class="btn waves-effect waves-light btn-primary"
+                                       value="新增"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="group_priv" class="tab-pane">
-                    <div class="row">
-                         <div>
-                              <div id="div-tab2">
-                                   <table id="example2" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-                              </div>
-                              <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-                                   <input  id='add_grant_btn' type='button' class="btn waves-effect waves-light btn-primary" value="新增"/>
-                              </div>
-                         </div>
+            </div>
+            <div id="group_priv" class="tab-pane">
+                <div class="row">
+                    <div>
+                        <div id="div-tab2">
+                            <table id="example2" class="table table-striped table-bordered dt-responsive nowrap"
+                                   cellspacing="0" width="100%" height="100%"></table>
+                        </div>
+                        <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+                            <input id='add_grant_btn' type='button' class="btn waves-effect waves-light btn-primary"
+                                   value="新增"/>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!--新增字典组窗口 -->
-    <div id="con-close-add-group" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+<!--新增字典组窗口 -->
+<div id="con-close-add-group" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg-order-prod">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">新增-字典组</h4>
-        </div>
-        <div class="modal-body">
-           <div class="panel panel-flat">
-                <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典组名</label>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增-字典组</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典组名</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="add_group_group_id">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in dict_group %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_group_group_id">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in dict_group %}
-                                         <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典大类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="add_group_dmlx">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in query_dmlx %}
+                                        <option value={{var[0]}}>{{var[1]}}({{var[0]}})</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典大类</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典小类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" multiple
+                                            data-style="btn-default" id="add_group_dmmx">
+                                        <option value='' selected="selected">...</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_group_dmlx">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in query_dmlx %}
-                                         <option value={{var[0]}} >{{var[1]}}({{var[0]}})</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典小类</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" multiple data-style="btn-default" id="add_group_dmmx">
-                                    <option value=''  selected = "selected">...</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
+                        </form>
+                    </div>
                 </div>
-           </div>
-           <div class="modal-footer">
-                <div class="col-sm-offset-3 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="add_group_save_btn" >保存</button>
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="add_group_save_btn">保存
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
-           </div>
+            </div>
         </div>
-     </div>
     </div>
-    </div>
+</div>
 
-    <!--变更字典组窗口 -->
-    <div id="con-close-upd-group" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-lg-order-prod">
+<!--变更字典组窗口 -->
+<div id="con-close-upd-group" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-order-prod">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">字典组变更窗口</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                         <input id="update_id" type="hidden">
-                         <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典组名</label>
+                        <form class="form-horizontal" role="form">
+                            <input id="update_id" type="hidden">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典组名</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="upd_group_group_id">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in dict_group %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_group_group_id">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in dict_group %}
-                                         <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典大类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="upd_group_dmlx">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in query_dmlx %}
+                                        <option value={{var[0]}}>{{var[1]}}({{var[0]}})</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典大类</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典小类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" multiple
+                                            data-style="btn-default" id="upd_group_dmmx">
+                                        <option value='' selected="selected">...</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_group_dmlx">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in query_dmlx %}
-                                         <option value={{var[0]}} >{{var[1]}}({{var[0]}})</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                         </div>
-                         <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典小类</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" multiple data-style="btn-default" id="upd_group_dmmx">
-                                    <option value=''  selected = "selected">...</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
+                        </form>
                     </div>
-              </div>
-              <div class="modal-footer">
+                </div>
+                <div class="modal-footer">
                     <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="upd_group_save_btn">变更</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="upd_group_save_btn">变更
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
                     </div>
-               </div>
+                </div>
             </div>
-         </div>
         </div>
     </div>
+</div>
 
-    <!--新增组权限窗口 -->
-    <div id="con-close-add-grant" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+<!--新增组权限窗口 -->
+<div id="con-close-add-grant" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg-order-prod">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">新增-组授权</h4>
-        </div>
-        <div class="modal-body">
-           <div class="panel panel-flat">
-                <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">授权人员</label>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">新增-组授权</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">授权人员</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="add_grant_user_id">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in query_grants_user %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_grant_user_id">
-                                    <option value='' selected = "selected">...</option>
-                                    {% for var in query_grants_user %}
-                                         <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
 
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典组名</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典组名</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="add_grant_group_id">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in dict_group %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_grant_group_id">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in dict_group %}
-                                         <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典大类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="add_grant_dmlx">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in query_dmlx_group %}
+                                        <option value={{var[0]}}>{{var[1]}}({{var[0]}})</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典大类</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典小类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" multiple
+                                            data-style="btn-default" id="add_grant_dmmx">
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_grant_dmlx">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in query_dmlx_group %}
-                                         <option value={{var[0]}} >{{var[1]}}({{var[0]}})</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典小类</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" multiple data-style="btn-default" id="add_grant_dmmx">
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
+                        </form>
+                    </div>
                 </div>
-           </div>
-           <div class="modal-footer">
-                <div class="col-sm-offset-3 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="add_grant_save_btn" >保存</button>
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="add_grant_save_btn">保存
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
-           </div>
+            </div>
         </div>
-     </div>
     </div>
-    </div>
+</div>
 
-    <!--变更组权限窗口 -->
-    <div id="con-close-upd-grant" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+<!--变更组权限窗口 -->
+<div id="con-close-upd-grant" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg-order-prod">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">变更-字典组</h4>
-        </div>
-        <div class="modal-body">
-           <div class="panel panel-flat">
-                <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <input id="update_grant_id" type="hidden">
-                            <div >
-                                <label class="col-md-2 control-label">授权人员</label>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">变更-字典组</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-flat">
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <input id="update_grant_id" type="hidden">
+                                <div>
+                                    <label class="col-md-2 control-label">授权人员</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="upd_grant_user_id">
+                                        <option value='' selected="selected">...</option>
+                                        {% for var in query_grants_user %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_grant_user_id">
-                                    <option value='' selected = "selected">...</option>
-                                    {% for var in query_grants_user %}
-                                         <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
 
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典组名</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典组名</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="upd_grant_group_id">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in dict_group %}
+                                        <option value={{var[0]}}>{{var[1]}}</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_grant_group_id">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in dict_group %}
-                                         <option value={{var[0]}} >{{var[1]}}</option>
-                                    {% end %}
-                                </select>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典大类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default"
+                                            id="upd_grant_dmlx">
+                                        <option value='' selected="selected">.....</option>
+                                        {% for var in query_dmlx_group %}
+                                        <option value={{var[0]}}>{{var[1]}}({{var[0]}})</option>
+                                        {% end %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典大类</label>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-2 control-label">字典小类</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" multiple
+                                            data-style="btn-default" id="upd_grant_dmmx">
+                                        <option value='' selected="selected">...</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_grant_dmlx">
-                                    <option value='' selected = "selected">.....</option>
-                                    {% for var in query_dmlx_group %}
-                                         <option value={{var[0]}} >{{var[1]}}({{var[0]}})</option>
-                                    {% end %}
-                                </select>
-                           </div>
-                        </div>
-                        <div class="form-group">
-                            <div >
-                                <label class="col-md-2 control-label">字典小类</label>
-                            </div>
-                            <div class="col-md-10">
-                                 <select class="selectpicker" data-live-search="true" multiple data-style="btn-default" id="upd_grant_dmmx">
-                                    <option value=''  selected = "selected">...</option>
-                                 </select>
-                           </div>
-                        </div>
-                      </form>
+                        </form>
+                    </div>
                 </div>
-           </div>
-           <div class="modal-footer">
-                <div class="col-sm-offset-3 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="upd_grant_save_btn" >保存</button>
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="upd_grant_save_btn">保存
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
-           </div>
+            </div>
         </div>
-     </div>
     </div>
-    </div>
+</div>
 
 
-    <script>
-         var tabPageName='字典组'
+<script>
+    var tabPageName = '字典组'
 
-         //字典组
-         function init_group() {
-              $('#add_group_group_id').val('')
-              $("#add_group_dmlx").val('')
-              $("#add_group_dmmx").val('')
-              $("#add_group_group_id").selectpicker('refresh')
-              $("#add_group_dmlx").selectpicker('refresh')
-              $("#add_group_dmmx").selectpicker('refresh')
-         }
+    //字典组
+    function init_group() {
+        $('#add_group_group_id').val('')
+        $("#add_group_dmlx").val('')
+        $("#add_group_dmmx").val('')
+        $("#add_group_group_id").selectpicker('refresh')
+        $("#add_group_dmlx").selectpicker('refresh')
+        $("#add_group_dmmx").selectpicker('refresh')
+    }
 
-         function update_group(id) {
-            upd_group_data(id)
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-upd-group').modal({
-                   keyboard: false,
-                   backdrop:false
-            });
-         }
+    function update_group(id) {
+        upd_group_data(id)
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-upd-group').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
 
-         function upd_group_data(p_id) {
-            $.ajax({
-                  url: "/get/user/dict/group",
-                  type: "post",
-                  datatype: "json",
-                  async:false,
-                  data:{
-                      id : p_id,
-                  },
-                  success: function (dataSet) {
-                     $('#update_id').val(p_id)
-                     $('#upd_group_group_id').val(dataSet['group_id'])
-                     $("#upd_group_group_id").selectpicker('refresh')
-                     $('#upd_group_dmlx').val(dataSet['dm'])
-                     $("#upd_group_dmlx").selectpicker('refresh')
-                     $("#upd_group_dmlx").change()
-                     $('#upd_group_dmmx').val(dataSet['dmm'].split(','))
-                     $("#upd_group_dmmx").selectpicker('refresh')
-                  }
-            });
-
-         }
-
-         function delete_group(id) {
-             swal({
-                title: "确认要删除吗?",
-                text: "查询授权删除影响用户数据查询！",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 取消!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                    $.ajax({
-                            url: "/user/dict/group/del",
-                            type: "post",
-                            datatype: "json",
-                            data:{
-                               id : id,
-                            },
-                            success: function (dataSet) {
-                                if (dataSet.code=='0') {
-                                    swal("已注销!", "字典组已删除!", "success");
-                                    $("#query_btn").click();
-                                } else {
-                                    swal("注销失败!", "字典组删除失败 - "+dataSet.message+"!", "error");
-                                }
-                            },
-                       });
-
-                } else {
-                    swal("已取消", "字典组未删除！", "error");
-                }
-            });
-         }
-
-         function query_group() {
-             $.ajax({
-                  url: "/user/dict/_group",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname: $('#qname').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :true,
-                          scrollX    :true,
-                          AutoWidth  :true,
-                          scrollCollapse: true,
-                          paging:     true,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                            { "title": "id","visible":false},
-                            { "title": "组ID","sWidth":"60px"},
-                            { "title": "组名","sWidth":"80px" },
-                            { "title": "大类","sWidth":"30px" },
-                            { "title": "大类名","sWidth":"80px" },
-                            { "title": "小类","sWidth":"100px" },
-                            { "title": "小类名","sWidth":"60px"},
-                            {
-                                "title":"操作",
-                                "width": "25px",
-                                "render": function(data,type,row) {
-                                 var grant_update;
-                                 var grant_delete;
-                                 grant_update = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="更新" onclick="update_group(\''+row[0]+'\');"/>' +'&nbsp;';
-                                 grant_delete = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_group(\''+row[0]+'\');"/>' +'&nbsp;';
-                                 return grant_update+grant_delete;
-                                }
-                           },
-                          ],
-                          "language": get_languages()
-                         });
-                  },
-             });
-         }
-
-         $('#add_group_dmlx').change(function() {
-            if ($('#add_group_dmlx').val()!=''){
-                $.ajax({
-                      url: "/get/dmm/dm",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dm : $('#add_group_dmlx').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#add_group_dmmx").empty();
-                         // $("#add_group_dmmx").append("<option value='' selected = \"selected\">...</option>");
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#add_group_dmmx").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#add_group_dmmx").selectpicker('refresh')
-                      }
-                });
+    function upd_group_data(p_id) {
+        $.ajax({
+            url: "/get/user/dict/group",
+            type: "post",
+            datatype: "json",
+            async: false,
+            data: {
+                id: p_id,
+            },
+            success: function (dataSet) {
+                $('#update_id').val(p_id)
+                $('#upd_group_group_id').val(dataSet['group_id'])
+                $("#upd_group_group_id").selectpicker('refresh')
+                $('#upd_group_dmlx').val(dataSet['dm'])
+                $("#upd_group_dmlx").selectpicker('refresh')
+                $("#upd_group_dmlx").change()
+                $('#upd_group_dmmx').val(dataSet['dmm'].split(','))
+                $("#upd_group_dmmx").selectpicker('refresh')
             }
         });
 
-         $('#upd_group_dmlx').change(function() {
-            if ($('#upd_group_dmlx').val()!=''){
+    }
+
+    function delete_group(id) {
+        swal({
+            title: "确认要删除吗?",
+            text: "查询授权删除影响用户数据查询！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 取消!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
                 $.ajax({
-                      url: "/get/dmm/dm",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dm : $('#upd_group_dmlx').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#upd_group_dmmx").empty();
-                         // $("#upd_group_dmmx").append("<option value='' selected = \"selected\">...</option>");
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#upd_group_dmmx").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#upd_group_dmmx").selectpicker('refresh')
-                      }
-                });
-            }
-        });
-
-         $('#add_group_btn').click(function(){
-            init_group()
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-add-group').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-
-        });
-
-         $('#add_group_save_btn').click(function(){
-
-             if( $('#add_group_dmlx').val()==''){
-                 swal("字典大类不能为空", "", "error")
-                 return
-             }
-             if( $('#add_group_dmmx').val()==''){
-                 swal("字典小类不能为空", "", "error")
-                 return
-             }
-              $.ajax({
-                    url: "/user/dict/group/add/save",
+                    url: "/user/dict/group/del",
                     type: "post",
                     datatype: "json",
                     data: {
-                        dict_id    : $('#add_group_group_id').val(),
-                        dict_dmlx  : $('#add_group_dmlx').val(),
-                        dict_dmmx  : dict2str('add_group_dmmx'),
+                        id: id,
                     },
                     success: function (dataSet) {
-                        if (dataSet.code == 0) {
-                            swal("保存成功", "", "success")
-                            $("#query_btn").click()
+                        if (dataSet.code == '0') {
+                            swal("已注销!", "字典组已删除!", "success");
+                            $("#query_btn").click();
                         } else {
-                            swal(dataSet.message, "", "error")
+                            swal("注销失败!", "字典组删除失败 - " + dataSet.message + "!", "error");
                         }
-                    }
+                    },
                 });
-         })
 
-         $('#upd_group_save_btn').click(function(){
-              $.ajax({
-                    url: "/user/dict/group/upd/save",
+            } else {
+                swal("已取消", "字典组未删除！", "error");
+            }
+        });
+    }
+
+    function query_group() {
+        $.ajax({
+            url: "/user/dict/_group",
+            type: "post",
+            datatype: "json",
+            data: {
+                qname: $('#qname').val()
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: true,
+                    scrollX: true,
+                    AutoWidth: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    iDisplayLength: 14,
+                    data: dataSet,
+                    columns: [
+                        {"title": "id", "visible": false},
+                        {"title": "组ID", "sWidth": "60px"},
+                        {"title": "组名", "sWidth": "80px"},
+                        {"title": "大类", "sWidth": "30px"},
+                        {"title": "大类名", "sWidth": "80px"},
+                        {"title": "小类", "sWidth": "100px"},
+                        {"title": "小类名", "sWidth": "60px"},
+                        {
+                            "title": "操作",
+                            "width": "25px",
+                            "render": function (data, type, row) {
+                                var grant_update;
+                                var grant_delete;
+                                grant_update = '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="更新" onclick="update_group(\'' + row[0] + '\');"/>' + '&nbsp;';
+                                grant_delete = '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_group(\'' + row[0] + '\');"/>' + '&nbsp;';
+                                return grant_update + grant_delete;
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+            },
+        });
+    }
+
+    $('#add_group_dmlx').change(function () {
+        if ($('#add_group_dmlx').val() != '') {
+            $.ajax({
+                url: "/get/dmm/dm",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dm: $('#add_group_dmlx').val(),
+                },
+                success: function (dataSet) {
+                    $("#add_group_dmmx").empty();
+                    // $("#add_group_dmmx").append("<option value='' selected = \"selected\">...</option>");
+                    for (i = 0; i < dataSet.length; i++) {
+                        var val = dataSet[i][0];
+                        var text = dataSet[i][1];
+                        $("#add_group_dmmx").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#add_group_dmmx").selectpicker('refresh')
+                }
+            });
+        }
+    });
+
+    $('#upd_group_dmlx').change(function () {
+        if ($('#upd_group_dmlx').val() != '') {
+            $.ajax({
+                url: "/get/dmm/dm",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dm: $('#upd_group_dmlx').val(),
+                },
+                success: function (dataSet) {
+                    $("#upd_group_dmmx").empty();
+                    // $("#upd_group_dmmx").append("<option value='' selected = \"selected\">...</option>");
+                    for (i = 0; i < dataSet.length; i++) {
+                        var val = dataSet[i][0];
+                        var text = dataSet[i][1];
+                        $("#upd_group_dmmx").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#upd_group_dmmx").selectpicker('refresh')
+                }
+            });
+        }
+    });
+
+    $('#add_group_btn').click(function () {
+        init_group()
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-add-group').modal({
+            keyboard: false,
+            backdrop: false
+        });
+
+    });
+
+    $('#add_group_save_btn').click(function () {
+
+        if ($('#add_group_dmlx').val() == '') {
+            swal("字典大类不能为空", "", "error")
+            return
+        }
+        if ($('#add_group_dmmx').val() == '') {
+            swal("字典小类不能为空", "", "error")
+            return
+        }
+        $.ajax({
+            url: "/user/dict/group/add/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                dict_id: $('#add_group_group_id').val(),
+                dict_dmlx: $('#add_group_dmlx').val(),
+                dict_dmmx: dict2str('add_group_dmmx'),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("保存成功", "", "success")
+                    $("#query_btn").click()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            }
+        });
+    })
+
+    $('#upd_group_save_btn').click(function () {
+        $.ajax({
+            url: "/user/dict/group/upd/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: $('#update_id').val(),
+                group_id: $('#upd_group_group_id').val(),
+                dict_dmlx: $('#upd_group_dmlx').val(),
+                dict_dmmx: dict2str('upd_group_dmmx'),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("更新成功", "", "success")
+                    $("#query_btn").click()
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            }
+        });
+    })
+
+    //字典组授权
+    function init_grant() {
+        $('#add_grant_group_id').val('')
+        $("#add_grant_dmlx").val('')
+        $("#add_grant_dmmx").val('')
+        $("#add_grant_group_id").selectpicker('refresh')
+        $("#add_grant_dmlx").selectpicker('refresh')
+        $("#add_grant_dmmx").selectpicker('refresh')
+    }
+
+    function upd_grant_data(p_id) {
+        $.ajax({
+            url: "/get/user/dict/grant",
+            type: "post",
+            datatype: "json",
+            async: false,
+            data: {
+                id: p_id,
+            },
+            success: function (dataSet) {
+                $('#update_grant_id').val(p_id)
+                $('#upd_grant_user_id').val(dataSet['user_id'])
+                $("#upd_grant_user_id").selectpicker('refresh')
+
+                $('#upd_grant_group_id').val(dataSet['group_id'])
+                $("#upd_grant_group_id").selectpicker('refresh')
+                $('#upd_grant_group_id').change()
+
+                $('#upd_grant_dmlx').val(dataSet['dm'])
+                $("#upd_grant_dmlx").selectpicker('refresh')
+                $("#upd_grant_dmlx").change()
+
+                $('#upd_grant_dmmx').val(dataSet['dmm'].split(','))
+                $("#upd_grant_dmmx").selectpicker('refresh')
+            }
+        });
+
+    }
+
+    function query_grant() {
+        $.ajax({
+            url: "/user/dict/_grant",
+            type: "post",
+            datatype: "json",
+            data: {
+                qname: $('#qname').val()
+            },
+            success: function (dataSet) {
+                $('#example2').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: true,
+                    scrollX: true,
+                    AutoWidth: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    iDisplayLength: 14,
+                    data: dataSet,
+                    columns: [
+                        {"title": "id", "visible": false},
+                        {"title": "用户ID", "sWidth": "60px"},
+                        {"title": "用户名", "sWidth": "60px"},
+                        {"title": "组ID", "sWidth": "60px"},
+                        {"title": "组名", "sWidth": "80px"},
+                        {"title": "大类", "sWidth": "30px"},
+                        {"title": "大类名", "sWidth": "80px"},
+                        {"title": "小类", "sWidth": "100px"},
+                        {"title": "小类名", "sWidth": "60px"},
+                        {
+                            "title": "操作",
+                            "width": "125px",
+                            "render": function (data, type, row) {
+                                var grant_update;
+                                var grant_delete;
+                                grant_update = '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="更新" onclick="update_grant(\'' + row[0] + '\');"/>' + '&nbsp;';
+                                grant_delete = '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_grant(\'' + row[0] + '\');"/>' + '&nbsp;';
+                                return grant_update + grant_delete;
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+            },
+        });
+    }
+
+    function update_grant(id) {
+        upd_grant_data(id)
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-upd-grant').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    }
+
+    function delete_grant(id) {
+        swal({
+            title: "确认要删除吗?",
+            text: "组授权删除影响用户数据查询！",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是, 删除!",
+            cancelButtonText: "否, 取消!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: "/user/dict/grant/del",
                     type: "post",
                     datatype: "json",
                     data: {
-                        id         : $('#update_id').val(),
-                        group_id   : $('#upd_group_group_id').val(),
-                        dict_dmlx  : $('#upd_group_dmlx').val(),
-                        dict_dmmx  : dict2str('upd_group_dmmx'),
+                        id: id,
                     },
                     success: function (dataSet) {
-                        if (dataSet.code == 0) {
-                            swal("更新成功", "", "success")
-                            $("#query_btn").click()
+                        if (dataSet.code == '0') {
+                            swal("已删除!", "字典组授权已删除!", "success");
+                            $("#query_btn").click();
                         } else {
-                            swal(dataSet.message, "", "error")
+                            swal("删除失败!", "字典组授权删除失败 - " + dataSet.message + "!", "error");
                         }
-                    }
+                    },
                 });
-         })
 
-         //字典组授权
-         function init_grant() {
-              $('#add_grant_group_id').val('')
-              $("#add_grant_dmlx").val('')
-              $("#add_grant_dmmx").val('')
-              $("#add_grant_group_id").selectpicker('refresh')
-              $("#add_grant_dmlx").selectpicker('refresh')
-              $("#add_grant_dmmx").selectpicker('refresh')
-         }
+            } else {
+                swal("已取消", "字典组授权未删除！", "error");
+            }
+        });
+    }
 
-         function upd_grant_data(p_id) {
+    $('#add_grant_btn').click(function () {
+        init_grant()
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-close-add-grant').modal({
+            keyboard: false,
+            backdrop: false
+        });
+
+    });
+
+    $('#add_grant_group_id').change(function () {
+        if ($('#add_grant_group_id').val() != '') {
             $.ajax({
-                  url: "/get/user/dict/grant",
-                  type: "post",
-                  datatype: "json",
-                  async:false,
-                  data:{
-                      id : p_id,
-                  },
-                  success: function (dataSet) {
-                     $('#update_grant_id').val(p_id)
-                     $('#upd_grant_user_id').val(dataSet['user_id'])
-                     $("#upd_grant_user_id").selectpicker('refresh')
-
-                     $('#upd_grant_group_id').val(dataSet['group_id'])
-                     $("#upd_grant_group_id").selectpicker('refresh')
-                     $('#upd_grant_group_id').change()
-
-                     $('#upd_grant_dmlx').val(dataSet['dm'])
-                     $("#upd_grant_dmlx").selectpicker('refresh')
-                     $("#upd_grant_dmlx").change()
-
-                     $('#upd_grant_dmmx').val(dataSet['dmm'].split(','))
-                     $("#upd_grant_dmmx").selectpicker('refresh')
-                  }
+                url: "/get/dic/dmlx",
+                type: "post",
+                datatype: "json",
+                async: false,
+                success: function (dataSet) {
+                    $("#add_grant_dmlx").empty();
+                    $("#add_grant_dmlx").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet.length; i++) {
+                        var val = dataSet[i][0];
+                        var text = dataSet[i][1];
+                        $("#add_grant_dmlx").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#add_grant_dmlx").selectpicker('refresh')
+                }
             });
+        }
+    });
 
-         }
-
-         function query_grant() {
-             $.ajax({
-                  url: "/user/dict/_grant",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname: $('#qname').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example2').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :true,
-                          scrollX    :true,
-                          AutoWidth  :true,
-                          scrollCollapse: true,
-                          paging:     true,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                            { "title": "id","visible":false},
-                            { "title": "用户ID","sWidth":"60px"},
-                            { "title": "用户名","sWidth":"60px"},
-                            { "title": "组ID","sWidth":"60px"},
-                            { "title": "组名","sWidth":"80px" },
-                            { "title": "大类","sWidth":"30px" },
-                            { "title": "大类名","sWidth":"80px" },
-                            { "title": "小类","sWidth":"100px" },
-                            { "title": "小类名","sWidth":"60px"},
-                            {
-                                "title":"操作",
-                                "width": "125px",
-                                "render": function(data,type,row) {
-                                 var grant_update;
-                                 var grant_delete;
-                                 grant_update = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="更新" onclick="update_grant(\''+row[0]+'\');"/>' +'&nbsp;';
-                                 grant_delete = '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="delete_grant(\''+row[0]+'\');"/>' +'&nbsp;';
-                                 return grant_update+grant_delete;
-                                }
-                           },
-                          ],
-                          "language": get_languages()
-                         });
-                  },
-             });
-         }
-
-         function update_grant(id) {
-            upd_grant_data(id)
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-upd-grant').modal({
-                   keyboard: false,
-                   backdrop:false
+    $('#add_grant_dmlx').change(function () {
+        if ($('#add_grant_dmlx').val() != '') {
+            $.ajax({
+                url: "/get/dic/dmmx",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dm: $('#add_grant_dmlx').val(),
+                },
+                success: function (dataSet) {
+                    $("#add_grant_dmmx").empty();
+                    for (i = 0; i < dataSet.length; i++) {
+                        var val = dataSet[i][0];
+                        var text = dataSet[i][1];
+                        $("#add_grant_dmmx").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#add_grant_dmmx").selectpicker('refresh')
+                }
             });
-         }
+        }
+    });
 
-         function delete_grant(id) {
-             swal({
-                title: "确认要删除吗?",
-                text: "组授权删除影响用户数据查询！",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "是, 删除!",
-                cancelButtonText:  "否, 取消!",
-                closeOnConfirm: false,
-                closeOnCancel: false
-             }, function (isConfirm) {
-                if (isConfirm) {
-                    $.ajax({
-                            url: "/user/dict/grant/del",
-                            type: "post",
-                            datatype: "json",
-                            data:{
-                               id : id,
-                            },
-                            success: function (dataSet) {
-                                if (dataSet.code=='0') {
-                                    swal("已删除!", "字典组授权已删除!", "success");
-                                    $("#query_btn").click();
-                                } else {
-                                    swal("删除失败!", "字典组授权删除失败 - "+dataSet.message+"!", "error");
-                                }
-                            },
-                       });
+    $('#upd_grant_group_id').change(function () {
+        if ($('#upd_grant_group_id').val() != '') {
+            $.ajax({
+                url: "/get/dic/dmlx",
+                type: "post",
+                datatype: "json",
+                async: false,
+                success: function (dataSet) {
+                    $("#upd_grant_dmlx").empty();
+                    $("#upd_grant_dmlx").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet.length; i++) {
+                        var val = dataSet[i][0];
+                        var text = dataSet[i][1];
+                        $("#upd_grant_dmlx").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#upd_grant_dmlx").selectpicker('refresh')
+                }
+            });
+        }
+    });
 
+    $('#upd_grant_dmlx').change(function () {
+        if ($('#upd_grant_dmlx').val() != '') {
+            $.ajax({
+                url: "/get/dic/dmmx",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dm: $('#upd_grant_dmlx').val(),
+                },
+                success: function (dataSet) {
+                    $("#upd_grant_dmmx").empty();
+                    for (i = 0; i < dataSet.length; i++) {
+                        var val = dataSet[i][0];
+                        var text = dataSet[i][1];
+                        $("#upd_grant_dmmx").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    $("#upd_grant_dmmx").selectpicker('refresh')
+                }
+            });
+        }
+    });
+
+    $('#add_grant_save_btn').click(function () {
+        if ($('#add_grant_dmlx').val() == '') {
+            swal("字典大类不能为空", "", "error")
+            return
+        }
+        if ($('#add_grant_dmmx').val() == '') {
+            swal("字典小类不能为空", "", "error")
+            return
+        }
+        $.ajax({
+            url: "/user/dict/grant/add/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                user_id: $('#add_grant_user_id').val(),
+                group_id: $('#add_grant_group_id').val(),
+                dict_dmlx: $('#add_grant_dmlx').val(),
+                dict_dmmx: dict2str('add_grant_dmmx')
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("保存成功", "", "success")
+                    $("#query_btn").click()
                 } else {
-                    swal("已取消", "字典组授权未删除！", "error");
+                    swal(dataSet.message, "", "error")
                 }
-            });
-         }
-
-         $('#add_grant_btn').click(function(){
-            init_grant()
-            $('.modal').on('show.bs.modal', centerModals);
-            $(window).on('resize', centerModals);
-            $('#con-close-add-grant').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-
-        });
-
-         $('#add_grant_group_id').change(function() {
-            if ($('#add_grant_group_id').val()!=''){
-                $.ajax({
-                      url: "/get/dic/dmlx",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                         $("#add_grant_dmlx").empty();
-                         $("#add_grant_dmlx").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#add_grant_dmlx").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#add_grant_dmlx").selectpicker('refresh')
-                      }
-                });
             }
         });
+    })
 
-         $('#add_grant_dmlx').change(function() {
-            if ($('#add_grant_dmlx').val()!=''){
-                $.ajax({
-                      url: "/get/dic/dmmx",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dm : $('#add_grant_dmlx').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#add_grant_dmmx").empty();
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#add_grant_dmmx").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#add_grant_dmmx").selectpicker('refresh')
-                      }
-                });
-            }
-        });
-
-         $('#upd_grant_group_id').change(function() {
-            if ($('#upd_grant_group_id').val()!=''){
-                $.ajax({
-                      url: "/get/dic/dmlx",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      success: function (dataSet) {
-                         $("#upd_grant_dmlx").empty();
-                         $("#upd_grant_dmlx").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#upd_grant_dmlx").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#upd_grant_dmlx").selectpicker('refresh')
-                      }
-                });
-            }
-        });
-
-         $('#upd_grant_dmlx').change(function() {
-            if ($('#upd_grant_dmlx').val()!=''){
-                $.ajax({
-                      url: "/get/dic/dmmx",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dm : $('#upd_grant_dmlx').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#upd_grant_dmmx").empty();
-                         for(i=0;i<dataSet.length;i++){
-                              var val  = dataSet[i][0];
-                              var text = dataSet[i][1];
-                              $("#upd_grant_dmmx").append("<option value='"+val+"' title='"+text+"'>"+text+"</option>");
-                         }
-                         $("#upd_grant_dmmx").selectpicker('refresh')
-                      }
-                });
-            }
-        });
-
-         $('#add_grant_save_btn').click(function(){
-             if( $('#add_grant_dmlx').val()==''){
-                 swal("字典大类不能为空", "", "error")
-                 return
-             }
-             if( $('#add_grant_dmmx').val()==''){
-                 swal("字典小类不能为空", "", "error")
-                 return
-             }
-              $.ajax({
-                        url: "/user/dict/grant/add/save",
-                        type: "post",
-                        datatype: "json",
-                        data: {
-                            user_id    : $('#add_grant_user_id').val(),
-                            group_id   : $('#add_grant_group_id').val(),
-                            dict_dmlx  : $('#add_grant_dmlx').val(),
-                            dict_dmmx  : dict2str('add_grant_dmmx')
-                        },
-                        success: function (dataSet) {
-                            if (dataSet.code == 0) {
-                                swal("保存成功", "", "success")
-                                $("#query_btn").click()
-                            } else {
-                                swal(dataSet.message, "", "error")
-                            }
-                        }
-                    });
-         })
-
-         $('#upd_grant_save_btn').click(function(){
-              $.ajax({
-                        url: "/user/dict/grant/upd/save",
-                        type: "post",
-                        datatype: "json",
-                        data: {
-                            id         : $('#update_grant_id').val(),
-                            user_id    : $('#upd_grant_user_id').val(),
-                            group_id   : $('#upd_grant_group_id').val(),
-                            dict_dmlx  : $('#upd_grant_dmlx').val(),
-                            dict_dmmx  : dict2str('upd_grant_dmmx')
-                        },
-                        success: function (dataSet) {
-                            if (dataSet.code == 0) {
-                                swal("更新成功", "", "success")
-                                $("#query_btn").click()
-                            } else {
-                                swal(dataSet.message, "", "error")
-                            }
-                        }
-                    });
-         })
-
-         // 共用
-         $("#query_btn").click(function() {
-               if (tabPageName == '字典组') {
-                    query_group()
-               }
-               if (tabPageName == '组授权') {
-                    query_grant()
-               }
-          });
-
-         $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-                var activeTab = $(e.target).text();
-                tabPageName = activeTab
-                if (activeTab == '字典组') {
-                    query_group()
+    $('#upd_grant_save_btn').click(function () {
+        $.ajax({
+            url: "/user/dict/grant/upd/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: $('#update_grant_id').val(),
+                user_id: $('#upd_grant_user_id').val(),
+                group_id: $('#upd_grant_group_id').val(),
+                dict_dmlx: $('#upd_grant_dmlx').val(),
+                dict_dmmx: dict2str('upd_grant_dmmx')
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("更新成功", "", "success")
+                    $("#query_btn").click()
+                } else {
+                    swal(dataSet.message, "", "error")
                 }
-                if (activeTab == '组授权') {
-                   query_grant()
-                }
-         });
-
-         $(document).keydown(function(event){
-            if (event.keyCode == 13) {
-                $("#query_btn").click();
             }
-         })
+        });
+    })
 
-         $(document).ready(function() {
+    // 共用
+    $("#query_btn").click(function () {
+        if (tabPageName == '字典组') {
+            query_group()
+        }
+        if (tabPageName == '组授权') {
+            query_grant()
+        }
+    });
+
+    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        var activeTab = $(e.target).text();
+        tabPageName = activeTab
+        if (activeTab == '字典组') {
+            query_group()
+        }
+        if (activeTab == '组授权') {
+            query_grant()
+        }
+    });
+
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) {
             $("#query_btn").click();
-            $('.selectpicker').selectpicker({
-                size: 10,
-                noneSelectedText: '请选择' //默认显示内容
-            });
+        }
+    })
 
-         });
+    $(document).ready(function () {
+        $("#query_btn").click();
+        $('.selectpicker').selectpicker({
+            size: 10,
+            noneSelectedText: '请选择' //默认显示内容
+        });
 
-         $(document).on('click','p.class',function(e) {
-              e.preventDefault()
-         });
+    });
+
+    $(document).on('click', 'p.class', function (e) {
+        e.preventDefault()
+    });
 
 
-   </script>
+</script>
 
 </body>
 

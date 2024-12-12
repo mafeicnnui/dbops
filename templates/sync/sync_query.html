@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <title>同步查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
         table.datatable tr th, table.datatable tr td {
             white-space: nowrap;
         }
@@ -14,149 +15,151 @@
     </style>
 </head>
 <body>
-   <p></p>
-   <div class="col-md-12">
-     <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">项目名</span>
-                 <select class="form-control select" id="market_id" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_proj_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">业务类型</span>
-                 <select class="form-control select" id="sync_ywlx" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_sync_ywlx %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据方向</span>
-                 <select class="form-control select" id="sync_type" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_sync_data_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
+<p></p>
+<div class="col-md-12">
+    <div class="row">
         <div class="col-md-2">
-                 <div class="input-group">
-                     <span class="input-group-addon">任务状态</span>
-                        <select class="form-control select" id="task_status">
-                            <option value="1">启用</option>
-                            <option value="0">禁用</option>
-                        </select>
-                    </select>
-                 </div>
-         </div>
-         <div class="col-md-1">
-             <div class="input-group">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" id="tagname" class="form-control" placeholder="请输入标签名">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">项目名</span>
+                <select class="form-control select" id="market_id">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_proj_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">业务类型</span>
+                <select class="form-control select" id="sync_ywlx">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_sync_ywlx %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据方向</span>
+                <select class="form-control select" id="sync_type">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_sync_data_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">任务状态</span>
+                <select class="form-control select" id="task_status">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group">
               <span class="input-group-btn">
-                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                        class="fa fa-search"></i></button>
               </span>
             </div>
         </div>
-      </div>
-     <p>
-     <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-         </div>
-     </div>
-   </div>
-   <script>
+    </div>
+    <p>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="div-tab">
+                <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                       width="100%" height="100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
 
-        $("#tagname").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+    $("#tagname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-        $("#market_id").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+    $("#market_id").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-        $("#sync_ywlx").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+    $("#sync_ywlx").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-        $("#sync_type").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+    $("#sync_type").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-        });
-
-        $(document).ready(function() {
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/sync/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sync_tag   : $('#tagname').val(),
-                      market_id  : $('#market_id').val(),
-                      sync_ywlx  : $('#sync_ywlx').val(),
-                      sync_type  : $('#sync_type').val(),
-                      task_status :$('#task_status').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                      destroy    :true,
-                      ordering   :false,
-                      async      :true,
-                      scrollY    :false,
-                      scrollX    :true,
-                      scrollCollapse: true,
-                      paging:     true,
-                      iDisplayLength: 16,
-                      data: dataSet,
-                      columns: [
-                        { "title": "标识符"},
-                        { "title": "同步标识号"},
-                        { "title": "同步标识号","visible":false},
-                        { "title": "任务描述"},
-                        { "title": "同步服务器","visible":false },
-                        { "title": "业务类型" },
-                        { "title": "运行时间" },
-                        { "title": "接口服务器"},
-                        { "title": "接口服务器(B)","sClass":"hidden"},
-                        { "title": "同步状态"},
-                        { "title": "任务状态"}
-                      ],
-                      "language": get_languages()
-                     });
-                  },
-             });
-            });
-
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
+        }
+    });
 
+    $(document).ready(function () {
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/sync/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    sync_tag: $('#tagname').val(),
+                    market_id: $('#market_id').val(),
+                    sync_ywlx: $('#sync_ywlx').val(),
+                    sync_type: $('#sync_type').val(),
+                    task_status: $('#task_status').val(),
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        ordering: false,
+                        async: true,
+                        scrollY: false,
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: true,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "标识符"},
+                            {"title": "同步标识号"},
+                            {"title": "同步标识号", "visible": false},
+                            {"title": "任务描述"},
+                            {"title": "同步服务器", "visible": false},
+                            {"title": "业务类型"},
+                            {"title": "运行时间"},
+                            {"title": "接口服务器"},
+                            {"title": "接口服务器(B)", "sClass": "hidden"},
+                            {"title": "同步状态"},
+                            {"title": "任务状态"}
+                        ],
+                        "language": get_languages()
+                    });
+                },
+            });
         });
 
-   </script>
+        $("#query_btn").click();
+
+    });
+
+</script>
 </body>
 
 </html>

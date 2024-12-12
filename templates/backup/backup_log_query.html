@@ -4,75 +4,80 @@
     <meta charset="utf-8">
     <title>日志查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
 
         .modal-lg {
-            width:86%;
-            height:80%;
-            margin-left:240px;
-            margin-right:50px;
-            margin-top:80px;
+            width: 86%;
+            height: 80%;
+            margin-left: 240px;
+            margin-right: 50px;
+            margin-top: 80px;
         }
 
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-     <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
+<p></p>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input type="text" id="tagname"  class="form-control" placeholder="请输入标签名">
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据库环境</span>
-                 <select class="form-control select" id="db_env" >
-                    <option value='' selected = "selected">.....</option>
+                <input type="text" id="tagname" class="form-control" placeholder="请输入标签名">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据库环境</span>
+                <select class="form-control select" id="db_env">
+                    <option value='' selected="selected">.....</option>
                     {% for var in dm_env_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
+                    <option value={{var[0]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">备份日期起</span>
-              <input  id="begin_date"  type="text" class="form-control datepicker"  placeholder="备份时间起" value="{{begin_date}}">
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
             </div>
-         </div>
+        </div>
         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">备份日期止</span>
-              <input  id="end_date"  type="text" class="form-control datepicker"  placeholder="备份时间止" value="{{end_date}}" >
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            <div class="input-group">
+                <span class="input-group-addon">备份日期起</span>
+                <input id="begin_date" type="text" class="form-control datepicker" placeholder="备份时间起"
+                       value="{{begin_date}}">
+                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">备份日期止</span>
+                <input id="end_date" type="text" class="form-control datepicker" placeholder="备份时间止"
+                       value="{{end_date}}">
+                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
             </div>
         </div>
         <div class="col-md-1">
-             <div class="input-group">
+            <div class="input-group">
               <span class="input-group-btn">
-                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                        class="fa fa-search"></i></button>
               </span>
             </div>
         </div>
-      </div>
-      <p></p>
-     <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-         </div>
-     </div>
-   </div>
+    </div>
+    <p></p>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="div-tab">
+                <table id="example" style="white-space: nowrap;" class="table table-striped table-bordered nowrap"
+                       cellspacing="0" width="100%" height="100%"></table>
+            </div>
+        </div>
+    </div>
+</div>
 
-   <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg">
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -80,192 +85,198 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                     <div class="col-md-3">
-                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                            <input type="text" id="tagname_detail"  disabled class="form-control" placeholder="请输入标签名">
-                         </div>
-                     </div>
-
-                     <div class="col-md-3">
+                    <div class="col-md-3">
                         <div class="input-group">
-                          <span class="input-group-addon">备份日期</span>
-                          <input  id="backup_date_detail"  type="text" disabled class="form-control datepicker"  placeholder="备份时间">
-                          <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" id="tagname_detail" disabled class="form-control"
+                                   placeholder="请输入标签名">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">备份日期</span>
+                            <input id="backup_date_detail" type="text" disabled class="form-control datepicker"
+                                   placeholder="备份时间">
+                            <span class="input-group-addon bg-custom b-0"><i
+                                    class="mdi mdi-calendar text-white"></i></span>
                         </div>
                     </div>
                     <div class="col-md-1">
-                         <div class="input-group">
+                        <div class="input-group">
                           <span class="input-group-btn">
-                            <button type="button"  id='query_btn2' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                            <button type="button" id='query_btn2' class="btn waves-effect waves-light btn-primary"><i
+                                    class="fa fa-search"></i></button>
                           </span>
                         </div>
-                   </div>
+                    </div>
 
                 </div>
                 <p></p>
                 <div class="row">
-                     <div class="col-md-12">
-                          <div id="div-tab2">
-                               <table id="example2" style="white-space: nowrap;" class="table table-striped table-bordered nowrap" ></table>
-                          </div>
-                     </div>
+                    <div class="col-md-12">
+                        <div id="div-tab2">
+                            <table id="example2" style="white-space: nowrap;"
+                                   class="table table-striped table-bordered nowrap"></table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-   </div><!-- /.modal -->
+</div><!-- /.modal -->
 
-   <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-   <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        //日志详情页自动查询
-        $("#backup_date_detail").click(function(){
-           $("#query_btn2").click();
-        });
-        $("#backup_date_detail").change(function(){
-           $("#query_btn2").click();
-        });
-
-        $(document).ready(function() {
-            $('#begin_date').attr("readonly", "readonly");
-            $('#end_date').attr("readonly", "readonly");
-            $('#backup_date_detail').attr("readonly", "readonly");
-
-            $("#query_btn").click(function() {
-
-                $.ajax({
-                          url: "/backup/log/_query",
-                          type: "post",
-                          datatype: "json",
-                          data:{
-                              tagname   : $('#tagname').val(),
-                              db_env    : $('#db_env').val(),
-                              begin_date: $('#begin_date').val(),
-                              end_date  : $('#end_date').val()
-                          },
-                          beforeSend: function () {
-                               swal({title: "正在查询中...",showConfirmButton: false});
-                          },
-                          complete: function () {
-                               swal({title: "正在查询中...",timer: 1000,showConfirmButton: false});
-                          },
-                          success: function (dataSet) {
-                              $('#example').DataTable( {
-                              "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                              "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                              destroy    :true,
-                              async      :true,
-                              scrollY    :false,
-                              ordering   :false,
-                              scrollX    :false,
-                              scrollCollapse: true,
-                              paging:     true,
-                              iDisplayLength: 16,
-                              data: dataSet,
-                              columns: [
-                                    { "title": "标识符"},
-                                    { "title": "任务描述"},
-                                    { "title": "标签名" },
-                                    { "title": "备份日期" },
-                                    { "title": "开始时间","visible":false },
-                                    { "title": "结束时间","visible":false },
-                                    { "title": "备份大小" },
-                                    { "title": "备份时间" },
-                                    { "title": "压缩时间" },
-                                    { "title": "备份状态" },
-                                    {
-                                    "title":"详情",
-                                    "width": "25px",
-                                    "render": function(data,type,row)
-                                        {
-                                           p_val=row[2]+','+row[3]
-                                           return  '<button class="btn btn-xs waves-effect waves-light"  onclick=isSelect("'+p_val+'")><i class="ion-skip-forward"></i></button>'
-                                        }
-                                    },
-                              ],
-                              "language": get_languages()
-                             });
-                          }
-                });
-
-            });
+<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
-        });
+        }
+    });
 
-        $("#query_btn2").click(function() {
-              $.ajax({
-                  url: "/backup/log/_query/detail",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      tagname    : $('#tagname_detail').val(),
-                      backup_date: $('#backup_date_detail').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#con-close-modal').modal({
-                          keyboard: false,
-                          backdrop:false
-                      });
-                      $('#example2').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :false,
-                          ordering   :false,
-                          bAutoWidth :true,
-                          scrollX    :true,
-                          paging:     true,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                                { "title": "任务描述"},
-                                { "title": "标签名" },
-                                { "title": "数据库名"  },
-                                { "title": "文件名"    },
-                                { "title": "文件路径"  },
-                                { "title": "备份日期"  },
-                                { "title": "开始时间"  },
-                                { "title": "结束时间"  },
-                                { "title": "备份大小"  },
-                                { "title": "备份耗时"  },
-                                { "title": "压缩耗时"  },
-                                { "title": "状态"     },
-                                { "title": "错误" ,"visible": false}
-                          ],
-                          "language": get_languages()
-                     });
-                 },
-             });
+    //日志详情页自动查询
+    $("#backup_date_detail").click(function () {
+        $("#query_btn2").click();
+    });
+    $("#backup_date_detail").change(function () {
+        $("#query_btn2").click();
+    });
+
+    $(document).ready(function () {
+        $('#begin_date').attr("readonly", "readonly");
+        $('#end_date').attr("readonly", "readonly");
+        $('#backup_date_detail').attr("readonly", "readonly");
+
+        $("#query_btn").click(function () {
+
+            $.ajax({
+                url: "/backup/log/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    tagname: $('#tagname').val(),
+                    db_env: $('#db_env').val(),
+                    begin_date: $('#begin_date').val(),
+                    end_date: $('#end_date').val()
+                },
+                beforeSend: function () {
+                    swal({title: "正在查询中...", showConfirmButton: false});
+                },
+                complete: function () {
+                    swal({title: "正在查询中...", timer: 1000, showConfirmButton: false});
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        scrollY: false,
+                        ordering: false,
+                        scrollX: false,
+                        scrollCollapse: true,
+                        paging: true,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "标识符"},
+                            {"title": "任务描述"},
+                            {"title": "标签名"},
+                            {"title": "备份日期"},
+                            {"title": "开始时间", "visible": false},
+                            {"title": "结束时间", "visible": false},
+                            {"title": "备份大小"},
+                            {"title": "备份时间"},
+                            {"title": "压缩时间"},
+                            {"title": "备份状态"},
+                            {
+                                "title": "详情",
+                                "width": "25px",
+                                "render": function (data, type, row) {
+                                    p_val = row[2] + ',' + row[3]
+                                    return '<button class="btn btn-xs waves-effect waves-light"  onclick=isSelect("' + p_val + '")><i class="ion-skip-forward"></i></button>'
+                                }
+                            },
+                        ],
+                        "language": get_languages()
+                    });
+                }
             });
 
-        function isSelect(v) {
-            $('#tagname_detail').val(v.split(',')[0])
-            $('#backup_date_detail').val(v.split(',')[1])
-            $("#query_btn2").click()
+        });
+        $("#query_btn").click();
+    });
+
+    $("#query_btn2").click(function () {
+        $.ajax({
+            url: "/backup/log/_query/detail",
+            type: "post",
+            datatype: "json",
+            data: {
+                tagname: $('#tagname_detail').val(),
+                backup_date: $('#backup_date_detail').val(),
+            },
+            success: function (dataSet) {
+                $('#con-close-modal').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+                $('#example2').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: false,
+                    ordering: false,
+                    bAutoWidth: true,
+                    scrollX: true,
+                    paging: true,
+                    iDisplayLength: 14,
+                    data: dataSet,
+                    columns: [
+                        {"title": "任务描述"},
+                        {"title": "标签名"},
+                        {"title": "数据库名"},
+                        {"title": "文件名"},
+                        {"title": "文件路径"},
+                        {"title": "备份日期"},
+                        {"title": "开始时间"},
+                        {"title": "结束时间"},
+                        {"title": "备份大小"},
+                        {"title": "备份耗时"},
+                        {"title": "压缩耗时"},
+                        {"title": "状态"},
+                        {"title": "错误", "visible": false}
+                    ],
+                    "language": get_languages()
+                });
+            },
+        });
+    });
+
+    function isSelect(v) {
+        $('#tagname_detail').val(v.split(',')[0])
+        $('#backup_date_detail').val(v.split(',')[1])
+        $("#query_btn2").click()
+    }
+
+
+    $("#example2").on("click", "tr", function () {
+        var table = $("#example2").DataTable();
+        var data = table.row(this).data();
+        if (data[12] != '') {
+            showtips('error', '', '备份错误日志:' + data[12]);
         }
+    })
 
-
-        $("#example2").on("click","tr",function(){
-            var table=$("#example2").DataTable();
-            var data=table.row(this).data();
-            if (data[12]!='') {
-                 showtips('error','','备份错误日志:'+data[12]);
-            }
-         })
-
-   </script>
+</script>
 </body>
 
 </html>

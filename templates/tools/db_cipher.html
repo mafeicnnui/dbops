@@ -3,135 +3,138 @@
 <head>
     <meta charset="utf-8">
     <style>
-        #ace_plain_text,#ace_cipher_text{
-           height:400px;
-           width:500px;
-           word-wrap: break-word;
+        #ace_plain_text, #ace_cipher_text {
+            height: 400px;
+            width: 500px;
+            word-wrap: break-word;
         }
     </style>
 </head>
 <body>
-     <p></p>
-     <div class="row">
-         <div class="col-md-4">
-             <div class="input-group">
-                 <span class="input-group-addon">数据库环境</span>
-                 <select class="form-control select" id="db_env" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_env_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-                <span class="input-group-addon" style="color:red">&nbsp;&nbsp;&nbsp;加密多个文本，以逗号隔开!</span>
-             </div>
-         </div>
-      </div>
-     <hr>
-
-     <div class="row">
-        <div class="col-md-5">
-            <div id='ace_plain_text'></div>
+<p></p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="input-group">
+            <span class="input-group-addon">数据库环境</span>
+            <select class="form-control select" id="db_env">
+                <option value='' selected="selected">.....</option>
+                {% for var in dm_env_type %}
+                <option value={{var[0]}}>{{var[1]}}</option>
+                {% end %}
+            </select>
+            <span class="input-group-addon" style="color:red">&nbsp;&nbsp;&nbsp;加密多个文本，以逗号隔开!</span>
         </div>
-        <div class="col-md-1">
-            <br><br><br><br><br><br>
-            <button type="button"  id='encrypt_btn' class="btn waves-effect waves-light btn-primary"><i class="ion-locked"></i>&nbsp;&nbsp;加密&nbsp;=></button>
-            <hr>
-            <button type="button"  id='decrypt_btn' class="btn waves-effect waves-light btn-primary"><=&nbsp;&nbsp;解密&nbsp;<i class="ion-unlocked"></i></button>
-        </div>
-        <div class="col-md-5">
-            <div id='ace_cipher_text'></div>
-        </div>
-     </div>
+    </div>
+</div>
+<hr>
 
-     <script>
-        function set_editor(p_editor,p_readonly) {
-              var editor = ace.edit(p_editor);
-              editor.setTheme("ace/theme/xcode");
-              editor.getSession().setMode("ace/mode/sql");
-              editor.setShowPrintMargin(false);
-              editor.setFontSize(16);
-              editor.getSession().setUseSoftTabs(true);
-              if (p_readonly) {
-                  editor.setReadOnly(true);
-              } else {
-                  editor.setReadOnly(false);
-              }
-       }
+<div class="row">
+    <div class="col-md-5">
+        <div id='ace_plain_text'></div>
+    </div>
+    <div class="col-md-1">
+        <br><br><br><br><br><br>
+        <button type="button" id='encrypt_btn' class="btn waves-effect waves-light btn-primary"><i
+                class="ion-locked"></i>&nbsp;&nbsp;加密&nbsp;=>
+        </button>
+        <hr>
+        <button type="button" id='decrypt_btn' class="btn waves-effect waves-light btn-primary"><=&nbsp;&nbsp;解密&nbsp;<i
+                class="ion-unlocked"></i></button>
+    </div>
+    <div class="col-md-5">
+        <div id='ace_cipher_text'></div>
+    </div>
+</div>
 
-        function get_value(p_editor) {
-             var editor = ace.edit(p_editor);
-             v_sql=editor.session.getTextRange(editor.getSelectionRange())
-             if(v_sql == '') {
-                v_sql=editor.session.getValue()
-             }
-             return v_sql
+<script>
+    function set_editor(p_editor, p_readonly) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/sql");
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(16);
+        editor.getSession().setUseSoftTabs(true);
+        if (p_readonly) {
+            editor.setReadOnly(true);
+        } else {
+            editor.setReadOnly(false);
         }
+    }
 
-        function set_value(p_editor,p_value)  {
-            var editor = ace.edit(p_editor);
-            editor.setValue('')
-            editor.insert(p_value);
+    function get_value(p_editor) {
+        var editor = ace.edit(p_editor);
+        v_sql = editor.session.getTextRange(editor.getSelectionRange())
+        if (v_sql == '') {
+            v_sql = editor.session.getValue()
         }
+        return v_sql
+    }
 
-        function check_valid(){
-          if ($('#db_env').val()=='') {
-              swal("提示", "数据库环境不能为空!", "error");
-              return false
-          }
-          return true
+    function set_value(p_editor, p_value) {
+        var editor = ace.edit(p_editor);
+        editor.setValue('')
+        editor.insert(p_value);
+    }
+
+    function check_valid() {
+        if ($('#db_env').val() == '') {
+            swal("提示", "数据库环境不能为空!", "error");
+            return false
         }
+        return true
+    }
 
-        $('#encrypt_btn').on('click',function () {
-            if (! check_valid()) {
-                return
-            }
-            $.ajax({
-                 url: "/dbtools/cipher/encrypt",
-                 type: "post",
-                 datatype: "json",
-                 data: {
-                     db_env: $('#db_env').val(),
-                     plain_text: get_value('ace_plain_text'),
-                 },
-                 success: function (dataSet) {
-                     if (dataSet.code == -1) {
-                         swal("提示", dataSet.message, "error");
-                     } else {
-                         set_value('ace_cipher_text',dataSet['message'])
-                     }
-                 },
-             })
+    $('#encrypt_btn').on('click', function () {
+        if (!check_valid()) {
+            return
+        }
+        $.ajax({
+            url: "/dbtools/cipher/encrypt",
+            type: "post",
+            datatype: "json",
+            data: {
+                db_env: $('#db_env').val(),
+                plain_text: get_value('ace_plain_text'),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == -1) {
+                    swal("提示", dataSet.message, "error");
+                } else {
+                    set_value('ace_cipher_text', dataSet['message'])
+                }
+            },
         })
+    })
 
-        $('#decrypt_btn').on('click',function () {
-            if (! check_valid()) {
-                return
-            }
-            $.ajax({
-                 url: "/dbtools/cipher/decrypt",
-                 type: "post",
-                 datatype: "json",
-                 data: {
-                     db_env: $('#db_env').val(),
-                     cipher_text: get_value('ace_cipher_text'),
-                 },
-                 success: function (dataSet) {
-                     if (dataSet.code == -1) {
-                         swal("提示", dataSet.message, "error");
-                     } else {
-                         set_value('ace_plain_text',dataSet['message'])
-                     }
-                 },
-             })
-         })
+    $('#decrypt_btn').on('click', function () {
+        if (!check_valid()) {
+            return
+        }
+        $.ajax({
+            url: "/dbtools/cipher/decrypt",
+            type: "post",
+            datatype: "json",
+            data: {
+                db_env: $('#db_env').val(),
+                cipher_text: get_value('ace_cipher_text'),
+            },
+            success: function (dataSet) {
+                if (dataSet.code == -1) {
+                    swal("提示", dataSet.message, "error");
+                } else {
+                    set_value('ace_plain_text', dataSet['message'])
+                }
+            },
+        })
+    })
 
-        $(document).ready(function() {
-            set_editor('ace_plain_text',false);
-            set_editor('ace_cipher_text',false );
-            console.log('hello world');
-        });
+    $(document).ready(function () {
+        set_editor('ace_plain_text', false);
+        set_editor('ace_cipher_text', false);
+        console.log('hello world');
+    });
 
-   </script>
+</script>
 </body>
 
 </html>

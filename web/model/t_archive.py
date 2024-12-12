@@ -6,12 +6,14 @@
 # @Software: PyCharm
 
 import traceback
+
 import requests
 
 from web.utils.mysql_async import async_processer
 
+
 async def query_archive(sync_tag):
-    v_where=' and  1=1 '
+    v_where = ' and  1=1 '
     if sync_tag != '':
         v_where = v_where + " and a.archive_tag='{0}'\n".format(sync_tag)
     sql = """SELECT  a.id,
@@ -23,6 +25,7 @@ async def query_archive(sync_tag):
                  {0}
           """.format(v_where)
     return await async_processer.query_list(sql)
+
 
 async def query_archive_detail(archive_id):
     sql = """SELECT   a.archive_tag,
@@ -55,16 +58,17 @@ async def query_archive_detail(archive_id):
              """.format(archive_id)
     return await async_processer.query_dict_one(sql)
 
-async def query_archive_log(transfer_tag,begin_date,end_date):
-    v_where=' and 1=1 '
+
+async def query_archive_log(transfer_tag, begin_date, end_date):
+    v_where = ' and 1=1 '
     if transfer_tag != '':
         v_where = v_where + " and a.archive_tag='{0}'\n".format(transfer_tag)
     if begin_date != '':
-        v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date+' 0:0:0')
+        v_where = v_where + " and a.create_date>='{0}'\n".format(begin_date + ' 0:0:0')
     else:
         v_where = v_where + " and a.create_date>=DATE_ADD(NOW(),INTERVAL -1 hour)\n"
     if end_date != '':
-        v_where = v_where + " and a.create_date<='{0}'\n".format(end_date+' 23:59:59')
+        v_where = v_where + " and a.create_date<='{0}'\n".format(end_date + ' 23:59:59')
     sql = """SELECT 
                   a.id,
                   CONCAT(SUBSTR(a.archive_tag,1,40),'...'),
@@ -81,23 +85,24 @@ async def query_archive_log(transfer_tag,begin_date,end_date):
          """.format(v_where)
     return await async_processer.query_list(sql)
 
+
 async def save_archive(p_archive):
     val = check_archive(p_archive)
-    if val['code']=='-1':
+    if val['code'] == '-1':
         return val
     try:
-        sql="""insert into t_db_archive_config( 
+        sql = """insert into t_db_archive_config( 
                   archive_tag,comments,archive_db_type,server_id,sour_db_id,sour_schema,
                   sour_table,archive_time_col,archive_rentition,rentition_time,rentition_time_type,dest_db_id,
                   dest_schema,python3_home,script_path,script_file,batch_size,api_server,status,if_cover,run_time)
                values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}',
                       '{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}')
-            """.format(p_archive['archive_tag'],p_archive['task_desc'],p_archive['archive_db_type'],
-                       p_archive['archive_server'],p_archive['sour_db_server'],p_archive['sour_db_name'],
-                       p_archive['sour_tab_name'],p_archive['archive_time_col'], p_archive['archive_rentition'],
-                       p_archive['rentition_time'], p_archive['rentition_time_type'],p_archive['dest_db_server'],
-                       p_archive['dest_db_name'],p_archive['python3_home'],p_archive['script_base'],
-                       p_archive['script_name'], p_archive['batch_size'], p_archive['api_server'],p_archive['status'],
+            """.format(p_archive['archive_tag'], p_archive['task_desc'], p_archive['archive_db_type'],
+                       p_archive['archive_server'], p_archive['sour_db_server'], p_archive['sour_db_name'],
+                       p_archive['sour_tab_name'], p_archive['archive_time_col'], p_archive['archive_rentition'],
+                       p_archive['rentition_time'], p_archive['rentition_time_type'], p_archive['dest_db_server'],
+                       p_archive['dest_db_name'], p_archive['python3_home'], p_archive['script_base'],
+                       p_archive['script_name'], p_archive['batch_size'], p_archive['api_server'], p_archive['status'],
                        p_archive['if_cover'], p_archive['run_time'])
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '保存成功!'}
@@ -105,12 +110,13 @@ async def save_archive(p_archive):
         traceback.print_exc()
         return {'code': '-1', 'message': '保存失败!'}
 
+
 async def upd_archive(p_archive):
     val = check_archive(p_archive)
-    if  val['code'] == '-1':
+    if val['code'] == '-1':
         return val
     try:
-        sql="""update t_db_archive_config 
+        sql = """update t_db_archive_config 
                   set  
                       archive_tag         ='{0}',
                       comments            ='{1}', 
@@ -134,27 +140,29 @@ async def upd_archive(p_archive):
                       if_cover            ='{19}',
                       run_time            ='{20}'
                 where id={21}
-            """.format(p_archive['archive_tag'],p_archive['task_desc'],p_archive['archive_server'],
-                       p_archive['archive_db_type'],p_archive['sour_db_server'],p_archive['sour_db_name'],
-                       p_archive['sour_tab_name'],p_archive['archive_time_col'], p_archive['archive_rentition'],
-                       p_archive['rentition_time'], p_archive['rentition_time_type'],p_archive['dest_db_server'],
-                       p_archive['dest_db_name'],p_archive['python3_home'],p_archive['script_base'],
-                       p_archive['script_name'], p_archive['batch_size'], p_archive['api_server'],p_archive['status'],
-                       p_archive['if_cover'], p_archive['run_time'],p_archive['archive_id'])
+            """.format(p_archive['archive_tag'], p_archive['task_desc'], p_archive['archive_server'],
+                       p_archive['archive_db_type'], p_archive['sour_db_server'], p_archive['sour_db_name'],
+                       p_archive['sour_tab_name'], p_archive['archive_time_col'], p_archive['archive_rentition'],
+                       p_archive['rentition_time'], p_archive['rentition_time_type'], p_archive['dest_db_server'],
+                       p_archive['dest_db_name'], p_archive['python3_home'], p_archive['script_base'],
+                       p_archive['script_name'], p_archive['batch_size'], p_archive['api_server'], p_archive['status'],
+                       p_archive['if_cover'], p_archive['run_time'], p_archive['archive_id'])
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '更新成功!'}
-    except :
+    except:
         traceback.print_exc()
         return {'code': '-1', 'message': '更新失败!'}
 
+
 async def del_archive(p_archiveid):
     try:
-        sql="delete from t_db_archive_config  where id='{0}'".format(p_archiveid)
+        sql = "delete from t_db_archive_config  where id='{0}'".format(p_archiveid)
         await async_processer.exec_sql(sql)
         return {'code': '0', 'message': '删除成功!'}
-    except :
+    except:
         traceback.print_exc()
         return {'code': '-1', 'message': '删除失败!'}
+
 
 async def get_archive_by_archiveid(p_archiveid):
     st = """SELECT id,archive_tag,server_id,comments,archive_db_type,sour_db_id,sour_schema,
@@ -163,42 +171,42 @@ async def get_archive_by_archiveid(p_archiveid):
             FROM t_db_archive_config where id={0}""".format(p_archiveid)
     return await async_processer.query_dict_one(st)
 
-def check_archive(p_archive):
 
-    if p_archive["archive_tag"]=='':
-       return {'code':'-1','message':'归档标识号不能为空!'}
+def check_archive(p_archive):
+    if p_archive["archive_tag"] == '':
+        return {'code': '-1', 'message': '归档标识号不能为空!'}
 
     if p_archive["task_desc"] == '':
-       return {'code': '-1', 'message': '任务描述不能为空!'}
+        return {'code': '-1', 'message': '任务描述不能为空!'}
 
-    if p_archive["archive_server"]=='':
-       return {'code': '-1', 'message': '传输服务器不能为空!'}
+    if p_archive["archive_server"] == '':
+        return {'code': '-1', 'message': '传输服务器不能为空!'}
 
-    if p_archive["sour_db_server"]=='':
-       return {'code': '-1', 'message': '源数据库实例不能为空!'}
+    if p_archive["sour_db_server"] == '':
+        return {'code': '-1', 'message': '源数据库实例不能为空!'}
 
     if p_archive["sour_db_name"] == '':
-       return {'code': '-1', 'message': '源数据库名不能为空!'}
+        return {'code': '-1', 'message': '源数据库名不能为空!'}
 
     if p_archive["sour_tab_name"] == '':
-       return {'code': '-1', 'message': '源数据库表名不能为空!'}
+        return {'code': '-1', 'message': '源数据库表名不能为空!'}
 
     if p_archive['archive_rentition'] == '2':
 
-        if p_archive["dest_db_server"]=='':
-           return {'code': '-1', 'message': '目标数据库实例不能为空!'}
+        if p_archive["dest_db_server"] == '':
+            return {'code': '-1', 'message': '目标数据库实例不能为空!'}
 
         if p_archive["dest_db_name"] == '':
-           return {'code': '-1', 'message': '目标数据库名称不能为空!'}
+            return {'code': '-1', 'message': '目标数据库名称不能为空!'}
 
         if p_archive["batch_size"] == '':
-           return {'code': '-1', 'message': '批大小不能为空!'}
+            return {'code': '-1', 'message': '批大小不能为空!'}
 
     if p_archive["python3_home"] == '':
-       return {'code': '-1', 'message': 'PYTHON3主目录不能为空!'}
+        return {'code': '-1', 'message': 'PYTHON3主目录不能为空!'}
 
     if p_archive["script_base"] == '':
-       return {'code': '-1', 'message': '归档主目录不能为空!'}
+        return {'code': '-1', 'message': '归档主目录不能为空!'}
 
     if p_archive["script_name"] == '':
         return {'code': '-1', 'message': '归档脚本名不能为空!'}
@@ -211,7 +219,8 @@ def check_archive(p_archive):
 
     return {'code': '0', 'message': '验证通过!'}
 
-def push_archive_task(p_tag,p_api):
+
+def push_archive_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
@@ -229,7 +238,7 @@ def push_archive_task(p_tag,p_api):
     return jres
 
 
-def run_archive_task(p_tag,p_api):
+def run_archive_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
@@ -238,11 +247,12 @@ def run_archive_task(p_tag,p_api):
     jres = res.json()
     return jres
 
-def stop_archive_task(p_tag,p_api):
+
+def stop_archive_task(p_tag, p_api):
     data = {
         'tag': p_tag,
     }
-    url  = 'http://{}/stop_script_remote_archive'.format(p_api)
-    res  = requests.post(url, data=data)
+    url = 'http://{}/stop_script_remote_archive'.format(p_api)
+    res = requests.post(url, data=data)
     jres = res.json()
     return jres

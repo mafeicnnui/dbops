@@ -4,13 +4,13 @@ import ssl
 import sys
 
 from tornado.options import define
-from webssh.policy import (
+from web.webssh.policy import (
     load_host_keys, get_policy_class, check_policy_setting
 )
-from webssh.utils import (
+from web.webssh.utils import (
     to_ip_address, parse_origin_from_url, is_valid_encoding
 )
-from webssh._version import __version__
+from web.webssh._version import __version__
 
 
 def print_version(flag):
@@ -18,9 +18,8 @@ def print_version(flag):
         print(__version__)
         sys.exit(0)
 
-
 define('address', default='', help='Listen address')
-define('port', type=int, default=65483,  help='Listen port')
+# define('port', type=int, default=65483,  help='Listen port')
 define('ssladdress', default='', help='SSL listen address')
 define('sslport', type=int, default=4433,  help='SSL listen port')
 define('certfile', default='', help='SSL certificate file')
@@ -31,11 +30,12 @@ define('policy', default='warning',
 define('hostfile', default='', help='User defined host keys file')
 define('syshostfile', default='', help='System wide host keys file')
 define('tdstream', default='', help='Trusted downstream, separated by comma')
-define('redirect', type=bool, defaultales=True, help='Redirecting http to https')
-define('fbidhttp', type=bool, default=False     help='Forbid public plain http incoming requests')
+define('redirect', type=bool, default=True, help='Redirecting http to https')
+define('fbidhttp', type=bool, default=True,
+       help='Forbid public plain http incoming requests')
 define('xheaders', type=bool, default=True, help='Support xheaders')
 define('xsrf', type=bool, default=True, help='CSRF protection')
-define('origin', default='same', help='''Origin policy,
+define('origin', default='primary', help='''Origin policy,
 'same': same origin policy, matches host name and port number;
 'primary': primary domain policy, matches primary domain only;
 '<domains>': custom domains policy, matches any domain in the <domains> list

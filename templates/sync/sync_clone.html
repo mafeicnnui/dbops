@@ -4,328 +4,343 @@
     <title>同步变更</title>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-6">
-       <form class="form-horizontal" role="form">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="sync_server" >
-                         {% for var in sync_server %}
-                               {%  if var[0]==server_id %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                         {% end %}
-                    </select>
-               </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源端数据库</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="sour_db_server" >
-                        {% for var in db_server %}
-                               {%  if var[0]==sour_db_server %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_desc_db_server">*</span>目标数据库</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="desc_db_server" >
-                        {% for var in db_server %}
-                               {%  if var[0]==desc_db_server %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_tag"  type="text" class="form-control" placeholder="请输入同步标识号" value="{{sync_tag}}">
-                </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>同步业务类型</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="sync_ywlx" >
-                        {% for var in dm_sync_ywlx %}
-                               {%  if var[0]==sync_ywlx %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>同步数据方向</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="sync_data_type" >
-                        {% for var in dm_sync_data_type %}
-                               {%  if var[0]==sync_data_type %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_script_base">*</span>同步主目录</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="script_base"  type="text" class="form-control" placeholder="请输入同步主目录" value="{{script_base}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_script_name">*</span>同步脚本名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="script_name"  type="text" class="form-control" placeholder="请输入备份脚本名" value="{{script_name}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="run_time"  type="text" class="form-control" placeholder="请输入备份运行时间" value="{{run_time}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="task_desc"  type="text" class="form-control"  placeholder="请输入任务描述" value="{{task_desc}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3主目录" value="{{python3_home}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_schema">*</span>同步数据库名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_schema"  type="text" class="form-control" placeholder="请输入同步数据库名" value="{{sync_schema}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">目标数据库名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_schema_dest"  type="text" class="form-control" placeholder="请输入目标数据库名"  value="{{sync_schema_dest}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_tables">*</span>同步表列表</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_tables"  type="text" class="form-control" placeholder="请输入同步表" value="{{sync_tables}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_batch_size">*</span>全量批大小</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_batch_size"  type="text" class="form-control" placeholder="请输入全量批大小" value="{{sync_batch_size}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_batch_size_incr">*</span>增量批大小</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_batch_size_incr"  type="text" class="form-control" placeholder="请输入增量批大小" value="{{sync_batch_size_incr}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_gap"  type="text" class="form-control" placeholder="请输入同步间隔"  value="{{sync_gap}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_col_name">*</span>新增列名</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_col_name"  type="text" class="form-control" placeholder="请输入新增列名" value="{{sync_col_name}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_col_val">*</span>新增列值</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="sync_col_val"  type="text" class="form-control" placeholder="请输入新增列值"  value="{{sync_col_val}}">
-                </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_time_type">*</span>同步时间类型</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="sync_time_type" >
-                        {% for var in dm_sync_time_type %}
-                               {%  if var[0]==sync_time_type %}
-                                  <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                               {% else %}
-                                   <option value={{var[0]}}>{{var[1]}}</option>
-                               {% end %}
-                        {% end %}
-                    </select>
-               </div>
-           </div>
-
-            <div class="form-group">
-               <div>
-                    <label class="col-md-2 control-label"><span id="s_sync_repair_day">*</span>同步修复天数</label>
-                </div>
-               <div class="col-md-10">
-                   <input id="sync_repair_day"  type="text" class="form-control" placeholder="请输入同步修复天数" value="{{sync_repair_day}}">
-               </div>
-           </div>
-
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="api_server"  type="text" class="form-control" placeholder="请输入API服务器" value="{{api_server}}">
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control select" id="status" name="status">
-                        {% if status=='1' %}
-                           <option value="1" selected = "selected">启用</option>
-                           <option value="0">禁用</option>
-                        {% end %}
-
-                        {% if status=='0' %}
-                            <option value='0' selected = "selected">禁用</option>
-                            <option value="1">启用</option>
-                        {% end %}
-                    </select>
-                </div>
+<p></p>
+<div class="col-md-6">
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
             </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="sync_server">
+                    {% for var in sync_server %}
+                    {% if var[0]==server_id %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-           <br>
-           <div class="form-group m-b-0">
-                <div class="col-sm-offset-6 col-sm-9">
-                  <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
-                  <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
-                </div>
-           </div>
-       </form>
-    </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源端数据库</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="sour_db_server">
+                    {% for var in db_server %}
+                    {% if var[0]==sour_db_server %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-    <script>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_desc_db_server">*</span>目标数据库</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="desc_db_server">
+                    {% for var in db_server %}
+                    {% if var[0]==desc_db_server %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-        $(document).ready(function() {
-            set_selected();
-        });
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_tag">*</span>同步标识号</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_tag" type="text" class="form-control" placeholder="请输入同步标识号"
+                       value="{{sync_tag}}">
+            </div>
+        </div>
 
-        $('#return').on('click', function() {
-           $('#main-container-div').load('/sync/change');
-        });
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_ywlx">*</span>同步业务类型</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="sync_ywlx">
+                    {% for var in dm_sync_ywlx %}
+                    {% if var[0]==sync_ywlx %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-        $("#db_server").bind("input propertychange",function(){
-            $("#task_desc").val($("#db_server").find("option:selected").text()+'备份')
-        });
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_data_type">*</span>同步数据方向</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="sync_data_type">
+                    {% for var in dm_sync_data_type %}
+                    {% if var[0]==sync_data_type %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-        $("#save").click(function () {
-          console.log(" status:",$('#status').val())
-          $.ajax({
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_script_base">*</span>同步主目录</label>
+            </div>
+            <div class="col-md-10">
+                <input id="script_base" type="text" class="form-control" placeholder="请输入同步主目录"
+                       value="{{script_base}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_script_name">*</span>同步脚本名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="script_name" type="text" class="form-control" placeholder="请输入备份脚本名"
+                       value="{{script_name}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_run_time">*</span>运行时间</label>
+            </div>
+            <div class="col-md-10">
+                <input id="run_time" type="text" class="form-control" placeholder="请输入备份运行时间"
+                       value="{{run_time}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_task_desc">*</span>任务描述</label>
+            </div>
+            <div class="col-md-10">
+                <input id="task_desc" type="text" class="form-control" placeholder="请输入任务描述"
+                       value="{{task_desc}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_python3_home">*</span>PYTHON3主目录</label>
+            </div>
+            <div class="col-md-10">
+                <input id="python3_home" type="text" class="form-control" placeholder="请输入PYTHON3主目录"
+                       value="{{python3_home}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_schema">*</span>同步数据库名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_schema" type="text" class="form-control" placeholder="请输入同步数据库名"
+                       value="{{sync_schema}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">目标数据库名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_schema_dest" type="text" class="form-control" placeholder="请输入目标数据库名"
+                       value="{{sync_schema_dest}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_tables">*</span>同步表列表</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_tables" type="text" class="form-control" placeholder="请输入同步表"
+                       value="{{sync_tables}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_batch_size">*</span>全量批大小</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_batch_size" type="text" class="form-control" placeholder="请输入全量批大小"
+                       value="{{sync_batch_size}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_batch_size_incr">*</span>增量批大小</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_batch_size_incr" type="text" class="form-control" placeholder="请输入增量批大小"
+                       value="{{sync_batch_size_incr}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_gap">*</span>同步间隔</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_gap" type="text" class="form-control" placeholder="请输入同步间隔" value="{{sync_gap}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_col_name">*</span>新增列名</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_col_name" type="text" class="form-control" placeholder="请输入新增列名"
+                       value="{{sync_col_name}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_col_val">*</span>新增列值</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_col_val" type="text" class="form-control" placeholder="请输入新增列值"
+                       value="{{sync_col_val}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_time_type">*</span>同步时间类型</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="sync_time_type">
+                    {% for var in dm_sync_time_type %}
+                    {% if var[0]==sync_time_type %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_sync_repair_day">*</span>同步修复天数</label>
+            </div>
+            <div class="col-md-10">
+                <input id="sync_repair_day" type="text" class="form-control" placeholder="请输入同步修复天数"
+                       value="{{sync_repair_day}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_api_server">*</span>API服务器</label>
+            </div>
+            <div class="col-md-10">
+                <input id="api_server" type="text" class="form-control" placeholder="请输入API服务器"
+                       value="{{api_server}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span id="s_status">*</span>任务状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    {% if status=='1' %}
+                    <option value="1" selected="selected">启用</option>
+                    <option value="0">禁用</option>
+                    {% end %}
+
+                    {% if status=='0' %}
+                    <option value='0' selected="selected">禁用</option>
+                    <option value="1">启用</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+
+        <br>
+        <div class="form-group m-b-0">
+            <div class="col-sm-offset-6 col-sm-9">
+                <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
+                <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        set_selected();
+    });
+
+    $('#return').on('click', function () {
+        $('#main-container-div').load('/sync/change');
+    });
+
+    $("#db_server").bind("input propertychange", function () {
+        $("#task_desc").val($("#db_server").find("option:selected").text() + '备份')
+    });
+
+    $("#save").click(function () {
+        console.log(" status:", $('#status').val())
+        $.ajax({
             url: "/sync/clone/save",
             type: "post",
             datatype: "json",
             data: {
-                    sync_server          : $('#sync_server').val(),
-                    sour_db_server       : $('#sour_db_server').val(),
-                    desc_db_server       : $('#desc_db_server').val(),
-                    sync_tag             : $('#sync_tag').val(),
-                    sync_ywlx            : $('#sync_ywlx').val(),
-                    sync_data_type       : $('#sync_data_type').val(),
-                    script_base          : $('#script_base').val(),
-                    script_name          : $('#script_name').val(),
-                    run_time             : $('#run_time').val(),
-                    task_desc            : $('#task_desc').val(),
-                    python3_home         : $('#python3_home').val(),
-                    sync_schema          : $('#sync_schema').val(),
-                    sync_schema_dest     : $('#sync_schema_dest').val(),
-                    sync_tables          : $('#sync_tables').val(),
-                    sync_batch_size      : $('#sync_batch_size').val(),
-                    sync_batch_size_incr : $('#sync_batch_size_incr').val(),
-                    sync_gap             : $('#sync_gap').val(),
-                    sync_col_name        : $('#sync_col_name').val(),
-                    sync_col_val         : $('#sync_col_val').val(),
-                    sync_time_type       : $('#sync_time_type').val(),
-                    sync_repair_day      : $('#sync_repair_day').val(),
-                    api_server           : $('#api_server').val(),
-                    status               : $('#status').val()
+                sync_server: $('#sync_server').val(),
+                sour_db_server: $('#sour_db_server').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                sync_tag: $('#sync_tag').val(),
+                sync_ywlx: $('#sync_ywlx').val(),
+                sync_data_type: $('#sync_data_type').val(),
+                script_base: $('#script_base').val(),
+                script_name: $('#script_name').val(),
+                run_time: $('#run_time').val(),
+                task_desc: $('#task_desc').val(),
+                python3_home: $('#python3_home').val(),
+                sync_schema: $('#sync_schema').val(),
+                sync_schema_dest: $('#sync_schema_dest').val(),
+                sync_tables: $('#sync_tables').val(),
+                sync_batch_size: $('#sync_batch_size').val(),
+                sync_batch_size_incr: $('#sync_batch_size_incr').val(),
+                sync_gap: $('#sync_gap').val(),
+                sync_col_name: $('#sync_col_name').val(),
+                sync_col_val: $('#sync_col_val').val(),
+                sync_time_type: $('#sync_time_type').val(),
+                sync_repair_day: $('#sync_repair_day').val(),
+                api_server: $('#api_server').val(),
+                status: $('#status').val()
             },
             success: function (dataSet) {
                 console.log(dataSet.code, dataSet.message);
-                if (dataSet.code==0) {
-                   swal("克隆成功", "", "success")
+                if (dataSet.code == 0) {
+                    swal("克隆成功", "", "success")
                 } else {
-                   swal(dataSet.message, "", "error")
+                    swal(dataSet.message, "", "error")
                 }
             },
-         });
-      });
+        });
+    });
 
-   </script>
+</script>
 </body>
 
 </html>

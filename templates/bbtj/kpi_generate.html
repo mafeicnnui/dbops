@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <title>KPI报表生成</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
+
         table.datatable tr th, table.datatable tr td {
             white-space: nowrap;
         }
@@ -14,463 +15,484 @@
     </style>
 </head>
 <body>
-     <p></p>
-     <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
-                <span class="input-group-addon">任务描述</span>
-                <input  id="task"  type="text" class="form-control"  placeholder="请输入任务描述">
-             </div>
-         </div>
-         <div class="col-md-1">
-           <div class="input-group">
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">任务描述</span>
+            <input id="task" type="text" class="form-control" placeholder="请输入任务描述">
+        </div>
+    </div>
+    <div class="col-md-1">
+        <div class="input-group">
                   <span class="input-group-btn">
-                    <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                    <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                            class="fa fa-search"></i></button>
                   </span>
-            </div>
-          </div>
+        </div>
+    </div>
 
-      </div>
-     <p></p>
-     <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-         </div>
-     </div>
-      <div class="row">
-            <div class="form-group m-b-0 text-center">
-               <button type="button"  id='add_task_btn' class="btn waves-effect waves-light btn-primary" >新增</button>
-           </div>
-      </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                   width="100%" height="100%"></table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group m-b-0 text-center">
+        <button type="button" id='add_task_btn' class="btn waves-effect waves-light btn-primary">新增</button>
+    </div>
+</div>
 
-   <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-sm">
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">正在查询中，请稍候...</h4>
             </div>
         </div>
-     </div>
-   </div>
+    </div>
+</div>
 
-    <!--新增窗口 -->
-   <div id="con-modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-detail">
+<!--新增窗口 -->
+<div id="con-modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">KPI任务新增</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                         <div class="row">
-                               <div class="form-group" >
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                                <div class="form-group">
                                     <div>
-                                        <span class="col-md-3 control-label" ><span id="s_add_kpi_tag">*</span>任务标识</span>
+                                        <span class="col-md-3 control-label"><span
+                                                id="s_add_kpi_tag">*</span>任务标识</span>
                                     </div>
-                                    <div class="col-md-9" >
-                                        <input type="text" id="add_kpi_tag"  readonly class="form-control">
-                                   </div>
+                                    <div class="col-md-9">
+                                        <input type="text" id="add_kpi_tag" readonly class="form-control">
+                                    </div>
                                 </div>
-                         </div>
-                         <div class="row">
-                               <div class="form-group">
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
                                     <div>
                                         <span class="col-md-3 control-label"><span id="s_add_server_id">*</span>运行服务器</span>
                                     </div>
-                                   <div class="col-md-9">
-                                        <select class="form-control select" id="add_server_id" >
-                                            <option value='' selected = "selected">......</option>
+                                    <div class="col-md-9">
+                                        <select class="form-control select" id="add_server_id">
+                                            <option value='' selected="selected">......</option>
                                             {% for var in sync_server %}
-                                             <option value={{var[0]}} >{{var[1]}}</option>
+                                            <option value={{var[0]}}>{{var[1]}}</option>
                                             {% end %}
                                         </select>
-                                   </div>
-                               </div>
-                         </div>
-                         <div class="row">
-                             <div class="form-group">
-                                <div>
-                                   <span class="col-md-3 control-label" ><span id="s_add_bbrq">*</span>报表月</span>
-                                </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="add_bbrq"  readonly class="form-control datepicker_kpi" placeholder="请选择报表月">
-                                </div>
-                           </div>
-                         </div>
-                         <div class="row">
-                             <div class="form-group">
-                                 <div>
-                                     <span class="col-md-3 control-label"><span id="s_add_begin_time">*</span>开始时间</span>
-                                 </div>
-                                 <div class="col-md-9" >
-                                    <input id="add_begin_time"  type="text" readonly class="form-control datetimepicker"  placeholder="请选择开始时间">
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="row">
-                             <div class="form-group">
-                              <div>
-                                 <span class="col-md-3 control-label"><span id="s_add_end_time">*</span>结束时间</span>
-                              </div>
-                              <div class="col-md-9" >
-                                 <input  id="add_end_time"  type="text" readonly class="form-control datetimepicker"  placeholder="请选择结束时间">
-                              </div>
-                             </div>
-                         </div>
-                         <div class="row">
-                               <div class="form-group" >
-                                    <div>
-                                        <label class="col-md-3 control-label" ><span id="s_add_task_desc">*</span>任务描述：</label>
                                     </div>
-                                    <div class="col-md-9" >
-                                        <input type="text" id="add_task_desc"  readonly class="form-control">
-                                   </div>
                                 </div>
-                         </div>
-                         <div class="row">
-                               <div class="form-group">
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div>
+                                        <span class="col-md-3 control-label"><span id="s_add_bbrq">*</span>报表月</span>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" id="add_bbrq" readonly class="form-control datepicker_kpi"
+                                               placeholder="请选择报表月">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div>
+                                        <span class="col-md-3 control-label"><span id="s_add_begin_time">*</span>开始时间</span>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input id="add_begin_time" type="text" readonly
+                                               class="form-control datetimepicker" placeholder="请选择开始时间">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div>
+                                        <span class="col-md-3 control-label"><span id="s_add_end_time">*</span>结束时间</span>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input id="add_end_time" type="text" readonly
+                                               class="form-control datetimepicker" placeholder="请选择结束时间">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div>
+                                        <label class="col-md-3 control-label"><span id="s_add_task_desc">*</span>任务描述：</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" id="add_task_desc" readonly class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
                                     <div>
                                         <label class="col-md-3 control-label"><span id="s_add_python3_home">*</span>PYTHON3目录</label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input id="add_python3_home"  type="text" class="form-control" placeholder="请输入PYTHON3主目录">
+                                        <input id="add_python3_home" type="text" class="form-control"
+                                               placeholder="请输入PYTHON3主目录">
                                     </div>
-                               </div>
-                         </div>
-                         <div class="row">
-                               <div class="form-group">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
                                     <div>
                                         <label class="col-md-3 control-label"><span id="s_add_script_path">*</span>脚本目录</label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input id="add_script_path"  type="text" class="form-control" placeholder="请输入脚本目录">
+                                        <input id="add_script_path" type="text" class="form-control"
+                                               placeholder="请输入脚本目录">
                                     </div>
-                               </div>
-                           </div>
-                         <div class="row">
-                               <div class="form-group">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
                                     <div>
                                         <label class="col-md-3 control-label"><span id="s_add_script_file">*</span>脚本名称</label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input id="add_script_file"  type="text" class="form-control" placeholder="请输入同步脚本名">
+                                        <input id="add_script_file" type="text" class="form-control"
+                                               placeholder="请输入同步脚本名">
                                     </div>
-                               </div>
+                                </div>
                             </div>
-                         <div class="row">
-                               <div class="form-group">
+                            <div class="row">
+                                <div class="form-group">
                                     <div>
                                         <label class="col-md-3 control-label"><span id="s_add_run_time">*</span>运行时间</label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input id="add_run_time"  type="text" class="form-control" placeholder="请输入运行时间">
+                                        <input id="add_run_time" type="text" class="form-control"
+                                               placeholder="请输入运行时间">
                                     </div>
-                               </div>
-                             </div>
+                                </div>
+                            </div>
 
-                      </form>
-                   </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                        <div class="col-sm-offset-3 col-sm-4">
-                           <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="add_task" >新增</button>
-                           <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                        </div>
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="add_task">
+                            新增
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
             </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-   <!--编辑窗口 -->
-   <div id="con-modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-       <div class="modal-dialog modal-lg-detail">
+<!--编辑窗口 -->
+<div id="con-modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">数据录入</h4>
             </div>
             <div class="modal-body">
-               <div class="panel panel-flat">
+                <div class="panel panel-flat">
                     <div class="panel-body">
-                      <form class="form-horizontal" role="form">
-                           <input type="hidden" id="edit_market_id">
-                           <input type="hidden" id="edit_item_code">
-                           <input type="hidden" id="edit_item_type">
-<!--                           <input type="hidden" id="edit_item_if_stat">-->
+                        <form class="form-horizontal" role="form">
+                            <input type="hidden" id="edit_market_id">
+                            <input type="hidden" id="edit_item_code">
+                            <input type="hidden" id="edit_item_type">
+                            <!--                           <input type="hidden" id="edit_item_if_stat">-->
 
-                           <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" >报表月：</label>
+                                    <label class="col-md-3 control-label">报表月：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_month"  readonly class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_month" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" >项目名称：</label>
+                                    <label class="col-md-3 control-label">项目名称：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_market_name"  readonly class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_market_name" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" >指标名称：</label>
+                                    <label class="col-md-3 control-label">指标名称：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_item_name"  readonly  class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_item_name" readonly class="form-control">
+                                </div>
                             </div>
-                            <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" ><span id="s_edit_month_value">*</span>月度完成：</label>
+                                    <label class="col-md-3 control-label"><span id="s_edit_month_value">*</span>月度完成：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_month_value"  class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_month_value" class="form-control">
+                                </div>
                             </div>
-                           <div class="form-group" >
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label" ><span id="s_edit_sum_value">*</span>年度完成：</label>
+                                    <label class="col-md-3 control-label"><span id="s_edit_sum_value">*</span>年度完成：</label>
                                 </div>
-                                <div class="col-md-9" >
-                                    <input type="text" id="edit_sum_value"  class="form-control">
-                               </div>
+                                <div class="col-md-9">
+                                    <input type="text" id="edit_sum_value" class="form-control">
+                                </div>
                             </div>
-                   </form>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-sm-offset-3 col-sm-4">
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                id="upd_item_value">变更
+                        </button>
+                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                data-dismiss="modal">关闭
+                        </button>
+                    </div>
                 </div>
             </div>
-               <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="upd_item_value" >变更</button>
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
-               </div>
-            </div>
-         </div>
-      </div>
-     </div>
+        </div>
+    </div>
+</div>
 
-   <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
-   <script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
+<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+<script src="{{static_url('assets/pages/jquery.form-datetime-pickers.init.js')}}"></script>
 <!--   <script src="{{static_url('assets/js/utils.js')}}"></script>-->
 
-   <script>
-         $(document).keydown(function(event){
-            if (event.keyCode == 13) {
-                $("#query_btn").click();
-            }
-         });
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) {
+            $("#query_btn").click();
+        }
+    });
 
-          function set_selected(){
-             document.all['s_edit_month_value'].style.color="#ff0000";
-             document.all['s_edit_sum_value'].style.color="#ff0000";
-          }
+    function set_selected() {
+        document.all['s_edit_month_value'].style.color = "#ff0000";
+        document.all['s_edit_sum_value'].style.color = "#ff0000";
+    }
 
-          $('#month').change(function(){
-              $("#query_btn").click();
-          })
+    $('#month').change(function () {
+        $("#query_btn").click();
+    })
 
-          $('#market_id').change(function(){
-              $("#query_btn").click();
-          })
-
-
-         function centerModals() {
-              $('.modal').each(function(i) {
-                var $clone = $(this).clone().css('display', 'block').appendTo('body');
-                var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
-                top = top > 50 ? top : 0;
-                $clone.remove();
-                $(this).find('.modal-content').css("margin-top", top - 50);
-              });
-         }
+    $('#market_id').change(function () {
+        $("#query_btn").click();
+    })
 
 
-          $('#add_task_btn').on('click',function () {
-             $('.modal').on('show.bs.modal', centerModals);
-             $(window).on('resize', centerModals);
-             $('#con-modal-add').modal({
-                   keyboard: false,
-                   backdrop:false
-             });
-         })
+    function centerModals() {
+        $('.modal').each(function (i) {
+            var $clone = $(this).clone().css('display', 'block').appendTo('body');
+            var top = Math.round(($clone.height() - $clone.find('.modal-content').height()) / 2);
+            top = top > 50 ? top : 0;
+            $clone.remove();
+            $(this).find('.modal-content').css("margin-top", top - 50);
+        });
+    }
 
-        $(document).ready(function() {
-            set_selected();
-            $('#month').val(GetDate(4))
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/bbtj/kpi/_create",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                     task  : $('#task').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          ordering   :false,
-                          async      :true,
-                          scrollY    :false,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     :false,
-                          iDisplayLength: 16,
-                          data: dataSet,
-                          columns: [
-                            { "title": "任务描述"},
-                            { "title": "任务标识"},
-                            { "title": "报表月"},
-                            { "title": "开始时间" },
-                            { "title": "结束时间" },
-                            { "title": "运行时间" },
-                            { "title": "任务状态" },
-                          ],
-                          "language": {
-                                 "search"       : "在表格中搜索:",
-                                 "sProcessing"  : "处理中...",
-                                 "sLengthMenu"  : "显示 _MENU_ 项结果",
-                                 "sZeroRecords" : "没有匹配结果",
-                                 "sInfo"        : "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-                                 "sInfoEmpty"   : "显示第 0 至 0 项结果，共 0 项",
-                                 "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
-                                 "sInfoPostFix" : "",
-                                 "sSearch"      : "搜索:",
-                                 "sUrl"         : "",
-                                 "sEmptyTable"  : "表中数据为空",
-                                 "sLoadingRecords": "载入中...",
-                                 "sInfoThousands": ",",
-                                 "oPaginate": {
-                                     "sFirst"   : "首页",
-                                     "sPrevious": "上页",
-                                     "sNext"    : "下页",
-                                     "sLast"    : "末页"
-                                 },
-                                 "oAria": {
-                                     "sSortAscending" : ": 以升序排列此列",
-                                     "sSortDescending": ": 以降序排列此列"
-                                 }
-                             }
-                      });
-                 },
-                 error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status==403){
+
+    $('#add_task_btn').on('click', function () {
+        $('.modal').on('show.bs.modal', centerModals);
+        $(window).on('resize', centerModals);
+        $('#con-modal-add').modal({
+            keyboard: false,
+            backdrop: false
+        });
+    })
+
+    $(document).ready(function () {
+        set_selected();
+        $('#month').val(GetDate(4))
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/bbtj/kpi/_create",
+                type: "post",
+                datatype: "json",
+                data: {
+                    task: $('#task').val(),
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        ordering: false,
+                        async: true,
+                        scrollY: false,
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: false,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "任务描述"},
+                            {"title": "任务标识"},
+                            {"title": "报表月"},
+                            {"title": "开始时间"},
+                            {"title": "结束时间"},
+                            {"title": "运行时间"},
+                            {"title": "任务状态"},
+                        ],
+                        "language": {
+                            "search": "在表格中搜索:",
+                            "sProcessing": "处理中...",
+                            "sLengthMenu": "显示 _MENU_ 项结果",
+                            "sZeroRecords": "没有匹配结果",
+                            "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                            "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                            "sInfoPostFix": "",
+                            "sSearch": "搜索:",
+                            "sUrl": "",
+                            "sEmptyTable": "表中数据为空",
+                            "sLoadingRecords": "载入中...",
+                            "sInfoThousands": ",",
+                            "oPaginate": {
+                                "sFirst": "首页",
+                                "sPrevious": "上页",
+                                "sNext": "下页",
+                                "sLast": "末页"
+                            },
+                            "oAria": {
+                                "sSortAscending": ": 以升序排列此列",
+                                "sSortDescending": ": 以降序排列此列"
+                            }
+                        }
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status == 403) {
                         swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
+                        window.location.href = '/login'
+                    } else if (jqXHR.status == 502) {
                         swal("用户无权访问权限此功能!", "", "error")
                     } else {
                         swal("系统不可用,请稍后重试!", "", "error")
                     }
                 }
-             });
             });
+        });
 
-            $("#upd_btn").click(function() {
+        $("#upd_btn").click(function () {
 
-              if($('#month').val()=='') {
-                  swal("报表月不能为空!", "", "error")
-                  return false;
-              }
+            if ($('#month').val() == '') {
+                swal("报表月不能为空!", "", "error")
+                return false;
+            }
 
-              $.ajax({
-                  url: "/bbtj/kpi/_update",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      month   : $('#month').val(),
-                      market_id   : $('#market_id').val()
-                  },
-                 beforeSend: function () {
-                     $('.modal').on('show.bs.modal', centerModals);
-                     $(window).on('resize', centerModals);
-                     $('#con-close-modal').modal({ keyboard: false,backdrop:false});
-                  },
-                  success: function (dataSet) {
-                    if (dataSet.code=='0') {
-                        swal("已更新!", $('#month').val()+"月-KPI报表更新完成!", "success");
+            $.ajax({
+                url: "/bbtj/kpi/_update",
+                type: "post",
+                datatype: "json",
+                data: {
+                    month: $('#month').val(),
+                    market_id: $('#market_id').val()
+                },
+                beforeSend: function () {
+                    $('.modal').on('show.bs.modal', centerModals);
+                    $(window).on('resize', centerModals);
+                    $('#con-close-modal').modal({keyboard: false, backdrop: false});
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("已更新!", $('#month').val() + "月-KPI报表更新完成!", "success");
                         $("#query_btn").click();
                     } else {
-                        swal("更新失败!", $('#month').val()+"月-KPI报表更新失败!\n"+dataSet.message, "error");
+                        swal("更新失败!", $('#month').val() + "月-KPI报表更新失败!\n" + dataSet.message, "error");
                     }
-                 },
-                 complete: function () {
-                      $('#con-close-modal').modal('hide');
-                 },
-                 error: function (jqXHR) {
-                    if (jqXHR.status==403){
+                },
+                complete: function () {
+                    $('#con-close-modal').modal('hide');
+                },
+                error: function (jqXHR) {
+                    if (jqXHR.status == 403) {
                         swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
+                        window.location.href = '/login'
+                    } else if (jqXHR.status == 502) {
                         swal("用户无权访问权限此功能!", "", "error")
                     } else {
                         swal("系统不可用,请稍后重试!", "", "error")
                     }
                 }
-             });
             });
+        });
 
-            $("#query_btn").click();
+        $("#query_btn").click();
 
-            $("#upd_item_value").click(function() {
+        $("#upd_item_value").click(function () {
 
-              if ($('#edit_item_type')=='当月考核') {
-                if ($('#edit_month_value').val()=='') {
-                  swal("月度完成不能为空!", "", "error")
-                  return false;
-                 }
-              }
+            if ($('#edit_item_type') == '当月考核') {
+                if ($('#edit_month_value').val() == '') {
+                    swal("月度完成不能为空!", "", "error")
+                    return false;
+                }
+            }
 
-              if ($('#edit_item_type')=='累计考核') {
-                 if ($('#edit_sum_value').val() == '') {
-                     swal("累计完成不能为空!", "", "error")
-                     return false;
-                 }
-             }
+            if ($('#edit_item_type') == '累计考核') {
+                if ($('#edit_sum_value').val() == '') {
+                    swal("累计完成不能为空!", "", "error")
+                    return false;
+                }
+            }
 
-              $.ajax({
-                  url: "/bbtj/kpi/item/data/_update",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                       month       : $('#edit_month').val(),
-                       market_id   : $('#edit_market_id').val(),
-                       item_code   : $('#edit_item_code').val(),
-                       item_month_value  : $('#edit_month_value').val(),
-                       item_sum_value  : $('#edit_sum_value').val(),
-                  },
-                  success: function (dataSet) {
-                        if (dataSet.code=='0') {
-                            swal("已更新!", "更新完成!", "success");
-                            $("#query_btn").click();
-                        } else {
-                            swal("更新失败!", "更新失败!"+dataSet.message+"!", "error");
-                        }
-                  },
-                  error: function (jqXHR) {
-                    if (jqXHR.status==403){
+            $.ajax({
+                url: "/bbtj/kpi/item/data/_update",
+                type: "post",
+                datatype: "json",
+                data: {
+                    month: $('#edit_month').val(),
+                    market_id: $('#edit_market_id').val(),
+                    item_code: $('#edit_item_code').val(),
+                    item_month_value: $('#edit_month_value').val(),
+                    item_sum_value: $('#edit_sum_value').val(),
+                },
+                success: function (dataSet) {
+                    if (dataSet.code == '0') {
+                        swal("已更新!", "更新完成!", "success");
+                        $("#query_btn").click();
+                    } else {
+                        swal("更新失败!", "更新失败!" + dataSet.message + "!", "error");
+                    }
+                },
+                error: function (jqXHR) {
+                    if (jqXHR.status == 403) {
                         swal("登陆信息已过期，请重新登陆!", "", "error")
-                        window.location.href='/login'
-                    } else if (jqXHR.status==502){
+                        window.location.href = '/login'
+                    } else if (jqXHR.status == 502) {
                         swal("用户无权访问权限此功能!", "", "error")
                     } else {
                         swal("系统不可用,请稍后重试!", "", "error")
                     }
                 }
-             });
+            });
         });
 
-        });
+    });
 
-   </script>
+</script>
 </body>
 
 </html>

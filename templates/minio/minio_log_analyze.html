@@ -1,154 +1,157 @@
-  <head>
-        <meta charset="utf-8">
- </head>
- <body>
-    <br>
-    <div class="container">
-      <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
-                <span class="input-group-addon">任务</span>
-                <select class="form-control select" id="tagname" >
-                        <option value='' selected = "selected">请选择任务..</option>
-                        {% for var in minio_tags %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">备份日期起</span>
-              <input  id="begin_date"  type="text" class="form-control datepicker" placeholder="备份时间起" value="{{begin_date}}">
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-            </div>
-         </div>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<br>
+<div class="container">
+    <div class="row">
         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">备份日期止</span>
-              <input  id="end_date"  type="text" class="form-control datepicker" placeholder="备份时间止" value="{{end_date}}" >
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            <div class="input-group">
+                <span class="input-group-addon">任务</span>
+                <select class="form-control select" id="tagname">
+                    <option value='' selected="selected">请选择任务..</option>
+                    {% for var in minio_tags %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">备份日期起</span>
+                <input id="begin_date" type="text" class="form-control datepicker" placeholder="备份时间起"
+                       value="{{begin_date}}">
+                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">备份日期止</span>
+                <input id="end_date" type="text" class="form-control datepicker" placeholder="备份时间止"
+                       value="{{end_date}}">
+                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
             </div>
         </div>
         <div class="col-md-1">
-             <div class="input-group">
+            <div class="input-group">
               <span class="input-group-btn">
-                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                        class="fa fa-search"></i></button>
               </span>
             </div>
         </div>
-      </div>
     </div>
-    <p></p>
+</div>
+<p></p>
 
-    <div id='minio-container' class="container">
-        <div class="row">
-             <div class="col-lg-12">
-                <div class="card-box">
-                    <h6 class="header-title m-t-0"><small>下载时长[秒]</small></h6>
-                    <div id="minio-download" style="height: 280px;"></div>
-                </div>
+<div id='minio-container' class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card-box">
+                <h6 class="header-title m-t-0"><small>下载时长[秒]</small></h6>
+                <div id="minio-download" style="height: 280px;"></div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card-box">
-                    <h6 class="header-title m-t-0"><small>上传时长[秒]</small></h6>
-                    <div id="minio-upload" style="height: 280px;"></div>
-                </div>
-            </div>
-       </div>
-
-       <div class="row">
-            <div class="col-lg-12">
-                <div class="card-box">
-                    <h6 class="header-title m-t-0"><small>文件数量[个]</small></h6>
-                    <div id="minio-file" style="height: 280px;"></div>
-                </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card-box">
+                <h6 class="header-title m-t-0"><small>上传时长[秒]</small></h6>
+                <div id="minio-upload" style="height: 280px;"></div>
             </div>
         </div>
-
     </div>
 
-    <script>
-         $(document).ready(function() {
-              $('#minio-container').hide();
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card-box">
+                <h6 class="header-title m-t-0"><small>文件数量[个]</small></h6>
+                <div id="minio-file" style="height: 280px;"></div>
+            </div>
+        </div>
+    </div>
 
-              $('#begin_date').attr("readonly", "readonly");
-              $('#end_date').attr("readonly", "readonly");
+</div>
 
-              $("#query_btn").click(function() {
+<script>
+    $(document).ready(function () {
+        $('#minio-container').hide();
 
-                if ($('#tagname').val()==''){
-                    swal("请选择同步任务!", "", "info");
-                    return false;
-                }
+        $('#begin_date').attr("readonly", "readonly");
+        $('#end_date').attr("readonly", "readonly");
 
-                if ($('#begin_date').val()==''){
-                    swal("请输入备份日期起!", "", "info");
-                    return false;
-                }
+        $("#query_btn").click(function () {
 
-                if ($('#end_date').val()==''){
-                    swal("请输入备份日期止!", "", "info");
-                    return false;
-                }
+            if ($('#tagname').val() == '') {
+                swal("请选择同步任务!", "", "info");
+                return false;
+            }
 
-                $.ajax({
-                      url: "/minio/log/_analyze",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          tagname    : $('#tagname').val(),
-                          begin_date : $('#begin_date').val(),
-                          end_date   : $('#end_date').val(),
-                      },
-                      success: function (dataSet) {
-                         $('#minio-download').html('')
-                         $('#minio-upload').html('')
-                         $('#minio-file').html('')
-                         $('#minio-container').show()
+            if ($('#begin_date').val() == '') {
+                swal("请输入备份日期起!", "", "info");
+                return false;
+            }
 
-                         var $bar_minio_download = new Array(dataSet['data1'].length);
-                         var $bar_minio_upload   = new Array(dataSet['data2'].length);
-                         var $bar_minio_file     = new Array(dataSet['data3'].length);
+            if ($('#end_date').val() == '') {
+                swal("请输入备份日期止!", "", "info");
+                return false;
+            }
 
-                         for (i=0;i<dataSet['data1'].length;i++){
-                             $bar_minio_download[i]={'y':dataSet['data1'][i][0],'a':dataSet['data1'][i][1]}
-                         }
+            $.ajax({
+                url: "/minio/log/_analyze",
+                type: "post",
+                datatype: "json",
+                data: {
+                    tagname: $('#tagname').val(),
+                    begin_date: $('#begin_date').val(),
+                    end_date: $('#end_date').val(),
+                },
+                success: function (dataSet) {
+                    $('#minio-download').html('')
+                    $('#minio-upload').html('')
+                    $('#minio-file').html('')
+                    $('#minio-container').show()
 
-                         for (i=0;i<dataSet['data2'].length;i++){
-                             $bar_minio_upload[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1]}
-                         }
+                    var $bar_minio_download = new Array(dataSet['data1'].length);
+                    var $bar_minio_upload = new Array(dataSet['data2'].length);
+                    var $bar_minio_file = new Array(dataSet['data3'].length);
 
-                         for (i=0;i<dataSet['data3'].length;i++){
-                             $bar_minio_file[i]={'y':dataSet['data3'][i][0],'a':dataSet['data3'][i][1]}
-                         }
-                         createBarChart('minio-download',  $bar_minio_download, 'y', ['a'], ['下载时长'], ['#59aed5'],'');
-                         createBarChart('minio-upload',  $bar_minio_upload, 'y', ['a'], ['上传时长'], ['#59aed5'],'');
-                         createBarChart('minio-file',  $bar_minio_file, 'y', ['a'], ['文件数量'], ['#59aed5'],'');
+                    for (i = 0; i < dataSet['data1'].length; i++) {
+                        $bar_minio_download[i] = {'y': dataSet['data1'][i][0], 'a': dataSet['data1'][i][1]}
+                    }
 
-                      },
-                 });
+                    for (i = 0; i < dataSet['data2'].length; i++) {
+                        $bar_minio_upload[i] = {'y': dataSet['data2'][i][0], 'a': dataSet['data2'][i][1]}
+                    }
 
-              });
+                    for (i = 0; i < dataSet['data3'].length; i++) {
+                        $bar_minio_file[i] = {'y': dataSet['data3'][i][0], 'a': dataSet['data3'][i][1]}
+                    }
+                    createBarChart('minio-download', $bar_minio_download, 'y', ['a'], ['下载时长'], ['#59aed5'], '');
+                    createBarChart('minio-upload', $bar_minio_upload, 'y', ['a'], ['上传时长'], ['#59aed5'], '');
+                    createBarChart('minio-file', $bar_minio_file, 'y', ['a'], ['文件数量'], ['#59aed5'], '');
 
-              $("#query_btn").click();
-          })
+                },
+            });
 
-         $("#tagname").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
+        });
 
-         $("#begin_date").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
+        $("#query_btn").click();
+    })
 
-         $("#end_date").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
+    $("#tagname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#begin_date").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#end_date").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
 
-    </script>
+</script>
 
- </body>
+</body>

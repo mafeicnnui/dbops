@@ -1,0 +1,165 @@
+<html>
+<head>
+    <title>文件上传</title>
+    <style>
+        .table th {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        .jFiler-theme-default .jFiler-input {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<p></p>
+<form class="form-horizontal" action="" method="POST" enctype="multipart/form-data" id="upload_form">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>服务器:</label>
+            </div>
+            <div class="col-md-10">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="serverid">
+                    <option value='' selected="selected">...</option>
+                    {% for var in servers %}
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" id='upload_btn' class="btn waves-effect waves-light btn-primary">上传</button>
+            <button type="button" id='ret_btn' class="btn waves-effect waves-light btn-primary">重置</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>目录名:</label>
+            </div>
+            <div class="col-md-10">
+               <input id="path_name" name="path_name" type="text" class="form-control" placeholder="请输入上传路径">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>文件名</label>
+            </div>
+            <div class="col-md-10" id="filesnames">
+                <input type="file" name="files[]" width=100% id="filer_upload" multiple="multiple">
+            </div>
+        </div>
+    </div>
+</form>
+
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="upload_table" class="table table-striped table-bordered dt-responsive nowrap"  cellspacing="0"></table>
+        </div>
+    </div>
+</div>
+<br>
+</body>
+
+<script>
+    $(document).ready(function () {
+        set_selected();
+        $("#serverid").selectpicker('refresh')
+        $("#upload_btn").click(function () {
+            $('#upload_btn').attr("disabled", true);
+            if ($("#serverid").val() == '') {
+                swal("服务器不能为空!", "", "error")
+                return
+            }
+            if ($("#path_name").val() == '') {
+                swal("路径不能为空!", "", "error")
+                return
+            }
+            if ($("#filer_upload").get(0).files.length > 0) {
+                var fd = new FormData();
+                var files = $("#filer_upload").get(0).files;
+                for (i= 0; i < files.length; i++) {
+                    fd.append("file", files[i]);
+                }
+                fd.append("token", window.localStorage.getItem("token"));
+                fd.append("path_name", $("#path_name").val());
+                fd.append("serverid", $("#serverid").val());
+
+                $.ajax({
+                    url: "/sys/upload/file",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    data: fd,
+                    async: false,
+                    dataType: 'JSON',
+                    success: function (dataSet) {
+                        console.log('dataSet=',dataSet);
+                        if (dataSet.code == 0) {
+                            swal("上传成功!", "", "success")
+                            $('#upload_table').DataTable({
+                                "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                                "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                                destroy: true,
+                                async: true,
+                                ordering: false,
+                                scrollY: false,
+                                scrollX: false,
+                                scrollCollapse: true,
+                                paging: true,
+                                iDisplayLength: 12,
+                                data: dataSet.message,
+                                columns: [
+                                    {"title": "文件名称"},
+                                    {"title": "文件大小"},
+                                    {"title": "传输时长(s)"},
+                                ],
+                                "language": get_languages()
+                            });
+                        } else {
+                            swal("导入失败!", dataSet.message, "error")
+                        }
+                    }
+                });
+            } else {
+                swal("文件名不能为空!", "", "error")
+            }
+            $('#upload_btn').attr("disabled", false);
+        });
+        $('#filer_upload').filer({
+            limit: 10,
+            maxSize: 300,
+            extensions: ['txt','zip','rar','xlsx','gz','docx','pdf','jpg','png'],
+            changeInput: true,
+            showThumbs: true,
+            addMore: true
+        });
+        $('#ret_btn').click(function () {
+            $("#dsid").val('')
+            $("#dsid").selectpicker('refresh')
+            $("#imp_data_type").val('')
+            $('#filesnames').html('<input type="file" name="files[]" width=100% id="filer_upload"  multiple="multiple">\n')
+            $('#filer_upload').filer({
+                limit: 10,
+                maxSize: 300,
+                extensions: ['txt','zip','rar','gz','xlsx','docx','pdf','jpg','png'],
+                changeInput: true,
+                showThumbs: true,
+                addMore: true
+            });
+            $('#upload_table').empty()
+        })
+    });
+
+</script>
+
+</html>

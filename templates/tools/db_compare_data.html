@@ -10,239 +10,239 @@
     </style>
 </head>
 <body>
-      <p></p>
-      <div class="row">
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label"><span>源实例</span></label>
-                    </div>
-                    <div class="col-md-8">
-                        <select  class="form-control select" id="sour_db_server" >
-                            <option value='' selected = "selected">...</option>
-                            {% for var in db_server %}
-                               <option value={{var[0]}}>{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-         </div>
-         <div class="col-md-2">
-           <div class="form-group">
-                <div>
-                    <label class="col-md-4 control-label">源库名</label>
-                </div>
-                <div class="col-md-8">
-                     <select  class="form-control select" id="sour_schema" >
-                         <option value='' selected = "selected">......</option>
-                     </select>
-                </div>
-           </div>
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label"><span>源实例</span></label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="sour_db_server">
+                    <option value='' selected="selected">...</option>
+                    {% for var in db_server %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
         </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label">目标实</label>
-                    </div>
-                   <div class="col-md-8">
-                        <select  class="form-control select" id="desc_db_server" >
-                            <option value='' selected = "selected">......</option>
-                            {% for var in db_doris_server %}
-                              <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                        </select>
-                   </div>
-               </div>
-          </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <div>
-                        <label class="col-md-4 control-label">目标库</label>
-                    </div>
-                    <div class="col-md-8">
-                         <select class="form-control select" id="desc_schema" >
-                             <option value='' selected = "selected">......</option>
-                         </select>
-                    </div>
-               </div>
-          </div>
-         <div class="col-md-2">
-               <div class="form-group">
-                    <button id="compare_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">比较</button>&nbsp;
-               </div>
-         </div>
-      </div>
-      <hr>
-      <p></p>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">源库名</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="sour_schema">
+                    <option value='' selected="selected">......</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">目标实</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="desc_db_server">
+                    <option value='' selected="selected">......</option>
+                    {% for var in db_doris_server %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <div>
+                <label class="col-md-4 control-label">目标库</label>
+            </div>
+            <div class="col-md-8">
+                <select class="form-control select" id="desc_schema">
+                    <option value='' selected="selected">......</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <button id="compare_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">比较</button>&nbsp;
+        </div>
+    </div>
+</div>
+<hr>
+<p></p>
 
-      <!--比较情况 -->
-      <div class="row">
-         <div class="col-md-12">
-                <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
-               </div>
-          </div>
-     </div>
+<!--比较情况 -->
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+        </div>
+    </div>
+</div>
 
-     <script>
-        function query_table() {
+<script>
+    function query_table() {
+        $.ajax({
+            url: "/dbtools/_compare/data",
+            type: "post",
+            datatype: "json",
+            data: {
+                sour_db_server: $('#sour_db_server').val(),
+                sour_schema: $('#sour_schema').val(),
+                desc_db_server: $('#desc_db_server').val(),
+                desc_schema: $('#desc_schema').val(),
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    ordering: false,
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: true,
+                    bAutoWidth: true,
+                    iDisplayLength: 12,
+                    data: dataSet.message,
+                    columns: [
+                        {"title": "源实例"},
+                        {"title": "源库"},
+                        {"title": "目标实例"},
+                        {"title": "目标库"},
+                        {"title": "目标表"},
+                        {"title": "源行数"},
+                        {"title": "目标行数"},
+                        {"title": "对比结果"},
+                    ],
+                    "language": get_languages()
+                });
+            }
+        })
+    }
+
+    function check_valid() {
+        if ($('#sour_db_server').val() == '') {
+            swal("提示", "源实例不能为空!", "warning");
+            return false
+        }
+        if ($('#sour_schema').val() == '') {
+            swal("提示", "源库不能为空!", "warning");
+            return false
+        }
+        if ($('#desc_db_server').val() == '') {
+            swal("提示", "目标实例不能为空!", "warning");
+            return false
+        }
+        if ($('#desc_schema').val() == '') {
+            swal("提示", "目标库不能为空!", "warning");
+            return false
+        }
+        return true
+    }
+
+    $("#compare_btn").click(function () {
+        if (check_valid()) {
+            query_table()
+        }
+    });
+
+    $('#sour_db_server').change(function () {
+        if ($('#sour_db_server').val() != '') {
             $.ajax({
-                  url: "/dbtools/_compare/data",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      sour_db_server: $('#sour_db_server').val(),
-                      sour_schema   : $('#sour_schema').val(),
-                      desc_db_server: $('#desc_db_server').val(),
-                      desc_schema   : $('#desc_schema').val(),
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     : true,
-                          bAutoWidth : true,
-                          iDisplayLength: 12,
-                          data: dataSet.message,
-                          columns: [
-                            { "title": "源实例"},
-                            { "title": "源库" },
-                            { "title": "目标实例"},
-                            { "title": "目标库" },
-                            { "title": "目标表" },
-                            { "title": "源行数" },
-                            { "title": "目标行数" },
-                            { "title": "对比结果" },
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
+                url: "/get_tree",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    msg: '',
+                    flag: 'compare'
+                },
+                success: function (dataSet) {
+                    console.log('dataSet=', dataSet)
+                    $("#sour_schema").empty();
+                    $("#sour_schema").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i]['id'];
+                        var text = dataSet['message'][i]['id'];
+                        $("#sour_schema").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                    // $("#sour_schema").selectpicker('refresh')
+                }
+            });
+        } else {
+            $("#sour_schema").empty();
+            $("#sour_schema").append("<option value=''>...</option>");
         }
+    });
 
-        function check_valid() {
-            if ($('#sour_db_server').val() == '') {
-                swal("提示", "源实例不能为空!", "warning");
-                return false
-            }
-            if ($('#sour_schema').val() == '') {
-                swal("提示", "源库不能为空!", "warning");
-                return false
-            }
-            if ($('#desc_db_server').val() == '') {
-                swal("提示", "目标实例不能为空!", "warning");
-                return false
-            }
-            if ($('#desc_schema').val() == '') {
-                swal("提示", "目标库不能为空!", "warning");
-                return false
-            }
-            return true
+    $('#sour_schema').change(function () {
+        if ($('#sour_schema').val() != '') {
+            $.ajax({
+                url: "/get_tables",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#sour_db_server').val(),
+                    db_name: $('#sour_schema').val(),
+                },
+                success: function (dataSet) {
+                    $("#sour_tab").empty();
+                    $("#sour_tab").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#sour_tab").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
+            });
+        } else {
+            $("#sour_schema").empty();
+            $("#sour_schema").append("<option value=''>...</option>");
         }
+    });
 
-        $("#compare_btn").click(function() {
-            if (check_valid()) {
-                 query_table()
-            }
-         });
+    $('#desc_db_server').change(function () {
+        if ($('#desc_db_server').val() != '') {
+            $.ajax({
+                url: "/get_tree",
+                type: "post",
+                datatype: "json",
+                async: false,
+                data: {
+                    dbid: $('#desc_db_server').val(),
+                    msg: '',
+                    flag: 'compare'
+                },
+                success: function (dataSet) {
+                    $("#desc_schema").empty();
+                    $("#desc_schema").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i]['id'];
+                        var text = dataSet['message'][i]['id'];
+                        $("#desc_schema").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                    // $("#desc_schema").selectpicker('refresh')
+                }
+            });
+        } else {
+            $("#sour_schema").empty();
+            $("#sour_schema").append("<option value=''>...</option>");
+        }
+    });
 
-        $('#sour_db_server').change(function() {
-            if ($('#sour_db_server').val()!='') {
-                $.ajax({
-                      url: "/get_tree",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#sour_db_server').val(),
-                          msg:'',
-                          flag:'compare'
-                      },
-                      success: function (dataSet) {
-                         console.log('dataSet=',dataSet)
-                         $("#sour_schema").empty();
-                         $("#sour_schema").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i]['id'];
-                              var text = dataSet['message'][i]['id'];
-                              $("#sour_schema").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                         // $("#sour_schema").selectpicker('refresh')
-                      }
-                });
-            } else {
-                $("#sour_schema").empty();
-                $("#sour_schema").append("<option value=''>...</option>");
-            }
-        });
+    $(document).ready(function () {
 
-        $('#sour_schema').change(function() {
-            if ($('#sour_schema').val()!='') {
-                $.ajax({
-                      url: "/get_tables",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#sour_db_server').val(),
-                          db_name : $('#sour_schema').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#sour_tab").empty();
-                         $("#sour_tab").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i];
-                              var text = dataSet['message'][i];
-                              $("#sour_tab").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      }
-                });
-            } else {
-                $("#sour_schema").empty();
-                $("#sour_schema").append("<option value=''>...</option>");
-            }
-        });
+    });
 
-        $('#desc_db_server').change(function() {
-            if ($('#desc_db_server').val()!='') {
-                $.ajax({
-                      url: "/get_tree",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dbid : $('#desc_db_server').val(),
-                          msg:'',
-                          flag:'compare'
-                      },
-                      success: function (dataSet) {
-                         $("#desc_schema").empty();
-                         $("#desc_schema").append("<option value=''>...</option>");
-                         for(i=0;i<dataSet['message'].length;i++){
-                              var val  = dataSet['message'][i]['id'];
-                              var text = dataSet['message'][i]['id'];
-                              $("#desc_schema").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                         // $("#desc_schema").selectpicker('refresh')
-                      }
-                });
-            } else {
-                $("#sour_schema").empty();
-                $("#sour_schema").append("<option value=''>...</option>");
-            }
-        });
-
-        $(document).ready(function() {
-
-       });
-
-   </script>
+</script>
 </body>
 
 </html>

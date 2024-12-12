@@ -3,101 +3,108 @@
     <title>SQL执行</title>
     <style>
         .modal-lg-detail {
-            width:60%;
-            height:20%;
-            margin-left:500px;
-            margin-top:100px;
-        }
-        #ace-editor{
-           height:280px;
-        }
-        #ace-editor-rollback{
-           height:200px;
-        }
-        #ace-editor-error,#ace-editor-result{
-           height:80px;
+            width: 60%;
+            height: 20%;
+            margin-left: 500px;
+            margin-top: 100px;
         }
 
-        .table th{
+        #ace-editor {
+            height: 280px;
+        }
+
+        #ace-editor-rollback {
+            height: 200px;
+        }
+
+        #ace-editor-error, #ace-editor-result {
+            height: 80px;
+        }
+
+        .table th {
             text-align: center;
-            vertical-align: middle!important;
+            vertical-align: middle !important;
         }
     </style>
 </head>
 
 <body>
-    <p></p>
-    <div class="row">
-        <div class="col-md-12">
-           <div class="col-md-2">
-               <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" id="name"  class="form-control" placeholder="请输入库名、SQL关键字">
-               </div>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input type="text" id="name" class="form-control" placeholder="请输入库名、SQL关键字">
             </div>
-            <div class="col-md-3">
-                 <div class="input-group">
-                     <span class="input-group-addon">数据库环境</span>
-                       <select class="form-control select" id="db_run_source">
-                            <option value='' selected = "selected">...</option>
-                            {% for var in run_dss %}
-                              <option value={{var[0]}}>{{var[1]}}</option>
-                            {% end %}
-                       </select>
-                 </div>
-            </div>
-             <div class="col-md-2">
-                 <div class="input-group">
-                    <span class="input-group-addon">发布人</span>
-                      <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
-                            <option value='' selected = "selected">...</option>
-                            {% for var in creater %}
-                              <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
-                            {% end %}
-                       </select>
-                 </div>
-             </div>
-             <div class="col-md-3">
-               <div class="input-group">
-                    <span class="input-group-addon">发布原因</span>
-                    <input type="text" id="reason"  class="form-control" placeholder="请输入发布原因">
-               </div>
-             </div>
-
-             <div class="col-md-1">
-               <div class="input-group">
-                    <span class="input-group-btn">
-                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
-                    </span>
-               </div>
-            </div>
-
         </div>
-     </div>
-    <p></p>
-    <div class="row">
-         <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-         </div>
-    </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">数据库环境</span>
+                <select class="form-control select" id="db_run_source">
+                    <option value='' selected="selected">...</option>
+                    {% for var in run_dss %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">发布人</span>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sql_creater">
+                    <option value='' selected="selected">...</option>
+                    {% for var in creater %}
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">发布原因</span>
+                <input type="text" id="reason" class="form-control" placeholder="请输入发布原因">
+            </div>
+        </div>
 
-    <!-- 遮照-->
-    <div id="con-close-modal-2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-sm">
+        <div class="col-md-1">
+            <div class="input-group">
+                    <span class="input-group-btn">
+                       <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                               class="fa fa-search"></i></button>
+                    </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%"
+                   height="100%"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 遮照-->
+<div id="con-close-modal-2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">正在运行中，请稍候...</h4>
             </div>
 
         </div>
-     </div>
-   </div><!-- /.modal -->
+    </div>
+</div><!-- /.modal -->
 
-    <!--发布语句详情 -->
-    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-      <div class="modal-dialog modal-lg-detail">
+<!--发布语句详情 -->
+<div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><span id='order_title'></span></h4>
@@ -105,301 +112,305 @@
             <div class="modal-body">
                 <div class="row">
                     <label>运行实例：</label>
-                    <span id ='run_db_detail' style="color:red"></span>
+                    <span id='run_db_detail' style="color:red"></span>
                 </div>
                 <div class="row">
                     <label>发布原因：</label>
-                    <span id ='reason_detail'></span>
-                </div>
-                 <div class="row">
-                   <label>执行时间：</label>
-                   <div id ='run_time_detail' style="color:red"></div>
+                    <span id='reason_detail'></span>
                 </div>
                 <div class="row">
-                   <label>执行语句：</label>
-                   <div id='ace-editor' class="col-md-12"></div>
+                    <label>执行时间：</label>
+                    <div id='run_time_detail' style="color:red"></div>
+                </div>
+                <div class="row">
+                    <label>执行语句：</label>
+                    <div id='ace-editor' class="col-md-12"></div>
                 </div>
                 <br>
                 <div class="row">
-                   <label id="rollback-label">回滚语句&nbsp;</label><span id="span-rollback"><i class="ion-arrow-down-b"></i></span>
-                   <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
+                    <label id="rollback-label">回滚语句&nbsp;</label><span id="span-rollback"><i
+                        class="ion-arrow-down-b"></i></span>
+                    <div id='ace-editor-rollback' class="col-md-12" style="display:none"></div>
                 </div>
                 <br>
                 <div class="row">
-                  <label id="error-label">运行错误&nbsp;</label><span id="span-error"><i class="ion-arrow-down-b"></i></span>
-                  <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
+                    <label id="error-label">运行错误&nbsp;</label><span id="span-error"><i class="ion-arrow-down-b"></i></span>
+                    <div id='ace-editor-error' class="col-md-12" style="display:none"></div>
                 </div>
                 <br>
                 <div class="row">
-                  <label id="result-label">运行结果&nbsp;</label><span id="span-result"><i class="ion-arrow-down-b"></i></span>
-                  <div id='ace-editor-result' class="col-md-12" style="display:none"></div>
+                    <label id="result-label">运行结果&nbsp;</label><span id="span-result"><i
+                        class="ion-arrow-down-b"></i></span>
+                    <div id='ace-editor-result' class="col-md-12" style="display:none"></div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="col-sm-offset-2 col-sm-4">
-                   <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-   </div><!-- /.modal -->
+</div><!-- /.modal -->
 
 </body>
 
 <script type="text/javascript">
 
-     function set_editor(p_editor) {
-          var editor = ace.edit(p_editor);
-          editor.setTheme("ace/theme/xcode");
-          editor.getSession().setMode("ace/mode/sql");
-          editor.setShowPrintMargin(false);
-          editor.setFontSize(16);
-          editor.getSession().setUseSoftTabs(true);
-          editor.setReadOnly(true);
-     }
+    function set_editor(p_editor) {
+        var editor = ace.edit(p_editor);
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/sql");
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(16);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setReadOnly(true);
+    }
 
-    $(document).ready(function() {
-         //可搜索选择框初始化
-          $('.selectpicker').selectpicker({ size: 10 });
-          $(":file").filestyle({input: false});
-          set_editor('ace-editor');
-          set_editor('ace-editor-rollback');
-          set_editor('ace-editor-error');
+    $(document).ready(function () {
+        //可搜索选择框初始化
+        $('.selectpicker').selectpicker({size: 10});
+        $(":file").filestyle({input: false});
+        set_editor('ace-editor');
+        set_editor('ace-editor-rollback');
+        set_editor('ace-editor-error');
 
-          $("#query_btn").click(function() {
-                var name = $("#name").val();
-                var dsid = $("#db_run_source").val();
-                var creater  = $("#sql_creater").val();
+        $("#query_btn").click(function () {
+            var name = $("#name").val();
+            var dsid = $("#db_run_source").val();
+            var creater = $("#sql_creater").val();
 
-                $.ajax({
-                  url: "/sql/run/query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname:name,
-                      dsid:dsid,
-                      creater:creater,
-                      reason:$('#reason').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :false,
-                          ordering   :false,
-                          scrollY    :false,
-                          scrollX    :false,
-                          scrollCollapse: true,
-                          paging:     true,
-                          iDisplayLength: 16,
-                          data: dataSet,
-                          columns: [
-                             { "title": "工单编号" },
-                             { "title": "工单描述" },
-                             { "title": "工单状态" },
-                             { "title": "工单类型" },
-                             { "title": "数据库环境" },
-                             { "title": "运行库" },
-                             { "title": "发布人" },
-                             { "title": "发布时间","visible":false},
-                             { "title": "审核人"},
-                             { "title": "审核时间"},
-                             { "title": "操作"},
-                           ],
-                            columnDefs: [
+            $.ajax({
+                url: "/sql/run/query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    qname: name,
+                    dsid: dsid,
+                    creater: creater,
+                    reason: $('#reason').val()
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: false,
+                        ordering: false,
+                        scrollY: false,
+                        scrollX: false,
+                        scrollCollapse: true,
+                        paging: true,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "工单编号"},
+                            {"title": "工单描述"},
+                            {"title": "工单状态"},
+                            {"title": "工单类型"},
+                            {"title": "数据库环境"},
+                            {"title": "运行库"},
+                            {"title": "发布人"},
+                            {"title": "发布时间", "visible": false},
+                            {"title": "审核人"},
+                            {"title": "审核时间"},
+                            {"title": "操作"},
+                        ],
+                        columnDefs: [
                             {
                                 targets: 10,
-                                render: function(data, type, row, meta){
-                                     var id=row[0]
-                                     var status=row[2]
-                                     var otype=row[3]
-                                     var db =row[5]
-                                     var par= id+','+db
+                                render: function (data, type, row, meta) {
+                                    var id = row[0]
+                                    var status = row[2]
+                                    var otype = row[3]
+                                    var db = row[5]
+                                    var par = id + ',' + db
 
-                                    if (otype.match(/定时/) !=null) {
-                                        msg ='&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                     } else if (status=='已发布') {
-                                        msg ='&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                     } else if (status=='执行失败' || status == '已审核') {
-                                        msg ='&nbsp;'+
-                                              '<input id="btn_run_'+id+'" class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\''+id+'\');"/>' +'&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                     } else {
-                                        msg ='&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' +'&nbsp;'+
-                                              '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\''+par+'\');"/>' +'&nbsp;'
-                                     }
-                                     return msg;
+                                    if (otype.match(/定时/) != null) {
+                                        msg = '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' + '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\'' + par + '\');"/>' + '&nbsp;'
+                                    } else if (status == '已发布') {
+                                        msg = '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' + '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\'' + par + '\');"/>' + '&nbsp;'
+                                    } else if (status == '执行失败' || status == '已审核') {
+                                        msg = '&nbsp;' +
+                                            '<input id="btn_run_' + id + '" class="btn btn-xs btn-primary"  type="button"  value="运行" onclick="runSql(\'' + id + '\');"/>' + '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary"  type="button"  value="详情"  onclick="showSql(\'' + par + '\');"/>' + '&nbsp;'
+                                    } else {
+                                        msg = '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary disabled" disabled type="button" value="运行" />' + '&nbsp;' +
+                                            '<input class="btn btn-xs btn-primary"  type="button"  value="详情" onclick="showSql(\'' + par + '\');"/>' + '&nbsp;'
+                                    }
+                                    return msg;
                                 }
-                             }
-                            ],
-                          "language": get_languages()
-                        });
-                  },
-              })
-          });
+                            }
+                        ],
+                        "language": get_languages()
+                    });
+                },
+            })
+        });
 
-          $("#query_btn").click();
+        $("#query_btn").click();
 
-      });
+    });
 
-     function showSql(row){
+    function showSql(row) {
         // console.log('slowlog.....')
         id = row.split(',')[0]
         db = row.split(',')[1]
-        console.log('id=',id)
-        console.log('db=',db)
-        $('#order_title').text('运行详情[编号:'+id+',库:'+db+']')
+        console.log('id=', id)
+        console.log('db=', db)
+        $('#order_title').text('运行详情[编号:' + id + ',库:' + db + ']')
         $.ajax({
-                url: "/sql/audit/detail",
-                type: "post",
-                datatype: "json",
-                data:{
-                    id: id
-                },
-                success: function (dataSet) {
-                    console.log('dataSet=',dataSet)
-                    console.log('result=',dataSet.message.run_result)
-                    sql = format_sql(dataSet.message.sqltext)
-                    if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service)==-1 ) {
-                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url+ dataSet.message.ds.service)
-                    } else {
-                         $('#run_db_detail').text(dataSet.message.ds.db_desc+'-'+dataSet.message.ds.url)
+            url: "/sql/audit/detail",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: id
+            },
+            success: function (dataSet) {
+                console.log('dataSet=', dataSet)
+                console.log('result=', dataSet.message.run_result)
+                sql = format_sql(dataSet.message.sqltext)
+                if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service) == -1) {
+                    $('#run_db_detail').text(dataSet.message.ds.db_desc + '-' + dataSet.message.ds.url + dataSet.message.ds.service)
+                } else {
+                    $('#run_db_detail').text(dataSet.message.ds.db_desc + '-' + dataSet.message.ds.url)
+                }
+                $('#reason_detail').text(dataSet.message.reason)
+
+                var editor = ace.edit("ace-editor");
+                editor.setValue('')
+                editor.insert(sql);
+                editor.setReadOnly(true);
+                $('#run_time_detail').text(dataSet.message.run_time)
+
+                if (dataSet.message.rollback.length > 100) {
+                    swal("提示", "生成回滚语句超出100行，请通过[我的工单-日志]下载后查看!", "warning");
+                } else {
+                    var editor3 = ace.edit("ace-editor-rollback");
+                    editor3.setValue('')
+                    let rollback = ''
+                    // console.log(dataSet.message.rollback.length)
+                    for (i = 0; i < dataSet.message.rollback.length; i++) {
+                        rollback = rollback + dataSet.message.rollback[i].rollback_statement + '\n'
                     }
-                    $('#reason_detail').text(dataSet.message.reason)
+                    editor3.insert(format_sql(rollback));
+                    editor3.setReadOnly(true);
+                }
 
-                    var editor = ace.edit("ace-editor");
-                    editor.setValue('')
-                    editor.insert(sql);
-                    editor.setReadOnly(true);
-                    $('#run_time_detail').text(dataSet.message.run_time)
+                var editor2 = ace.edit("ace-editor-error");
+                editor2.setValue('')
+                editor2.insert(dataSet.message.error);
+                editor2.setReadOnly(true);
 
-                    if (dataSet.message.rollback.length>100) {
-                         swal("提示", "生成回滚语句超出100行，请通过[我的工单-日志]下载后查看!", "warning");
-                    } else {
-                        var editor3 = ace.edit("ace-editor-rollback");
-                        editor3.setValue('')
-                        let rollback = ''
-                        // console.log(dataSet.message.rollback.length)
-                        for(i=0;i<dataSet.message.rollback.length;i++) {
-                            rollback = rollback +dataSet.message.rollback[i].rollback_statement+'\n'
-                        }
-                        editor3.insert(format_sql(rollback));
-                        editor3.setReadOnly(true);
+                var editor4 = ace.edit("ace-editor-result");
+                editor4.setValue('')
+                let result = ''
+                for (var attr in dataSet.message.run_result) {
+                    log = ''
+                    for (var i in dataSet.message.run_result[attr]) {
+                        log = log + i + ':' + dataSet.message.run_result[attr][i] + ','
                     }
-
-                    var editor2 = ace.edit("ace-editor-error");
-                    editor2.setValue('')
-                    editor2.insert(dataSet.message.error);
-                    editor2.setReadOnly(true);
-
-                    var editor4 = ace.edit("ace-editor-result");
-                    editor4.setValue('')
-                    let result = ''
-                    for(var attr in dataSet.message.run_result){
-                        log = ''
-                        for(var i in dataSet.message.run_result[attr]){
-                            log = log +i+':'+dataSet.message.run_result[attr][i]+','
-                        }
-                        result = result + attr + ' = ' + log + '\n'
-                    }
-                    editor4.insert(result);
-                    editor4.setReadOnly(true);
-                    $('#con-close-modal').modal({
-                        keyboard: false,
-                        backdrop:false
-                    });
-                },
+                    result = result + attr + ' = ' + log + '\n'
+                }
+                editor4.insert(result);
+                editor4.setReadOnly(true);
+                $('#con-close-modal').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+            },
         });
     }
 
-     function runSql(id){
-         $('#btn_run_'+id).attr("disabled","disabled");
-         $.ajax({
-            url     : "/get/sql/release",
-            type    : "post",
+    function runSql(id) {
+        $('#btn_run_' + id).attr("disabled", "disabled");
+        $.ajax({
+            url: "/get/sql/release",
+            type: "post",
             datatype: "json",
             data: {
-                id  : id,
+                id: id,
             },
             success: function (dataSet) {
                 $.ajax({
-                    url     : "/sql/_run",
-                    type    : "post",
+                    url: "/sql/_run",
+                    type: "post",
                     datatype: "json",
                     data: {
-                        dbid   :  dataSet.dbid,
-                        db_name:  dataSet.db,
-                        sql_id :  dataSet.id,
+                        dbid: dataSet.dbid,
+                        db_name: dataSet.db,
+                        sql_id: dataSet.id,
                     },
                     success: function (dataSet) {
                         $("#query_btn").click();
-                         $('#con-close-modal-2').modal('hide');
-                     }
-                 });
-             }
-         });
+                        $('#con-close-modal-2').modal('hide');
+                    }
+                });
+            }
+        });
     }
 
-     $('#db_source').change(function() {
-        if ($('#db_source').val()!=''){
+    $('#db_source').change(function () {
+        if ($('#db_source').val() != '') {
             $.ajax({
-                  url: "/get_database",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      dbid : $('#db_source').val(),
-                  },
-                  success: function (dataSet) {
-                     $("#db_name").empty();
-                     $("#db_name").append("<option value=''>...</option>");
-                     for(i=0;i<dataSet['message'].length;i++){
-                          var val  = dataSet['message'][i];
-                          var text = dataSet['message'][i];
-                          $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
-                     }
-                  }
+                url: "/get_database",
+                type: "post",
+                datatype: "json",
+                data: {
+                    dbid: $('#db_source').val(),
+                },
+                success: function (dataSet) {
+                    $("#db_name").empty();
+                    $("#db_name").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i];
+                        var text = dataSet['message'][i];
+                        $("#db_name").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                }
             });
         } else {
             $("#db_name").empty();
             $("#db_name").append("<option value=''>...</option>");
         }
-     });
+    });
 
-     $('#rollback-label').click(function(){
+    $('#rollback-label').click(function () {
         if ($('#ace-editor-rollback').css('display') == 'none') {
-            $('#ace-editor-rollback').css("display","block");
+            $('#ace-editor-rollback').css("display", "block");
             $('#span-rollback').html('<i class="ion-arrow-up-b"></i>');
         } else {
-            $('#ace-editor-rollback').css("display","none");
+            $('#ace-editor-rollback').css("display", "none");
             $('#span-rollback').html('<i class="ion-arrow-down-b"></i>');
         }
-     })
+    })
 
-     $('#error-label').click(function(){
+    $('#error-label').click(function () {
         if ($('#ace-editor-error').css('display') == 'none') {
-            $('#ace-editor-error').css("display","block");
+            $('#ace-editor-error').css("display", "block");
             $('#span-error').html('<i class="ion-arrow-up-b"></i>');
         } else {
-            $('#ace-editor-error').css("display","none");
+            $('#ace-editor-error').css("display", "none");
             $('#span-error').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 
-     $('#result-label').click(function(){
+    $('#result-label').click(function () {
         if ($('#ace-editor-result').css('display') == 'none') {
-            $('#ace-editor-result').css("display","block");
+            $('#ace-editor-result').css("display", "block");
             $('#span-result').html('<i class="ion-arrow-up-b"></i>');
         } else {
-            $('#ace-editor-result').css("display","none");
+            $('#ace-editor-result').css("display", "none");
             $('#span-result').html('<i class="ion-arrow-down-b"></i>');
         }
     })
 
- </script>
+</script>
 
 </html>

@@ -12,14 +12,17 @@ from concurrent.futures import ThreadPoolExecutor
 from tornado.ioloop import IOLoop
 from tornado.options import options
 from tornado.process import cpu_count
-from webssh.utils import (
+from web.webssh.utils import (
     is_valid_ip_address, is_valid_port, is_valid_hostname, to_bytes, to_str,
     to_int, to_ip_address, UnicodeType, is_ip_hostname, is_same_primary_domain,
     is_valid_encoding
 )
-from webssh.worker import Worker, recycle_worker, clients
-from webssh.mysql_sync import sync_processer
-from webssh import jwt_auth
+from web.webssh.worker import Worker, recycle_worker, clients
+from web.webssh.mysql_sync import sync_processer
+from web.webssh import jwt_auth
+#from web.utils import jwt_auth
+
+
 
 def aes_decrypt(p_password, p_key):
     st = "select aes_decrypt(unhex('{0}'),'{1}') as password".format(p_password, p_key[::-1])
@@ -39,7 +42,6 @@ try:
     from urllib.parse import urlparse
 except ImportError:
     from urlparse import urlparse
-
 
 DEFAULT_PORT = 22
 
@@ -112,7 +114,6 @@ class SSHClient(paramiko.SSHClient):
 
 
 class PrivateKey(object):
-
     max_length = 16384  # rough number
 
     tag_to_name = {
@@ -154,7 +155,7 @@ class PrivateKey(object):
         logging.debug('Reset offset to {}.'.format(offset))
 
         logging.debug('Try parsing it as {} type key'.format(name))
-        pkeycls = getattr(paramiko, name+'Key')
+        pkeycls = getattr(paramiko, name + 'Key')
         pkey = None
 
         try:
@@ -190,12 +191,11 @@ class PrivateKey(object):
         msg = 'Invalid key'
         if self.password:
             msg += ' or wrong passphrase "{}" for decrypting it.'.format(
-                    self.password)
+                self.password)
         raise InvalidValueError(msg)
 
 
 class MixinHandler(object):
-
     custom_headers = {
         'Server': 'TornadoServer'
     }
@@ -323,9 +323,8 @@ class NotFoundHandler(MixinHandler, tornado.web.ErrorHandler):
         raise tornado.web.HTTPError(404)
 
 
-class IndexHandler(MixinHandler,tornado.web.RequestHandler):
-
-    executor = ThreadPoolExecutor(max_workers=cpu_count()*5)
+class IndexHandler(MixinHandler, tornado.web.RequestHandler):
+    executor = ThreadPoolExecutor(max_workers=cpu_count() * 5)
 
     def initialize(self, loop, policy, host_keys_settings):
         super(IndexHandler, self).initialize(loop)
@@ -394,9 +393,9 @@ class IndexHandler(MixinHandler,tornado.web.RequestHandler):
         if self.ssh_client._system_host_keys.lookup(key) is None:
             if self.ssh_client._host_keys.lookup(key) is None:
                 raise tornado.web.HTTPError(
-                        403, 'Connection to {}:{} is not allowed.'.format(
-                            hostname, port)
-                    )
+                    403, 'Connection to {}:{} is not allowed.'.format(
+                        hostname, port)
+                )
 
     def get_args(self):
         hostname = self.get_hostname()
@@ -417,8 +416,8 @@ class IndexHandler(MixinHandler,tornado.web.RequestHandler):
             pkey = None
 
         self.ssh_client.totp = totp
-        args = (hostname, port, username, password, pkey,token)
-        print('get_args>>:',args)
+        args = (hostname, port, username, password, pkey, token)
+        print('get_args>>:', args)
         logging.debug(args)
 
         return args
@@ -454,7 +453,7 @@ class IndexHandler(MixinHandler,tornado.web.RequestHandler):
         return 'utf-8'
 
     def ssh_connect(self, args):
-        print('ssh_connect>>>>>>>>>:',args)
+        print('ssh_connect>>>>>>>>>:', args)
         ssh = self.ssh_client
         dst_addr = args[:2]
         token = args[5]
@@ -474,7 +473,7 @@ class IndexHandler(MixinHandler,tornado.web.RequestHandler):
         term = self.get_argument('term', u'') or u'xterm'
         chan = ssh.invoke_shell(term=term)
         chan.setblocking(0)
-        worker = Worker(self.loop, ssh, chan, dst_addr,token)
+        worker = Worker(self.loop, ssh, chan, dst_addr, token)
         worker.encoding = options.encoding if options.encoding else \
             self.get_default_encoding(ssh)
         return worker
@@ -498,32 +497,34 @@ class IndexHandler(MixinHandler,tornado.web.RequestHandler):
 
     async def get(self):
         token = self.get_argument("token")
-        print('token=',token)
+        print('token=', token)
 
         result = jwt_auth.parse_payload(token)
+        print('result=',result)
         if not result["status"]:
-            self.render('page-404.html', msg=json.dumps(result, ensure_ascii=False))
+            self.render('./webssh/page-404.html', msg=json.dumps(result, ensure_ascii=False))
 
         state = jwt_auth.get_sessoin_state(result['data']['session_id'])
         if state == '3':
             msg = "用户`{}`已下线!".format(result['data']['username'])
-            self.render('page-404.html',msg=msg)
+            self.render('./webssh/page-404.html', msg=msg)
 
         if (jwt_auth.check_sess_exists(result['data']['session_id'])) == 0:
             msg = "用户`{}`已注销!".format(result['data']['username'])
-            self.render('page-404.html', msg=msg)
+            self.render('./webssh/page-404.html', msg=msg)
 
         id = self.get_value('server_id')
-        svr = sync_processer.query_dict_one('select server_ip,server_port,server_user,server_pass from t_server where id={}'.format(id))
+        svr = sync_processer.query_dict_one(
+            'select server_ip,server_port,server_user,server_pass from t_server where id={}'.format(id))
         svr['server_pass'] = aes_decrypt(svr['server_pass'], svr['server_user'])
-        self.render('index.html',
-                     hostname  =  svr['server_ip'],
-                     port      =  svr['server_port'],
-                     username  =  svr['server_user'],
-                     password  =  svr['server_pass'],
-                     token     =  token,
-                     debug     =  self.debug,
-                     font      =  self.font)
+        self.render('./webssh/index.html',
+                    hostname=svr['server_ip'],
+                    port=svr['server_port'],
+                    username=svr['server_user'],
+                    password=svr['server_pass'],
+                    token=token,
+                    debug=self.debug,
+                    font=self.font)
 
     @tornado.gen.coroutine
     def post(self):
@@ -613,7 +614,7 @@ class WsockHandler(MixinHandler, tornado.websocket.WebSocketHandler):
         data = msg.get('data')
         if data and isinstance(data, UnicodeType):
             worker.data_to_dst.append(data)
-            print('worker.data_to_dst=',worker.data_to_dst)
+            print('worker.data_to_dst=', worker.data_to_dst)
             worker.on_write()
 
     def on_close(self):

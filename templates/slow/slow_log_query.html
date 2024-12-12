@@ -4,552 +4,560 @@
     <meta charset="utf-8">
     <title>慢日志查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
-       .modal-lg-detail {
-            width:60%;
-            height:30%;
-            margin-left:500px;
-            margin-top:200px;
+
+        .modal-lg-detail {
+            width: 60%;
+            height: 30%;
+            margin-left: 500px;
+            margin-top: 200px;
         }
-        .table th{
+
+        .table th {
             text-align: center;
-            vertical-align: middle!important;
+            vertical-align: middle !important;
         }
     </style>
 </head>
 <body>
-       <p></p>
-       <div class="row">
-               <div class="col-md-2">
-                   <div class="input-group">
-                     <span class="input-group-addon">实例名</span>
-                     <select class="form-control select" id="inst_name" >
-                        <option value='' selected = "selected">.....</option>
-                        {% for var in dm_inst_names %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                     </select>
-                   </div>
-               </div>
-               <div class="col-md-2">
-                   <div class="input-group">
-                     <span class="input-group-addon">数据源</span>
-                     <select class="form-control select" id="dbs_name" >
-                        <option value='' selected = "selected">.....</option>
-                        {% for var in dm_dbs_names %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                     </select>
-                   </div>
-               </div>
-               <div class="col-md-2">
-                 <div class="input-group">
-                      <span class="input-group-addon">日期起</span>
-                      <input  id="begin_date"  type="text" class="form-control datetimepicker"  readonly placeholder="日期起" value="{{begin_date}}">
-                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-                </div>
-               </div>
-               <div class="col-md-2">
-                  <div class="input-group">
-                      <span class="input-group-addon">止</span>
-                      <input  id="end_date"  type="text" class="form-control datetimepicker"  readonly placeholder="日期止" value="{{end_date}}" >
-                      <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-                  </div>
-               </div>
-               <div class="col-md-2">
-                   <div class="input-group">
-                     <span class="input-group-addon">IP地址</span>
-                     <input id="db_host"  type="text" class="form-control" placeholder="请输入IP地址">
-                   </div>
-               </div>
-       </div>
-       <br>
-       <div class="row">
-               <div class="col-md-2">
-                   <div class="input-group">
-                     <span class="input-group-addon">数据库</span>
-                     <select class="form-control select" id="db_name" >
-                     </select>
-                   </div>
-               </div>
-               <div class="col-md-2">
-                   <div class="input-group">
-                     <span class="input-group-addon">用户名</span>
-                     <select class="form-control select" id="db_user" >
-                     </select>
-                   </div>
-               </div>
-               <div class="col-md-2">
-                 <div class="input-group">
-                      <span class="input-group-addon">时长起</span>
-                      <input  id="begin_query_time"  type="number" class="form-control"  placeholder="时长起">
-                </div>
-               </div>
-               <div class="col-md-2">
-                  <div class="input-group">
-                      <span class="input-group-addon">止</span>
-                      <input  id="end_query_time"  type="number" class="form-control"  placeholder="时长止" >
-                  </div>
-               </div>
-               <div class="col-md-2">
-                   <div class="input-group">
-                     <span class="input-group-addon">关键字</span>
-                     <input id="db_sql"  type="text" class="form-control" placeholder="请输入SQL关键字">
-                   </div>
-               </div>
-               <div class="col-md-1">
-                   <div class="input-group">
+<p></p>
+<div class="row">
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">实例名</span>
+            <select class="form-control select" id="inst_name">
+                <option value='' selected="selected">.....</option>
+                {% for var in dm_inst_names %}
+                <option value={{var[0]}}>{{var[1]}}</option>
+                {% end %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">数据源</span>
+            <select class="form-control select" id="dbs_name">
+                <option value='' selected="selected">.....</option>
+                {% for var in dm_dbs_names %}
+                <option value={{var[0]}}>{{var[1]}}</option>
+                {% end %}
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">日期起</span>
+            <input id="begin_date" type="text" class="form-control datetimepicker" readonly placeholder="日期起"
+                   value="{{begin_date}}">
+            <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">止</span>
+            <input id="end_date" type="text" class="form-control datetimepicker" readonly placeholder="日期止"
+                   value="{{end_date}}">
+            <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">IP地址</span>
+            <input id="db_host" type="text" class="form-control" placeholder="请输入IP地址">
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">数据库</span>
+            <select class="form-control select" id="db_name">
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">用户名</span>
+            <select class="form-control select" id="db_user">
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">时长起</span>
+            <input id="begin_query_time" type="number" class="form-control" placeholder="时长起">
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">止</span>
+            <input id="end_query_time" type="number" class="form-control" placeholder="时长止">
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="input-group">
+            <span class="input-group-addon">关键字</span>
+            <input id="db_sql" type="text" class="form-control" placeholder="请输入SQL关键字">
+        </div>
+    </div>
+    <div class="col-md-1">
+        <div class="input-group">
                      <span class="input-group-btn">
-                       <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                       <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                               class="fa fa-search"></i></button>
                     </span>
-                   </div>
-               </div>
-       </div>
-       <p></p>
-       <div class="row">
-          <div class="col-md-12">
-              <div id="div-tab">
-                   <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-              </div>
-          </div>
-      </div>
+        </div>
+    </div>
+</div>
+<p></p>
+<div class="row">
+    <div class="col-md-12">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                   width="100%" height="100%"></table>
+        </div>
+    </div>
+</div>
 
-      <!--慢查询详情 -->
-      <div id="con-slow-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-          <div class="modal-dialog modal-lg-detail">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">慢查询</h4>
+<!--慢查询详情 -->
+<div id="con-slow-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">慢查询</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id='ace-editor' class="col-md-12"></div>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                      <div id='ace-editor' class="col-md-12"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="col-sm-offset-2 col-sm-4">
-                       <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">关闭</button>
-                    </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md" data-dismiss="modal">
+                        关闭
+                    </button>
                 </div>
             </div>
         </div>
-       </div><!-- /.modal -->
+    </div>
+</div><!-- /.modal -->
 
-   <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        function showlog(p_sqlid) {
-            $.ajax({
-                  url: "/slow/log/query/id",
-                  type: "post",
-                  datatype: "json",
-                  data: {
-                      sql_id  : p_sqlid
-                  },
-                  success: function (obj) {
-                        console.log('showlog=>obj=',obj);
-                        var editor = ace.edit("ace-editor");
-                        editor.setTheme("ace/theme/xcode");
-                        editor.getSession().setMode("ace/mode/mysql");
-                        editor.setShowPrintMargin(false);
-                        editor.setFontSize(16);
-                        editor.getSession().setUseSoftTabs(true);
-                        editor.setReadOnly(true);
-                        editor.setOption("wrap", "free")
-                        editor.moveCursorTo(0, 0);
-                        editor.setValue('')
-                        editor.insert(obj['sql_text']);
-
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-slow-modal').modal({
-                              keyboard: false,
-                              backdrop:false
-                        });
-                  },
-             });
-        }
-
-        function showlog_oracle(p_sqlid) {
-            console.log('showlog_oracle=>p_sqlid=',p_sqlid);
-            $.ajax({
-                  url: "/slow/log/query/id/oracle",
-                  type: "post",
-                  datatype: "json",
-                  data: {
-                      sql_id  : p_sqlid
-                  },
-                  success: function (obj) {
-                        console.log('showlog_oracle=>showlog=>obj=',obj);
-                        var editor = ace.edit("ace-editor");
-                        editor.setTheme("ace/theme/xcode");
-                        editor.getSession().setMode("ace/mode/mysql");
-                        editor.setShowPrintMargin(false);
-                        editor.setFontSize(16);
-                        editor.getSession().setUseSoftTabs(true);
-                        editor.setReadOnly(true);
-                        editor.setOption("wrap", "free")
-                        editor.moveCursorTo(0, 0);
-                        editor.setValue('')
-                        editor.insert(obj['sql_text']);
-
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-slow-modal').modal({
-                              keyboard: false,
-                              backdrop:false
-                        });
-                  },
-             });
-        }
-
-        function showlog_mssql(p_sqlid) {
-            console.log('showlog_mssql=>p_sqlid=',p_sqlid);
-            $.ajax({
-                  url: "/slow/log/query/id/mssql",
-                  type: "post",
-                  datatype: "json",
-                  data: {
-                      sql_id  : p_sqlid
-                  },
-                  success: function (obj) {
-                        console.log('showlog_oracle=>showlog=>obj=',obj);
-                        var editor = ace.edit("ace-editor");
-                        editor.setTheme("ace/theme/xcode");
-                        editor.getSession().setMode("ace/mode/mysql");
-                        editor.setShowPrintMargin(false);
-                        editor.setFontSize(16);
-                        editor.getSession().setUseSoftTabs(true);
-                        editor.setReadOnly(true);
-                        editor.setOption("wrap", "free")
-                        editor.moveCursorTo(0, 0);
-                        editor.setValue('')
-                        editor.insert(obj['sql_text']);
-
-                        $('.modal').on('show.bs.modal', centerModals);
-                        $(window).on('resize', centerModals);
-                        $('#con-slow-modal').modal({
-                              keyboard: false,
-                              backdrop:false
-                        });
-                  },
-             });
-        }
-
-        function set_where(p_ds){
-            //oracle
-            if(p_ds['db_type']=='1'){
-                 $('#inst_name').attr("disabled",true);
-                  $('#db_host').attr("disabled",true);
-                   $('#db_name').attr("disabled",true);
-                    $('#db_user').attr("disabled",true);
-                     $('#dsupd').attr("disabled",true);
-                      $('#dsupd').attr("disabled",true);
-
-            } else {
-                 $('#inst_name').attr("disabled",false);
-                  $('#db_host').attr("disabled",false);
-                   $('#db_name').attr("disabled",false);
-                    $('#db_user').attr("disabled",false);
-                     $('#dsupd').attr("disabled",false);
-                      $('#dsupd').attr("disabled",false);
-            }
-        }
-
-        function get_ds() {
-               var ds;
-               $.ajax({
-                      url: "/ds/query/id",
-                      type: "post",
-                      datatype: "json",
-                      async:false,
-                      data:{
-                          dsid : $('#dbs_name').val(),
-                      },
-                      success: function (msg) {
-                          ds = msg
-                      },
-                 })
-               return ds;
-        }
-
-        $(document).ready(function() {
-            var ds;
-            var table;
-
-            $("#query_btn").click(function() {
-               if ($('#inst_name').val()=='' && $('#dbs_name').val()==''){
-                    swal("请选择实例或数据源", "", "info");
-                    return false;
-               }
-
-               if ($('#begin_date').val()==''){
-                    swal("请输入日期起", "", "info");
-                    return false;
-               }
-
-               if ($('#end_date').val()==''){
-                    swal("请输入日期止", "", "info");
-                    return false;
-               }
-
-               if ($('#dbs_name').val()!='') {
-                    //获取实例类型
-                    ds = get_ds()
-                    console.log('ds=',ds)
-               }
-
-               $.ajax({
-                  url: "/slow/log/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      inst_id         : $('#inst_name').val(),
-                      ds_id           : $('#dbs_name').val(),
-                      db_name         : $('#db_name').val(),
-                      db_user         : $('#db_user').val(),
-                      db_host         : $('#db_host').val(),
-                      begin_date      : $('#begin_date').val(),
-                      end_date        : $('#end_date').val(),
-                      begin_query_time: $('#begin_query_time').val(),
-                      end_query_time  : $('#end_query_time').val(),
-                      db_sql          : $('#db_sql').val(),
-                  },
-                  success: function (dataSet) {
-                      if (table!=undefined ){
-                         console.log("table is defined=",table);
-                         table.destroy();
-                         $('#example').empty();
-                      } else {
-                         $('#example').empty();
-                      }
-
-                      if (ds['db_type'] == '1') {
-                          table = $('#example').DataTable({
-                              "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
-                              "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                              destroy: true,
-                              async: true,
-                              scrollY: true,
-                              scrollX: true,
-                              ordering: true,
-                              scrollCollapse: true,
-                              paging: true,
-                              iDisplayLength: 16,
-                              data: dataSet,
-                              columns: [
-                                  {"title": "查询ID"},
-                                  {"title": "用户名"},
-                                  {"title": "优先级"},
-                                  {"title": "最早时间"},
-                                  {"title": "最晚时间"},
-                                  {"title": "执行次数"},
-                                  {"title": "平均时间"},
-                                  {"title": "处理行数"},
-                                  {"title": "磁盘读"},
-                                  {"title": "逻辑读"},
-                                  {
-                                      "title": "详情",
-                                      "width": "25px",
-                                      "render": function (data, type, row) {
-                                          return '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog_oracle("' + row[0] + '")><i class="ion-skip-forward"></i></button>'
-                                      }
-                                  },
-
-                              ],
-                              "language": get_languages()
-                          });
-                      } else if  (ds['db_type'] == '2') {
-                          table = $('#example').DataTable({
-                              "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
-                              "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                  destroy: true,
-                                  async: true,
-                                  scrollY: true,
-                                  scrollX: true,
-                                  ordering: true,
-                                  scrollCollapse: true,
-                                  paging: true,
-                                  iDisplayLength: 16,
-                                  data: dataSet,
-                                  columns: [
-                                      {"title": "查询ID"},
-                                      {"title": "用户名"},
-                                      {"title": "数据库名"},
-                                      {"title": "客户端名"},
-                                      {"title": "开始时间"},
-                                      {"title": "结束时间"},
-                                      {"title": "查询时长"},
-                                      {"title": "物理IO"},
-                                      {"title": "操作命令"},
-                                      {
-                                          "title": "详情",
-                                          "width": "25px",
-                                          "render": function (data, type, row) {
-                                              return '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog_mssql("' + row[0] + '")><i class="ion-skip-forward"></i></button>'
-                                          }
-                                      },
-
-                                  ],
-                                  "language": get_languages()
-                           });
-                      } else {
-                          table = $('#example').DataTable( {
-                                  "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                                  "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                                  destroy    :true,
-                                  async      :true,
-                                  scrollY    :true,
-                                  scrollX    :true,
-                                  ordering   :true,
-                                  scrollCollapse: true,
-                                  paging:     true,
-                                  iDisplayLength: 16,
-                                  data: dataSet,
-                                  columns: [
-                                        { "title": "查询ID" },
-                                        { "title": "用户名" },
-                                        { "title": "数据库"},
-                                        { "title": "地址" },
-                                        { "title": "耗时" },
-                                        { "title": "大小" },
-                                        { "title": "执行时间" },
-                                        {
-                                            "title":"详情",
-                                            "width": "25px",
-                                            "render": function(data,type,row)
-                                                {
-                                                   return  '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog("'+row[0]+'")><i class="ion-skip-forward"></i></button>'
-                                                }
-                                        },
-
-                                  ],
-                                  "language": get_languages()
-                         });
-                      }
-
-                  },
-               })
-
-            });
-
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
+        }
+    });
+
+    function showlog(p_sqlid) {
+        $.ajax({
+            url: "/slow/log/query/id",
+            type: "post",
+            datatype: "json",
+            data: {
+                sql_id: p_sqlid
+            },
+            success: function (obj) {
+                console.log('showlog=>obj=', obj);
+                var editor = ace.edit("ace-editor");
+                editor.setTheme("ace/theme/xcode");
+                editor.getSession().setMode("ace/mode/mysql");
+                editor.setShowPrintMargin(false);
+                editor.setFontSize(16);
+                editor.getSession().setUseSoftTabs(true);
+                editor.setReadOnly(true);
+                editor.setOption("wrap", "free")
+                editor.moveCursorTo(0, 0);
+                editor.setValue('')
+                editor.insert(obj['sql_text']);
+
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-slow-modal').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+            },
+        });
+    }
+
+    function showlog_oracle(p_sqlid) {
+        console.log('showlog_oracle=>p_sqlid=', p_sqlid);
+        $.ajax({
+            url: "/slow/log/query/id/oracle",
+            type: "post",
+            datatype: "json",
+            data: {
+                sql_id: p_sqlid
+            },
+            success: function (obj) {
+                console.log('showlog_oracle=>showlog=>obj=', obj);
+                var editor = ace.edit("ace-editor");
+                editor.setTheme("ace/theme/xcode");
+                editor.getSession().setMode("ace/mode/mysql");
+                editor.setShowPrintMargin(false);
+                editor.setFontSize(16);
+                editor.getSession().setUseSoftTabs(true);
+                editor.setReadOnly(true);
+                editor.setOption("wrap", "free")
+                editor.moveCursorTo(0, 0);
+                editor.setValue('')
+                editor.insert(obj['sql_text']);
+
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-slow-modal').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+            },
+        });
+    }
+
+    function showlog_mssql(p_sqlid) {
+        console.log('showlog_mssql=>p_sqlid=', p_sqlid);
+        $.ajax({
+            url: "/slow/log/query/id/mssql",
+            type: "post",
+            datatype: "json",
+            data: {
+                sql_id: p_sqlid
+            },
+            success: function (obj) {
+                console.log('showlog_oracle=>showlog=>obj=', obj);
+                var editor = ace.edit("ace-editor");
+                editor.setTheme("ace/theme/xcode");
+                editor.getSession().setMode("ace/mode/mysql");
+                editor.setShowPrintMargin(false);
+                editor.setFontSize(16);
+                editor.getSession().setUseSoftTabs(true);
+                editor.setReadOnly(true);
+                editor.setOption("wrap", "free")
+                editor.moveCursorTo(0, 0);
+                editor.setValue('')
+                editor.insert(obj['sql_text']);
+
+                $('.modal').on('show.bs.modal', centerModals);
+                $(window).on('resize', centerModals);
+                $('#con-slow-modal').modal({
+                    keyboard: false,
+                    backdrop: false
+                });
+            },
+        });
+    }
+
+    function set_where(p_ds) {
+        //oracle
+        if (p_ds['db_type'] == '1') {
+            $('#inst_name').attr("disabled", true);
+            $('#db_host').attr("disabled", true);
+            $('#db_name').attr("disabled", true);
+            $('#db_user').attr("disabled", true);
+            $('#dsupd').attr("disabled", true);
+            $('#dsupd').attr("disabled", true);
+
+        } else {
+            $('#inst_name').attr("disabled", false);
+            $('#db_host').attr("disabled", false);
+            $('#db_name').attr("disabled", false);
+            $('#db_user').attr("disabled", false);
+            $('#dsupd').attr("disabled", false);
+            $('#dsupd').attr("disabled", false);
+        }
+    }
+
+    function get_ds() {
+        var ds;
+        $.ajax({
+            url: "/ds/query/id",
+            type: "post",
+            datatype: "json",
+            async: false,
+            data: {
+                dsid: $('#dbs_name').val(),
+            },
+            success: function (msg) {
+                ds = msg
+            },
+        })
+        return ds;
+    }
+
+    $(document).ready(function () {
+        var ds;
+        var table;
+
+        $("#query_btn").click(function () {
+            if ($('#inst_name').val() == '' && $('#dbs_name').val() == '') {
+                swal("请选择实例或数据源", "", "info");
+                return false;
+            }
+
+            if ($('#begin_date').val() == '') {
+                swal("请输入日期起", "", "info");
+                return false;
+            }
+
+            if ($('#end_date').val() == '') {
+                swal("请输入日期止", "", "info");
+                return false;
+            }
+
+            if ($('#dbs_name').val() != '') {
+                //获取实例类型
+                ds = get_ds()
+                console.log('ds=', ds)
+            }
+
+            $.ajax({
+                url: "/slow/log/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    inst_id: $('#inst_name').val(),
+                    ds_id: $('#dbs_name').val(),
+                    db_name: $('#db_name').val(),
+                    db_user: $('#db_user').val(),
+                    db_host: $('#db_host').val(),
+                    begin_date: $('#begin_date').val(),
+                    end_date: $('#end_date').val(),
+                    begin_query_time: $('#begin_query_time').val(),
+                    end_query_time: $('#end_query_time').val(),
+                    db_sql: $('#db_sql').val(),
+                },
+                success: function (dataSet) {
+                    if (table != undefined) {
+                        console.log("table is defined=", table);
+                        table.destroy();
+                        $('#example').empty();
+                    } else {
+                        $('#example').empty();
+                    }
+
+                    if (ds['db_type'] == '1') {
+                        table = $('#example').DataTable({
+                            "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                            "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                            destroy: true,
+                            async: true,
+                            scrollY: true,
+                            scrollX: true,
+                            ordering: true,
+                            scrollCollapse: true,
+                            paging: true,
+                            iDisplayLength: 16,
+                            data: dataSet,
+                            columns: [
+                                {"title": "查询ID"},
+                                {"title": "用户名"},
+                                {"title": "优先级"},
+                                {"title": "最早时间"},
+                                {"title": "最晚时间"},
+                                {"title": "执行次数"},
+                                {"title": "平均时间"},
+                                {"title": "处理行数"},
+                                {"title": "磁盘读"},
+                                {"title": "逻辑读"},
+                                {
+                                    "title": "详情",
+                                    "width": "25px",
+                                    "render": function (data, type, row) {
+                                        return '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog_oracle("' + row[0] + '")><i class="ion-skip-forward"></i></button>'
+                                    }
+                                },
+
+                            ],
+                            "language": get_languages()
+                        });
+                    } else if (ds['db_type'] == '2') {
+                        table = $('#example').DataTable({
+                            "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                            "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                            destroy: true,
+                            async: true,
+                            scrollY: true,
+                            scrollX: true,
+                            ordering: true,
+                            scrollCollapse: true,
+                            paging: true,
+                            iDisplayLength: 16,
+                            data: dataSet,
+                            columns: [
+                                {"title": "查询ID"},
+                                {"title": "用户名"},
+                                {"title": "数据库名"},
+                                {"title": "客户端名"},
+                                {"title": "开始时间"},
+                                {"title": "结束时间"},
+                                {"title": "查询时长"},
+                                {"title": "物理IO"},
+                                {"title": "操作命令"},
+                                {
+                                    "title": "详情",
+                                    "width": "25px",
+                                    "render": function (data, type, row) {
+                                        return '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog_mssql("' + row[0] + '")><i class="ion-skip-forward"></i></button>'
+                                    }
+                                },
+
+                            ],
+                            "language": get_languages()
+                        });
+                    } else {
+                        table = $('#example').DataTable({
+                            "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                            "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                            destroy: true,
+                            async: true,
+                            scrollY: true,
+                            scrollX: true,
+                            ordering: true,
+                            scrollCollapse: true,
+                            paging: true,
+                            iDisplayLength: 16,
+                            data: dataSet,
+                            columns: [
+                                {"title": "查询ID"},
+                                {"title": "用户名"},
+                                {"title": "数据库"},
+                                {"title": "地址"},
+                                {"title": "耗时"},
+                                {"title": "大小"},
+                                {"title": "执行时间"},
+                                {
+                                    "title": "详情",
+                                    "width": "25px",
+                                    "render": function (data, type, row) {
+                                        return '<button class="btn btn-xs waves-effect waves-light"  onclick=showlog("' + row[0] + '")><i class="ion-skip-forward"></i></button>'
+                                    }
+                                },
+
+                            ],
+                            "language": get_languages()
+                        });
+                    }
+
+                },
+            })
 
         });
 
-          function get_inst_db_users() {
-             if ($('#inst_name').val()!='') {
-                 $.ajax({
-                      url: "/get/inst/db",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          inst_id : $('#inst_name').val(),
-                      },
-                      success: function (dataSet) {
-                         console.log('/get/inst/db=',dataSet)
-                         $("#db_name").empty();
-                         $("#db_name").append("<option value=''>请选择数据库...</option>");
-                         for(i=0;i<dataSet['data'].length;i++){
-                              console.log('i=',i)
-                              var val  = dataSet['data'][i]
-                              var text = dataSet['data'][i]
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
-                              $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      },
-                });
-             }
+        $("#query_btn").click();
 
-              if ($('#inst_name').val()!='') {
-                  $.ajax({
-                      url: "/get/inst/user",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          inst_id : $('#inst_name').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#db_user").empty();
-                         $("#db_user").append("<option value=''>请选择用户...</option>");
-                         for(i=0;i<dataSet['data'].length;i++){
-                              var val  = dataSet['data'][i]
-                              var text = dataSet['data'][i]
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
-                              $("#db_user").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      },
-                 });
-              }
-          }
+    });
 
-          function get_ds_db_users(){
-              if ($('#dbs_name').val()!='') {
-                 $.ajax({
-                      url: "/get/ds/db",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          db_id : $('#dbs_name').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#db_name").empty();
-                         $("#db_name").append("<option value=''>请选择数据库...</option>");
-                         for(i=0;i<dataSet['data'].length;i++){
-                              console.log('i=',i)
-                              var val  = dataSet['data'][i]
-                              var text = dataSet['data'][i]
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
-                              $("#db_name").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      },
-                  });
-              }
+    function get_inst_db_users() {
+        if ($('#inst_name').val() != '') {
+            $.ajax({
+                url: "/get/inst/db",
+                type: "post",
+                datatype: "json",
+                data: {
+                    inst_id: $('#inst_name').val(),
+                },
+                success: function (dataSet) {
+                    console.log('/get/inst/db=', dataSet)
+                    $("#db_name").empty();
+                    $("#db_name").append("<option value=''>请选择数据库...</option>");
+                    for (i = 0; i < dataSet['data'].length; i++) {
+                        console.log('i=', i)
+                        var val = dataSet['data'][i]
+                        var text = dataSet['data'][i]
+                        console.log('option:', "<option value='" + val + "'>" + text + "</option>")
+                        $("#db_name").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                },
+            });
+        }
 
-               if ($('#dbs_name').val()!='') {
-                  $.ajax({
-                      url: "/get/ds/user",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          db_id : $('#dbs_name').val(),
-                      },
-                      success: function (dataSet) {
-                         $("#db_user").empty();
-                         $("#db_user").append("<option value=''>请选择用户...</option>");
-                         for(i=0;i<dataSet['data'].length;i++){
-                             console.log('i=',i)
-                              var val  = dataSet['data'][i]
-                              var text = dataSet['data'][i]
-                              console.log('option:',"<option value='"+val+"'>"+text+"</option>")
-                              $("#db_user").append("<option value='"+val+"'>"+text+"</option>");
-                         }
-                      },
-                 });
-              }
-          }
+        if ($('#inst_name').val() != '') {
+            $.ajax({
+                url: "/get/inst/user",
+                type: "post",
+                datatype: "json",
+                data: {
+                    inst_id: $('#inst_name').val(),
+                },
+                success: function (dataSet) {
+                    $("#db_user").empty();
+                    $("#db_user").append("<option value=''>请选择用户...</option>");
+                    for (i = 0; i < dataSet['data'].length; i++) {
+                        var val = dataSet['data'][i]
+                        var text = dataSet['data'][i]
+                        console.log('option:', "<option value='" + val + "'>" + text + "</option>")
+                        $("#db_user").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                },
+            });
+        }
+    }
 
-          $('#inst_name').change(function() {
-              get_inst_db_users();
-              $('#dbs_name').val('')
-         });
+    function get_ds_db_users() {
+        if ($('#dbs_name').val() != '') {
+            $.ajax({
+                url: "/get/ds/db",
+                type: "post",
+                datatype: "json",
+                data: {
+                    db_id: $('#dbs_name').val(),
+                },
+                success: function (dataSet) {
+                    $("#db_name").empty();
+                    $("#db_name").append("<option value=''>请选择数据库...</option>");
+                    for (i = 0; i < dataSet['data'].length; i++) {
+                        console.log('i=', i)
+                        var val = dataSet['data'][i]
+                        var text = dataSet['data'][i]
+                        console.log('option:', "<option value='" + val + "'>" + text + "</option>")
+                        $("#db_name").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                },
+            });
+        }
 
-          $('#dbs_name').change(function() {
-              var ds = get_ds();
-              if (ds['db_type'] =='0' ){
-                    get_ds_db_users();
-                    $('#inst_name').val('');
-              }
-              set_where(ds);
-         });
+        if ($('#dbs_name').val() != '') {
+            $.ajax({
+                url: "/get/ds/user",
+                type: "post",
+                datatype: "json",
+                data: {
+                    db_id: $('#dbs_name').val(),
+                },
+                success: function (dataSet) {
+                    $("#db_user").empty();
+                    $("#db_user").append("<option value=''>请选择用户...</option>");
+                    for (i = 0; i < dataSet['data'].length; i++) {
+                        console.log('i=', i)
+                        var val = dataSet['data'][i]
+                        var text = dataSet['data'][i]
+                        console.log('option:', "<option value='" + val + "'>" + text + "</option>")
+                        $("#db_user").append("<option value='" + val + "'>" + text + "</option>");
+                    }
+                },
+            });
+        }
+    }
 
-   </script>
+    $('#inst_name').change(function () {
+        get_inst_db_users();
+        $('#dbs_name').val('')
+    });
+
+    $('#dbs_name').change(function () {
+        var ds = get_ds();
+        if (ds['db_type'] == '0') {
+            get_ds_db_users();
+            $('#inst_name').val('');
+        }
+        set_where(ds);
+    });
+
+</script>
 </body>
 
 </html>

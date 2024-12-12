@@ -4,116 +4,116 @@
     <meta charset="utf-8">
     <title>会话查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-       <div class="col-md-3 input-group">
-            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-            <input type="text" id="username" name="username" class="form-control" placeholder="请输入登陆名">
-            <span class="input-group-btn">
-               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+<p></p>
+<div class="col-md-12">
+    <div class="col-md-3 input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input type="text" id="username" name="username" class="form-control" placeholder="请输入登陆名">
+        <span class="input-group-btn">
+               <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                       class="fa fa-search"></i></button>
             </span>
-      </div>
-      <p></p>
-      <div id="div-tab">
-           <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"  ></table>
-      </div>
     </div>
+    <p></p>
+    <div id="div-tab">
+        <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"></table>
+    </div>
+</div>
 
-   <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        $("#username").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
-
-        function kill_sess(p_session_id){
-            $.ajax({
-                  url: "/user/_session/kill",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      session_id:p_session_id
-                  },
-                  success: function (dataSet) {
-                       if (dataSet.code == 0) {
-                            swal("会话已删除!", "", "success")
-                            $("#query_btn").click();
-                       } else {
-                            swal("会话删除失败!", "", "error")
-                       }
-                  },
-             })
-        }
-
-        $(document).ready(function() {
-
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/user/_session",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname: $('#username').val()
-                  },
-                  success: function (dataSet) {
-                      $.extend( $.fn.dataTable.defaults, {
-                            searching: false,
-                            ordering:  false
-                      } );
-
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          ordering   :false,
-                          scrollY    :true,
-                          scrollX    :true,
-                          scrollCollapse: true,
-                          paging     : true,
-                          bAutoWidth : true,
-                          iDisplayLength: 14,
-                          data: dataSet,
-                          columns: [
-                            { "title": "会话ID" ,"visible":true},
-                            { "title": "用户ID" },
-                            { "title": "用户名"},
-                            { "title": "姓名"},
-                            { "title": "登陆时间" },
-                            { "title": "登陆地址" },
-                            { "title": "状态" },
-                            { "title": "在线时长" },
-                            { "title": "更新时间" },
-                            {
-                                "title":"操作",
-                                "width": "25px",
-                                "render": function(data,type,row)
-                                    {
-                                       return '&nbsp;'+'<input class="btn btn-xs btn-primary"  type="button"  value="下线" onclick="kill_sess(\''+row[0]+'\');"/>' +'&nbsp;';
-                                    }
-                            },
-                          ],
-                         "language": get_languages()
-                         });
-                  }
-              })
-            });
-
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
+        }
+    });
 
+    $("#username").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    function kill_sess(p_session_id) {
+        $.ajax({
+            url: "/user/_session/kill",
+            type: "post",
+            datatype: "json",
+            data: {
+                session_id: p_session_id
+            },
+            success: function (dataSet) {
+                if (dataSet.code == 0) {
+                    swal("会话已删除!", "", "success")
+                    $("#query_btn").click();
+                } else {
+                    swal("会话删除失败!", "", "error")
+                }
+            },
+        })
+    }
+
+    $(document).ready(function () {
+
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/user/_session",
+                type: "post",
+                datatype: "json",
+                data: {
+                    qname: $('#username').val()
+                },
+                success: function (dataSet) {
+                    $.extend($.fn.dataTable.defaults, {
+                        searching: false,
+                        ordering: false
+                    });
+
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        ordering: false,
+                        scrollY: true,
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: true,
+                        bAutoWidth: true,
+                        iDisplayLength: 14,
+                        data: dataSet,
+                        columns: [
+                            {"title": "会话ID", "visible": true},
+                            {"title": "用户ID"},
+                            {"title": "用户名"},
+                            {"title": "姓名"},
+                            {"title": "登陆时间"},
+                            {"title": "登陆地址"},
+                            {"title": "状态"},
+                            {"title": "在线时长"},
+                            {"title": "更新时间"},
+                            {
+                                "title": "操作",
+                                "width": "25px",
+                                "render": function (data, type, row) {
+                                    return '&nbsp;' + '<input class="btn btn-xs btn-primary"  type="button"  value="下线" onclick="kill_sess(\'' + row[0] + '\');"/>' + '&nbsp;';
+                                }
+                            },
+                        ],
+                        "language": get_languages()
+                    });
+                }
+            })
         });
 
-   </script>
+        $("#query_btn").click();
+
+    });
+
+</script>
 </body>
 
 </html>

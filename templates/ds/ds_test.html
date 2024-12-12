@@ -4,200 +4,204 @@
     <meta charset="utf-8">
     <title>数据源测试</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
-       #warning {
-           position: fixed;
-           z-index: 99;
-           filter:alpha(opacity=50);
-            -moz-opacity:0.5;
+
+        #warning {
+            position: fixed;
+            z-index: 99;
+            filter: alpha(opacity=50);
+            -moz-opacity: 0.5;
             -khtml-opacity: 0.5;
             opacity: 0.5;
-       }
+        }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-       <div class="row">
-           <div class="col-md-2">
-              <div class="input-group">
+<p></p>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="input-group">
                 <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
-                <input type="text" id="dsname"  class="form-control" placeholder="请输入数据源名">
-              </div>
-           </div>
-           <div class="col-md-3">
-                 <div class="input-group">
-                     <span class="input-group-addon">项目名称</span>
-                     <select class="form-control select" id="market_id" >
-                        <option value='' selected = "selected">.....</option>
-                        {% for var in dm_proj_type %}
-                             <option value={{var[0]}} >{{var[1]}}</option>
-                        {% end %}
-                    </select>
-                 </div>
-           </div>
-           <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据库环境</span>
-                 <select class="form-control select" id="db_env" >
-                    <option value='' selected = "selected">.....</option>
-                    {% for var in dm_env_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
+                <input type="text" id="dsname" class="form-control" placeholder="请输入数据源名">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">项目名称</span>
+                <select class="form-control select" id="market_id">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_proj_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
-             </div>
-           </div>
-           <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据源类型</span>
-                 <select class="form-control select" id="ds_type" >
-                    <option value='' selected = "selected">.....</option>
-                    <option value='backup' >备份数据源</option>
-                    <option value='sync' >同步数据源</option>
-                </select>
-             </div>
-          </div>
-           <div class="col-md-1">
-             <div class="input-group">
-                <span class="input-group-btn">
-                   <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
-                </span>
-           </div>
+            </div>
         </div>
-      </div>
-      <p></p>
-      <div class="row">
-          <div id="div-tab">
-               <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-          </div>
-          <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
-               <input  id='dstest' type='button' class="btn waves-effect waves-light btn-primary" value="测试"/>
-          </div>
-     </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据库环境</span>
+                <select class="form-control select" id="db_env">
+                    <option value='' selected="selected">.....</option>
+                    {% for var in dm_env_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据源类型</span>
+                <select class="form-control select" id="ds_type">
+                    <option value='' selected="selected">.....</option>
+                    <option value='backup'>备份数据源</option>
+                    <option value='sync'>同步数据源</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group">
+                <span class="input-group-btn">
+                   <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                           class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </div>
     </div>
-    <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        $("#dsname").bind("input propertychange",function(){
-           $('#dstest').attr("disabled",true);
-           $("#query_btn").click();
-        });
-
-        function isSelect() {
-            var rec = 0;
-            $("#example tbody tr td input:checked").each(function () {
-                rec = rec + 1;
-            });
-            if (rec == 1) {
-                $('#dstest').attr("disabled", false);
-            } else {
-                $('#dstest').attr("disabled", true);
-            }
-        }
-
-        $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/ds/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      dsname   : $('#dsname').val(),
-                      market_id: $('#market_id').val(),
-                      db_env   : $('#db_env').val(),
-                      ds_type  : $('#ds_type').val(),
-
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                          "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                          "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                          destroy    :true,
-                          async      :true,
-                          scrollY    :false,
-                          scrollX    :true,
-                          scrollCollapse: false,
-                          paging:     true,
-                          iDisplayLength: 15,
-                          data: dataSet,
-                          columns: [
-                             { "title": "标识符" },
-                             { "title": "数据源描述" },
-                             { "title": "数据源环境" },
-                             { "title": "数据源定义" },
-                             { "title": "用户"},
-                             { "title": "是否启用"},
-                             { "title": "更新人"},
-                             { "title": "更新日期"},
-                             {
-                                "title":"选择",
-                                "width": "25px",
-                                "render": function(data,type,row){
-                                     console.log('row[0]=',row[0],row[1])
-                                     return '<input type="radio" name="userid" onclick="isSelect();" >'; }
-                             },
-                          ],
-                          "language": get_languages()
-                         });
-                      $('#dstest').attr("disabled",true);
-                 },
-              });
-        });
-
-        $('#dstest').on('click', function() {
-            var rec = 0;
-            var ds = '';
-            $("#example tbody tr td input:checked").each(function () {
-                var row = $(($(this).parent().parent().html()));
-                ds = row[0].innerHTML;
-                rec = 1;
-            });
-            if (rec == 0) {
-                swal("请选择数据源!", "", "success");
-            }
-            $('#dstest').attr("disabled", true);
-            $.ajax({
-                url: "/ds/check/valid",
-                type: "post",
-                datatype: "json",
-                data: {
-                    id: ds
-                },
-                success: function (dataSet) {
-                    if (dataSet.code == '0') {
-                        swal("数据源测试通过!", "", "success");
-                        $("#query_btn").click();
-                    } else {
-                        swal("数据源测试失败!", dataSet.message + "!", "error");
-                    }
-                    $('#dstest').attr("disabled", false);
-                },
-            });
-        });
-
-        $(document).ready(function() {
-            $('#warning').hide();
+    <p></p>
+    <div class="row">
+        <div id="div-tab">
+            <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                   width="100%" height="100%"></table>
+        </div>
+        <div class="col-md-offset-5 col-lg-offset-5col-xl-offset-5">
+            <input id='dstest' type='button' class="btn waves-effect waves-light btn-primary" value="测试"/>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
-        });
+        }
+    });
 
-        $("#dsname").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
+    $("#dsname").bind("input propertychange", function () {
+        $('#dstest').attr("disabled", true);
+        $("#query_btn").click();
+    });
 
-        $("#market_id").bind("input propertychange",function(){
-           $("#query_btn").click();
+    function isSelect() {
+        var rec = 0;
+        $("#example tbody tr td input:checked").each(function () {
+            rec = rec + 1;
         });
+        if (rec == 1) {
+            $('#dstest').attr("disabled", false);
+        } else {
+            $('#dstest').attr("disabled", true);
+        }
+    }
 
-        $("#db_env").bind("input propertychange",function(){
-           $("#query_btn").click();
+    $("#query_btn").click(function () {
+        $.ajax({
+            url: "/ds/_query",
+            type: "post",
+            datatype: "json",
+            data: {
+                dsname: $('#dsname').val(),
+                market_id: $('#market_id').val(),
+                db_env: $('#db_env').val(),
+                ds_type: $('#ds_type').val(),
+
+            },
+            success: function (dataSet) {
+                $('#example').DataTable({
+                    "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                    "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                    destroy: true,
+                    async: true,
+                    scrollY: false,
+                    scrollX: true,
+                    scrollCollapse: false,
+                    paging: true,
+                    iDisplayLength: 15,
+                    data: dataSet,
+                    columns: [
+                        {"title": "标识符"},
+                        {"title": "数据源描述"},
+                        {"title": "数据源环境"},
+                        {"title": "数据源定义"},
+                        {"title": "用户"},
+                        {"title": "是否启用"},
+                        {"title": "更新人"},
+                        {"title": "更新日期"},
+                        {
+                            "title": "选择",
+                            "width": "25px",
+                            "render": function (data, type, row) {
+                                console.log('row[0]=', row[0], row[1])
+                                return '<input type="radio" name="userid" onclick="isSelect();" >';
+                            }
+                        },
+                    ],
+                    "language": get_languages()
+                });
+                $('#dstest').attr("disabled", true);
+            },
         });
+    });
 
-   </script>
+    $('#dstest').on('click', function () {
+        var rec = 0;
+        var ds = '';
+        $("#example tbody tr td input:checked").each(function () {
+            var row = $(($(this).parent().parent().html()));
+            ds = row[0].innerHTML;
+            rec = 1;
+        });
+        if (rec == 0) {
+            swal("请选择数据源!", "", "success");
+        }
+        $('#dstest').attr("disabled", true);
+        $.ajax({
+            url: "/ds/check/valid",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: ds
+            },
+            success: function (dataSet) {
+                if (dataSet.code == '0') {
+                    swal("数据源测试通过!", "", "success");
+                    $("#query_btn").click();
+                } else {
+                    swal("数据源测试失败!", dataSet.message + "!", "error");
+                }
+                $('#dstest').attr("disabled", false);
+            },
+        });
+    });
+
+    $(document).ready(function () {
+        $('#warning').hide();
+        $("#query_btn").click();
+    });
+
+    $("#dsname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#market_id").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $("#db_env").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+</script>
 </body>
 
 </html>

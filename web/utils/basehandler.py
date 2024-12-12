@@ -6,50 +6,54 @@
 # @Software: PyCharm
 
 import time
+
 import tornado.web
 from tornado.web import HTTPError
-from web.model.t_xtqx  import check_url,check_url_sync
+
+from web.model.t_xtqx import check_url, check_url_sync
+
 
 class basehandler(tornado.web.RequestHandler):
-     # def __init__(self):
-     #     self.userid= str(self.get_secure_cookie("userid"), encoding="utf-8")
-     #     self.username = str(self.get_secure_cookie("username"), encoding="utf-8")
+    # def __init__(self):
+    #     self.userid= str(self.get_secure_cookie("userid"), encoding="utf-8")
+    #     self.username = str(self.get_secure_cookie("username"), encoding="utf-8")
 
-
-     def get_current_user(self):
+    def get_current_user(self):
         userid = ''
         username = ''
         if self.get_secure_cookie("userid") is not None:
-            userid   = str(self.get_secure_cookie("userid"), encoding="utf-8")
+            userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
             username = str(self.get_secure_cookie("username"), encoding="utf-8")
 
-        if self.request.uri!='/':
-           self.set_secure_cookie("view_url", self.request.uri, expires=time.time() + 60)
+        if self.request.uri != '/':
+            self.set_secure_cookie("view_url", self.request.uri, expires=time.time() + 60)
 
-           if userid  is None or userid == '':
-               if self.request.method in ("GET", "HEAD"):
-                   return self.get_secure_cookie("userid")
-               else:
-                   raise HTTPError(403,'登陆信息已过期，请重新登陆!')
+            if userid is None or userid == '':
+                if self.request.method in ("GET", "HEAD"):
+                    return self.get_secure_cookie("userid")
+                else:
+                    raise HTTPError(403, '登陆信息已过期，请重新登陆!')
 
-           flag = check_url_sync(userid, self.request.uri.split('?')[0])
-           if not flag:
-               raise HTTPError(502, "basehandler=>用户:{}({})无权访问URL`'{}'`!".format(username, userid, self.request.uri))
+            flag = check_url_sync(userid, self.request.uri.split('?')[0])
+            if not flag:
+                raise HTTPError(502,
+                                "basehandler=>用户:{}({})无权访问URL`'{}'`!".format(username, userid, self.request.uri))
 
-           self.set_secure_cookie("username", username, expires=time.time() + 1800)
-           self.set_secure_cookie("userid", userid, expires=time.time() + 1800)
-           self.set_secure_cookie("heartbeat", 'health', expires=time.time() + 300)
-           return self.get_secure_cookie("userid")
+            self.set_secure_cookie("username", username, expires=time.time() + 1800)
+            self.set_secure_cookie("userid", userid, expires=time.time() + 1800)
+            self.set_secure_cookie("heartbeat", 'health', expires=time.time() + 300)
+            return self.get_secure_cookie("userid")
 
         else:
             self.set_secure_cookie("view_url", '/main', expires=time.time() + 60)
             return self.get_secure_cookie("userid")
 
-     async def check_valid(self):
-        userid   = str(self.get_secure_cookie("userid"), encoding="utf-8")
+    async def check_valid(self):
+        userid = str(self.get_secure_cookie("userid"), encoding="utf-8")
         username = str(self.get_secure_cookie("username"), encoding="utf-8")
-        flag = await check_url(userid,self.request.uri.split('?')[0])
-        if  not flag:
-            raise HTTPError(502,"basehandler=>用户:{}({})无权访问URL`'{}'`!".format(username,userid,self.request.uri))
+        flag = await check_url(userid, self.request.uri.split('?')[0])
+        if not flag:
+            raise HTTPError(502,
+                            "basehandler=>用户:{}({})无权访问URL`'{}'`!".format(username, userid, self.request.uri))
         else:
-            print("basehandler=>用户:{}({})认证问URL'{}'通过!".format(username,userid,self.request.uri))
+            print("basehandler=>用户:{}({})认证问URL'{}'通过!".format(username, userid, self.request.uri))

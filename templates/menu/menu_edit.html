@@ -5,103 +5,103 @@
     <title>菜单变更</title>
 </head>
 <body>
-  <p></p>
-   <div class="col-md-6">
-       <form class="form-horizontal" role="form">
-           <input  id="menuid" type="hidden" name="menuid" value={{menuid}} >
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>菜单名称</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="name"  type="text" class="form-control" value={{name}}>
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label">功能链接</label>
-                </div>
-                <div class="col-md-10">
-                    <input id="url"  type="text" class="form-control" value={{url}}>
-                </div>
-           </div>
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>菜单状态</label>
-                </div>
-               <div class="col-md-10">
-                    <select class="form-control select" id="status" name="status">
-                          {% if status=='1' %}
-                                <option value="1" selected = "selected">启用</option>
-                                <option value="0">禁用</option>
-                          {% end %}
-
-                          {% if status=='0' %}
-                                <option value="0" selected = "selected">禁用</option>
-                                <option value="1">启用</option>
-                          {% end %}
-                    </select>
-               </div>
+<p></p>
+<div class="col-md-6">
+    <form class="form-horizontal" role="form">
+        <input id="menuid" type="hidden" name="menuid" value={{menuid}}>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>菜单名称</label>
             </div>
+            <div class="col-md-10">
+                <input id="name" type="text" class="form-control" value={{name}}>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label">功能链接</label>
+            </div>
+            <div class="col-md-10">
+                <input id="url" type="text" class="form-control" value={{url}}>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>菜单状态</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control select" id="status" name="status">
+                    {% if status=='1' %}
+                    <option value="1" selected="selected">启用</option>
+                    <option value="0">禁用</option>
+                    {% end %}
 
-           <div class="form-group">
-                <div>
-                    <label class="col-md-2 control-label"><span>*</span>父级节点</label>
-                </div>
-                <div class="col-md-10">
-                    <select class="form-control" id="parent_id" >
-                        {% for var in menus %}
-                            {% if (var[0] == parent_id) %}
-                               <option value={{var[0]}} selected = "selected">{{var[1]}}</option>
-                            {% else %}
-                               <option value={{var[0]}} >{{var[1]}}</option>
-                            {% end %}
-                         {% end %}
-                    </select>
-                </div>
-           </div>
-           <br>
-           <div class="form-group m-b-0">
-                <div class="col-sm-offset-6 col-sm-9">
-                   <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
-                   <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
-                </div>
-           </div>
-       </form>
-    </div>
+                    {% if status=='0' %}
+                    <option value="0" selected="selected">禁用</option>
+                    <option value="1">启用</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
 
-    <script>
-        $(document).ready(function() {
-            set_selected()
+        <div class="form-group">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>父级节点</label>
+            </div>
+            <div class="col-md-10">
+                <select class="form-control" id="parent_id">
+                    {% for var in menus %}
+                    {% if (var[0] == parent_id) %}
+                    <option value={{var[0]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="form-group m-b-0">
+            <div class="col-sm-offset-6 col-sm-9">
+                <button id="save" type="button" class="btn btn-custom waves-effect waves-light btn-md">变更</button>
+                <button id="return" type="button" class="btn btn-custom waves-effect waves-light btn-md">返回</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        set_selected()
+    });
+
+    $('#return').on('click', function () {
+        $('#main-container-div').load('/menu/change');
+    });
+
+    $("#save").click(function () {
+        $.ajax({
+            url: "/menu/edit/save",
+            type: "post",
+            datatype: "json",
+            data: {
+                menuid: $('#menuid').val(),
+                name: $('#name').val(),
+                url: $('#url').val(),
+                status: $('#status').val(),
+                parent_id: $('#parent_id').val()
+            },
+            success: function (dataSet) {
+                console.log(dataSet.code, dataSet.message);
+                if (dataSet.code == 0) {
+                    swal("变更成功", "", "success")
+                } else {
+                    swal(dataSet.message, "", "error")
+                }
+            },
         });
-
-        $('#return').on('click', function() {
-           $('#main-container-div').load('/menu/change');
-        });
-
-         $("#save").click(function () {
-              $.ajax({
-                url: "/menu/edit/save",
-                type: "post",
-                datatype: "json",
-                data: {
-                    menuid:   $('#menuid').val(),
-                    name  :   $('#name').val(),
-                    url   :   $('#url').val(),
-                    status:   $('#status').val(),
-                    parent_id: $('#parent_id').val()
-                },
-                success: function (dataSet) {
-                    console.log(dataSet.code, dataSet.message);
-                    if (dataSet.code==0) {
-                       swal("变更成功", "", "success")
-                    } else {
-                       swal(dataSet.message, "", "error")
-                    }
-                },
-             });
-        });
-   </script>
+    });
+</script>
 </body>
 
 </html>

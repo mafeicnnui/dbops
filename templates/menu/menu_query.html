@@ -4,81 +4,83 @@
     <meta charset="utf-8">
     <title>菜单查询</title>
     <style>
-        #example{
+        #example {
             width: 100% !important;
         }
     </style>
 </head>
 <body>
-    <p></p>
-    <div class="col-md-12">
-       <div class="col-md-3 input-group">
-            <span class="input-group-addon"><i class="mdi mdi-file-tree"></i></span>
-            <input type="text" id="menuname"  class="form-control" placeholder="请输入菜单名">
-            <span class="input-group-btn">
-               <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+<p></p>
+<div class="col-md-12">
+    <div class="col-md-3 input-group">
+        <span class="input-group-addon"><i class="mdi mdi-file-tree"></i></span>
+        <input type="text" id="menuname" class="form-control" placeholder="请输入菜单名">
+        <span class="input-group-btn">
+               <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                       class="fa fa-search"></i></button>
             </span>
-      </div>
-      <p></p>
-      <div id="div-tab">
-           <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"  height="100%" ></table>
-      </div>
     </div>
+    <p></p>
+    <div id="div-tab">
+        <table id="example" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%"
+               height="100%"></table>
+    </div>
+</div>
 
-   <script>
-        $(document).keydown(function(event){
-            if (event.keyCode == 13) { //判断为Enter键
-                $("#query_btn").click();
-            }
-         });
-
-        $("#menuname").bind("input propertychange",function(){
-           $("#query_btn").click();
-        });
-
-        $(document).ready(function() {
-            $("#query_btn").click(function() {
-              $.ajax({
-                  url: "/menu/_query",
-                  type: "post",
-                  datatype: "json",
-                  data:{
-                      qname: $('#menuname').val()
-                  },
-                  success: function (dataSet) {
-                      $('#example').DataTable( {
-                      "stripeClasses": [ 'cell-border', 'cell-border', 'cell-border' ],
-                      "dom"      : '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                      destroy    :true,
-                      async      :true,
-                      ordering   :false,
-                      scrollY    :true,
-                      scrollX    :true,
-                      scrollCollapse: true,
-                      paging:     true,
-                      iDisplayLength: 16,
-                      data: dataSet,
-                      columns: [
-                            { "title": "权限ID" },
-                            { "title": "菜单名" },
-                            { "title": "功能链接" },
-                            { "title": "是否启用" },
-                            { "title": "创建人" },
-                            { "title": "创建日期" },
-                            { "title": "更新人"},
-                            { "title": "更新日期"},
-                      ],
-                      "language": get_languages()
-                     });
-                  },
-             });
-            });
-
+<script>
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
             $("#query_btn").click();
+        }
+    });
 
+    $("#menuname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
+
+    $(document).ready(function () {
+        $("#query_btn").click(function () {
+            $.ajax({
+                url: "/menu/_query",
+                type: "post",
+                datatype: "json",
+                data: {
+                    qname: $('#menuname').val()
+                },
+                success: function (dataSet) {
+                    $('#example').DataTable({
+                        "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
+                        "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                        destroy: true,
+                        async: true,
+                        ordering: false,
+                        scrollY: true,
+                        scrollX: true,
+                        scrollCollapse: true,
+                        paging: true,
+                        iDisplayLength: 16,
+                        data: dataSet,
+                        columns: [
+                            {"title": "权限ID"},
+                            {"title": "菜单名"},
+                            {"title": "功能链接"},
+                            {"title": "是否启用"},
+                            {"title": "创建人"},
+                            {"title": "创建日期"},
+                            {"title": "更新人"},
+                            {"title": "更新日期"},
+                        ],
+                        "language": get_languages()
+                    });
+                },
+            });
         });
 
-   </script>
+        $("#query_btn").click();
+
+    });
+
+</script>
 </body>
 
 </html>

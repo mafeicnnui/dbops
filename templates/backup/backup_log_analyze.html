@@ -1,167 +1,174 @@
-  <head>
-        <meta charset="utf-8">
- </head>
- <body>
-    <br>
-    <div class="container">
-      <div class="row">
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
-                 <select class="form-control select" id="db_env" >
-                    <option value='' selected = "selected">选择环境...</option>
-                    {% for var in dm_env_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                 <span class="input-group-addon">数据库类型</span>
-                 <select class="form-control select" id="db_type" >
-                    <option value='' selected = "selected">选择类型...</option>
-                    {% for var in dm_db_type %}
-                         <option value={{var[0]}} >{{var[1]}}</option>
-                    {% end %}
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-                <span class="input-group-addon">任务</span>
-                <select class="form-control select" id="tagname" >
-                        <option value='' selected = "selected">请选择任务..</option>
-                        <!--{% for var in db_backup_tags %}-->
-                             <!--<option value={{var[0]}} >{{var[1]}}</option>-->
-                        <!--{% end %}-->
-                </select>
-             </div>
-         </div>
-         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">备份日期起</span>
-              <input  id="begin_date"  type="text" class="form-control datepicker" placeholder="备份时间起" value="{{begin_date}}">
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
-            </div>
-         </div>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<br>
+<div class="container">
+    <div class="row">
         <div class="col-md-2">
-             <div class="input-group">
-              <span class="input-group-addon">备份日期止</span>
-              <input  id="end_date"  type="text" class="form-control datepicker" placeholder="备份时间止" value="{{end_date}}" >
-              <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
+                <select class="form-control select" id="db_env">
+                    <option value='' selected="selected">选择环境...</option>
+                    {% for var in dm_env_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">数据库类型</span>
+                <select class="form-control select" id="db_type">
+                    <option value='' selected="selected">选择类型...</option>
+                    {% for var in dm_db_type %}
+                    <option value={{var[0]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">任务</span>
+                <select class="form-control select" id="tagname">
+                    <option value='' selected="selected">请选择任务..</option>
+                    <!--{% for var in db_backup_tags %}-->
+                    <!--<option value={{var[0]}} >{{var[1]}}</option>-->
+                    <!--{% end %}-->
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">备份日期起</span>
+                <input id="begin_date" type="text" class="form-control datepicker" placeholder="备份时间起"
+                       value="{{begin_date}}">
+                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <span class="input-group-addon">备份日期止</span>
+                <input id="end_date" type="text" class="form-control datepicker" placeholder="备份时间止"
+                       value="{{end_date}}">
+                <span class="input-group-addon bg-custom b-0"><i class="mdi mdi-calendar text-white"></i></span>
             </div>
         </div>
         <div class="col-md-1">
-             <div class="input-group">
+            <div class="input-group">
               <span class="input-group-btn">
-                <button type="button"  id='query_btn' class="btn waves-effect waves-light btn-primary"><i class="fa fa-search"></i></button>
+                <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
+                        class="fa fa-search"></i></button>
               </span>
             </div>
         </div>
-      </div>
     </div>
-     <p></p>
+</div>
+<p></p>
 
-    <!-- db-backup-time row -->
-    <div id='backup-container' class="container">
-        <div class="row">
-             <div class="col-lg-12">
-                <div class="card-box">
-                    <h6 class="header-title m-t-0"><small>备份空间</small></h6>
-                    <div id="db-backup-size" style="height: 280px;"></div>
-                </div>
-            </div><!-- end col -->
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card-box">
-                    <h6 class="header-title m-t-0"><small>备份时长</small></h6>
-                    <div id="db-backup-time" style="height: 280px;"></div>
-                </div>
-            </div><!-- end col -->
-        </div>
-        <!-- end row -->
+<!-- db-backup-time row -->
+<div id='backup-container' class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card-box">
+                <h6 class="header-title m-t-0"><small>备份空间</small></h6>
+                <div id="db-backup-size" style="height: 280px;"></div>
+            </div>
+        </div><!-- end col -->
     </div>
-    <script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card-box">
+                <h6 class="header-title m-t-0"><small>备份时长</small></h6>
+                <div id="db-backup-time" style="height: 280px;"></div>
+            </div>
+        </div><!-- end col -->
+    </div>
+    <!-- end row -->
+</div>
+<script src="{{static_url('assets/pages/jquery.form-pickers.init.js')}}"></script>
 
-    <script>
-         $(document).ready(function() {
-              $('#backup-container').hide();
-              $('#begin_date').attr("readonly", "readonly");
-              $('#end_date').attr("readonly", "readonly");
-              $("#query_btn").click();
-          })
+<script>
+    $(document).ready(function () {
+        $('#backup-container').hide();
+        $('#begin_date').attr("readonly", "readonly");
+        $('#end_date').attr("readonly", "readonly");
+        $("#query_btn").click();
+    })
 
-         $("#tagname").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
+    $("#tagname").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-         $("#begin_date").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
+    $("#begin_date").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-         $("#end_date").bind("input propertychange",function(){
-           $("#query_btn").click();
-         });
+    $("#end_date").bind("input propertychange", function () {
+        $("#query_btn").click();
+    });
 
-         $("#query_btn").click(function() {
+    $("#query_btn").click(function () {
 
-                if ($('#tagname').val()==''){
-                    swal("请选择备份任务!", "", "info");
-                    return false;
+        if ($('#tagname').val() == '') {
+            swal("请选择备份任务!", "", "info");
+            return false;
+        }
+
+        if ($('#begin_date').val() == '') {
+            swal("请输入备份日期起!", "", "info");
+            return false;
+        }
+
+        if ($('#end_date').val() == '') {
+            swal("请输入备份日期止!", "", "info");
+            return false;
+        }
+
+        $.ajax({
+            url: "/backup/log/_analyze",
+            type: "post",
+            datatype: "json",
+            data: {
+                db_env: $('#db_env').val(),
+                db_type: $('#db_type').val(),
+                tagname: $('#tagname').val(),
+                begin_date: $('#begin_date').val(),
+                end_date: $('#end_date').val(),
+            },
+            success: function (dataSet) {
+                $('#db-backup-size').html('')
+                $('#db-backup-time').html('')
+                $('#backup-container').show()
+                var $barData_db_backup_size = new Array(dataSet['data1'].length);
+                var $barData_db_backup_time = new Array(dataSet['data2'].length);
+
+                for (i = 0; i < dataSet['data1'].length; i++) {
+                    $barData_db_backup_size[i] = {'y': dataSet['data1'][i][0], 'a': dataSet['data1'][i][1]}
                 }
 
-                if ($('#begin_date').val()==''){
-                    swal("请输入备份日期起!", "", "info");
-                    return false;
+                for (i = 0; i < dataSet['data2'].length; i++) {
+                    $barData_db_backup_time[i] = {
+                        'y': dataSet['data2'][i][0],
+                        'a': dataSet['data2'][i][1],
+                        'b': dataSet['data2'][i][2]
+                    }
                 }
+                createBarChart('db-backup-size', $barData_db_backup_size, 'y', ['a'], ['备份大小'], ['#59aed5'], 'Mb');
+                createLineChart('db-backup-time', $barData_db_backup_time, 'y', ['a', 'b'], ['备份时长', '压缩时长'], ['0.9'], ['#ffffff'], ['#999999'], ['#FFBD33', '#88A110'], 's');
+            },
+        });
 
-                if ($('#end_date').val()==''){
-                    swal("请输入备份日期止!", "", "info");
-                    return false;
-                }
+    });
 
-                $.ajax({
-                      url: "/backup/log/_analyze",
-                      type: "post",
-                      datatype: "json",
-                      data:{
-                          db_env     : $('#db_env').val(),
-                          db_type    : $('#db_type').val(),
-                          tagname    : $('#tagname').val(),
-                          begin_date : $('#begin_date').val(),
-                          end_date   : $('#end_date').val(),
-                      },
-                      success: function (dataSet) {
-                         $('#db-backup-size').html('')
-                         $('#db-backup-time').html('')
-                         $('#backup-container').show()
-                         var $barData_db_backup_size = new Array(dataSet['data1'].length);
-                         var $barData_db_backup_time = new Array(dataSet['data2'].length);
+    $('#db_env').change(function () {
+        get_backup_tasks();
+    });
 
-                         for (i=0;i<dataSet['data1'].length;i++){
-                             $barData_db_backup_size[i]={'y':dataSet['data1'][i][0],'a':dataSet['data1'][i][1]}
-                         }
+    $('#db_type').change(function () {
+        get_backup_tasks();
+    });
 
-                         for (i=0;i<dataSet['data2'].length;i++){
-                             $barData_db_backup_time[i]={'y':dataSet['data2'][i][0],'a':dataSet['data2'][i][1],'b':dataSet['data2'][i][2]}
-                         }
-                         createBarChart('db-backup-size',  $barData_db_backup_size, 'y', ['a'], ['备份大小'], ['#59aed5'],'Mb');
-                         createLineChart('db-backup-time', $barData_db_backup_time, 'y', ['a','b'], ['备份时长','压缩时长'],['0.9'],['#ffffff'],['#999999'], ['#FFBD33','#88A110'],'s');
-                      },
-                 });
+</script>
 
-              });
-
-         $('#db_env').change(function() {
-            get_backup_tasks();
-         });
-
-         $('#db_type').change(function() {
-            get_backup_tasks();
-         });
-
-    </script>
-
- </body>
+</body>
