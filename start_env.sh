@@ -2,10 +2,10 @@
 export WORKDIR=`pwd`
 export PYTHONUNBUFFERED="1"
 export PYTHONPATH=${WORKDIR}
-export PYTHON3_HOME=/usr/local/python3.6
+export PYTHON3_HOME=/home/hopson/apps/usr/webserver/dba/python3.6.8
 export LD_LIBRARY_PATH=${PYTHON3_HOME}/lib
 echo "Starting dbops Server..."
-for i in {8201..8210}
+for i in {8201..8206}
 do
   if [ `ps -ef |grep dbops | grep ${i} | wc -l` == '1' ]
   then
@@ -38,12 +38,4 @@ then
   ${PYTHON3_HOME}/bin/python3 -u ${WORKDIR}/web/task/run_sql_timer.py &>/dev/null &
 else
    echo run_sql_timer already running...
-fi
-
-if [ `ps -ef |grep webssh | grep -v grep | wc -l` == '0' ]
-then
-  echo "Starting webssh Server...success"
-  ${PYTHON3_HOME}/bin/python3 -u ${WORKDIR}/webssh/main.py &>/dev/null &
-else
-  echo webssh already running...
 fi

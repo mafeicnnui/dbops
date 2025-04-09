@@ -108,7 +108,7 @@ function start_Loader(p_id) {
         message: '<i class="icon-spinner spinner"></i>',
         overlayCSS: {
             // backgroundColor: 'rgba(233,231,228,0.53)',
-            backgroundColor: 'rgba(170,118,41,0.53)',
+            backgroundColor: 'rgba(248,247,244,0.53)',
 
             opacity: 0.1,
             cursor: 'wait'

@@ -538,6 +538,14 @@
                             }
                         },
                     ],
+                    columnDefs: [
+                        {
+                            targets: 1,
+                            render: function (data, type, row, meta) {
+                                return row[1].substring(0,40)+'...'
+                            }
+                        }
+                    ],
                     "language": get_languages()
                 });
                 set_button_status(true);

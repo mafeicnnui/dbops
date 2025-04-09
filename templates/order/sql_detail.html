@@ -2,9 +2,10 @@
 <head>
     <title>工单详情</title>
     <link href="{{static_url('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ace.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/ace/ext-language_tools.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
+    <script src="{{static_url('plugins/editors/src-min/ace.js')}}"></script>
+    <script src="{{static_url('plugins/editors/src-min/ext-language_tools.js')}}"></script>
+    <script src="{{static_url('plugins/editors/src-min/mode-mysql.js')}}"></script>
+
     <style>
         .xwtable {
             width: 100%;
@@ -46,6 +47,11 @@
             border: 1px solid #a88c8c;
         }
 
+        .scrollable-cell {
+            max-height: 150px; /* 设置单元格的最大高度 */
+            overflow: auto;   /* 当内容超出时，出现滚动条 */
+        }
+
         #ace-editor-exec {
             height: 180px;
         }
@@ -58,132 +64,97 @@
 </head>
 
 <body>
-<h1 align="center">工单{{wkno['message']}}详情</h1>
+<h1 align="center">EaseBase工单详情</h1>
+<br>
 <div class="row">
-    <div class="col-md-1">
+    <div class="col-md-2">
     </div>
-    <div class="col-md-10">
+    <div class="col-md-8">
         <table class="xwtable">
-            {% for key in wkno %}
-            {% if key == 'id' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9;"><label>工单ID</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9;"><label>工单ID</label></td>
+                <td><span>{{wkno['id']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'message' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>工单编号</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9;"><label>工单编号</label></td>
+                <td><span>{{wkno['message']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'db' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>数据库名</label></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9;"><label>发布原因</label></td>
+                <td><span>{{wkno['reason']}}</span></td>
+            </tr>
+            <tr>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>数据库名</label></td>
                 <td><span>{{dbinfo}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'sqltext' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>执行语句</label></td>
+                <td  style="width:120px;text-align:center;background-color: #c6d9d9"><label>执行语句</label></td>
                 <td>
-                    <div id='ace-editor-exec'>{% raw wkno[key] %}</div>
+                    <div class="scrollable-cell" id='ace-editor-exec'>{% raw wkno['sqltext'] %}</div>
                 </td>
             </tr>
-            {% end %}
-
-            {% if key == 'status' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>运行状态</label></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>运行状态</label></td>
                 <td>
-                    <span>{{wkno[key]}}&nbsp;&nbsp;(0:已发布,1:审核成功，2:审核失败,3:执行中,4:执行成功，5:执行失败,6:已驳回)</span>
+                    <span>{{wkno['status_name']}}</span>
                 </td>
             </tr>
-            {% end %}
-
-            {% if key == 'creation_date' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>提交日期</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>提交日期</label></td>
+                <td><span>{{wkno['creation_date']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'creator' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>提交人员</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>提交人员</label></td>
+                <td><span>{{wkno['creator_name']}}</span></td>
             </tr>
-            {% end %}
-
-            {% if key == 'audit_date' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>审核日期</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>审核日期</label></td>
+                <td><span>{{wkno['audit_date']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'auditor' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>审核人员</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>审核人员</label></td>
+                <td><span>{{wkno['auditor_name']}}</span></td>
             </tr>
-            {% end %}
-
-            {% if key == 'executor' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>执行人员</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>执行人员</label></td>
+                <td><span>{{wkno['executor_name']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'exec_start' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>开始时间</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>开始时间</label></td>
+                <td><span>{{wkno['exec_start']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'exec_end' %}
             <tr>
                 <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>完成时间</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td><span>{{wkno['exec_end']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'exec_end' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>回滚语句</label></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>回滚语句</label></td>
                 <td>
-                    <div id='ace-editor-roll'>{% raw roll['message']['rollback'] %}</div>
+                    <div class="scrollable-cell" id='ace-editor-roll'>{% raw roll['message']['rollback_detail'] %}</div>
                 </td>
             </tr>
-            {% end %}
-            {% if key == 'binlog_file' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>binlog文件</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>binlog文件</label></td>
+                <td><span>{{wkno['binlog_file']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'start_pos' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>开始位置</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>开始位置</label></td>
+                <td><span>{{wkno['start_pos']}}</span></td>
             </tr>
-            {% end %}
-            {% if key == 'stop_pos' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>结束位置</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>结束位置</label></td>
+                <td><span>{{wkno['stop_pos']}}</span></td>
             </tr>
-            {% end %}
-
-            {% if key == 'error' %}
             <tr>
-                <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>错误信息</label></td>
-                <td><span>{{wkno[key]}}</span></td>
+                <td style="width:120px;text-align:center;background-color: #c6d9d9"><label>错误信息</label></td>
+                <td><span>{{wkno['error']}}</span></td>
             </tr>
-            {% end %}
-            {% end %}
         </table>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2">
     </div>
 </div>
+<br><br>
 </body>
 
 <script src="{{static_url('assets/js/jquery.min.js')}}"></script>
@@ -197,7 +168,6 @@
         editor1.setFontSize(16);
         editor1.getSession().setUseSoftTabs(true);
         editor1.setReadOnly(true);
-
         var editor2 = ace.edit("ace-editor-roll");
         editor2.setTheme("ace/theme/xcode");
         editor2.getSession().setMode("ace/mode/sql");
@@ -205,7 +175,6 @@
         editor2.setFontSize(16);
         editor2.getSession().setUseSoftTabs(true);
         editor2.setReadOnly(true);
-
     });
 
 </script>

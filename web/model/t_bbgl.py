@@ -179,8 +179,13 @@ async def check_bbdm_exists(p_bbdm):
     return (await async_processer.query_one(st))[0]
 
 
-async def get_bbgl_bbdm():
-    st = "select bbdm,bbmc from t_bbgl_config order by id"
+async def get_bbgl_bbdm(p_userid):
+    st = """select c.bbdm,c.bbmc from t_bbgl_config c
+            WHERE EXISTS(
+              SELECT dmm FROM t_dict_group_user tu
+                WHERE tu.dm=52 AND tu.user_id={}
+                  AND INSTR(tu.dmm,c.bbdm)>0
+            ) order by id""".format(p_userid)
     return await async_processer.query_list(st)
 
 
@@ -355,7 +360,7 @@ async def query_bbgl_config(p_bbdm):
     return await async_processer.query_list(st)
 
 
-async def query_bbgl_export(p_bbdm):
+async def query_bbgl_export(p_bbdm,p_userid):
     vv = ''
     if p_bbdm != '':
         vv = " and a.bbdm='{}'".format(p_bbdm)
@@ -369,7 +374,10 @@ async def query_bbgl_export(p_bbdm):
                  u.name,
                  DATE_FORMAT(t.create_date,'%Y-%m-%d %H:%i:%s')    create_date
             FROM t_bbgl_config a,t_bbgl_export t,t_user u,t_dmmx m
-            WHERE a.bbdm=t.bbdm AND t.creator=u.id AND m.dm='43' AND m.dmm=t.status  {}""".format(vv)
+            WHERE a.bbdm=t.bbdm AND t.creator=u.id AND m.dm='43' 
+              AND m.dmm=t.status
+              and a.bbdm='{}'
+              and u.id={}""".format(p_bbdm,p_userid)
     print('st=', st)
     return await async_processer.query_list(st)
 
@@ -598,6 +606,23 @@ async def get_download(p_id):
     st = "select *from t_bbgl_export where id={}".format(p_id)
     return await async_processer.query_dict_one(st)
 
+
+async def get_download_files(p_id,path):
+    st = "select file_name,file_data as file from t_bbgl_files where id={}".format(p_id)
+    file_name, file_data = await async_processer.query_one(st)
+    file_path = f'/static/downloads/bbtj/{file_name}'
+    file_path_abs = f'{path}/downloads/bbtj/{file_name}'
+    print(f'{file_path},{file_path_abs}')
+    with open(file_path_abs, "wb") as file:
+        file.write(file_data)
+    await async_processer.exec_sql(f"update t_bbgl_files set file_path='{file_path}' where id={p_id}")
+    st = "select file_path as file from t_bbgl_files where id={}".format(p_id)
+    return await async_processer.query_dict_one(st)
+
+
+async def get_download_files_new(p_id):
+    st = "select file_name,file_data as file from t_bbgl_files where id={}".format(p_id)
+    return await async_processer.query_one(st)
 
 async def del_export(p_id):
     try:

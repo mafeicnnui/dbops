@@ -10,7 +10,8 @@ import traceback
 
 import pandas as pd
 
-from web.model.t_bbgl import query_bbgl_data, get_bbgl_bbdm, get_filter, get_config
+from web.model.t_bbgl import query_bbgl_data, get_bbgl_bbdm, get_filter, get_config, get_download_files, \
+    get_download_files_new
 from web.model.t_bbgl import query_bbgl_preprocess_detail, update_bbgl_preprocess, delete_bbgl_preprocess
 from web.model.t_bbgl import save_bbgl, save_bbgl_header, query_bbgl_header, save_bbgl_task, query_bbgl_task, \
     upd_bbgl_task, push_bbgl_task, run_bbgl_task, stop_bbgl_task, del_bbgl_task, get_bbgl_task_by_tag, get_bbgl_id, \
@@ -35,7 +36,7 @@ from web.utils.mysql_async import async_processer
 class bbgl_query(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbgl/bbgl_query.html",
-                    dm_bbdm=await get_bbgl_bbdm())
+                    dm_bbdm=await get_bbgl_bbdm(self.userid))
 
 
 class bbgl_query_data(base_handler.TokenHandler):
@@ -55,7 +56,7 @@ class bbgl_query_dm(base_handler.TokenHandler):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         dm = self.get_argument("dm")
         print('dm=', dm)
-        v_list = await get_dmm_from_dm_bbgl(dm)
+        v_list = await get_dmm_from_dm_bbgl(dm,self.userid)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -289,7 +290,7 @@ class bbgl_update_statement(base_handler.TokenHandler):
 class bbgl_change(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbgl/bbgl_change.html",
-                    dm_bbdm=await get_bbgl_bbdm())
+                    dm_bbdm=await get_bbgl_bbdm(self.userid))
 
 
 class bbgl_query_config(base_handler.TokenHandler):
@@ -306,7 +307,7 @@ class bbgl_query_export(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         bbdm = self.get_argument("bbdm")
-        v_list = await query_bbgl_export(bbdm)
+        v_list = await query_bbgl_export(bbdm,self.userid)
         v_json = json.dumps(v_list, cls=DateEncoder)
         print('v_json=', v_json)
         self.write(v_json)
@@ -340,8 +341,11 @@ class bbgl_delete(base_handler.TokenHandler):
 class bbgl_export(base_handler.TokenHandler):
     async def get(self):
         self.render("./bbgl/bbgl_export.html",
-                    dm_bbdm=await get_bbgl_bbdm())
+                    dm_bbdm=await get_bbgl_bbdm(self.userid))
 
+class bbgl_downloads(base_handler.BaseHandler):
+    async def get(self):
+        self.render("./bbgl/bbgl_query_files.html")
 
 class bbgl_export_data(base_handler.TokenHandler):
     async def post(self):
@@ -363,6 +367,27 @@ class bbgl_download(base_handler.TokenHandler):
         print(v_json)
         self.write(v_json)
 
+class bbgl_download_files(base_handler.BaseHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        id = self.get_argument("id")
+        path = self.get_template_path().replace("templates", "static")
+        res = await get_download_files(id,path)
+        v_json = json.dumps(res, cls=DateEncoder)
+        print(v_json)
+        self.write(v_json)
+
+
+class bbgl_download_files_new(base_handler.BaseHandler):
+    async def post(self):
+        from urllib.parse import quote
+        id = self.get_argument("id")
+        file_name,file_data = await get_download_files_new(id)
+        safe_filename = quote(file_name)
+        self.set_header('Content-Type', 'application/octet-stream')
+        self.set_header('Content-Disposition', f'attachment; filename={safe_filename}')
+        self.set_header('Content-Length', str(len(file_data)))
+        self.write(file_data)
 
 class bbgl_delete_export(base_handler.TokenHandler):
     async def post(self):

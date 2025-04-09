@@ -273,8 +273,6 @@
                 id: id
             },
             success: function (dataSet) {
-                console.log('dataSet=', dataSet)
-                console.log('result=', dataSet.message.run_result)
                 sql = format_sql(dataSet.message.sqltext)
                 if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service) == -1) {
                     $('#run_db_detail').text(dataSet.message.ds.db_desc + '-' + dataSet.message.ds.url + dataSet.message.ds.service)
@@ -297,7 +295,7 @@
                     let rollback = ''
                     // console.log(dataSet.message.rollback.length)
                     for (i = 0; i < dataSet.message.rollback.length; i++) {
-                        rollback = rollback + dataSet.message.rollback[i].rollback_statement + '\n'
+                        rollback = rollback + dataSet.message.rollback[i] + '\n'
                     }
                     editor3.insert(format_sql(rollback));
                     editor3.setReadOnly(true);

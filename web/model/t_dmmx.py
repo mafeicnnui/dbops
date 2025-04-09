@@ -36,12 +36,20 @@ async def get_dmm_from_dm2(p_dm, p_dmm):
 
 
 async def get_dmlx_from_dm_bbgl():
-    sql = "select dm,mc from t_bbgl_dmlx order by mc"
+    # sql = "select dm,mc from t_bbgl_dmlx order by mc"
+    sql = "select dm,concat(mc,'(',dm,')') as mc from t_dmlx order by dm"
     return await async_processer.query_list(sql)
 
 
-async def get_dmm_from_dm_bbgl(p_dm):
-    sql = "select dmm,dmmc from t_bbgl_dmmx where dm='{0}'".format(p_dm)
+async def get_dmm_from_dm_bbgl(p_dm, p_userid):
+    sql = """select c.dmm,c.dmmc 
+             from t_dmmx c
+             where c.dm='{}'
+              AND EXISTS(
+                 SELECT dmm FROM t_dict_group_user tu
+                 WHERE tu.dm=c.dm AND tu.user_id={}
+                   AND INSTR(tu.dmm,c.dmm)>0
+               ) order by dmm""".format(p_dm, p_userid)
     return await async_processer.query_list(sql)
 
 
@@ -105,7 +113,7 @@ async def get_sync_server():
 
 
 async def get_gather_server():
-    sql = "select id,server_desc from t_server WHERE status='1' order by market_id,server_desc"
+    sql = "select id,concat(server_desc,' - ',server_ip) as server_desc  from t_server WHERE status='1' order by market_id,server_desc"
     return await async_processer.query_list(sql)
 
 
@@ -224,7 +232,7 @@ async def get_sync_db_server():
 
 async def get_bbtj_db_server():
     sql = """SELECT id,db_desc FROM t_db_source 
-              WHERE  id in(16,19,191,49,88,161,54,69,84,93,153) ORDER BY db_desc,db_type"""
+              WHERE  id in(16,19,36,191,49,88,161,54,69,84,93,153) ORDER BY db_desc,db_type"""
     return await async_processer.query_list(sql)
 
 
@@ -282,4 +290,9 @@ async def get_datax_real_sync_db_server():
 async def get_compare_db_server():
     sql = """select id,db_desc from t_db_source  where  db_type in(0,8,9) and db_env in(1,2,3,4) 
                 and STATUS=1 and user!='puppet' order by db_type,db_desc"""
+    return await async_processer.query_list(sql)
+
+
+async def get_audit_mobile(p_mobile):
+    sql = "select dmm from t_dmmx where dm='54' and instr(dmmc2,'{}')>0 limit 1".format(p_mobile)
     return await async_processer.query_list(sql)

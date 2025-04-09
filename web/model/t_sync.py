@@ -1436,26 +1436,23 @@ async def query_db_order_num():
                a.rq,
                (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=16 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hst,
                (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=84 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hft,
-               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=1 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_dev,
-               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=2 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_uat
+               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=245 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_dev
             FROM (SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -t.help_topic_id DAY),'%Y-%m-%d') AS 'rq'  
-            FROM help_topic t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
+            FROM (SELECT DISTINCT help_topic_id AS help_topic_id  FROM help_topic) t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
     x = []
     y_hst = []
     y_hft = []
-    y_dev = []
-    y_uat = []
+    y_wutong = []
 
     for r in await async_processer.query_list(sql):
         x.append(r[0])
         y_hst.append(r[1])
         y_hft.append(r[2])
-        y_dev.append(r[3])
-        y_uat.append(r[4])
+        y_wutong.append(r[3])
 
     res['amount'] = {}
     res['amount']['x'] = x
-    res['amount']['y'] = [y_hst, y_hft, y_dev, y_uat]
+    res['amount']['y'] = [y_hst, y_hft, y_wutong]
     return res
 
 

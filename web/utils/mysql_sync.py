@@ -47,7 +47,6 @@ class mysqlManager:
         self.cursor.close()
         self.conn.close()
 
-
 class mysqlDsManager:
     def __init__(self, db):
         self.conn = pymysql.connect(host=db['ip'],
@@ -69,6 +68,7 @@ class mysqlDsManager:
             self.conn.rollback()
         self.cursor.close()
         self.conn.close()
+
 
 
 class mysqlDictManager:

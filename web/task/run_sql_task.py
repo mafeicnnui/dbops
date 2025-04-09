@@ -12,10 +12,10 @@ import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from web.model.t_sql_release import exe_sql_sync
+from web.utils.common import get_sys_settings_sync
 from web.utils.mysql_sync import sync_processer
 
-host = "ops.zhitbar.cn:59521"
-
+host = get_sys_settings_sync()['WX_HOST']
 
 def get_tasks():
     st = """SELECT dbid AS db_id, db AS db_name,
@@ -29,18 +29,20 @@ def main():
                         format='[%(asctime)s-%(levelname)s:%(message)s]',
                         level=logging.INFO, filemode='a', datefmt='%Y-%m-%d %I:%M:%S')
 
-    with ProcessPoolExecutor(max_workers=5) as executor:
+    with ProcessPoolExecutor(max_workers=10) as executor:
         while True:
             tasks = get_tasks()
             if tasks != []:
                 logging.info(str(tasks))
-                print('tasks=', tasks)
-                all_task = [executor.submit(exe_sql_sync, t['db_id'], t['db_name'], t['sql_id'], t['user_name'], host)
-                            for t in tasks]
-                for future in as_completed(all_task):
+                future_to_task  = {
+                          executor.submit(exe_sql_sync, t['db_id'], t['db_name'], t['sql_id'], t['user_name'], host): t
+                          for t in tasks
+                }
+                for future in as_completed(future_to_task ):
                     res = future.result()
                     logging.info(str(res))
-                    print("res=", res)
+                    task_params = future_to_task[future]  # 获取任务的参数
+                    logging.info(f"Task {task_params} → Result: {res}")
             else:
                 time.sleep(1)
                 print('\rSleepping...'.format(), end='')

@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 from web.services.sql import expaudit, exp_audit, exp_detail, exp_audit_query, exp_export_data, exp_download, \
-    exp_export_data_delete, es_query, esquery, es_index, es_query_docs
+    exp_export_data_delete, es_query, esquery, es_index, es_query_docs, sql_audit_wx
 from web.services.sql import get_tree_by_sql, query_sql_release, sql_detail, sql_exp_xls, sql_exp_pdf, sql_rollback_exp
 from web.services.sql import sql_exp_query, _sql_exp_query, _sql_exp_save, _sql_exp_update, _sql_exp_delete, \
     _sql_exp_export, _sql_exp_detail
@@ -27,6 +27,7 @@ sql = [
     (r"/sql/_check/result", sql_check_result),
     (r"/sql/audit", sqlaudit),
     (r"/sql/_audit", sql_audit),
+    (r"/sql/audit_wx", sql_audit_wx),
     (r"/sql/_audit/canal", sql_audit_canal),
     (r"/sql/audit/query", sql_audit_query),
     (r"/sql/audit/detail", sql_audit_detail),

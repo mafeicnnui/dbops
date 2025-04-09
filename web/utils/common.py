@@ -603,11 +603,16 @@ def send_mail_param(p_sendserver, p_from_user, p_from_pass, p_to_user, p_to_cc, 
 '''
 
 
-async def send_message(toUser, title, message, detail_url):
+async def send_message(toUser, title, message, detail_url,ds,msg_type):
+    if ds['dsid'] in('245','249','16','84') and msg_type=='RUNNING':
+        to_user ="{}|{}".format(toUser, '850927')
+    else:
+        to_user = toUser
+
     WX_URL = (await get_sys_settings())['WX_URL']
     msg = {
         "title": title,
-        "toUser": "{}|{}".format(toUser, '190343'),
+        "toUser": to_user,
         "description": message,
         "url": detail_url,
         "msgType": "textcard",
@@ -628,16 +633,57 @@ async def send_message(toUser, title, message, detail_url):
         print(traceback.print_exc())
 
 
+async def send_message_qw( message):
+    """
+        功能：调用接口发送企微消息
+    """
+    WX_URL = (await get_sys_settings())['QYWX_URL']
+    msg = {
+        "msgtype": "markdown",
+        "markdown": {
+            "content": message
+        }
+    }
+    print('send_message_qw=',msg,type(msg))
+    headers ={"Content-Type": "application/json" }
+    try:
+        r = requests.post(WX_URL, json=msg, headers=headers)
+        print(r.text)
+    except :
+        print(traceback.print_exc())
+
+async def send_message_qw_mobiles( message,mobiles):
+    """
+        功能：调用接口发送企微消息
+    """
+    wx_url = (await get_sys_settings())['QYWX_URL']
+    msg = {
+        "mentioned_mobile_list":mobiles,
+        "msgtype": "markdown",
+        "markdown": {
+            "content": message
+        }
+    }
+    print('send_message_qw_mobiles=',msg,type(msg))
+    headers ={"Content-Type": "application/json" }
+    try:
+        r = requests.post(wx_url, json=msg, headers=headers)
+        print(r.text)
+    except :
+        print(traceback.print_exc())
+
 '''
   功能：调用接口发送消息
 '''
-
-
-def send_message_sync(toUser, title, message, detail_url):
+def send_message_sync(toUser, title, message, detail_url,ds,msg_type):
+    if ds['dsid'] in('245','249','16','84') and msg_type=='RUNNING':
+        to_user ="{}|{}".format(toUser, '850927')
+    else:
+        to_user = toUser
     WX_URL = get_sys_settings_sync()['WX_URL']
     msg = {
         "title": title,
-        "toUser": "{}|{}".format(toUser, '190343'),
+        "toUser": to_user,
         "description": message,
         "url": detail_url,
         "msgType": "textcard",
@@ -651,8 +697,29 @@ def send_message_sync(toUser, title, message, detail_url):
         "Content-Type": "application/json"
     }
     try:
-        print('send_message_sync>>:', msg)
         r = requests.post(WX_URL, data=json.dumps(msg, cls=DateEncoder), headers=headers)
+        print(r.text)
+    except:
+        print(traceback.print_exc())
+
+
+def send_message_qw_sync( message):
+    """
+        功能：调用接口发送企微消息
+    """
+    WX_URL = get_sys_settings_sync()['QYWX_URL']
+    msg = {
+        "msgtype": "markdown",
+        "markdown": {
+            "content": message
+         }
+    }
+    headers ={
+        "Content-Type": "application/json"
+    }
+    try:
+        print('send_qw message>>:', msg)
+        r = requests.post(WX_URL, json=msg, headers=headers)
         print(r.text)
     except:
         print(traceback.print_exc())
@@ -936,10 +1003,10 @@ def ftp_transfer_file(p_cfg, p_local, p_remote):
 
 class ssh_helper:
     def __init__(self, cfg, timeout=600):
-        self.server_ip = cfg['msg']['server_ip']
-        self.server_port = int(cfg['msg']['server_port'])
-        self.username = cfg['msg']['server_user']
-        self.password = cfg['msg']['server_pass']
+        self.server_ip = cfg['server_ip']
+        self.server_port = int(cfg['server_port'])
+        self.username = cfg['server_user']
+        self.password = cfg['server_pass']
         self.ssh = paramiko.SSHClient()
         self.timeout = timeout
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

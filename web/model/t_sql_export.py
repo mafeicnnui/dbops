@@ -17,12 +17,11 @@ import xlwt
 from web.model.t_dmmx import get_dmmc_from_dm
 from web.model.t_ds import get_ds_by_dsid
 from web.model.t_sql import exe_query_exp
-from web.model.t_sql_release import get_html_contents, get_html_contents_release_wx
+from web.model.t_sql_release import send_wx,send_qywx
 from web.model.t_user import get_user_by_loginame
 from web.utils.common import format_sql as fmt_sql
-from web.utils.common import send_mail_param, get_sys_settings, current_time, send_message, current_rq
+from web.utils.common import send_mail_param, get_sys_settings, current_time, current_rq
 from web.utils.mysql_async import async_processer
-
 
 def set_header_styles(p_fontsize, p_color):
     header_borders = xlwt.Borders()
@@ -204,6 +203,99 @@ async def get_sql_export(p_id):
     return await async_processer.query_dict_one(sql)
 
 
+async def get_export_params(p_sqlid, p_user, p_status, p_message, p_host):
+    """
+     功能：工单发布发送邮件及微信参数字典
+    """
+    wkno = await get_sql_export(p_sqlid)
+    p_ds = await get_ds_by_dsid(wkno['dbid'])
+    p_ds['service'] = wkno['db']
+    email = p_user['email']
+    settings = await get_sys_settings()
+    v_title = '工单导出审核情况[{}]'.format(wkno['id'])
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    creator = (await get_user_by_loginame(wkno['creator']))['name']
+    cmail = (await get_user_by_loginame(wkno['creator']))['email']
+    auditor = (await get_user_by_loginame(wkno['auditor']))['name']
+    status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+
+    if p_host == "124.127.103.190":
+        p_host = "124.127.103.190:65482"
+    elif p_host in ('10.2.39.18', '10.2.39.20', '10.2.39.21'):
+        p_host = '{}:81'.format(p_host)
+    else:
+        p_host = p_host
+
+    send_params = {
+        'wkno': wkno,
+        'p_ds': p_ds,
+        'email': email,
+        'settings': settings,
+        'title': v_title,
+        'nowTime': nowTime,
+        'creator': creator,
+        'cmail': cmail,
+        'auditor':auditor,
+        'status': status,
+        'reason': '',
+        'p_host': p_host,
+        'p_user': p_user,
+        'msg_type':'EXPORT',
+        'to_user' : '{}|{}'.format(p_user['wkno'],
+                                   (await get_user_by_loginame(wkno['creator']))['wkno'])
+    }
+    return send_params
+
+def send_export_mail(params):
+    """
+         功能：发送工单发布邮件
+         参数：工单发布字典信息
+    """
+    v_html = '''<html>
+		<head>
+		   <style type="text/css">
+			   .xwtable {width: 90%;border-collapse: collapse;border: 1px solid #ccc;}
+			   .xwtable thead td {font-size: 12px;color: #333333;
+					      text-align: center;background: url(table_top.jpg) repeat-x top center;
+				              border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable thead th {font-size: 12px;color: #333333;
+				              text-align: center;background: url(table_top.jpg) repeat-x top center;
+					      border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
+			   .xwtable tbody tr.alt-row {background: #f2f7fc;}
+			   .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
+		   </style>
+		</head>
+		<body>
+              <table class='xwtable'>
+                  <tr><td width="20%">发送时间</td><td width="80%">$$TIME$$</td></tr>
+                  <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
+                  <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
+                  <tr><td>审核人员</td><td>$$AUDITOR$$</td></tr>
+                  <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
+                  <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
+                  <tr><td>工单详情</td><td>$$DETAIL$$</td></tr>
+              </table>    
+		</body>
+	    </html>'''
+    v_html = v_html.replace('$$TIME$$', params['nowTime'])
+    v_html = v_html.replace('$$DBINFO$$',
+                              params['p_ds']['url'] + params['p_ds']['service']
+                              if params['p_ds']['url'].find(params['p_ds']['service']) < 0 else params['p_ds']['url'])
+    v_html = v_html.replace('$$CREATOR$$', params['creator'])
+    v_html = v_html.replace('$$AUDITOR$$', params['auditor'])
+    v_html = v_html.replace('$$TYPE$$', params['otype'])
+    v_html = v_html.replace('$$STATUS$$', params['status'])
+    v_html = v_html.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    v_html = v_html.replace('$$ERROR$$', params.get('error',''))
+    send_mail_param(params['settings'].get('send_server'),
+                    params['settings'].get('sender'),
+                    params['settings'].get('sendpass'),
+                    params['email'],
+                    params['cmail'],
+                    params['v_title'],
+                    v_html)
+
 async def upd_exp_sql(p_sqlid, p_user, p_status, p_message, p_host):
     result = {}
     try:
@@ -218,55 +310,16 @@ async def upd_exp_sql(p_sqlid, p_user, p_status, p_message, p_host):
         print(sql)
         await async_processer.exec_sql(sql)
 
-        wkno = await get_sql_export(p_sqlid)
-        p_ds = await get_ds_by_dsid(wkno['dbid'])
-        p_ds['service'] = wkno['db']
-        email = p_user['email']
-        settings = await get_sys_settings()
-        v_title = '工单导出审核情况[{}]'.format(wkno['id'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = (await get_user_by_loginame(wkno['creator']))['name']
-        cmail = (await get_user_by_loginame(wkno['creator']))['email']
-        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
-        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+        params = await get_export_params(p_sqlid, p_user, p_status, p_message, p_host)
 
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in ('10.2.39.18', '10.2.39.20', '10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
+        # send mail
+        send_export_mail(params)
 
-        # send audit mail
-        v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$', p_ds['url'] + p_ds['service']
-        if p_ds['url'].find(p_ds['service']) < 0 else p_ds['url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$AUDITOR$$', auditor)
-        v_content = v_content.replace('$$TYPE$$', 'SQL导出')
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sqlid))
-        v_content = v_content.replace('$$ERROR$$', '')
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
-                        cmail, v_title, v_content)
+        # send to wx
+        await send_wx(params)
 
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', auditor)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', 'SQL导出')
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', '')
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sqlid)
-        await send_message('{}|{}'.format(p_user['wkno'],
-                                          (await get_user_by_loginame(wkno['creator']))['wkno']),
-                           v_title,
-                           v_content_wx,
-                           v_detail_url)
+        # send to qywx
+        await send_qywx(params)
 
         result['code'] = '0'
         result['message'] = '审核成功!'

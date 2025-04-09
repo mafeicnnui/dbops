@@ -114,7 +114,7 @@ class mysqlDsDictManager:
         self.conn.close()
 
 
-db = read_json(os.path.join(os.path.dirname(__file__)) + '/config.json')
+db = read_json(os.path.join(os.path.dirname(__file__)) + '/../../config/config.json')
 
 
 class sync_processer:

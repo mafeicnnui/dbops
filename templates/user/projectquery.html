@@ -412,7 +412,30 @@
 
     $('#save_user_proj_privs').on('click', function () {
         $("#example2 tbody tr td input:radio:checked").each(function () {
+            // var table = $('#example2').DataTable();
+            // var data = table.rows().data();
+            // var userid = $('#ds_user_id').val()
+            // console.log('data=',data)
+            // for(i=0;i<data.length;i++) {
+            //     var row = data[i]
+            //     console.log('row=',row)
+            //     var dsid = row[0]
+            //     var priv_query = row[4]
+            //     var priv_release = row[5]
+            //     var priv_audit = row[6]
+            //     var priv_execute = row[7]
+            //     var priv_order = row[8]
+            //     var priv_export = row[9]
+            //     console.log(userid,dsid,priv_query,priv_release,priv_audit,priv_execute,priv_order,priv_export)
+            // }
+
             var row = $(($(this).parent().parent().html()));
+            // console.log('1:',$(this))
+            // console.log('2:',$(this).parent())
+            // console.log('3:',$(this).parent().parent())
+            // console.log('4:',$(this).parent().parent().html())
+            // console.log('5:',$($(this).parent().parent().html()));
+
             var userid = $('#ds_user_id').val()
             var dsid = row[0].innerHTML
             var priv_query = $(row[4].innerHTML).val()

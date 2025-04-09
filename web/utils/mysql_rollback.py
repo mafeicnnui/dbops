@@ -124,8 +124,10 @@ def get_binlog(p_ds, p_file, p_start_pos, p_end_pos, p_sql_id):
     MYSQL_SETTINGS = {
         "host": p_ds['ip'],
         "port": int(p_ds['port']),
-        "user": "canal2021",
-        "passwd": "canal@Hopson2018",
+        # "user": "canal2021",
+        # "passwd": "canal@Hopson2018",
+        "user": p_ds['user'],
+        "passwd": p_ds['password'],
         "db": p_ds['service']
     }
     logging.info("MYSQL_SETTINGS=", MYSQL_SETTINGS)
@@ -148,13 +150,25 @@ def get_binlog(p_ds, p_file, p_start_pos, p_end_pos, p_sql_id):
         for binlogevent in stream:
             if binlogevent.event_type in (2,):
                 event = {"schema": bytes.decode(binlogevent.schema), "query": binlogevent.query.lower()}
-                if 'create' in event['query'] or 'drop' in event['query'] or 'alter' in event['query'] or 'truncate' in \
-                        event['query']:
-                    if event['schema'] == schema:
-                        # rollback_statments.append(gen_ddl_sql(binlogevent.query.lower()+';'))
-                        cr.execute(
-                            """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(
-                                p_sql_id, format_sql(gen_ddl_sql(binlogevent.query.lower() + ';'))))
+                if ('create' in event['query'] or 'drop' in event['query'] \
+                       or 'alter' in event['query'] or 'truncate' in  event['query']):
+                    event['table'] = get_obj_name(binlogevent.query.lower())
+                    if event['schema'] == wk['db'] and wk['sqltext'].count(event['table']) > 0:
+                        if result.get(event['schema'] + '.' + event['table']) is None:
+                            result[event['schema'] + '.' + event['table']] = {}
+
+                        if 'create' in event['query']:
+                            cr.execute(
+                              """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')"""
+                                 .format(p_sql_id, format_sql(gen_ddl_sql(binlogevent.query.lower() + ';'))))
+                        # else:
+                        #     cr.execute(
+                        #         """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')"""
+                        #         .format(p_sql_id, format_sql(binlogevent.query.lower() + ';')))
+
+                            result[event['schema'] + '.' + event['table']]['ddlEvent'] \
+                                = result[event['schema'] + '.' + event['table']].get('ddlEvent', 0) + 1
+
 
             if isinstance(binlogevent, DeleteRowsEvent) or \
                     isinstance(binlogevent, UpdateRowsEvent) or \
@@ -170,11 +184,9 @@ def get_binlog(p_ds, p_file, p_start_pos, p_end_pos, p_sql_id):
                             event["action"] = "delete"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS, event)
-                            # rollback_statments.append(rsql)
                             cr.execute(
                                 """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(
                                     p_sql_id, format_sql(rsql)))
-                            # delEvent = delEvent + 1
                             result[event['schema'] + '.' + event['table']]['delEvent'] \
                                 = result[event['schema'] + '.' + event['table']].get('delEvent', 0) + 1
 
@@ -183,11 +195,9 @@ def get_binlog(p_ds, p_file, p_start_pos, p_end_pos, p_sql_id):
                             event["after_values"] = row["after_values"]
                             event["before_values"] = row["before_values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS, event)
-                            # rollback_statments.append(rsql)
                             cr.execute(
                                 """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(
                                     p_sql_id, format_sql(rsql)))
-                            # updEvent = updEvent + 1
                             result[event['schema'] + '.' + event['table']]['updEvent'] \
                                 = result[event['schema'] + '.' + event['table']].get('updEvent', 0) + 1
 
@@ -195,23 +205,17 @@ def get_binlog(p_ds, p_file, p_start_pos, p_end_pos, p_sql_id):
                             event["action"] = "insert"
                             event["data"] = row["values"]
                             sql, rsql = gen_sql(MYSQL_SETTINGS, event)
-                            # rollback_statments.append(rsql)
                             cr.execute(
                                 """insert into t_sql_backup(release_id,rollback_statement) values ({},'{}')""".format(
                                     p_sql_id, format_sql(rsql)))
-                            # insEvent = insEvent + 1
                             result[event['schema'] + '.' + event['table']]['insEvent'] \
                                 = result[event['schema'] + '.' + event['table']].get('insEvent', 0) + 1
 
-                        # message[event['schema']+'.'+event['table']] = {
-                        #     'insert':insEvent,
-                        #     'update':updEvent,
-                        #     'delete':delEvent
-                        # }
                         message[event['schema'] + '.' + event['table']] = {
                             'insert': result[event['schema'] + '.' + event['table']].get('insEvent', 0),
                             'update': result[event['schema'] + '.' + event['table']].get('updEvent', 0),
-                            'delete': result[event['schema'] + '.' + event['table']].get('delEvent', 0)
+                            'delete': result[event['schema'] + '.' + event['table']].get('delEvent', 0),
+                            'create': result[event['schema'] + '.' + event['table']].get('ddlEvent', 0)
                         }
 
             if stream.log_pos + 31 == p_end_pos or stream.log_pos >= p_end_pos:

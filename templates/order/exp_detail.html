@@ -64,7 +64,7 @@
     </div>
     <div class="col-md-10">
         <table class="xwtable">
-            {% for key in wkno %}
+         {% for key in wkno %}
             {% if key == 'id' %}
             <tr>
                 <td style="width:100px;text-align:center;background-color: #c6d9d9;"><label>工单ID</label></td>
@@ -92,11 +92,11 @@
             </tr>
             {% end %}
 
-            {% if key == 'status' %}
+            {% if key == 'status_name' %}
             <tr>
                 <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>运行状态</label></td>
                 <td>
-                    <span>{{wkno[key]}}&nbsp;&nbsp;(0:已发布,1:审核成功，2:审核失败,3:执行中,4:执行成功，5:执行失败,6:已驳回)</span>
+                    <span>{{wkno[key]}}</span>
                 </td>
             </tr>
             {% end %}
@@ -107,7 +107,7 @@
                 <td><span>{{wkno[key]}}</span></td>
             </tr>
             {% end %}
-            {% if key == 'creator' %}
+            {% if key == 'creator_name' %}
             <tr>
                 <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>提交人员</label></td>
                 <td><span>{{wkno[key]}}</span></td>
@@ -120,14 +120,14 @@
                 <td><span>{{wkno[key]}}</span></td>
             </tr>
             {% end %}
-            {% if key == 'auditor' %}
+            {% if key == 'auditor_name' %}
             <tr>
                 <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>审核人员</label></td>
                 <td><span>{{wkno[key]}}</span></td>
             </tr>
             {% end %}
 
-            {% if key == 'executor' %}
+            {% if key == 'executor_name' %}
             <tr>
                 <td style="width:100px;text-align:center;background-color: #c6d9d9"><label>执行人员</label></td>
                 <td><span>{{wkno[key]}}</span></td>

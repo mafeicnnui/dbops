@@ -1686,6 +1686,9 @@ async def process_single_dml(p_dbid, p_cdb, p_sql, p_user):
             if op in ('INSERT', 'UPDATE', 'DELETE'):
                 print('DML最大影响行数...')
                 v = await get_dml_rows(ds, st)
+                print('v=',v)
+                print('rule_value=',rule['rule_value'])
+                print('rule_error=',rule['error'])
                 affect_rows = v
                 if is_number(str(v)):
                     if v > int(rule['rule_value']):

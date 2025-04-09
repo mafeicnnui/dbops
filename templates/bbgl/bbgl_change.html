@@ -3,6 +3,18 @@
 <head>
     <meta charset="utf-8">
     <title>报表维护</title>
+    <style>
+        .bootstrap-select.show-menu .dropdown-menu {
+            height: 150px;
+            max-height: 200px; /* 设置最大高度以展示滚动条 */
+            min-height: 100px; /* 设置最大高度以展示滚动条 */
+            overflow-y: auto; /* 添加滚动条 */
+        }
+
+        #div-table {
+            height: 600px;
+        }
+    </style>
 </head>
 <body>
 <form class="form-horizontal" role="form">
@@ -10,10 +22,10 @@
         <div class="col-md-3">
             <div class="input-group">
                 <span class="input-group-addon">报表代码</span>
-                <select class="form-control select" id="bbdm" name="bbdm">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="bbdm" name="bbdm">
                     <option value='' selected="selected">请选择报表</option>
                     {% for var in dm_bbdm %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -137,6 +149,13 @@
             });
         });
         $("#query_btn").click();
+
+         $('.selectpicker').selectpicker({
+              noneSelectedText: '请选择',
+              noneResultsText: '没有找到匹配的内容'
+        });
+        $('.selectpicker').selectpicker('refresh');
+
     });
 </script>
 

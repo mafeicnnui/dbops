@@ -1,6 +1,6 @@
 ## 一、平台介绍  
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Easebase平台是一款基于python3.6+tornado+bootstrap开发的数据库自动化运维平台，功能非常丰富，将DBA日常绝大多数工作都自动化管理，提升DBA工作效率
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Easebase平台是一款基于python3.6.8+tornado+bootstrap开发的数据库自动化运维平台，功能非常丰富，将DBA日常绝大多数工作都自动化管理，提升DBA工作效率
    
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EaseBase数据库运维平台是为了提高DBA运维效率设计研发的，结合公司现状态将日常工作中重复性多的工作程序化，提高数据库运维效率，DBA可以更高效工作，同时为公司节省运营成本。 
 平台将DBA工作中最常用的功能“数据库备份”、“数据库同步”、“数据库传输”、“数据库归档”、“大数据同步”、“数据源管理”、“服务器管理”、“数据库监控”、“工单管理”、数据库管理”、“数据库恢复”、 “数据库部署”、“慢查询管理”等功能。

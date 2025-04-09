@@ -6,7 +6,7 @@ export PYTHON3_HOME=/usr/local/python3.6
 export LD_LIBRARY_PATH=${PYTHON3_HOME}/lib
 
 echo "Testing dbops Server..."
-for i in {8201..8210}
+for i in {8201..8205}
 do
     if [ `ps -ef |grep dbops | grep -v grep | grep ${i} | wc -l` == '0' ]
     then

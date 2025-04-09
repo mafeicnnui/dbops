@@ -47,6 +47,28 @@
 <input type="hidden" id="rq_range_filter">
 
 <script>
+    function downloads_data(p_id) {
+        $.ajax({
+            url: "/bbgl/download/files",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: p_id,
+            },
+            success: function (dataSet) {
+                // console.log('downloads_data=',downloads_data)
+                var link = $("<a/>")
+                link.html('　');
+                link.attr('href', dataSet.file);
+                link.attr('class', 'link');
+                link.attr('id', 'download_id');
+                link.attr('name', 'download_name');
+                link.appendTo('body')
+                link[0].click();
+            },
+        })
+    }
+
     $(document).ready(function () {
         var table;
 
@@ -379,9 +401,11 @@
             });
         });
 
-        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker({
+              noneSelectedText: '请选择',
+              noneResultsText: '没有找到匹配的内容'
+        });
         $('.selectpicker').selectpicker('refresh');
-
 
     });
 </script>

@@ -15,7 +15,7 @@ from web.model.t_sys import save_audit_rule, query_dm, query_rule, query_dm_deta
     upd_sys_code_type, del_sys_code, query_settings, save_sys_setting, upd_sys_setting, del_sys_setting
 from web.model.t_sys import save_sys_code_detail, upd_sys_code_detail, del_sys_code_detail
 from web.utils import base_handler
-from web.utils.common import get_file_size, ftp_helper, get_seconds
+from web.utils.common import get_file_size, ftp_helper, ssh_helper,get_seconds
 
 
 class audit_rule(base_handler.TokenHandler):
@@ -288,13 +288,29 @@ class sys_upload_file(base_handler.TokenHandler):
             for f in res:
                 start_time = datetime.datetime.now()
                 ftp.transfer(f['local_name'], f['remote_name'])
-                f.update({'elapsed_time':get_seconds(start_time)})
+                f.update({'elapsed_time': get_seconds(start_time)})
                 print('file {} upload sucess!'.format(f['local_name']))
-            ret=[]
+            ret = []
             for p in res:
                 print(p)
-                ret.append((p['remote_name'],p['file_size'],p['elapsed_time']))
+                ret.append((p['remote_name'], p['file_size'], p['elapsed_time']))
             self.write({"code": 0, "message": ret})
         except Exception as e:
             traceback.print_exc()
             self.write({"code": -1, "message": '导入失败' + str(e)})
+
+
+class get_sys_dir(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        server_id = self.get_argument("server_id")
+        path_name = self.get_argument("path_name")
+        server = await get_server_by_serverid(server_id)
+        ssh = ssh_helper(server)
+        cmd = 'find {} -mindepth 1 -maxdepth 1 -type d | grep -v "/\."'.format(path_name)
+        print(cmd)
+        res = ssh.exec(cmd)
+        if res['status']:
+            self.write({"code": 0, "message": [r.replace('\n','') for r in res['stdout']]})
+        else:
+            self.write({"code": -1, "message": res['stderr']})

@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>工单审核</title>
+    <style>
+        .modal-lg-detail {
+            width: 60%;
+            height: 20%;
+        }
+
+        #ace-editor {
+            height: 280px;
+        }
+
+        .table th {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+    </style>
+</head>
+<body>
+   <h4 class="modal-title">工单审核</h4>
+   <div>
+        <input id="sql_id" type="hidden" value='{{release_id}}'>
+        <div class="row">
+            <label>运行实例：</label>
+            <span id='run_db_detail' style="color:red"></span>
+        </div>
+        <input id="sql_status" type="hidden" value=''>
+        <div class="row">
+            <label>执行语句：</label>
+            <div id='ace-editor' class="col-md-12"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div>
+                <label class="col-md-3 control-label">审核结果：</label>
+            </div>
+            <div class="col-md-9">
+                <select class="form-control select" id="audit_result">
+                    <option value='1' selected="selected">审核成功</option>
+                    <option value='2'>审核失改</option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div>
+                <label class="col-md-3 control-label">失败原因：</label>
+            </div>
+            <div class="col-md-9">
+                <textarea class="form-control" rows="3" style="min-width: 90%" id="audit_message"></textarea>
+            </div>
+        </div>
+    </div>
+   <div>
+        <div class="col-sm-offset-2 col-sm-4">
+            <button type="button" class="btn btn-custom waves-effect waves-light btn-md" id="auditSql">审核
+            </button>
+        </div>
+    </div>
+<p></p>
+
+</body>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //ace editor
+        var editor = ace.edit("ace-editor");
+        editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/sql");
+        editor.setShowPrintMargin(false);
+        editor.setFontSize(16);
+        editor.getSession().setUseSoftTabs(true);
+        editor.setReadOnly(true);
+
+        $('#audit').on('click', function () {
+            $.ajax({
+                url: "/sql/_audit",
+                type: "post",
+                datatype: "json",
+                data: {sqlid: $('#sql_id').val()},
+                success: function (dataSet) {
+                    swal(dataSet.message, "", "info")
+                },
+            });
+        });
+
+        show_audit();
+    });
+
+    function show_audit() {
+        $.ajax({
+            url: "/sql/audit/detail",
+            type: "post",
+            datatype: "json",
+            data: {
+                id: $('sql_id').val()
+            },
+            success: function (dataSet) {
+                $('#sql_id').val(id);
+                var editor = ace.edit("ace-editor");
+                editor.setValue('')
+                editor.insert(format_sql(dataSet.message.sqltext))
+                editor.setReadOnly(true);
+                $('#run_time_detail').text(dataSet.message.run_time)
+                $('#reason_detail').text(dataSet.message.reason)
+
+                if (dataSet.message.ds.url.indexOf(dataSet.message.ds.service) == -1) {
+                    $('#run_db_detail').text(dataSet.message.ds.db_desc + '-' + dataSet.message.ds.url + dataSet.message.ds.service)
+                } else {
+                    $('#run_db_detail').text(dataSet.message.ds.db_desc + '-' + dataSet.message.ds.url)
+                }
+
+            },
+        });
+    }
+
+    $('#auditSql').click(function () {
+        $('#auditSql').attr("disabled", "disabled");
+        $.ajax({
+            url: "/sql/_audit",
+            type: "post",
+            datatype: "json",
+            data: {
+                sqlid: $('#sql_id').val(),
+                status: $('#audit_result').val(),
+                message: $('#audit_message').val()
+            },
+            success: function (dataSet) {
+                console.log(dataSet.code, dataSet.message);
+                swal(dataSet.message);
+            },
+        });
+    });
+
+
+</script>
+
+</html>

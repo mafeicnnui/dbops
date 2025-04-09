@@ -535,7 +535,7 @@
                 }
             },
             legend: {
-                data: ['合生通', '会付通', '开发', '测试']
+                data: ['合生通', '会付通', '梧桐']
             },
             series: [{
                 name: '合生通',
@@ -544,7 +544,7 @@
                 showAllSymbol: false,
                 symbolSize: 1,
                 smooth: true
-            },
+                },
                 {
                     name: '会付通',
                     data: p_y_data[1],
@@ -553,16 +553,8 @@
                     symbolSize: 1,
                     smooth: true
                 }, {
-                    name: '开发',
+                    name: '梧桐',
                     data: p_y_data[2],
-                    type: 'bar',
-                    showAllSymbol: false,
-                    symbolSize: 1,
-                    smooth: true
-                },
-                {
-                    name: '测试',
-                    data: p_y_data[3],
                     type: 'bar',
                     showAllSymbol: false,
                     symbolSize: 1,
@@ -867,7 +859,7 @@
                     scrollY: true,
                     scrollX: true,
                     paging: true,
-                    iDisplayLength: 6,
+                    iDisplayLength: 20,
                     data: dataSet.data,
                     autoFill: true,
                     bAutoWidth: true,

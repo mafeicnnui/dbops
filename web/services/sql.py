@@ -9,7 +9,7 @@ import json
 import traceback
 
 from web.model.t_dmmx import get_dmm_from_dm, get_users_from_proj, get_users, get_dmm_from_dm2, \
-    get_dmm_from_dm_dic, get_sys_dmlx_dic
+    get_dmm_from_dm_dic, get_sys_dmlx_dic, get_dmmc_from_dm
 from web.model.t_ds import get_ds_by_dsid
 from web.model.t_ds import get_dss_sql_query, get_dss_sql_run, get_dss_order, get_dss_sql_release, get_dss_sql_audit, \
     get_ds_by_dsid_by_cdb, get_dss_sql_query_type, get_dss_sql_export, get_dss_order_online, get_dss_sql_query_tab
@@ -66,6 +66,14 @@ class sql_detail(base_handler.BaseHandler):
     async def get(self):
         release_id = self.get_argument("release_id")
         wkno = await get_sql_release(release_id)
+        wkno['sqltext'] = wkno['sqltext'].replace('\n', '<br>')
+        wkno['status_name'] = str((await get_dmmc_from_dm('41', wkno['status']))[0]) if wkno['status'] != '' else ''
+        wkno['creator_name'] = str((await get_user_by_loginame(wkno['creator']))['name']) if wkno[
+                                                                                                 'creator'] != '' else ''
+        wkno['auditor_name'] = str((await get_user_by_loginame(wkno['auditor']))['name']) if wkno[
+                                                                                                 'auditor'] != '' else ''
+        wkno['executor_name'] = str((await get_user_by_loginame(wkno['executor']))['name']) if wkno[
+                                                                                                   'executor'] != '' else ''
         roll = await query_audit_sql(release_id)
         ds = await get_ds_by_dsid(wkno['dbid'])
         ds['service'] = wkno['db']
@@ -97,7 +105,8 @@ class sql_release(base_handler.TokenHandler):
         type = self.get_argument("type")
         time = self.get_argument("time")
         reason = self.get_argument("reason")
-        result = await save_sql(dbid, cdb, sql, desc, user, type, time, self.username, self.request.host, reason)
+        is_log = self.get_argument("is_log")
+        result = await save_sql(dbid, cdb, sql, desc, user, type, time, self.username, self.request.host, reason,is_log)
         self.write({"code": result['code'], "message": result['message']})
 
 
@@ -161,6 +170,10 @@ class sql_audit(base_handler.TokenHandler):
         result = await upd_sql(sqlid, user, status, message, self.request.host)
         self.write({"code": result['code'], "message": result['message']})
 
+class sql_audit_wx(base_handler.BaseHandler):
+    async def get(self):
+        release_id = self.get_argument("release_id")
+        self.render("./order/sql_audit_wx.html",release_id=release_id)
 
 class sql_audit_canal(base_handler.TokenHandler):
     async def post(self):

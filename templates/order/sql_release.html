@@ -44,7 +44,6 @@
             width: 65%;
             height: 40%;
         }
-
     </style>
 </head>
 
@@ -152,17 +151,16 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-xs waves-effect waves-light"><i
-                                    class="ion-android-timer"></i></i></button>
+                    <div class="col-md-3">
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-xs waves-effect waves-light"><i class="ion-android-timer"></i></button>
                         </div>
-                        <div class="col-md-11">
-                            <input id="filter_db" type="text" class="form-control" placeholder="请输入过虑条件">
+                        <div class="col-md-10">
+                            <input id="filter_db" type="text" class="form-control" placeholder="请输入条件">
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <button type="button" id='check_btn' class="btn btn-xs waves-effect waves-light"
                                 data-toggle="tooltip" data-placement="top" title="检测" data-original-title="检测"><i
                                 class="mdi mdi-spellcheck"></i></button>
@@ -176,9 +174,18 @@
                                 data-toggle="tooltip" data-placement="top" title="查询" data-original-title="查询"><i
                                 class="fa fa-search"></i></button>
                         <button type="button" id='import_btn' class="btn btn-xs waves-effect waves-light"
-                                data-toggle="tooltip" data-placement="top" title="导入" data-original-title="导入"><i
+                                data-t  oggle="tooltip" data-placement="top" title="导入" data-original-title="导入"><i
                                 class="ion-android-folder"></i></button>
                         <span style="display:none"><input type="file" id="files" onchange="fileImport();"></span>
+                    </div>
+                     <div class="col-md-3">
+                        <div class="col-md-6 text-right" style="padding-right: 5px">
+                            <label class="control-label text-left" data-size="small" style="line-height: 25px;padding-right: 0px">日志</label>
+                        </div>
+                        <div class="col-md-6 text-left" style="padding-left: 5px">
+                            <input type="checkbox" id="is_log" checked switch="none"/>
+                            <label style="padding-left: 0px" for="is_log" data-on-label="开" data-off-label="关" data-size="small"></label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1153,6 +1160,13 @@
             $("#check_btn").click()
 
             if ($('#check_status').val() == 'success') {
+                let is_log;
+                if ($('#is_log').is(":checked")) {
+                    is_log='1'
+                } else {
+                    is_log='0'
+                }
+
                 $.ajax({
                     url: "/sql/_release",
                     type: "post",
@@ -1165,6 +1179,7 @@
                         type: $('#db_order_type').val(),
                         time: $('#run_time').val(),
                         reason: $('#sql_desc2').val(),
+                        is_log:is_log
                     },
                     success: function (dataSet) {
                         if (dataSet.status == "1") {

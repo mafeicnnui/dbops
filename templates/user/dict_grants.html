@@ -508,6 +508,20 @@
                             }
                         },
                     ],
+                     columnDefs: [
+                        {
+                            targets: 5,
+                            render: function (data, type, row, meta) {
+                                return row[5].substring(0,20)+'...'
+                            }
+                        },
+                        {
+                            targets: 6,
+                            render: function (data, type, row, meta) {
+                                return  row[6].substring(0,20)+'...'
+                            }
+                        }
+                    ],
                     "language": get_languages()
                 });
             },
@@ -706,6 +720,20 @@
                                 return grant_update + grant_delete;
                             }
                         },
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 7,
+                            render: function (data, type, row, meta) {
+                                return row[7].substring(0,20)+'...'
+                            }
+                        },
+                        {
+                            targets: 8,
+                            render: function (data, type, row, meta) {
+                                return row[8].substring(0,20)+'...'
+                            }
+                        }
                     ],
                     "language": get_languages()
                 });

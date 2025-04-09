@@ -17,6 +17,14 @@
             overflow-x: auto;
             overflow-y: auto;
         }
+       .table-responsive {
+          overflow-x: auto; /* 使容器支持水平滚动条 */
+          white-space: nowrap; /* 禁止折行 */
+        }
+
+        table.dataTable {
+          width: 100%; /* 确保表格宽度自动调整 */
+        }
 
     </style>
 </head>
@@ -725,22 +733,22 @@
                     scrollX: true,
                     scrollCollapse: true,
                     paging: true,
-                    bAutoWidth: true,
+                    autoWidth: true,
                     iDisplayLength: 10,
                     data: dataSet,
                     columns: [
-                        {"title": "序号", "width": "50px"},
-                        {"title": "名称", "width": "50px"},
-                        {"title": "代码", "width": "100px"},
+                      {"title": "序号", "sWidth": "50px"},
+                        {"title": "名称", "sWidth": "50px"},
+                        {"title": "代码", "sWidth": "100px"},
                         {"title": "类型代码", "visible": false},
-                        {"title": "类型", "width": "100px"},
-                        {"title": "是否列表项", "width": "100px"},
-                        {"title": "列表项值", "width": "100px"},
-                        {"title": "列表项名", "width": "100px"},
-                        {"title": "是否非空", "width": "100px"},
-                        {"title": "是否范围", "width": "100px"},
-                        {"title": "日期范围", "width": "100px"},
-                        {"title": "模糊查询", "width": "100px"},
+                        {"title": "类型", "sWidth": "50px"},
+                        {"title": "是否列表项", "sWidth": "50px"},
+                        {"title": "列表项值", "sWidth": "50px"},
+                        {"title": "列表项名", "sWidth": "100px"},
+                        {"title": "是否非空", "sWidth": "50px"},
+                        {"title": "是否范围", "sWidth": "50px"},
+                        {"title": "日期范围", "sWidth": "50px"},
+                        {"title": "模糊查询", "sWidth": "50px"},
                         {
                             "title": "功能",
                             "width": "25px",

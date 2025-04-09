@@ -1,0 +1,43 @@
+
+<body>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        function downloads_data_new(p_id) {
+            $.ajax({
+                 url: `/bbgl/download/files/new`,  // 假设 p_id 作为查询参数传递
+                 type: 'POST',
+                 data: {
+                    id: p_id,
+                 },
+                 contentType: "application/x-www-form-urlencoded",  // ✅ 让 Tornado 能解析参数
+                 xhrFields: {
+                        responseType: "blob" // 允许下载二进制文件
+                 },
+                 success: function (blob, status, xhr) {
+                    // 获取文件名（从 Content-Disposition 头部解析）
+                    let filename = "downloaded_file";
+                    let disposition = xhr.getResponseHeader("Content-Disposition");
+                    if (disposition && disposition.includes("filename=")) {
+                        filename = decodeURIComponent(disposition.split("filename=")[1]);
+                    }
+                    // 创建 Blob URL 并下载
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url); // 释放 Blob URL，防止内存泄漏
+                },
+                error: function (xhr) {
+                    console.error("下载失败", xhr);
+                }
+            });
+        }
+        $(document).ready(function () {
+           downloads_data_new(134)
+        });
+    </script>
+
+</body>

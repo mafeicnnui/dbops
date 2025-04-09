@@ -26,7 +26,7 @@ def read_json(file):
     return cfg
 
 
-ds = read_json(os.path.join(os.path.dirname(__file__)) + '/config.json')
+ds = read_json(os.path.join(os.path.dirname(__file__)) + '/../../config/config.json')
 print('ds=', ds)
 
 

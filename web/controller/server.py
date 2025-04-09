@@ -62,9 +62,10 @@ class Application(tornado.web.Application):
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
-    http_server = tornado.httpserver.HTTPServer(Application(),
-                                                max_buffer_size=1073741824,
-                                                max_body_size=1073741824)
+    http_server = tornado.httpserver.HTTPServer(
+        Application(),
+        max_buffer_size=1073741824,
+        max_body_size=1073741824)
     http_server.listen(sys.argv[1])
     print('Dbops Server running {0} port ...'.format(sys.argv[1]))
     tornado.ioloop.IOLoop.instance().start()

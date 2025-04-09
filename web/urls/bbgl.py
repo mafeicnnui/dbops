@@ -7,7 +7,8 @@
 
 from web.services.bbgl import bbgl_add, bbgl_add_save, bbgl_add_header_save, bbgl_header_query, bbgl_query_dm, \
     bbgltaskquery, bbgltask_query, bbgltaskadd_save, bbgltaskupd_save, bbgltaskedit_del, bbgltask_push, \
-    bbgltask_run, bbgltask_stop, bbgltask_tjrq_value, bbgltask_data, bbglimportquery, bbglimport
+    bbgltask_run, bbgltask_stop, bbgltask_tjrq_value, bbgltask_data, bbglimportquery, bbglimport, bbgl_download_files, \
+    bbgl_download_files_new, bbgl_downloads
 from web.services.bbgl import bbgl_add_filter_save, bbgl_filter_query
 from web.services.bbgl import bbgl_add_preprocess_save, bbgl_preprocess_query
 from web.services.bbgl import bbgl_add_statement_save, bbgl_statement_query
@@ -63,9 +64,12 @@ bbgl = [
 
     # 报表导出
     (r"/bbgl/export", bbgl_export),
+    (r"/bbgl/downloads", bbgl_downloads),
     (r"/bbgl/query/export", bbgl_query_export),
     (r"/bbgl/export/data", bbgl_export_data),
     (r"/bbgl/download", bbgl_download),
+    (r"/bbgl/download/files", bbgl_download_files),
+    (r"/bbgl/download/files/new", bbgl_download_files_new),
     (r"/bbgl/delete/export", bbgl_delete_export),
 
     # 报表任务

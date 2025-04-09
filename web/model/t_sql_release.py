@@ -17,14 +17,15 @@ import sqlparse
 import xlwt
 from xpinyin import Pinyin
 
-from web.model.t_dmmx import get_dmmc_from_dm, get_dmmc_from_dm_sync
+from web.model.t_dmmx import get_dmmc_from_dm, get_dmmc_from_dm_sync, get_audit_mobile
 from web.model.t_ds import get_ds_by_dsid, get_ds_by_dsid_sync
 from web.model.t_sql_check import check_mysql_ddl
 from web.model.t_sql_check import check_statement_count
 from web.model.t_sql_online import check_online
 from web.model.t_user import get_user_by_loginame
 from web.model.t_user import get_user_by_userid, get_user_by_loginame_sync
-from web.utils.common import current_time, send_message, send_message_sync, current_rq
+from web.utils.common import current_time, send_message, send_message_sync, current_rq, send_message_qw, \
+    send_message_qw_sync, send_message_qw_mobiles
 from web.utils.common import format_sql as fmt_sql
 from web.utils.common import send_mail, send_mail_param, get_sys_settings, get_sys_settings_sync
 from web.utils.mysql_async import async_processer
@@ -35,6 +36,7 @@ from web.utils.mysql_sync import sync_processer
 async def get_sqlid():
     sql = "select ifnull(max(id),0)+1 from t_sql_release"
     rs = await async_processer.query_one(sql)
+    print('rs=', rs)
     return rs[0]
 
 
@@ -50,6 +52,7 @@ def get_sql_release_sync(p_id):
 
 async def get_sql_by_sqlid(p_sql_id):
     sql = "select sqltext from t_sql_release where id={0}".format(p_sql_id)
+    print('sql=', sql)
     rs = await async_processer.query_one(sql)
     return rs[0]
 
@@ -77,8 +80,8 @@ async def query_audit(p_name, p_dsid, p_creator, p_userid, p_username, p_reason)
     if p_creator != '':
         v_where = v_where + " and a.creator='{0}'\n".format(p_creator)
 
-    if p_username != 'admin':
-        v_where = v_where + " and a.creator='{0}'\n".format(p_username)
+    # if p_username != 'admin':
+    #     v_where = v_where + " and a.creator='{0}'\n".format(p_username)
 
     sql = """SELECT  a.id, 
                      a.message,
@@ -107,6 +110,7 @@ async def query_audit(p_name, p_dsid, p_creator, p_userid, p_username, p_reason)
             WHERE a.dbid=b.id
               AND c.dm='13'
               AND a.type=c.dmm
+              AND a.creation_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
               {0}
             order by a.creation_date desc
           """.format(v_where)
@@ -161,6 +165,7 @@ async def query_run(p_name, p_dsid, p_creator, p_userid, p_username, p_reason):
             WHERE a.dbid=b.id
               AND c.dm='13'
               AND a.type=c.dmm
+              and a.creation_date >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
               {0} order by a.creation_date desc
           """.format(v_where)
     return await async_processer.query_list(sql)
@@ -404,15 +409,24 @@ async def release_order(p_order_no, p_userid):
 async def get_order_xh(p_type, p_rq, p_dbid):
     result = {}
     try:
-        st = """SELECT MAX(a.message)  as xh FROM t_sql_release a
+        # st = """SELECT MAX(a.message)  as xh FROM t_sql_release a
+        #             WHERE a.dbid={}
+        #               and a.TYPE='{}'
+        #               and a.creation_date=(SELECT MAX(creation_date)
+        #                                    FROM t_sql_release b
+        #                                    WHERE b.dbid=a.dbid
+        #                                      and b.TYPE=a.type
+        #                                      and DATE_FORMAT(b.creation_date,'%Y%m%d')='{}')
+        #              """.format(p_dbid, p_type, p_rq)
+        st = """SELECT 
+                    -- MAX(a.message)  as xh  ,
+                    MAX(ABS(SUBSTR(a.message,LENGTH(a.message)-1)))+1 as xh      
+                 FROM t_sql_release a
                     WHERE a.dbid={} 
                       and a.TYPE='{}' 
-                      and a.creation_date=(SELECT MAX(creation_date) 
-                                           FROM t_sql_release b 
-                                           WHERE b.dbid=a.dbid 
-                                             and b.TYPE=a.type
-                                             and DATE_FORMAT(b.creation_date,'%Y%m%d')='{}')
+                      and DATE_FORMAT(a.creation_date,'%Y%m%d')='{}'
                      """.format(p_dbid, p_type, p_rq)
+
         res = await async_processer.query_dict_one(st)
         print(st)
         result['code'] = '0'
@@ -420,7 +434,7 @@ async def get_order_xh(p_type, p_rq, p_dbid):
             result['message'] = 1
         else:
             print('xh=', res['xh'])
-            result['message'] = int(res['xh'].split('-')[-1]) + 1
+            result['message'] = res['xh']  #int(res['xh'].split('-')[-1]) + 1
         return result
     except:
         traceback.print_exc()
@@ -451,7 +465,15 @@ async def query_audit_sql(id):
         id)
     rs = await async_processer.query_dict_one(st)
     st = """select rollback_statement FROM `t_sql_backup` WHERE release_id={} order by id desc """.format(id)
-    rs['rollback'] = await async_processer.query_dict_list(st)
+    # rs['rollback'] = await async_processer.query_dict_list(st)
+    va = await async_processer.query_dict_list(st)
+    if va is not None:
+        rs['rollback'] = [i['rollback_statement'] + '\n' for i in va]
+        rs['rollback_detail'] = '\n'.join([format_sql(i['rollback_statement'])['message'] for i in va])
+    else:
+        rs['rollback'] = []
+        rs['rollback_detail'] = []
+
     if rs['run_result'] is not None and rs['run_result'] != '':
         rs['run_result'] = json.loads(rs.get('run_result'))
     else:
@@ -499,36 +521,6 @@ async def exp_rollback(static_path, release_id):
     return rzip_file
 
 
-async def save_sql(p_dbid, p_sql, desc, logon_user):
-    result = {}
-    try:
-        if p_dbid == '':
-            result['code'] = '1'
-            result['message'] = '请选择数据源!'
-            return result
-
-        p_ds = await get_ds_by_dsid(p_dbid)
-        if p_ds['db_type'] == '0':
-            val = check_mysql_ddl(p_dbid, p_sql, logon_user)
-
-        if val['code'] != '0':
-            return val
-        sql = """insert into t_sql_release(id,dbid,sqltext,status,message,creation_date,creator,last_update_date,updator) 
-                values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}')""".format(get_sqlid(), p_dbid, p_sql, '0',
-                                                                                        desc, current_time(), 'DBA',
-                                                                                        current_time(), 'DBA');
-        await async_processer.exec_sql(sql)
-        result = {}
-        result['code'] = '0'
-        result['message'] = '发布成功！'
-        return result
-    except:
-        traceback.print_exc()
-        result['code'] = '-1'
-        result['message'] = '发布失败！'
-        return result
-
-
 async def check_sql(p_dbid, p_cdb, p_sql, desc, logon_user, type):
     result = {}
     result['code'] = '0'
@@ -555,7 +547,141 @@ async def check_sql(p_dbid, p_cdb, p_sql, desc, logon_user, type):
         return result
 
 
-async def save_sql(p_dbid, p_cdb, p_sql, desc, p_user, type, time, p_username, p_host, p_reason):
+async def get_release_params(p_dbid, p_cdb, p_sql, desc, p_user, type, time, p_username, p_host, p_reason, p_sqlid):
+    """
+     功能：工单发布发送邮件及微信参数字典
+    """
+    p_ds = await get_ds_by_dsid(p_dbid)
+    p_ds['service'] = p_cdb
+    email = (await get_user_by_loginame(p_username))['email']
+    settings = await get_sys_settings()
+    wkno = await get_sql_release(p_sqlid)
+    v_title = '工单发布情况[{}]'.format(wkno['message'])
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    creator = (await get_user_by_loginame(wkno['creator']))['name']
+    phone = (await get_user_by_loginame(wkno['creator']))['phone']
+    otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
+    status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+    reason = wkno['reason']
+    send_params = {
+        'p_sqlid': p_sqlid,
+        'p_ds': p_ds,
+        'email': email,
+        'settings': settings,
+        'wkno': wkno,
+        'v_title': v_title,
+        'nowTime': nowTime,
+        'creator': creator,
+        'otype': otype,
+        'status': status,
+        'reason': reason,
+        'p_host': settings['WX_HOST'],
+        'p_user': p_user,
+        'msg_type': 'RELEASE',
+        'msg_type_zh': '发布',
+        'to_user': p_user['wkno'],
+        'phone': phone
+    }
+    return send_params
+
+
+async def get_audit_params(p_sqlid, p_user, p_status, p_message, p_host):
+    """
+     功能：工单审核发送邮件及微信参数字典
+    """
+    wkno = await get_sql_release(p_sqlid)
+    p_ds = await get_ds_by_dsid(wkno['dbid'])
+    p_ds['service'] = wkno['db']
+    cmail = p_user['email']
+    settings = await get_sys_settings()
+    v_title = '工单审核情况[{}]'.format(wkno['message'])
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    creator = (await get_user_by_loginame(wkno['creator']))['name']
+    email = (await get_user_by_loginame(wkno['creator']))['email']
+    auditor = (await get_user_by_loginame(wkno['auditor']))['name']
+    otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
+    status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+    reason = wkno['reason']
+    send_params = {
+        'p_sqlid': p_sqlid,
+        'wkno': wkno,
+        'p_ds': p_ds,
+        'cmail': email,
+        'settings': settings,
+        'v_title': v_title,
+        'nowTime': nowTime,
+        'creator': creator,
+        'email': email,
+        'auditor': auditor,
+        'otype': otype,
+        'status': status,
+        'reason': reason,
+        'p_host': settings['WX_HOST'],
+        'msg_type': 'AUDIT',
+        'msg_type_zh': '审核',
+        'to_user': '{}|{}'.format(p_user['wkno'],
+                                  (await get_user_by_loginame(wkno['creator']))['wkno'])
+    }
+    return send_params
+
+
+def get_run_params(p_dbid, p_db_name, p_sql_id, p_username, p_host):
+    """
+     功能：工单执行发送邮件及微信参数字典
+    """
+    p_ds = get_ds_by_dsid_sync(p_dbid)
+    p_ds['service'] = p_db_name
+    sql = get_sql_by_sqlid_sync(p_sql_id)
+    email = get_user_by_loginame_sync(p_username)['email']
+    settings = get_sys_settings_sync()
+    wkno = get_sql_release_sync(p_sql_id)
+    v_title = '工单执行情况[{}]'.format(wkno['message'])
+    nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    creator = get_user_by_loginame_sync(wkno['creator'])['name']
+    auditor = get_user_by_loginame_sync(wkno['auditor'])['name']
+    otype = get_dmmc_from_dm_sync('13', wkno['type'])[0]
+    status = get_dmmc_from_dm_sync('41', wkno['status'])[0]
+    reason = wkno['reason']
+
+    if wkno['executor'] is not None and wkno['executor'] != '':
+        to_user = '{}|{}|{}'.format(get_user_by_loginame_sync(wkno['executor'])['wkno'],
+                                    get_user_by_loginame_sync(wkno['creator'])['wkno'],
+                                    get_user_by_loginame_sync(wkno['auditor'])['wkno'])
+    else:
+        to_user = '{}|{}'.format(get_user_by_loginame_sync(wkno['creator'])['wkno'],
+                                 get_user_by_loginame_sync(wkno['auditor'])['wkno'])
+
+    run_time = 0
+    if wkno['status'] == '4':
+        print('exec_stop=', wkno.get('exec_end'), type(wkno.get('exec_end')))
+        print('exec_start=', wkno.get('exec_start'), type(wkno.get('exec_start')))
+        run_time = (wkno.get('exec_end') - wkno.get('exec_start')).total_seconds()
+        print('run_time=', run_time)
+
+    send_params = {
+        'p_sqlid': p_sql_id,
+        'p_ds': p_ds,
+        'sql': sql,
+        'email': email,
+        'settings': settings,
+        'wkno': wkno,
+        'v_title': v_title,
+        'nowTime': nowTime,
+        'creator': creator,
+        'auditor': auditor,
+        'otype': otype,
+        'status': status,
+        'reason': reason,
+        'p_host': p_host,
+        'msg_type': 'RUNNING',
+        'msg_type_zh': '执行',
+        'to_user': to_user,
+        'run_time': str(int(run_time))
+    }
+    return send_params
+
+
+async def save_sql(p_dbid, p_cdb, p_sql, desc, p_user, type, time, p_username, p_host, p_reason, p_is_log):
     result = {}
     try:
         if check_validate(p_dbid, p_cdb, p_sql, desc, p_user, type)['code'] != '0':
@@ -572,63 +698,31 @@ async def save_sql(p_dbid, p_cdb, p_sql, desc, p_user, type, time, p_username, p
             result['message'] = '发布失败!'
             return result
 
-        sql = """insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type,run_time,reason) 
-                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}')
-            """.format(p_sqlid, p_dbid, p_cdb, fmt_sql(p_sql), '0', desc, current_time(), p_user['login_name'],
-                       current_time(), p_user['login_name'], type, time, p_reason)
-
+        sql = """insert into t_sql_release(id,dbid,db,sqltext,status,message,creation_date,creator,last_update_date,updator,type,run_time,reason,is_log) 
+                 values('{0}','{1}',"{2}",'{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}')
+              """.format(p_sqlid, p_dbid, p_cdb, fmt_sql(p_sql), '0', desc, current_time(), p_user['login_name'],
+                         current_time(), p_user['login_name'], type, time, p_reason, p_is_log)
         await async_processer.exec_sql(sql)
+
+        # get parameter
+        params = await get_release_params(p_dbid, p_cdb, p_sql, desc, p_user, type, time, p_username, p_host, p_reason,
+                                          p_sqlid)
+
+        # send mail
+        send_release_mail(params)
+
+        # send to wx
+        await send_wx(params)
+
+        # send to qywx
+        await send_qywx(params)
+
         result['code'] = '0'
         result['message'] = '发布成功！'
-
-        # 2021.09.09 add send mail
-        p_ds['service'] = p_cdb
-        sql = await get_sql_by_sqlid(p_sqlid)
-        email = (await get_user_by_loginame(p_username))['email']
-        settings = await get_sys_settings()
-        wkno = await get_sql_release(p_sqlid)
-        v_title = '工单发布情况[{}]'.format(wkno['message'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = (await get_user_by_loginame(wkno['creator']))['name']
-        otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
-        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
-
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in ('10.2.39.18', '10.2.39.20', '10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
-
-        # send success mail
-        v_content = get_html_contents_release()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$',
-                                      p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds[
-                                          'url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$TYPE$$', otype)
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sqlid))
-        v_content = v_content.replace('$$ERROR$$', '')
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
-                        settings.get('CC'), v_title, v_content)
-
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', creator)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', '')
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sqlid)
-        await send_message(p_user['wkno'], v_title, v_content_wx, v_detail_url)
         return result
-    except:
+    except Exception as e:
         traceback.print_exc()
+        print(e)
         result['code'] = '-1'
         result['message'] = '发布失败!'
         return result
@@ -646,57 +740,15 @@ async def upd_sql(p_sqlid, p_user, p_status, p_message, p_host):
                        audit_message='{}'
                 where id='{}'""".format(p_status, p_user['login_name'], p_user['login_name'], p_message, p_sqlid)
         await async_processer.exec_sql(sql)
-
-        wkno = await get_sql_release(p_sqlid)
-        p_ds = await get_ds_by_dsid(wkno['dbid'])
-        p_ds['service'] = wkno['db']
-        email = p_user['email']
-        settings = await get_sys_settings()
-        v_title = '工单审核情况[{}]'.format(wkno['message'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = (await get_user_by_loginame(wkno['creator']))['name']
-        cmail = (await get_user_by_loginame(wkno['creator']))['email']
-        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
-        otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
-        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
-
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in ('10.2.39.18', '10.2.39.20', '10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
-
+        params = await get_audit_params(p_sqlid, p_user, p_status, p_message, p_host)
         # send audit mail
-        v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$', p_ds['url'] + p_ds['service']
-        if p_ds['url'].find(p_ds['service']) < 0 else p_ds['url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$AUDITOR$$', auditor)
-        v_content = v_content.replace('$$TYPE$$', otype)
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sqlid))
-        v_content = v_content.replace('$$ERROR$$', '')
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
-                        cmail, v_title, v_content)
+        send_audit_mail(params)
 
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', auditor)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', '')
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sqlid)
-        await send_message('{}|{}'.format(p_user['wkno'],
-                                          (await get_user_by_loginame(wkno['creator']))['wkno']),
-                           v_title,
-                           v_content_wx,
-                           v_detail_url)
+        # send to wx
+        await send_wx(params)
+
+        # send to qywx
+        await send_qywx(params)
 
         result['code'] = '0'
         result['message'] = '审核成功!'
@@ -822,46 +874,57 @@ def upd_run_status_sync(p_sqlid, p_flag, p_err=None, binlog_file=None, start_pos
         traceback.print_exc()
 
 
-def get_html_contents_release():
-    v_html = '''<html>
-		<head>
-		   <style type="text/css">
-			   .xwtable {width: 90%;border-collapse: collapse;border: 1px solid #ccc;}
-			   .xwtable thead td {font-size: 12px;color: #333333;
-					      text-align: center;background: url(table_top.jpg) repeat-x top center;
-				              border: 1px solid #ccc; font-weight:bold;}
-			   .xwtable thead th {font-size: 12px;color: #333333;
-				              text-align: center;background: url(table_top.jpg) repeat-x top center;
-					      border: 1px solid #ccc; font-weight:bold;}
-			   .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
-			   .xwtable tbody tr.alt-row {background: #f2f7fc;}
-			   .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
-		   </style>
-		</head>
-		<body>
-              <table class='xwtable'>
-                  <tr><td width="20%">发送时间</td><td width="80%">$$TIME$$</td></tr>
-                  <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
-                  <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
-                  <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
-                  <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
-                  <tr><td>工单详情</td><td>$$DETAIL$$</td></tr>
-              </table>    
-		</body>
-	    </html>'''
-    return v_html
+def send_release_mail(params):
+    """
+         功能：发送工单发布邮件
+         参数：工单发布字典信息
+    """
+    # v_html = '''<html>
+    # 	<head>
+    # 	   <style type="text/css">
+    # 		   .xwtable {width: 90%;border-collapse: collapse;border: 1px solid #ccc;}
+    # 		   .xwtable thead td {font-size: 12px;color: #333333;
+    # 				      text-align: center;background: url(table_top.jpg) repeat-x top center;
+    # 			              border: 1px solid #ccc; font-weight:bold;}
+    # 		   .xwtable thead th {font-size: 12px;color: #333333;
+    # 			              text-align: center;background: url(table_top.jpg) repeat-x top center;
+    # 				      border: 1px solid #ccc; font-weight:bold;}
+    # 		   .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
+    # 		   .xwtable tbody tr.alt-row {background: #f2f7fc;}
+    # 		   .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
+    # 	   </style>
+    # 	</head>
+    # 	<body>
+    #           <table class='xwtable'>
+    #               <tr><td width="20%">发送时间</td><td width="80%">$$TIME$$</td></tr>
+    #               <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
+    #               <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
+    #               <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
+    #               <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
+    #               <tr><td>工单详情</td><td>$$DETAIL$$</td></tr>
+    #           </table>
+    # 	</body>
+    #     </html>'''
+    # v_html = v_html.replace('$$TIME$$', params['nowTime'])
+    # v_html = v_html.replace('$$DBINFO$$',
+    #                               params['p_ds']['url'] + params['p_ds']['service']
+    #                               if params['p_ds']['url'].find(params['p_ds']['service']) < 0 else params['p_ds']['url'])
+    # v_html = v_html.replace('$$CREATOR$$', params['creator'])
+    # v_html = v_html.replace('$$TYPE$$', params['otype'])
+    # v_html = v_html.replace('$$STATUS$$', params['status'])
+    # v_html = v_html.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    # v_html = v_html.replace('$$ERROR$$', '')
+    # send_mail_param(params['settings'].get('send_server'),
+    #                 params['settings'].get('sender'),
+    #                 params['settings'].get('sendpass'),
+    #                 params['email'],
+    #                 params['settings'].get('CC'),
+    #                 params['v_title'],
+    #                 v_html)
+    pass
 
 
-def get_html_contents_release_wx():
-    v_wx = '''发送时间:$$TIME$$
-数据库名:$$DBINFO$$
-提交人员:$$CREATOR$$
-工单类型:$$TYPE$$
-工单状态:$$STATUS$$'''
-    return v_wx
-
-
-def get_html_contents():
+def send_audit_mail(params):
     v_html = '''<html>
 		<head>
 		   <style type="text/css">
@@ -889,273 +952,256 @@ def get_html_contents():
               </table>    
 		</body>
 	    </html>'''
+    v_html = v_html.replace('$$TIME$$', params['nowTime'])
+    v_html = v_html.replace('$$DBINFO$$', params['p_ds']['url'] + params['p_ds']['service']
+    if params['p_ds']['url'].find(params['p_ds']['service']) < 0 else params['p_ds']['url'])
+    v_html = v_html.replace('$$CREATOR$$', params['creator'])
+    v_html = v_html.replace('$$AUDITOR$$', params['auditor'])
+    v_html = v_html.replace('$$TYPE$$', params['otype'])
+    v_html = v_html.replace('$$STATUS$$', params['status'])
+    v_html = v_html.replace('$$DETAIL$$',
+                            'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    v_html = v_html.replace('$$ERROR$$', '')
+    send_mail_param(params['settings'].get('send_server'),
+                    params['settings'].get('sender'),
+                    params['settings'].get('sendpass'),
+                    params['email'],
+                    params['cmail'],
+                    params['v_title'],
+                    v_html)
     return v_html
 
 
-async def exe_sql(p_dbid, p_db_name, p_sql_id, p_username, p_host):
-    res = {}
-    p_ds = await get_ds_by_dsid(p_dbid)
-    p_ds['service'] = p_db_name
-    await upd_run_status(p_sql_id, 'before')
-    sql = await get_sql_by_sqlid(p_sql_id)
-    email = (await get_user_by_loginame(p_username))['email']
-    settings = await get_sys_settings()
+def send_run_mail(params):
+    """
+         功能：发送工单发布邮件
+         参数：工单发布字典信息
+    """
+    v_html = '''<html>
+		<head>
+		   <style type="text/css">
+			   .xwtable {width: 90%;border-collapse: collapse;border: 1px solid #ccc;}
+			   .xwtable thead td {font-size: 12px;color: #333333;
+					      text-align: center;background: url(table_top.jpg) repeat-x top center;
+				              border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable thead th {font-size: 12px;color: #333333;
+				              text-align: center;background: url(table_top.jpg) repeat-x top center;
+					      border: 1px solid #ccc; font-weight:bold;}
+			   .xwtable tbody tr {background: #fff;font-size: 12px;color: #666666;}
+			   .xwtable tbody tr.alt-row {background: #f2f7fc;}
+			   .xwtable td{line-height:20px;text-align: left;padding:4px 10px 3px 10px;height: 18px;border: 1px solid #ccc;}
+		   </style>
+		</head>
+		<body>
+              <table class='xwtable'>
+                  <tr><td width="20%">发送时间</td><td width="80%">$$TIME$$</td></tr>
+                  <tr><td>数据库名</td><td>$$DBINFO$$</td></tr>
+                  <tr><td>提交人员</td><td>$$CREATOR$$</td></tr>
+                  <tr><td>审核人员</td><td>$$AUDITOR$$</td></tr>
+                  <tr><td>工单类型</td><td>$$TYPE$$</td></tr>
+                  <tr><td>工单状态</td><td>$$STATUS$$</td></tr>
+                  <tr><td>工单详情</td><td>$$DETAIL$$</td></tr>
+              </table>    
+		</body>
+	    </html>'''
+    v_html = v_html.replace('$$TIME$$', params['nowTime'])
+    v_html = v_html.replace('$$DBINFO$$',
+                            params['p_ds']['url'] + params['p_ds']['service']
+                            if params['p_ds']['url'].find(params['p_ds']['service']) < 0 else params['p_ds']['url'])
+    v_html = v_html.replace('$$CREATOR$$', params['creator'])
+    v_html = v_html.replace('$$AUDITOR$$', params['auditor'])
+    v_html = v_html.replace('$$TYPE$$', params['otype'])
+    v_html = v_html.replace('$$STATUS$$', params['status'])
+    v_html = v_html.replace('$$DETAIL$$',
+                            'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    v_html = v_html.replace('$$ERROR$$', params.get('error', ''))
+    send_mail_param(params['settings'].get('send_server'),
+                    params['settings'].get('sender'),
+                    params['settings'].get('sendpass'),
+                    params['email'],
+                    params['settings'].get('CC'),
+                    params['v_title'],
+                    v_html)
 
-    try:
-        # get binlog ,start_position
-        # await async_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
-        # await async_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
-        # rs1 = await async_processer.query_one_by_ds(p_ds, 'show master status')
-        # binlog_file=rs1[0]
-        # start_position=rs1[1]
-        #
-        # logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
-        # if check_statement_count(sql) == 1:
-        #     logging.info(('exec single statement:'))
-        #     logging.info(('-----------------------------------------'))
-        #     logging.info(('statement:', sql))
-        #     await async_processer.exec_sql_by_ds(p_ds, sql)
-        # elif check_statement_count(sql) > 1:
-        #     logging.info(('exec multi statement:'))
-        #     logging.info(('-----------------------------------------'))
-        #     #await async_processer.exec_sql_by_ds_multi(p_ds, sql)
-        #     for st in reReplace(sql):
-        #         logging.info(('statement=',st))
-        #         await async_processer.exec_sql_by_ds(p_ds, st)
-        # else:
-        #     pass
-        #
-        # # get stop_position
-        # rs2 = await async_processer.query_one_by_ds(p_ds, 'show master status')
-        # stop_position=rs2[1]
 
-        if check_statement_count(sql) == 1:
-            binlog_file, start_position, stop_position = await async_processer.exec_sql_by_ds_new(p_ds, sql)
+async def send_wx(params):
+    v_wx = '''发送时间:$$TIME$$
+数据库环境:$$DB_DESC$$
+数据库名:$$DB_NAME$$
+发布原因:$$REASON$$
+工单类型:$$TYPE$$
+提交人员:$$CREATOR$$
+工单状态:$$STATUS$$'''
+    v_wx = v_wx.replace('$$TIME$$', params['nowTime'])
+    v_wx = v_wx.replace('$$DB_DESC$$', params['p_ds']['db_desc'])
+    v_wx = v_wx.replace('$$DB_NAME$$', params['p_ds']['service'])
+    v_wx = v_wx.replace('$$REASON$$', params['reason'])
+    v_wx = v_wx.replace('$$CREATOR$$', params['creator'])
+    v_wx = v_wx.replace('$$TYPE$$', params['otype'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status'])
+    v_url = 'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid'])
+    print('send_wx=', v_wx)
+    await send_message(params['to_user'],
+                       params['v_title'],
+                       v_wx,
+                       v_url,
+                       params['p_ds'],
+                       msg_type=params['msg_type'])
 
-        if check_statement_count(sql) > 1:
-            binlog_file, start_position, stop_position = await async_processer.exec_sql_by_ds_multi_new(p_ds, sql)
 
-        logging.info('binlog:{},{},{}'.format(binlog_file, str(start_position), str(stop_position)))
-        await upd_run_status(p_sql_id, 'after', None, binlog_file, start_position, stop_position)
+def send_wx_sync(params):
+    v_wx = '''发送时间:$$TIME$$
+数据库环境:$$DB_DESC$$
+数据库名:$$DB_NAME$$
+发布原因:$$REASON$$
+工单类型:$$TYPE$$
+提交人员:$$CREATOR$$
+工单状态:$$STATUS$$'''
+    v_wx = v_wx.replace('$$TIME$$', params['nowTime'])
+    v_wx = v_wx.replace('$$DB_DESC$$', params['p_ds']['db_desc'])
+    v_wx = v_wx.replace('$$DB_NAME$$', params['p_ds']['service'])
+    v_wx = v_wx.replace('$$REASON$$', params['reason'])
+    v_wx = v_wx.replace('$$CREATOR$$', params['creator'])
+    v_wx = v_wx.replace('$$TYPE$$', params['otype'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status'])
+    v_url = 'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid'])
+    print('send_wx_sync=', v_wx)
+    send_message_sync(params['to_user'],
+                      params['v_title'],
+                      v_wx,
+                      v_url,
+                      params['p_ds'],
+                      msg_type=params['msg_type'])
 
-        # write rollback statement
-        write_rollback(p_sql_id, p_ds, binlog_file, start_position, stop_position)
 
-        # send success mail
-        wkno = await get_sql_release(p_sql_id)
-        if wkno['run_time'] is not None and wkno['run_time'] != '':
-            v_title = '定时工单执行情况[{}]'.format(wkno['message'])
-        else:
-            v_title = '工单执行情况[{}]'.format(wkno['message'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = (await get_user_by_loginame(wkno['creator']))['name']
-        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
-        otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
-        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
+async def send_qywx(params):
+    v_wx = '''
+**工单$$MSG_TYPE_ZH$$通知**
+>工单编号:<font color=\"comment\">$$MESSAGE$$</font>
+>发送时间:<font color="comment">$$TIME$$</font>
+>数据库环境:<font color="comment">$$DB_DESC$$</font>
+>数据库名:<font color="comment">$$DB_NAME$$</font>
+>发布原因:<font color="comment">$$REASON$$</font>
+>工单类型:<font color="comment">$$TYPE$$</font>
+>提交人员:<font color="comment">$$CREATOR$$</font>
+>审核人员:<font color="comment">$$AUDITOR$$</font>
+>工单状态:<font color="comment">$$STATUS$$</font>
+>工单详情:<font color="comment">[点击查看工单内容]($$DETAIL$$)</font>'''
+    v_wx = v_wx.replace('$$MSG_TYPE_ZH$$', params['msg_type_zh'])
+    v_wx = v_wx.replace('$$TIME$$', params['nowTime'])
+    v_wx = v_wx.replace('$$DB_DESC$$', params['p_ds']['db_desc'])
+    v_wx = v_wx.replace('$$DB_NAME$$', params['p_ds']['service'])
+    v_wx = v_wx.replace('$$REASON$$', params['reason'])
+    v_wx = v_wx.replace('$$CREATOR$$', params['creator'])
+    v_wx = v_wx.replace('$$AUDITOR$$', params.get('auditor', ''))
+    v_wx = v_wx.replace('$$TYPE$$', params['otype'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status'])
+    v_wx = v_wx.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    v_wx = v_wx.replace('$$MESSAGE$$', params['wkno']['message'])
+    print('send_qywx=', v_wx)
+    await send_message_qw(v_wx)
+    # print('params=', params)
+    # print('params2=', params['wkno']['status'], params['phone'])
 
-        # if p_host == "124.127.103.190":
-        #     p_host = "124.127.103.190:65482"
-        # elif p_host in('10.2.39.18','10.2.39.20','10.2.39.21'):
-        #     p_host = '{}:81'.format(p_host)
-        # else:
-        #     p_host = p_host
+    # if params['wkno']['status'] == '0':
+    #     mobiles = (await get_audit_mobile(params['phone']))[0]
+    #     print('mobiles=', mobiles)
+    #     await send_qywx_audit(params, mobiles)
 
-        # send mail
-        v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$',
-                                      p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds[
-                                          'url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$AUDITOR$$', auditor)
-        v_content = v_content.replace('$$TYPE$$', otype)
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
-        v_content = v_content.replace('$$ERROR$$', '')
-        send_mail_param(settings.get('send_server'), settings.get('sender'), settings.get('sendpass'), email,
-                        settings.get('CC'), v_title, v_content)
 
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', creator)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', '')
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id)
-        to_user = '{}|{}|{}'.format((await get_user_by_loginame(wkno['executor']))['wkno'],
-                                    (await get_user_by_loginame(wkno['creator']))['wkno'],
-                                    (await get_user_by_loginame(wkno['auditor']))['wkno'])
-        await send_message(to_user, v_title, v_content_wx, v_detail_url)
+async def send_qywx_audit(params, mobiles):
+    v_wx = '''
+**您有新的工单要审核了**
+>工单编号:<font color=\"comment\">$$MESSAGE$$</font>
+>发送时间:<font color="comment">$$TIME$$</font>
+>数据库环境:<font color="comment">$$DB_DESC$$</font>
+>数据库名:<font color="comment">$$DB_NAME$$</font>
+>发布原因:<font color="comment">$$REASON$$</font>
+>工单类型:<font color="comment">$$TYPE$$</font>
+>提交人员:<font color="comment">$$CREATOR$$</font>
+>工单状态:<font color="comment">$$STATUS$$</font>
+>工单审核:<font color="comment">[点击进行工单审核]($$DETAIL$$)</font>'''
+    v_wx = v_wx.replace('$$TIME$$', params['nowTime'])
+    v_wx = v_wx.replace('$$DB_DESC$$', params['p_ds']['db_desc'])
+    v_wx = v_wx.replace('$$DB_NAME$$', params['p_ds']['service'])
+    v_wx = v_wx.replace('$$REASON$$', params['reason'])
+    v_wx = v_wx.replace('$$CREATOR$$', params['creator'])
+    v_wx = v_wx.replace('$$TYPE$$', params['otype'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status'])
+    v_wx = v_wx.replace('$$DETAIL$$',
+                        'http://{}/sql/audit_wx?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    v_wx = v_wx.replace('$$MESSAGE$$', params['wkno']['message'])
+    print('send_qywx_audit=', v_wx)
+    await send_message_qw_mobiles(v_wx, mobiles)
 
-        res['code'] = '0'
-        res['message'] = '执行成功!'
-        return res
-    except Exception as e:
-        from web.utils.common import format_sql as fmt_sql
-        error = fmt_sql(traceback.format_exc())
-        res['code'] = '-1'
-        res['message'] = '执行失败!'
-        logging.error(traceback.format_exc())
-        await upd_run_status(p_sql_id, 'error', error)
-        delete_rollback(p_sql_id)
 
-        # send error mail
-        wkno = await get_sql_release(p_sql_id)
-        v_title = '工单执行情况[{}]'.format(wkno['message'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = (await get_user_by_loginame(wkno['creator']))['name']
-        auditor = (await get_user_by_loginame(wkno['auditor']))['name']
-        otype = (await get_dmmc_from_dm('13', wkno['type']))[0]
-        status = (await get_dmmc_from_dm('41', wkno['status']))[0]
-
-        # if p_host == "124.127.103.190":
-        #     p_host = "124.127.103.190:65482"
-        # elif p_host in('10.2.39.18','10.2.39.20','10.2.39.21'):
-        #     p_host = '{}:81'.format(p_host)
-        # else:
-        #     p_host = p_host
-
-        # send mail
-        v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$',
-                                      p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds[
-                                          'url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$AUDITOR$$', auditor)
-        v_content = v_content.replace('$$TYPE$$', otype)
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
-        send_mail_param(settings.get('send_server'), settings.get('sender'),
-                        settings.get('sendpass'), email, settings.get('CC'), v_title, v_content)
-
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', creator)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', error)
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id)
-        to_user = '{}|{}|{}'.format((await get_user_by_loginame(wkno['executor']))['wkno'],
-                                    (await get_user_by_loginame(wkno['creator']))['wkno'],
-                                    (await get_user_by_loginame(wkno['auditor']))['wkno'])
-        await send_message(to_user, v_title, v_content_wx, v_detail_url)
-        return res
+def send_qywx_sync(params):
+    print('send_qywx_sync=>params=', params)
+    v_wx = '''
+**工单$$MSG_TYPE_ZH$$通知**
+>工单编号:<font color=\"comment\">$$MESSAGE$$</font>
+>发送时间:<font color=\"comment\">$$TIME$$</font>
+>数据库环境:<font color=\"comment\">$$DB_DESC$$</font>
+>数据库名:<font color=\"comment\">$$DB_NAME$$</font>
+>发布原因:<font color=\"comment\">$$REASON$$</font>
+>工单类型:<font color=\"comment\">$$TYPE$$</font>
+>提交人员:<font color=\"comment\">$$CREATOR$$</font>
+>审核人员:<font color=\"comment\">$$AUDITOR$$</font>
+>工单状态:<font color=\"comment\">$$STATUS$$</font>
+>工单详情:<font color="comment">[点击查看工单内容]($$DETAIL$$)</font>'''
+    v_wx = v_wx.replace('$$MSG_TYPE_ZH$$', params['msg_type_zh'])
+    v_wx = v_wx.replace('$$TIME$$', params['nowTime'])
+    v_wx = v_wx.replace('$$DB_DESC$$', params['p_ds']['db_desc'])
+    v_wx = v_wx.replace('$$DB_NAME$$', params['p_ds']['service'])
+    v_wx = v_wx.replace('$$REASON$$', params['reason'])
+    v_wx = v_wx.replace('$$CREATOR$$', params['creator'])
+    v_wx = v_wx.replace('$$AUDITOR$$', params['auditor'])
+    v_wx = v_wx.replace('$$TYPE$$', params['otype'])
+    v_wx = v_wx.replace('$$STATUS$$', params['status']
+    if params['wkno']['status'] != '4'
+    else '{}(耗时({})s)'.format(params['status'], params['run_time']))
+    v_wx = v_wx.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(params['p_host'], params['p_sqlid']))
+    v_wx = v_wx.replace('$$MESSAGE$$', params['wkno']['message'])
+    print('send_qywx_sync=', v_wx)
+    send_message_qw_sync(v_wx)
 
 
 def exe_sql_sync(p_dbid, p_db_name, p_sql_id, p_username, p_host):
     res = {}
-    p_ds = get_ds_by_dsid_sync(p_dbid)
-    p_ds['service'] = p_db_name
-    upd_run_status_sync(p_sql_id, 'before')
-    sql = get_sql_by_sqlid_sync(p_sql_id)
-    email = get_user_by_loginame_sync(p_username)['email']
-    settings = get_sys_settings_sync()
-
     try:
-        # get binlog ,start_position，one session execute
-        # sync_processer.exec_sql_by_ds(p_ds, 'FLUSH /*!40101 LOCAL */ TABLES')
-        # sync_processer.exec_sql_by_ds(p_ds, 'FLUSH TABLES WITH READ LOCK')
-        # rs1 = sync_processer.query_one_by_ds(p_ds, 'show master status')
-        # binlog_file=rs1[0]
-        # start_position=rs1[1]
-        #
-        # logging.info(('check_statement_count(sql)=',check_statement_count(sql)))
-        # if check_statement_count(sql) == 1:
-        #    sync_processer.exec_sql_by_ds(p_ds, sql)
-        #
-        # if check_statement_count(sql) > 1:
-        #    sync_processer.exec_sql_by_ds_multi(p_ds, sql)
-        #
-        # # get stop_position
-        # rs2 = sync_processer.query_one_by_ds(p_ds, 'show master status')
-        # stop_position=rs2[1]
-        # sync_processer.exec_sql_by_ds(p_ds, 'UNLOCK TABLES')
-
-        logging.info(('check_statement_count(sql)=', check_statement_count(sql)))
-        if p_ds['db_type'] == '11':
-            if check_statement_count(sql) == 1:
-                sync_processer.exec_sql_by_ds(p_ds, sql)
-            if check_statement_count(sql) > 1:
-                sync_processer.exec_sql_by_ds_multi(p_ds, sql)
+        upd_run_status_sync(p_sql_id, 'before')
+        params = get_run_params(p_dbid, p_db_name, p_sql_id, p_username, p_host)
+        send_qywx_sync(params)
+        logging.info(('check_statement_count(sql)=', check_statement_count(params['sql'])))
+        if params['p_ds']['db_type'] == '11':
+            if check_statement_count(params['sql']) == 1:
+                sync_processer.exec_sql_by_ds(params['p_ds'], params['sql'])
+            if check_statement_count(params['sql']) > 1:
+                sync_processer.exec_sql_by_ds_multi(params['p_ds'], params['sql'])
             upd_run_status_sync(p_sql_id, 'after')
         else:
-            if check_statement_count(sql) == 1:
-                binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_new(p_ds, sql)
-            if check_statement_count(sql) > 1:
-                binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_multi_new(p_ds, sql)
+            if check_statement_count(params['sql']) == 1:
+                binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_new(params['p_ds'],
+                                                                                               params['sql'])
+            if check_statement_count(params['sql']) > 1:
+                binlog_file, start_position, stop_position = sync_processer.exec_sql_by_ds_multi_new(params['p_ds'],
+                                                                                                     params['sql'])
             logging.info('binlog:{},{},{}'.format(binlog_file, str(start_position), str(stop_position)))
             upd_run_status_sync(p_sql_id, 'after', None, binlog_file, start_position, stop_position)
             # write rollback
-            write_rollback(p_sql_id, p_ds, binlog_file, start_position, stop_position)
-
-        # send success mail
-        wkno = get_sql_release_sync(p_sql_id)
-        v_title = '工单执行情况[{}]'.format(wkno['message'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = get_user_by_loginame_sync(wkno['creator'])['name']
-        auditor = get_user_by_loginame_sync(wkno['auditor'])['name']
-        otype = get_dmmc_from_dm_sync('13', wkno['type'])[0]
-        status = get_dmmc_from_dm_sync('41', wkno['status'])[0]
-
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in ('10.2.39.18', '10.2.39.20', '10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
-
+            if params['wkno']['is_log'] == '1':
+                write_rollback(p_sql_id, params['p_ds'], binlog_file, start_position, stop_position)
+        params = get_run_params(p_dbid, p_db_name, p_sql_id, p_username, p_host)
         # send mail
-        v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$',
-                                      p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds[
-                                          'url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$AUDITOR$$', auditor)
-        v_content = v_content.replace('$$TYPE$$', otype)
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
-        v_content = v_content.replace('$$ERROR$$', '')
-        send_mail_param(settings.get('send_server'),
-                        settings.get('sender'),
-                        settings.get('sendpass'),
-                        email, settings.get('CC'),
-                        v_title,
-                        v_content)
-
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', creator)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', '')
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id)
-
-        if wkno['executor'] is not None and wkno['executor'] != '':
-            to_user = '{}|{}|{}'.format(get_user_by_loginame_sync(wkno['executor'])['wkno'],
-                                        get_user_by_loginame_sync(wkno['creator'])['wkno'],
-                                        get_user_by_loginame_sync(wkno['auditor'])['wkno'])
-        else:
-            to_user = '{}|{}'.format(get_user_by_loginame_sync(wkno['creator'])['wkno'],
-                                     get_user_by_loginame_sync(wkno['auditor'])['wkno'])
-
-        send_message_sync(to_user, v_title, v_content_wx, v_detail_url)
-
+        send_run_mail(params)
+        # send to wx
+        send_wx_sync(params)
+        # send to qywx
+        send_qywx_sync(params)
         res['code'] = '0'
-        res['message'] = '工单:{}执行成功!'.format(wkno['message'])
+        res['message'] = '工单:{}执行成功!'.format(params['wkno']['message'])
         return res
     except:
         from web.utils.common import format_sql as fmt_sql
@@ -1163,56 +1209,14 @@ def exe_sql_sync(p_dbid, p_db_name, p_sql_id, p_username, p_host):
         logging.error(traceback.format_exc())
         upd_run_status_sync(p_sql_id, 'error', error)
         delete_rollback(p_sql_id)
-
-        wkno = get_sql_release_sync(p_sql_id)
-        v_title = '工单执行情况[{}]'.format(wkno['message'])
-        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        creator = get_user_by_loginame_sync(wkno['creator'])['name']
-        auditor = get_user_by_loginame_sync(wkno['auditor'])['name']
-        otype = get_dmmc_from_dm_sync('13', wkno['type'])[0]
-        status = get_dmmc_from_dm_sync('41', wkno['status'])[0]
-
-        if p_host == "124.127.103.190":
-            p_host = "124.127.103.190:65482"
-        elif p_host in ('10.2.39.18', '10.2.39.20', '10.2.39.21'):
-            p_host = '{}:81'.format(p_host)
-        else:
-            p_host = p_host
-
+        params = get_run_params(p_dbid, p_db_name, p_sql_id, p_username, p_host)
+        params['error'] = error
         # send mail
-        v_content = get_html_contents()
-        v_content = v_content.replace('$$TIME$$', nowTime)
-        v_content = v_content.replace('$$DBINFO$$',
-                                      p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else p_ds[
-                                          'url'])
-        v_content = v_content.replace('$$CREATOR$$', creator)
-        v_content = v_content.replace('$$AUDITOR$$', auditor)
-        v_content = v_content.replace('$$TYPE$$', otype)
-        v_content = v_content.replace('$$STATUS$$', status)
-        v_content = v_content.replace('$$DETAIL$$', 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id))
-        send_mail_param(settings.get('send_server'),
-                        settings.get('sender'),
-                        settings.get('sendpass'),
-                        email, settings.get('CC'),
-                        v_title,
-                        v_content)
-
-        # send to wx 2022.03.07
-        v_content_wx = get_html_contents_release_wx()
-        v_content_wx = v_content_wx.replace('$$TIME$$', nowTime)
-        v_content_wx = v_content_wx.replace('$$DBINFO$$',
-                                            p_ds['url'] + p_ds['service'] if p_ds['url'].find(p_ds['service']) < 0 else
-                                            p_ds['url'])
-        v_content_wx = v_content_wx.replace('$$CREATOR$$', creator)
-        v_content_wx = v_content_wx.replace('$$TYPE$$', otype)
-        v_content_wx = v_content_wx.replace('$$STATUS$$', status)
-        v_content_wx = v_content_wx.replace('$$ERROR$$', error)
-        v_detail_url = 'http://{}/sql/detail?release_id={}'.format(p_host, p_sql_id)
-        to_user = '{}|{}|{}'.format(get_user_by_loginame_sync(wkno['executor'])['wkno'],
-                                    get_user_by_loginame_sync(wkno['creator'])['wkno'],
-                                    get_user_by_loginame_sync(wkno['auditor'])['wkno'])
-        send_message_sync(to_user, v_title, v_content_wx, v_detail_url)
-
+        send_run_mail(params)
+        # send to wx
+        send_wx_sync(params)
+        # send to qywx
+        send_qywx_sync(params)
         res['code'] = '-1'
         res['message'] = '工单执行失败!'
         return res
