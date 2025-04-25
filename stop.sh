@@ -17,7 +17,7 @@ then
 fi
 
 echo "Stopping run_sql_task Server...ok"
-if [ `ps -ef |grep dbops | grep -v grep | grep run_sql_task | wc -l` -gt '1' ]
+if [ `ps -ef |grep dbops | grep -v grep | grep run_sql_task | wc -l` -ge '1' ]
 then
     ps -ef |grep dbops | grep -v grep | grep run_sql_task | awk '{print $2}' | xargs kill -9
 fi

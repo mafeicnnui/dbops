@@ -313,13 +313,13 @@ async def upd_exp_sql(p_sqlid, p_user, p_status, p_message, p_host):
         params = await get_export_params(p_sqlid, p_user, p_status, p_message, p_host)
 
         # send mail
-        send_export_mail(params)
+        # send_export_mail(params)
 
         # send to wx
-        await send_wx(params)
+        #await send_wx(params)
 
         # send to qywx
-        await send_qywx(params)
+        #await send_qywx(params)
 
         result['code'] = '0'
         result['message'] = '审核成功!'

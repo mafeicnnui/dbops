@@ -28,7 +28,7 @@ from web.model.t_sql_release import upd_sql, upd_sql_run_status, save_sql, query
     upd_sql_contents
 from web.model.t_user import get_user_by_loginame, get_user_by_userid
 from web.model.t_xtqx import get_db_name, get_tab_name, get_tab_columns, get_tab_structure, get_tab_keys, \
-    get_tab_incr_col, query_ds
+    get_tab_incr_col, query_ds, get_tree_by_dbid_bbgl
 from web.model.t_xtqx import get_tab_ddl_by_tname, get_tab_idx_by_tname, get_tree_by_dbid, get_tree_by_dbid_mssql, \
     get_tree_by_dbid_ck_proxy, get_tree_by_dbid_ck, get_tree_by_dbid_mongo, get_dss_by_query_grants, \
     get_tab_columns_by_query_grants, get_tree_by_dbid_proxy_query_grants, \
@@ -248,7 +248,10 @@ class get_tree_by_sql(base_handler.TokenHandler):
                 if p_ds['proxy_status'] == '1':
                     result = await get_tree_by_dbid_proxy(dbid)
                 else:
-                    result = await get_tree_by_dbid(dbid, msg)
+                    if flag == 'bbgl':
+                        result = await get_tree_by_dbid_bbgl(dbid, msg)
+                    else:
+                        result = await get_tree_by_dbid(dbid, msg)
             else:
                 if flag == 'query':
                     if p_ds['proxy_status'] == '1':
@@ -259,7 +262,10 @@ class get_tree_by_sql(base_handler.TokenHandler):
                     if p_ds['proxy_status'] == '1':
                         result = await get_tree_by_dbid_proxy(dbid)
                     else:
-                        result = await get_tree_by_dbid(dbid, msg)
+                        if flag == 'bbgl':
+                            result = await get_tree_by_dbid_bbgl(dbid, msg)
+                        else:
+                            result = await get_tree_by_dbid(dbid, msg)
         elif p_ds['db_type'] == '2':
             if p_ds['proxy_status'] == '1':
                 result = await get_tree_by_dbid_mssql_proxy(dbid)

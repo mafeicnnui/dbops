@@ -218,6 +218,7 @@ async def query_order(p_name, p_dsid, p_creator, p_username, p_reason):
             WHERE a.dbid=b.id
               AND c.dm='13'
               AND a.type=c.dmm
+              and a.creation_date>= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
               {0} order by a.creation_date desc
           """.format(v_where)
     print(sql)

@@ -25,7 +25,7 @@ def get_tasks():
 
 
 def main():
-    logging.basicConfig(filename='./run_sql_task.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")),
+    logging.basicConfig(filename='./logs/run_sql_task.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")),
                         format='[%(asctime)s-%(levelname)s:%(message)s]',
                         level=logging.INFO, filemode='a', datefmt='%Y-%m-%d %I:%M:%S')
 

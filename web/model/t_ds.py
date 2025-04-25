@@ -136,7 +136,7 @@ async def query_project(p_name, p_userid, is_grants):
                         a.db_desc,
                         concat(substr(CONCAT(b.dmmc,':/',ip,':',PORT,'/',service),1,30),'...') AS NAME, 
                         c.dmmc AS db_env,
-                        updator,DATE_FORMAT(last_update_date,'%Y-%m-%d') last_update_date ,
+                        -- updator,DATE_FORMAT(last_update_date,'%Y-%m-%d') last_update_date ,
                          (SELECT COUNT(0) FROM t_user_proj_privs 
                            WHERE proj_id=a.id AND user_id='{0}' AND priv_id='1') AS query_priv,
                         (SELECT COUNT(0) FROM t_user_proj_privs 
@@ -146,15 +146,18 @@ async def query_project(p_name, p_userid, is_grants):
                         (SELECT COUNT(0) FROM t_user_proj_privs 
                            WHERE proj_id=a.id AND user_id='{3}' AND priv_id='4') AS execute_priv,
                         (SELECT COUNT(0) FROM t_user_proj_privs 
-                           WHERE proj_id=a.id AND user_id='{4}' AND priv_id='5') AS order_priv
+                           WHERE proj_id=a.id AND user_id='{4}' AND priv_id='5') AS order_priv,
+                        (SELECT COUNT(0) FROM t_user_proj_privs 
+                           WHERE proj_id=a.id AND user_id='{5}' AND priv_id='6') AS export_priv      
                 FROM t_db_source a,t_dmmx b,t_dmmx c
                 WHERE a.db_type=b.dmm AND b.dm='02'
                   AND a.db_env=c.dmm AND c.dm='03'
                   and a.status='1'                
-                  AND (binary concat(a.ip,':',a.port,'/',a.service)  like '%{5}%'  or a.db_desc like '%{6}%')
-                  {7}
-                order by a.ip,port,a.service""".format(p_userid, p_userid, p_userid, p_userid, p_userid, p_name, p_name,
+                  AND (binary concat(a.ip,':',a.port,'/',a.service)  like '%{6}%'  or a.db_desc like '%{7}%')
+                  {8}
+                order by a.ip,port,a.service""".format(p_userid, p_userid, p_userid, p_userid, p_userid,p_userid, p_name, p_name,
                                                        v_where)
+    print(sql)
     return await async_processer.query_list(sql)
 
 

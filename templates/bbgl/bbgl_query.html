@@ -47,6 +47,8 @@
 <input type="hidden" id="rq_range_filter">
 
 <script>
+    var table;
+
     function downloads_data(p_id) {
         $.ajax({
             url: "/bbgl/download/files",
@@ -68,11 +70,7 @@
             },
         })
     }
-
-    $(document).ready(function () {
-        var table;
-
-        function check_bbgl() {
+    function check_bbgl() {
             $.ajax({
                 url: "/bbgl/filter",
                 type: "post",
@@ -103,6 +101,125 @@
                 },
             });
         }
+
+    $("#query_btn").click(function () {
+            // $('#example').show();
+            $('#query_time').text('');
+
+            if ($('#bbdm').val() == '') {
+                showtips('error', '请选择报表!');
+                return false;
+            }
+
+            check_bbgl();
+
+            //检测条件是否为空值
+            var nullstr = $('#notnull_filter').val()
+            var nullstr2 = nullstr.split(',')
+            var rq_range = $('#rq_range_filter').val()
+            for (var i in nullstr2) {
+                var c = nullstr2[i].split('#')[0]
+                var n = nullstr2[i].split('#')[1]
+
+                if ($('#' + c).val() == '') {
+                    showtips('error', n + '不能为空!');
+                    return false;
+                }
+
+                if ($('#' + c + '_begin').val() == '') {
+                    showtips('error', n + '起不能为空!');
+                    return false;
+                }
+
+                if ($('#' + c + '_end').val() == '') {
+                    showtips('error', n + '止不能为空!');
+                    return false;
+                }
+            }
+
+            //检测日期范围是否超过配置值
+            var rq_range = $('#rq_range_filter').val()
+            var rq_range2 = $('#rq_range_filter').val().split(',')
+            console.log('rq_range=', rq_range)
+            console.log('rq_range2=', rq_range2)
+            if (rq_range != '') {
+                for (var i in rq_range2) {
+                    var c = rq_range2[i].split('#')[0]
+                    var n = rq_range2[i].split('#')[1]
+                    var d = rq_range2[i].split('#')[2]
+                    console.log(c, n, d)
+                    var rqq = $('#' + c + '_begin').val()
+                    var rqz = $('#' + c + '_end').val()
+                    console.log('rqq=', rqq, 'rqz=', rqz)
+                    if (rqq != undefined && rqz != undefined) {
+                        if (GetDateDiff(rqq, rqz, "day") > parseInt(d)) {
+                            showtips('error', n + '查询范围不能超过' + d + '天');
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            if (table != undefined) {
+                table.destroy();
+            }
+
+            $('#example_bbgl').empty();
+
+
+            obj = $('#form_bbgl_filter').serializeObject()
+            $.ajax({
+                url: "/bbgl/query/data",
+                type: "post",
+                datatype: "json",
+                data: {
+                    bbdm: $('#bbdm').val(),
+                    db: '',
+                    param: JSON.stringify(obj),
+                },
+                success: function (dataSet) {
+                    if (dataSet.status == "1") {
+                        showtips('error', dataSet.msg);
+                    } else {
+                        table = $('#example_bbgl').DataTable({
+                            dom: '<"top"<"clear">>rt<"bottom"ip<"clear">>',
+                            destroy: true,
+                            async: true,
+                            data: dataSet.data,
+                            columns: dataSet.column,
+                            scrollX: true,
+                            scrollY: true,
+                            scrollCollapse: true,
+                            paging: true,
+                            fixedHeader: true,
+                            fixedColumns: {
+                                leftColumns: 1
+                            },
+                            iDisplayLength: 20,
+                            autoWidth: true,
+                            ordering: false,
+                            language: get_languages(),
+                        });
+
+                        if (dataSet.msg != '') {
+                            $('#query_time').css('color', 'red')
+                            $('#query_time').text('查询:' + dataSet.msg + '秒,预处理:' + dataSet.preTime + '秒')
+                        } else {
+                            $('#query_time').text('');
+                        }
+                    }
+                },
+            });
+        });
+
+    $(document).keydown(function (event) {
+        if (event.keyCode == 13) { //判断为Enter键
+            event.preventDefault();
+            $("#query_btn").click();
+        }
+    });
+
+    $(document).ready(function () {
 
         $('#bbdm').change(function () {
             $.ajax({
@@ -287,119 +404,6 @@
                 },
             });
         })
-
-        $("#query_btn").click(function () {
-            // $('#example').show();
-            $('#query_time').text('');
-
-            if ($('#bbdm').val() == '') {
-                showtips('error', '请选择报表!');
-                return false;
-            }
-
-            check_bbgl();
-
-            //检测条件是否为空值
-            var nullstr = $('#notnull_filter').val()
-            var nullstr2 = nullstr.split(',')
-            var rq_range = $('#rq_range_filter').val()
-            for (var i in nullstr2) {
-                var c = nullstr2[i].split('#')[0]
-                var n = nullstr2[i].split('#')[1]
-
-                if ($('#' + c).val() == '') {
-                    showtips('error', n + '不能为空!');
-                    return false;
-                }
-
-                if ($('#' + c + '_begin').val() == '') {
-                    showtips('error', n + '起不能为空!');
-                    return false;
-                }
-
-                if ($('#' + c + '_end').val() == '') {
-                    showtips('error', n + '止不能为空!');
-                    return false;
-                }
-            }
-
-            //检测日期范围是否超过配置值
-            var rq_range = $('#rq_range_filter').val()
-            var rq_range2 = $('#rq_range_filter').val().split(',')
-            console.log('rq_range=', rq_range)
-            console.log('rq_range2=', rq_range2)
-            if (rq_range != '') {
-                for (var i in rq_range2) {
-                    var c = rq_range2[i].split('#')[0]
-                    var n = rq_range2[i].split('#')[1]
-                    var d = rq_range2[i].split('#')[2]
-                    console.log(c, n, d)
-                    var rqq = $('#' + c + '_begin').val()
-                    var rqz = $('#' + c + '_end').val()
-                    console.log('rqq=', rqq, 'rqz=', rqz)
-                    if (rqq != undefined && rqz != undefined) {
-                        if (GetDateDiff(rqq, rqz, "day") > parseInt(d)) {
-                            showtips('error', n + '查询范围不能超过' + d + '天');
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            if (table != undefined) {
-                table.destroy();
-            }
-
-            $('#example_bbgl').empty();
-
-
-            obj = $('#form_bbgl_filter').serializeObject()
-            $.ajax({
-                url: "/bbgl/query/data",
-                type: "post",
-                datatype: "json",
-                data: {
-                    bbdm: $('#bbdm').val(),
-                    db: '',
-                    param: JSON.stringify(obj),
-                },
-                success: function (dataSet) {
-                    console.log('>>>>>>>>>>>>>>', dataSet)
-                    if (dataSet.status == "1") {
-                        console.log(dataSet)
-                        showtips('error', dataSet.msg);
-                        console.log(dataSet.msg)
-                    } else {
-                        table = $('#example_bbgl').DataTable({
-                            dom: '<"top"<"clear">>rt<"bottom"ip<"clear">>',
-                            destroy: true,
-                            async: true,
-                            data: dataSet.data,
-                            columns: dataSet.column,
-                            scrollX: true,
-                            scrollY: true,
-                            scrollCollapse: true,
-                            paging: true,
-                            fixedHeader: true,
-                            fixedColumns: {
-                                leftColumns: 1
-                            },
-                            iDisplayLength: 20,
-                            autoWidth: true,
-                            ordering: false,
-                            language: get_languages(),
-                        });
-
-                        if (dataSet.msg != '') {
-                            $('#query_time').css('color', 'red')
-                            $('#query_time').text('查询:' + dataSet.msg + '秒,预处理:' + dataSet.preTime + '秒')
-                        } else {
-                            $('#query_time').text('');
-                        }
-                    }
-                },
-            });
-        });
 
         $('.selectpicker').selectpicker({
               noneSelectedText: '请选择',

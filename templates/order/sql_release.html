@@ -183,7 +183,7 @@
                             <label class="control-label text-left" data-size="small" style="line-height: 25px;padding-right: 0px">日志</label>
                         </div>
                         <div class="col-md-6 text-left" style="padding-left: 5px">
-                            <input type="checkbox" id="is_log" checked switch="none"/>
+                            <input type="checkbox" id="is_log"  switch="none"/>
                             <label style="padding-left: 0px" for="is_log" data-on-label="开" data-off-label="关" data-size="small"></label>
                         </div>
                     </div>
@@ -761,7 +761,7 @@
             }
 
             if (v_sql == '') {
-                showtips('error', '请选中发布语句!');
+                showtips('error', '请输入发布语句!');
                 return false;
             }
 
@@ -1101,6 +1101,9 @@
         $("#check_btn").click(function () {
             var editor = ace.edit("ace-editor");
             var v_sql = editor.session.getTextRange(editor.getSelectionRange())
+            if (v_sql == '') {
+                v_sql = editor.session.getValue()
+            }
             var v_type = $('#db_order_type').val()
 
             if (check_order_xh($('#sql_desc').val()) > 0) {
@@ -1134,7 +1137,6 @@
                             if (dataSet.code == '0') {
                                 showtips('success', '检测通过!');
                                 $('#check_status').val('success')
-
                             } else {
                                 $('#check_status').val('failure')
                             }
@@ -1142,6 +1144,8 @@
                         }
                     },
                 });
+            } else {
+                $('#check_status').val('failure')
             }
         });
 
@@ -1174,7 +1178,7 @@
                     data: {
                         dbid: $('#db_source').val(),
                         cur_db: $('#curr_db').val(),
-                        sql: editor.session.getTextRange(editor.getSelectionRange()),
+                        sql: v_sql, //editor.session.getTextRange(editor.getSelectionRange()),
                         desc: $('#sql_desc').val(),
                         type: $('#db_order_type').val(),
                         time: $('#run_time').val(),

@@ -604,8 +604,28 @@ async def get_tree_by_dbid(dbid, msg):
     try:
         result = {}
         p_ds = await get_ds_by_dsid(dbid)
-        sql1 = "SELECT schema_name FROM information_schema.SCHEMATA where instr(schema_name,'{}')>0 order by 1".format(
-            msg.lower())
+        # sql1 = """SELECT schema_name FROM information_schema.SCHEMATA
+        #           where instr(schema_name,'{}')>0 order by 1""".format(msg.lower())
+
+        sql1 = """SELECT schema_name 
+                  FROM information_schema.SCHEMATA 
+                  WHERE INSTR(schema_name,'{}')>0 
+                     AND schema_name NOT IN(
+                         'mysql','performance_schema','information_schema','otter','xxl-job','sync',
+                         'apolloconfigdb','apolloconfigdb_v2','mall_canal_tsdb',
+                         'apolloportaldb','apolloportaldb_v2',
+                         'asset','canal_tsdb','devops','encrypt','encrypt_process','gt_fund',
+                         'gt_xx','heart_beat','hopsonone_bill_b_110','hopsonone_bill_b_110_0',
+                         'hopsonone_bill_b_110_1','hopsonone_coupons')
+                     AND schema_name NOT LIKE 'hopsonone_flow%'
+                     AND schema_name NOT LIKE 'hopsonone_ipva_flow%'
+                     AND schema_name NOT LIKE 'hopsonone_park_bj%'
+                     AND schema_name NOT LIKE 'hopsonone_park_gz%'
+                     AND schema_name NOT LIKE 'hopsonone_park_cd%'
+                     AND schema_name NOT LIKE 'hopsonone_park_sh%'
+                     AND schema_name NOT LIKE '%real_time'
+                    ORDER BY 1""".format(msg.lower())
+
         sql2 = "SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1"
         n_tree = []
         rs1 = await async_processer.query_dict_list_by_ds(p_ds, sql1)
@@ -627,6 +647,73 @@ async def get_tree_by_dbid(dbid, msg):
                 }
                 n_nodes.append(n_child)
             n_parent['nodes'] = n_nodes
+            n_tree.append(n_parent)
+
+        if p_ds['db_type'] == '0':
+            db_url = 'MySQL://{}:{}/{}'.format(p_ds['ip'], p_ds['port'], p_ds['service'])
+        elif p_ds['db_type'] == '1':
+            db_url = 'Oracle://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        elif p_ds['db_type'] == '2':
+            db_url = 'SQLServer://{}:{}'.format(p_ds['ip'], p_ds['port'])
+        else:
+            db_url = ''
+
+        result['code'] = '0'
+        result['message'] = n_tree
+        result['desc'] = p_ds['db_desc']
+        result['db_url'] = db_url
+
+    except Exception as e:
+        traceback.print_exc()
+        result['code'] = '-1'
+        result['message'] = '加载失败！'
+        result['desc'] = ''
+        result['db_url'] = ''
+    return result
+
+async def get_tree_by_dbid_bbgl(dbid, msg):
+    try:
+        result = {}
+        p_ds = await get_ds_by_dsid(dbid)
+        sql1 = """SELECT schema_name 
+                  FROM information_schema.SCHEMATA 
+                  WHERE INSTR(schema_name,'{}')>0 
+                     AND schema_name NOT IN(
+                         'mysql','performance_schema','information_schema','otter','xxl-job','sync',
+                         'apolloconfigdb','apolloconfigdb_v2','mall_canal_tsdb',
+                         'apolloportaldb','apolloportaldb_v2',
+                         'asset','canal_tsdb','devops','encrypt','encrypt_process','gt_fund',
+                         'gt_xx','heart_beat','hopsonone_bill_b_110','hopsonone_bill_b_110_0',
+                         'hopsonone_bill_b_110_1','hopsonone_coupons')
+                     AND schema_name NOT LIKE 'hopsonone_flow%'
+                     AND schema_name NOT LIKE 'hopsonone_ipva_flow%'
+                     AND schema_name NOT LIKE 'hopsonone_park_bj%'
+                     AND schema_name NOT LIKE 'hopsonone_park_gz%'
+                     AND schema_name NOT LIKE 'hopsonone_park_cd%'
+                     AND schema_name NOT LIKE 'hopsonone_park_sh%'
+                     AND schema_name NOT LIKE '%real_time'
+                    ORDER BY 1""".format(msg.lower())
+
+        sql2 = "SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1"
+        n_tree = []
+        rs1 = await async_processer.query_dict_list_by_ds(p_ds, sql1)
+        print('rs1->bbgl=', rs1)
+        for db in rs1:
+            n_parent = {
+                'id': db['schema_name'],
+                'text': db['schema_name'],
+                'icon': 'mdi mdi-database',
+            }
+            #rs2 = await async_processer.query_dict_list_by_ds(p_ds, sql2.format(db['schema_name']))
+            # n_nodes = []
+            # for tab in rs2:
+            #     n_child = {
+            #         'id': tab['table_name'],
+            #         'text': tab['table_name'],
+            #         'icon': 'mdi mdi-table-large',
+            #     }
+            #     n_nodes.append(n_child)
+            # n_parent['nodes'] = n_nodes
             n_tree.append(n_parent)
 
         if p_ds['db_type'] == '0':

@@ -78,10 +78,14 @@ def get_obj_name(p_sql):
 
         if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
             obj = re.split(r'\s+', p_sql)[3].replace('`', '')
+
+        elif p_sql.upper().count("DROP")  > 0:
+            obj = re.split(r'\s+', p_sql)[-1].replace('`', '')
+
         else:
             obj = re.split(r'\s+', p_sql)[2].replace('`', '')
 
-        if ('(') in obj:
+        if '(' in obj:
             if obj.find('.') < 0:
                 return obj.split('(')[0]
             else:
@@ -306,7 +310,7 @@ async def get_obj_privs_grammar_multi(p_ds, p_sql, config):
                 return '表:{0}已存在!'.format(ob)
             else:
                 await async_processer.exec_sql_by_ds(p_ds, p_sql)
-            config[ob] = dp.format(ob)
+                config[ob] = dp.format(ob)
         elif op in ('ALTER_TABLE_ADD', 'ALTER_TABLE_DROP'):
             tb = await f_get_table_ddl(p_ds, ob)
             if config.get(get_tmp_name(ob)) is None:
@@ -315,7 +319,7 @@ async def get_obj_privs_grammar_multi(p_ds, p_sql, config):
                 else:
                     await async_processer.exec_sql_by_ds(p_ds, tb.replace(ob, get_tmp_name(ob)))
                     await async_processer.exec_sql_by_ds(p_ds, p_sql.replace(ob, get_tmp_name(ob)))
-            config['dbops_' + ob] = dp.format(get_tmp_name(ob))
+                    config['dbops_' + ob] = dp.format(get_tmp_name(ob))
         return '0'
     except Exception as e:
         return str(e)
@@ -1835,6 +1839,7 @@ async def process_multi_ddl(p_dbid, p_cdb, p_sql, p_user):
                         rule['error'] = format_sql(format_exception(v))
                         await save_check_results(rule, p_user, st, sxh)
                         res = False
+                        break
 
             if rule['rule_code'] == 'switch_tab_not_exists_pk' and rule['rule_value'] == 'true':
                 if op == 'CREATE_TABLE':
@@ -2033,27 +2038,29 @@ async def process_multi_ddl(p_dbid, p_cdb, p_sql, p_user):
                         await save_check_results(rule, p_user, st, sxh)
 
             if rule['rule_code'] == 'switch_disable_func' and rule['rule_value'] == 'true':
-                if get_obj_type(p_sql) == 'FUNCTION':
+                if get_obj_type(st) == 'FUNCTION':
                     res = False
                     await save_check_results(rule, p_user, st, sxh)
 
             if rule['rule_code'] == 'switch_disable_proc' and rule['rule_value'] == 'true':
-                if get_obj_type(p_sql) == 'PROCEDURE':
+                if get_obj_type(st) == 'PROCEDURE':
                     res = False
                     await save_check_results(rule, p_user, st, sxh)
 
             if rule['rule_code'] == 'switch_disable_event' and rule['rule_value'] == 'true':
-                if get_obj_type(p_sql) == 'EVENT':
+                if get_obj_type(st) == 'EVENT':
                     res = False
                     await save_check_results(rule, p_user, st, sxh)
 
             if rule['rule_code'] == 'switch_drop_database' and tp == 'DATABASE' and rule['rule_value'] == 'false':
-                if get_obj_op(p_sql) == 'DROP_DATABASE':
+                print('switch_drop_database:',get_obj_op(p_sql))
+                if get_obj_op(st) == 'DROP_DATABASE':
                     res = False
                     await save_check_results(rule, p_user, st, sxh)
 
             if rule['rule_code'] == 'switch_drop_table' and tp == 'TABLE' and rule['rule_value'] == 'false':
-                if get_obj_op(p_sql) in ('DROP_TABLE', 'TRUNCATE_TABLE'):
+                print('switch_drop_table:', get_obj_op(p_sql))
+                if get_obj_op(st) in ('DROP_TABLE', 'TRUNCATE_TABLE'):
                     res = False
                     await save_check_results(rule, p_user, st, sxh)
 
