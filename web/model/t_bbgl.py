@@ -184,7 +184,8 @@ async def get_bbgl_bbdm(p_userid):
             WHERE EXISTS(
               SELECT dmm FROM t_dict_group_user tu
                 WHERE tu.dm=52 AND tu.user_id={}
-                  AND INSTR(tu.dmm,c.bbdm)>0
+                  -- AND INSTR(tu.dmm,c.bbdm)>0
+                  AND FIND_IN_SET(c.bbdm,tu.dmm) > 0
             ) order by id""".format(p_userid)
     return await async_processer.query_list(st)
 
@@ -347,16 +348,25 @@ async def update_bbgl_statement(p_bbdm, p_statement):
         return {'code': -1, 'message': '更新失败!'}
 
 
-async def query_bbgl_config(p_bbdm):
+async def query_bbgl_config(p_bbdm,p_bbmc,p_userid):
     vv = ''
     if p_bbdm != '':
         vv = " and a.bbdm='{}'".format(p_bbdm)
+    if p_bbmc != '':
+        vv = " and instr(a.bbmc,'{}')>0".format(p_bbmc.strip())
+
     st = """select 
                  bbdm,bbmc,b.id,b.db_desc,a.db,u.name,
                  date_format(a.create_date,'%Y-%m-%d')    create_date,
                  date_format(a.last_update_date,'%Y-%m-%d') last_update_date 
            from t_bbgl_config a,t_db_source b,t_user u
-           where a.dsid=b.id and a.creator=u.id  {} """.format(vv)
+           where a.dsid=b.id and a.creator=u.id {} 
+           and EXISTS(
+              SELECT dmm FROM t_dict_group_user tu
+                WHERE tu.dm=52 AND tu.user_id={}
+                 AND FIND_IN_SET(a.bbdm,tu.dmm) > 0
+            ) order by id
+           """.format(vv,p_userid)
     return await async_processer.query_list(st)
 
 

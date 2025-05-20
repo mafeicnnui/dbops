@@ -27,6 +27,7 @@ from web.model.t_dmmx import get_bbtj_db_server
 from web.model.t_dmmx import get_dmm_from_dm, get_dmlx_from_dm_bbgl, get_dmm_from_dm_bbgl, get_gather_server, \
     get_bbtj_db_imp_server
 from web.model.t_ds import get_ds_by_dsid_by_cdb
+from web.model.t_xtqx import get_url_by_userid
 from web.utils import base_handler
 from web.utils.common import DateEncoder, get_file_size
 from web.utils.common import format_sql, fmt_val
@@ -35,8 +36,12 @@ from web.utils.mysql_async import async_processer
 
 class bbgl_query(base_handler.TokenHandler):
     async def get(self):
+        try:
+           bbdm = self.get_argument("bbdm")
+        except:
+           bbdm = ''
         self.render("./bbgl/bbgl_query.html",
-                    dm_bbdm=await get_bbgl_bbdm(self.userid))
+                    dm_bbdm=await get_bbgl_bbdm(self.userid),bbdm=bbdm)
 
 
 class bbgl_query_data(base_handler.TokenHandler):
@@ -297,9 +302,14 @@ class bbgl_query_config(base_handler.TokenHandler):
     async def post(self):
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         bbdm = self.get_argument("bbdm")
-        v_list = await query_bbgl_config(bbdm)
+        bbmc = self.get_argument("bbmc")
+        v_list = await query_bbgl_config(bbdm,bbmc,self.userid)
+        uuri = await get_url_by_userid(self.userid)
+        v_list = {
+            'data':v_list,
+            'uuri':uuri
+        }
         v_json = json.dumps(v_list, cls=DateEncoder)
-        print('v_json=', v_json)
         self.write(v_json)
 
 
@@ -574,19 +584,50 @@ class bbglimport2(base_handler.TokenHandler):
 
 class bbglimport(base_handler.TokenHandler):
     async def post(self):
+        from pathlib import Path
+        import warnings
+        from aiomysql import Warning
+        warnings.filterwarnings('ignore', category=Warning)
         self.set_header("Content-Type", "application/json; charset=UTF-8")
         static_path = self.get_template_path().replace("templates", "static")
         file_metas = self.request.files["file"]
         type = self.get_argument("type")
         dsid = self.get_argument("dsid")
+        markets =[m[1] for m in await get_dmm_from_dm('53')]
         try:
             ds = await get_ds_by_dsid_by_cdb(dsid, 'hopsonone_analysis')
-            await async_processer.exec_sql_by_ds(ds, "delete from hopsonone_analysis.t_bbgl_imp where type='{}'".format(
-                type))
             res = []
             for meta in file_metas:
                 file_path = static_path + '/' + 'assets/images/bbgl'
                 file_name = file_path + '/' + meta['filename']
+                path_obj = Path(file_name)
+                parts = path_obj.stem.split('-')
+                if len(parts) != 2:
+                    return self.write({
+                        "code": -1,
+                        "message": "文件名必须包含类型和商场名称，格式为:类型-商场名称.xlsx"
+                    })
+                type_name,market_name = parts[0],parts[1]
+                if type_name not in ('微信','支付宝'):
+                    return self.write({
+                        "code": -1,
+                        "message": '文件名不符合规范:类型错误!'
+                    })
+                if market_name not in markets:
+                    return self.write({
+                        "code": -1,
+                        "message": '文件名不符合规范:项目名称错误!'
+                    })
+                if type =='1' and type_name!='微信' or type =='2' and type_name!='支付宝':
+                    return self.write({
+                        "code": -1,
+                        "message": '数据类型与文件名中类型不匹配!'
+                    })
+
+                # 删除某个项目数据某个类型数据
+                sql = "delete from hopsonone_analysis.t_bbgl_imp where type='{}' and v1='{}'".format(type,market_name)
+                print(sql)
+                await async_processer.exec_sql_by_ds(ds,sql)
                 with open(file_name, 'wb') as up:
                     up.write(meta['body'])
                 df = pd.read_excel(file_name)

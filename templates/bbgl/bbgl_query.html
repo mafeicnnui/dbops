@@ -21,7 +21,11 @@
                 <select class="selectpicker" data-live-search="true" data-style="btn-default" id="bbdm" name="bbdm">
                     <option value='' selected="selected">请选择报表</option>
                     {% for var in dm_bbdm %}
-                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                        {% if bbdm==var[0] %}
+                           <option value={{var[0]}} title={{var[1]}} selected="selected">{{var[1]}}</option>
+                        {% else %}
+                           <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                        {% end %}
                     {% end %}
                 </select>
             </div>
@@ -219,8 +223,20 @@
         }
     });
 
-    $(document).ready(function () {
+    function set_selected(){
+        $("span:contains('*')").each(function(){
+            $(this).children().css('color','red')
+        })
+    }
 
+    $(document).ready(function () {
+        function set_notnull_flag(is_notnull,obj){
+            if (is_notnull=='Y') {
+                return "<span>*</span>"+obj
+            } else {
+                return obj
+            }
+        }
         $('#bbdm').change(function () {
             $.ajax({
                 url: "/bbgl/filter",
@@ -259,7 +275,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
                                     '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '">\n' +
                                     '                <option value="">...</option>\n' + options +
                                     '            </select> ' +
@@ -270,7 +286,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '" type="text" class="form-control" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '       </div>\n' +
                                     '</div>'
@@ -282,7 +298,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '起</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '_begin" name="' + filter[i].filter_code + '_begin"   type="text" class="form-control datepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '      </div>' +
                                     '</div>\n'
@@ -296,7 +312,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '止</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '止</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '_end" name="' + filter[i].filter_code + '_end"   type="text" class="form-control datepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '      </div>\n' +
                                     '</div>'
@@ -306,7 +322,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '起</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '"   type="text" class="form-control datepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '      </div>\n' +
                                     '</div>'
@@ -317,7 +333,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '起</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '_begin" name="' + filter[i].filter_code + '_begin"   type="text" class="form-control datetimepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '      </div>' +
                                     '</div>\n'
@@ -331,7 +347,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '止</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '止</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '_end" name="' + filter[i].filter_code + '_end"   type="text" class="form-control datetimepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '      </div>\n' +
                                     '</div>'
@@ -341,7 +357,7 @@
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + filter[i].filter_name + '起</span>\n' +
+                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '起</span>\n' +
                                     '            <input id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '"   type="text" class="form-control datetimepicker" placeholder="请输入' + filter[i].filter_name + '">\n' +
                                     '      </div>\n' +
                                     '</div>'
@@ -362,6 +378,8 @@
                     }
 
                     $('#form_bbgl_filter').append(htmlFilter);
+
+                    set_selected();
 
                     $.fn.datepicker.dates['zh-CN'] = {
                         days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
@@ -410,6 +428,10 @@
               noneResultsText: '没有找到匹配的内容'
         });
         $('.selectpicker').selectpicker('refresh');
+
+        if ($('#bbdm').val()!='') {
+            $('#bbdm').change();
+        }
 
     });
 </script>

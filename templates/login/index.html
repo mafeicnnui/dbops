@@ -997,7 +997,8 @@
         } else if (request.status == 405) {
             swal("用户认证算法错误!", "", "error")
         } else if (request.status == 502) {
-            swal("用户无权访问此功能!(" + options.url + ")", "", "error")
+            console.log("用户无权访问此功能!(" + options.url + ")")
+            swal("用户无权访问此功能!", "", "error")
         } else if (request.status == 503) {
             swal("用户已下线!", "", "error")
         } else if (request.status == 504) {

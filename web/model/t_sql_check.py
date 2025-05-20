@@ -76,12 +76,12 @@ def get_obj_name(p_sql):
             or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("TRIGGER") > 0 \
             or p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("DATABASE") > 0:
 
-        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 and p_sql.upper().count("UNIQUE") > 0:
+        if p_sql.upper().count("CREATE") > 0 and p_sql.upper().count("INDEX") > 0 \
+            and p_sql.upper().count("UNIQUE") > 0 \
+              and p_sql.upper().find("INDEX") < p_sql.upper().find("("):
             obj = re.split(r'\s+', p_sql)[3].replace('`', '')
-
         elif p_sql.upper().count("DROP")  > 0:
             obj = re.split(r'\s+', p_sql)[-1].replace('`', '')
-
         else:
             obj = re.split(r'\s+', p_sql)[2].replace('`', '')
 
@@ -102,7 +102,7 @@ def get_obj_name(p_sql):
         else:
             return re.split(r'\s+', p_sql.strip())[2].split('(')[0].strip().split('.')[1]
 
-    if get_obj_op(p_sql) in ('UPDATE'):
+    if get_obj_op(p_sql) in 'UPDATE':
         if re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip().replace('`', '').find('.') < 0:
             return re.split(r'\s+', p_sql.strip())[1].split('(')[0].strip()
         else:
@@ -140,7 +140,7 @@ def get_obj_op(p_sql):
     if re.split(r'\s+', p_sql)[0].upper() in ('CREATE', 'DROP') and re.split(r'\s+', p_sql)[1].upper() in (
     'TABLE', 'INDEX', 'DATABASE'):
         return re.split(r'\s+', p_sql)[0].upper() + '_' + re.split(r'\s+', p_sql)[1].upper()
-    if re.split(r'\s+', p_sql)[0].upper() in ('TRUNCATE'):
+    if re.split(r'\s+', p_sql)[0].upper() in 'TRUNCATE':
         return 'TRUNCATE_TABLE'
     if re.split(r'\s+', p_sql)[0].upper() == 'ALTER' and re.split(r'\s+', p_sql)[1].upper() == 'TABLE' and \
             re.split(r'\s+', p_sql)[3].upper() in ('ADD', 'DROP', 'MODIFY'):
@@ -1250,6 +1250,9 @@ async def process_single_ddl(p_dbid, p_cdb, p_sql, p_user):
         if rule['rule_code'] == 'switch_check_ddl' and rule['rule_value'] == 'true':
             if op in ('CREATE_TABLE', 'ALTER_TABLE_ADD', 'ALTER_TABLE_DROP'):
                 print('检测DDL语法及权限...')
+                print('ds=',ds)
+                print('st=',st)
+
                 v = await get_obj_privs_grammar(ds, st)
                 if v != '0':
                     rule['error'] = format_sql(v)
@@ -1687,7 +1690,7 @@ async def process_single_dml(p_dbid, p_cdb, p_sql, p_user):
                     res = False
 
         if rule['rule_code'] == 'switch_dml_max_rows':
-            if op in ('INSERT', 'UPDATE', 'DELETE'):
+            if op in ('INSERT', 'UPDATE', 'DELETE') and not bool(re.search(r'\sJOIN\s', st, re.IGNORECASE)):
                 print('DML最大影响行数...')
                 v = await get_dml_rows(ds, st)
                 print('v=',v)
@@ -2144,7 +2147,7 @@ async def process_multi_dml(p_dbid, p_cdb, p_sql, p_user):
                         res = False
 
             if rule['rule_code'] == 'switch_dml_max_rows':
-                if op in ('INSERT', 'UPDATE', 'DELETE'):
+                if op in ('INSERT', 'UPDATE', 'DELETE') and not bool(re.search(r'\sJOIN\s', st, re.IGNORECASE)):
                     print('DML最大影响行数...')
                     v = await get_dml_rows(ds, st)
                     affect_rows = v

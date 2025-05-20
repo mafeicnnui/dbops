@@ -30,6 +30,12 @@
                 </select>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-addon">报表名称</span>
+                <input type="text" id="bbmc" class="form-control" placeholder="请输入报表名称">
+            </div>
+        </div>
         <div class="col-md-1">
                  <span class="input-group-btn">
                    <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
@@ -44,6 +50,21 @@
 </div>
 
 <script>
+
+    function query_data(bbdm) {
+        console.log('query_data=', bbdm)
+        $.ajax({
+            url: "/bbgl/query",
+            type: "get",
+            datatype: "html",
+            data: {
+                bbdm: bbdm
+            },
+            success: function () {
+                $('#main-container-div').load("/bbgl/query?bbdm=" + bbdm);
+            },
+        })
+    }
 
     function del_config(p_bbdm) {
         swal({
@@ -109,6 +130,7 @@
                 datatype: "json",
                 data: {
                     bbdm: $('#bbdm').val(),
+                    bbmc: $('#bbmc').val(),
                 },
                 success: function (dataSet) {
                     $('#example').DataTable({
@@ -121,7 +143,7 @@
                         scrollCollapse: true,
                         paging: true,
                         iDisplayLength: 12,
-                        data: dataSet,
+                        data: dataSet.data,
                         columns: [
                             {"title": "报表代码"},
                             {"title": "报表名称"},
@@ -136,9 +158,25 @@
                                 "width": "60px",
                                 "render": function (data, type, row) {
                                     bbdm = row[0]
-                                    msg = '&nbsp;' +
-                                        '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="edit_config(\'' + row + '\');"/>' + '&nbsp;' +
-                                        '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_config(\'' + bbdm + '\');"/>';
+                                    var query_btn;
+                                    var update_btn;
+                                    var delete_btn;
+                                    if (dataSet.uuri.includes('/bbgl/query')) {
+                                        query_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="查询" onclick="query_data(\'' + bbdm + '\');"/>' + '&nbsp;'
+                                    } else {
+                                        query_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="查询" onclick="query_data(\'' + bbdm + '\');"/>' + '&nbsp;'
+                                    }
+                                    if (dataSet.uuri.includes('/bbgl/edit')) {
+                                        update_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="edit_config(\'' + row + '\');"/>' + '&nbsp;'
+                                    } else {
+                                        update_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="变更" onclick="edit_config(\'' + row + '\');"/>' + '&nbsp;'
+                                    }
+                                    if (dataSet.uuri.includes('/bbgl/delete')) {
+                                        delete_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_config(\'' + bbdm + '\');"/>'
+                                    } else {
+                                        delete_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="删除" onclick="del_config(\'' + bbdm + '\');"/>'
+                                    }
+                                     msg = '&nbsp;' +query_btn+update_btn+delete_btn;
                                     return msg;
                                 }
                             },
