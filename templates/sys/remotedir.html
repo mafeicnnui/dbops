@@ -1,0 +1,209 @@
+<head>
+    <style>
+        #filetree,#filetree2,#filetree3,#filetree4 {
+                border: 1px solid #ccc;
+                padding: 10px;
+                width: 300px;
+                height: 450px;
+                overflow: auto;
+            }
+    </style>
+
+</head>
+<body>
+     <div class="row">
+        <div class="form-group col-md-6">
+            <div>
+                <label class="col-md-2 control-label"><span>*</span>服务器:</label>
+            </div>
+            <div class="col-md-10">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="serverid">
+                    <option value='' selected="selected">...</option>
+                    {% for var in servers %}
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                    {% end %}
+                </select>
+            </div>
+        </div>
+    </div>
+     <div class="row">
+        <div class="col-md-3">
+             <h5>服务器文件浏览器</h5>
+            <div id="filetree" ></div>
+        </div>
+        <div class="col-md-3">
+            <h5>服务器目录浏览器</h5>
+            <div id="filetree2" ></div>
+        </div>
+
+        <div class="col-md-3">
+             <h5>远程服务器文件浏览器</h5>
+            <div id="filetree3" ></div>
+        </div>
+        <div class="col-md-3">
+            <h5>远程服务器目录浏览器</h5>
+            <div id="filetree4" ></div>
+        </div>
+     </div>
+
+</body>
+<script>
+    $(function () {
+       $("#serverid").selectpicker('refresh')
+
+       $('#filetree').jstree({
+          'core': {
+            'themes': {
+              'dots': true,
+              'icons': true
+            },
+            'check_callback': true,
+            'data': function (node, cb) {
+              const path = node.id === '#' ? '/' : node.id;
+              $.ajax({
+                url: '/sys/list/dirfile',
+                data: {
+                    path: path
+                },
+                dataType: 'json',
+                success: function (res) {
+                  cb(res); // 让 jsTree 构建子节点
+                },
+                error: function (xhr) {
+                  console.error("错误:", xhr.responseText);
+                }
+              });
+            }
+          },
+          'types': {
+            'default': { 'icon': 'jstree-folder' },
+            'file': { 'icon': 'jstree-file' }
+          },
+          'plugins': ["types", "wholerow"]
+        });
+
+       $('#filetree').on("select_node.jstree", function (e, data) {
+          console.log("展开了目录：", data.node.id);
+       });
+
+       $('#filetree2').jstree({
+          'core': {
+            'themes': {
+              'dots': true,
+              'icons': true
+            },
+            'check_callback': true,
+            'data': function (node, cb) {
+              const path = node.id === '#' ? '/' : node.id;
+              $.ajax({
+                url: '/sys/list/dir',
+                data: {
+                    path: path
+                },
+                dataType: 'json',
+                success: function (res) {
+                  cb(res); // 让 jsTree 构建子节点
+                },
+                error: function (xhr) {
+                  console.error("错误:", xhr.responseText);
+                }
+              });
+            }
+          },
+          'types': {
+            'default': { 'icon': 'jstree-folder' },
+            'file': { 'icon': 'jstree-file' }
+          },
+          'plugins': ["types", "wholerow"]
+        });
+
+       $('#filetree2').on("select_node.jstree", function (e, data) {
+          console.log("展开了目录：", data.node.id);
+       });
+
+       $('#serverid').change(function () {
+          if($('#serverid').val()!='') {
+              // 销毁已有的 jsTree
+               if ($('#filetree3').jstree(true)) {
+                  $('#filetree3').jstree(true).destroy();
+               }
+               if ($('#filetree4').jstree(true)) {
+                    $('#filetree4').jstree(true).destroy();
+               }
+
+               $('#filetree3').jstree({
+          'core': {
+            'themes': {
+              'dots': true,
+              'icons': true
+            },
+            'check_callback': true,
+            'data': function (node, cb) {
+              const path = node.id === '#' ? '/' : node.id;
+              $.ajax({
+                url: '/sys/list/remotedir',
+                data: {
+                    path: path,
+                    server_id:$('#serverid').val()
+                },
+                dataType: 'json',
+                success: function (res) {
+                  cb(res); // 让 jsTree 构建子节点
+                },
+                error: function (xhr) {
+                  console.error("错误:", xhr.responseText);
+                }
+              });
+            }
+          },
+          'types': {
+            'default': { 'icon': 'jstree-folder' },
+            'file': { 'icon': 'jstree-file' }
+          },
+          'plugins': ["types", "wholerow"]
+        });
+
+               $('#filetree3').on("select_node.jstree", function (e, data) {
+                  console.log("展开了目录：", data.node.id);
+               });
+
+               $('#filetree4').jstree({
+                  'core': {
+                    'themes': {
+                      'dots': true,
+                      'icons': true
+                    },
+                    'check_callback': true,
+                    'data': function (node, cb) {
+                      const path = node.id === '#' ? '/' : node.id;
+                      $.ajax({
+                        url: '/sys/list/remotedirfile',
+                        data: {
+                            path: path,
+                            server_id:$('#serverid').val()
+                        },
+                        dataType: 'json',
+                        success: function (res) {
+                          cb(res); // 让 jsTree 构建子节点
+                        },
+                        error: function (xhr) {
+                          console.error("错误:", xhr.responseText);
+                        }
+                      });
+                    }
+                  },
+                  'types': {
+                    'default': { 'icon': 'jstree-folder' },
+                    'file': { 'icon': 'jstree-file' }
+                  },
+                  'plugins': ["types", "wholerow"]
+                });
+
+               $('#filetree4').on("select_node.jstree", function (e, data) {
+                  console.log("展开了目录：", data.node.id);
+               });
+          }
+       });
+
+    });
+</script>

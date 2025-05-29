@@ -9,6 +9,8 @@ import json
 import os.path
 import traceback
 import datetime
+import tornado.web
+
 from web.model.t_dmmx import get_sys_dmlx, get_gather_server
 from web.model.t_server import get_server_by_serverid
 from web.model.t_sys import save_audit_rule, query_dm, query_rule, query_dm_detail, save_sys_code_type, \
@@ -314,3 +316,157 @@ class get_sys_dir(base_handler.TokenHandler):
             self.write({"code": 0, "message": [r.replace('\n','') for r in res['stdout']]})
         else:
             self.write({"code": -1, "message": res['stderr']})
+
+
+'''
+  目录树测试类
+'''
+
+class ListDirHandlerQuery(base_handler.TokenHandler):
+    async def get(self):
+        self.render("./sys/remotedir.html",servers=await get_gather_server(),)
+
+class ListDirHandler(base_handler.BaseHandler):
+    def get(self):
+        path = self.get_argument('path', '/')
+        print('ListDirHandler=', path)
+        try:
+            items = []
+            for entry in os.scandir(path):
+                if entry.is_dir():
+                    items.append({
+                        'id': os.path.join(path, entry.name),
+                        'text': entry.name,
+                        'children': True,  # 如果是目录，则 jsTree 会点击时再加载
+                        'icon': 'jstree-folder'
+                    })
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps(items))
+        except Exception as e:
+            print("Error:", e)
+            self.set_status(500)
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps({'error': str(e)}))
+
+class ListDirFileHandler(base_handler.BaseHandler):
+    def get(self):
+        path = self.get_argument('path', '/')
+        print('ListDirFileHandler=', path)
+        try:
+            items = []
+            for entry in os.scandir(path):
+                # 忽略隐藏文件或无权限文件可选
+                try:
+                    is_dir = entry.is_dir()
+                except:
+                    is_dir = False
+                items.append({
+                    'id': os.path.join(path, entry.name),
+                    'text': entry.name,
+                    'children': is_dir,  # 如果是目录，则 jsTree 会点击时再加载
+                    'type': 'default' if is_dir else 'file'
+                })
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps(items))
+        except Exception as e:
+            print("Error:", e)
+            self.set_status(500)
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps({'error': str(e)}))
+
+class ListRemoteDirHandler(base_handler.BaseHandler):
+    async def get(self):
+        import paramiko,stat
+        server_id = self.get_argument("server_id")
+        print('ListRemoteDirHandler=', server_id)
+        server = await get_server_by_serverid(server_id)
+        print('server=',server)
+        # 远程服务器连接配置
+        ssh_host = '10.2.39.59'
+        ssh_port = 65508
+        ssh_user = 'hopson'
+        ssh_pass = 'Tong2@01!8*'
+
+        # 获取前端传来的路径
+        path = self.get_argument('path', '/')
+        print('ListDirFileHandler (remote) path =', path)
+
+        items = []
+
+        try:
+            # 建立 SSH 和 SFTP 连接
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ssh_host, port=ssh_port, username=ssh_user, password=ssh_pass)
+
+            sftp = ssh.open_sftp()
+
+            # 列出远程目录内容
+            for entry in sftp.listdir_attr(path):
+                is_dir = stat.S_ISDIR(entry.st_mode)
+                if is_dir:
+                    items.append({
+                        'id': path.rstrip('/') + '/' + entry.filename,
+                        'text': entry.filename,
+                        'children': is_dir,
+                        'icon': 'jstree-folder'
+                    })
+
+            sftp.close()
+            ssh.close()
+
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps(items))
+
+        except Exception as e:
+            print("Error:", e)
+            self.set_status(500)
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps({'error': str(e)}))
+
+class ListRemoteDirFileHandler(base_handler.BaseHandler):
+    def get(self):
+        import paramiko,stat
+        server_id = self.get_argument("server_id")
+        print('ListRemoteDirFileHandler=', server_id)
+        # 远程服务器连接配置
+        ssh_host = '10.2.39.59'
+        ssh_port = 65508
+        ssh_user = 'hopson'
+        ssh_pass = 'Tong2@01!8*'
+
+        # 获取前端传来的路径
+        path = self.get_argument('path', '/')
+        print('ListDirFileHandler (remote) path =', path)
+
+        items = []
+
+        try:
+            # 建立 SSH 和 SFTP 连接
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ssh_host, port=ssh_port, username=ssh_user, password=ssh_pass)
+
+            sftp = ssh.open_sftp()
+
+            # 列出远程目录内容
+            for entry in sftp.listdir_attr(path):
+                is_dir = stat.S_ISDIR(entry.st_mode)
+                items.append({
+                    'id': path.rstrip('/') + '/' + entry.filename,
+                    'text': entry.filename,
+                    'children': is_dir,
+                    'type': 'default' if is_dir else 'file'
+                })
+
+            sftp.close()
+            ssh.close()
+
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps(items))
+
+        except Exception as e:
+            print("Error:", e)
+            self.set_status(500)
+            self.set_header("Content-Type", "application/json")
+            self.write(json.dumps({'error': str(e)}))

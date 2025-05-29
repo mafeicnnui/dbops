@@ -1075,3 +1075,16 @@ class ftp_helper:
 
     def close(self):
         self.transport.close()
+
+
+def clean_sql_comments(sql):
+    """
+       工单检测、发布、执行时删除SQL语句中以#或--开头的注释
+    :param sql:
+    :return:clean_sql
+    """
+    # 1. 删除以 # 或 -- 开头的注释行
+    clean_sql = re.sub(r'^\s*(#|--).*$', '', sql, flags=re.MULTILINE)
+    # 2. 去除空行（只保留非空白行）
+    clean_sql = '\n'.join([line for line in clean_sql.splitlines() if line.strip()])
+    return clean_sql

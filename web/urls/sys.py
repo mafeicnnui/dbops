@@ -7,7 +7,8 @@
 
 from web.services.sys import audit_rule, audit_rule_save, sys_setting, sys_code, sys_code_type_query, \
     sys_code_detail_query, sys_setting_query, sys_setting_add_save, sys_setting_upd_save, sys_setting_del, sys_upload, \
-    sys_upload_file, get_sys_dir
+    sys_upload_file, get_sys_dir, ListDirHandler, ListDirHandlerQuery, ListDirFileHandler, ListRemoteDirHandler, \
+    ListRemoteDirFileHandler
 from web.services.sys import sys_code_detail_add_save, sys_code_detail_upd_save, sys_code_detail_del, sys_code_type
 from web.services.sys import sys_query_rule, sys_code_type_add_save, sys_code_type_upd_save, sys_code_type_del
 
@@ -35,4 +36,11 @@ sys = [
     (r"/sys/upload", sys_upload),
     (r"/sys/upload/file", sys_upload_file),
     (r"/sys/upload/dir", get_sys_dir),
+
+    (r"/sys/list/dir/query", ListDirHandlerQuery),
+    (r"/sys/list/dirfile", ListDirFileHandler),
+    (r"/sys/list/dir", ListDirHandler),
+    (r"/sys/list/remotedir", ListRemoteDirHandler),
+   (r"/sys/list/remotedirfile", ListRemoteDirFileHandler),
+
 ]

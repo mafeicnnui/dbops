@@ -1432,13 +1432,13 @@ async def query_db_real_sync(p_sync_tag, p_max_id):
 async def query_db_order_num():
     res = {}
     sql = """
-            SELECT 
-               a.rq,
-               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=16 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hst,
-               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=84 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hft,
-               (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid=245 AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_dev
-            FROM (SELECT DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -t.help_topic_id DAY),'%Y-%m-%d') AS 'rq'  
-            FROM (SELECT DISTINCT help_topic_id AS help_topic_id  FROM help_topic) t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
+    SELECT 
+      a.rq,
+      (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid IN(16,55) AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hst,
+      (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid IN(84,160) AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_hft,
+      (SELECT COUNT(0) FROM `t_sql_release` b WHERE dbid IN(245,249) AND DATE_FORMAT(b.creation_date,'%Y-%m-%d')=a.rq) AS num_dev
+    FROM (SELECT DATE_FORMAT(DATE_ADD((SELECT MAX(creation_date) FROM `t_sql_release` WHERE dbid IN(16,84,245,55,160,249)),INTERVAL -t.help_topic_id DAY),'%Y-%m-%d') AS 'rq'  
+    FROM (SELECT DISTINCT help_topic_id AS help_topic_id  FROM help_topic) t WHERE t.help_topic_id<=10 ORDER BY 1) a"""
     x = []
     y_hst = []
     y_hft = []

@@ -183,10 +183,11 @@ class TokenHandler(BaseHandler):
         return result
 
     async def prepare(self):
-        head = self.request.headers
-        token = head.get("token", "")
+        token=self.get_cookie('token', "")
         if token == '':
-            token = self.get_argument("token")
+           token = self.request.headers.get("token", "")
+        if token == '':
+            token = self.get_argument("token", "")
 
         result = jwt_auth.parse_payload(token)
         if not result["status"]:

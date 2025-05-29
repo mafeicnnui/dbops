@@ -109,7 +109,9 @@
     }
 
     function con_svr(p_svr_id) {
-         window.open("/ssh?server_id=" + p_svr_id + '&token=' + window.localStorage.getItem("token") + '&#fontsize=20');
+        document.cookie = "server_id=" + encodeURIComponent(p_svr_id) + "; path=/ssh";
+        document.cookie = "fontsize=" + encodeURIComponent(18) + "; path=/ssh";
+        window.open("/ssh");
     }
 
     function rdp_svr(p_svr_id) {

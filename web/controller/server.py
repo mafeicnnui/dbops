@@ -27,7 +27,6 @@ from web.webssh.settings import (
 
 define("port", default=sys.argv[1], help="run on the given port", type=int)
 
-
 def webssh_handlers():
     loop = tornado.ioloop.IOLoop.current()
     host_keys_settings = get_host_keys_settings(tornado.options.options)

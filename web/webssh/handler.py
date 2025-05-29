@@ -405,7 +405,9 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
         privatekey, filename = self.get_privatekey()
         passphrase = self.get_argument('passphrase', u'')
         totp = self.get_argument('totp', u'')
-        token = self.get_argument('token', u'')
+        # token = self.get_argument('token', u'')
+        token = self.get_cookie('token', "")
+
 
         if isinstance(self.policy, paramiko.RejectPolicy):
             self.lookup_hostname(hostname, port)
@@ -473,6 +475,7 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
         term = self.get_argument('term', u'') or u'xterm'
         chan = ssh.invoke_shell(term=term)
         chan.setblocking(0)
+        print('token..............>',token)
         worker = Worker(self.loop, ssh, chan, dst_addr, token)
         worker.encoding = options.encoding if options.encoding else \
             self.get_default_encoding(ssh)
@@ -496,9 +499,7 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
         pass
 
     async def get(self):
-        token = self.get_argument("token")
-        print('token=', token)
-
+        token = self.get_cookie('token', "")
         result = jwt_auth.parse_payload(token)
         print('result=',result)
         if not result["status"]:
@@ -513,9 +514,9 @@ class IndexHandler(MixinHandler, tornado.web.RequestHandler):
             msg = "用户`{}`已注销!".format(result['data']['username'])
             self.render('./webssh/page-404.html', msg=msg)
 
-        id = self.get_value('server_id')
+        server_id = self.get_cookie('server_id', "")
         svr = sync_processer.query_dict_one(
-            'select server_ip,server_port,server_user,server_pass from t_server where id={}'.format(id))
+            'select server_ip,server_port,server_user,server_pass from t_server where id={}'.format(server_id))
         svr['server_pass'] = aes_decrypt(svr['server_pass'], svr['server_user'])
         self.render('./webssh/index.html',
                     hostname=svr['server_ip'],

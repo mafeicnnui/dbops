@@ -164,7 +164,7 @@ jQuery(function($){
 
   function toggle_fullscreen(term) {
     $('#terminal .terminal').toggleClass('fullscreen');
-    term.fitAddon.fit();
+    //term.fitAddon.fit();
   }
 
   function current_geometry(term) {
@@ -332,6 +332,16 @@ jQuery(function($){
     // }
   }
 
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let i = 0; i < cookies.length; i++) {
+        const [key, value] = cookies[i].split("=");
+        if (key === name) {
+            return decodeURIComponent(value);
+        }
+    }
+    return null;
+}
   function ajax_complete_callback(resp) {
     button.prop('disabled', false);
 
@@ -384,14 +394,22 @@ jQuery(function($){
           }
         };
 
-
-
+    // console.log('url_opts_data>>>>>>>>>>>>>>>>>>>>>>>>>>>>>=',url_opts_data)
     if (url_opts_data.fontsize) {
       var fontsize = window.parseInt(url_opts_data.fontsize);
       if (fontsize && fontsize > 0) {
         termOptions.fontSize = fontsize;
       }
+    } else {
+      var fontsize = getCookie("fontsize");
+      if (fontsize && fontsize > 0) {
+        termOptions.fontSize = fontsize;
+      }
+      termOptions.fontSize = fontsize;
     }
+
+    var fontsize = getCookie("fontsize");
+    termOptions.fontSize = fontsize;
 
     var term = new window.Terminal(termOptions);
 
@@ -610,7 +628,7 @@ jQuery(function($){
     }
   }
 
-  function validate_form_data(data) {
+  function  validate_form_data(data) {
     clean_data(data);
 
     var hostname = data.get('hostname'),

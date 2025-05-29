@@ -90,18 +90,18 @@ async def logon_user_check(login_name, password, verify_code, verify_img):
         result['message'] = '该用户已过期，请联系管理员！'
         return result
 
-    if (await async_processer.query_one("""select count(0) 
-                                           from t_session 
-                                           where username='{}' 
-                                             and TIMESTAMPDIFF(SECOND,last_update_time,NOW())<60 
-                                             order by last_update_time desc limit 1""".format(login_name)))[0] > 0:
-        sec = (await async_processer.query_one("""select 60-TIMESTAMPDIFF(SECOND,last_update_time,NOW())  
-                                                 from t_session 
-                                                 where username='{}' order by last_update_time desc limit 1""".format(
-            login_name)))[0]
-        result['code'] = '-1'
-        result['message'] = '用户已登陆,请{}秒后重试!'.format(sec)
-        return result
+    # if (await async_processer.query_one("""select count(0)
+    #                                        from t_session
+    #                                        where username='{}'
+    #                                          and TIMESTAMPDIFF(SECOND,last_update_time,NOW())<60
+    #                                          order by last_update_time desc limit 1""".format(login_name)))[0] > 0:
+    #     sec = (await async_processer.query_one("""select 60-TIMESTAMPDIFF(SECOND,last_update_time,NOW())
+    #                                              from t_session
+    #                                              where username='{}' order by last_update_time desc limit 1""".format(
+    #         login_name)))[0]
+    #     result['code'] = '-1'
+    #     result['message'] = '用户已登陆,请{}秒后重试!'.format(sec)
+    #     return result
 
     result['code'] = '0'
     result['message'] = '验证成功！'

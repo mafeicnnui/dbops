@@ -18,7 +18,7 @@ from web.model.t_user import upd_password, get_user_by_userid, get_user_by_login
 from web.model.t_xtqx import get_tree_by_userid
 from web.utils import base_handler
 from web.utils.common import send_mail_param, get_sys_settings, get_rand_str, current_time, china_rq, china_week, \
-    welcome, china_time, create_captcha
+    welcome, china_time, create_captcha, get_sys_settings_sync
 from web.utils.jwt_auth import delete_session_log
 
 
@@ -26,9 +26,9 @@ class logon(tornado.web.RequestHandler):
     def get(self):
         self.render("./login/page-login.html")
 
-
 class logon_check(base_handler.BaseHandler):
     async def post(self):
+        import datetime
         username = self.get_argument("username")
         password = self.get_argument("password")
         verify_code = self.get_argument("verify_code")
@@ -39,7 +39,10 @@ class logon_check(base_handler.BaseHandler):
             d_user = await get_user_by_loginame(username)
             token = await self.create_token(
                 {"username": username, "userid": d_user['userid'], "name": d_user['name'], "remote_ip": remote_ip})
-            self.write({"code": result['code'], "message": result['message'], "token": token})
+            timeout = int(get_sys_settings_sync()['TOKEN_EXPIRE_TIME'])
+            expires = datetime.datetime.utcnow() + datetime.timedelta(minutes=timeout)
+            self.set_cookie("token", token, httponly=True, expires=expires)
+            self.write({"code": result['code'], "message": result['message'], "token": token,"redirect": "/"})
         else:
             self.write({"code": result['code'], "message": result['message']})
 

@@ -10,7 +10,7 @@ import re
 import traceback
 
 from web.model.t_ds import get_ds_by_dsid_by_cdb
-from web.utils.common import format_sql, format_exception
+from web.utils.common import format_sql, format_exception, clean_sql_comments
 from web.utils.mysql_async import async_processer, reReplace
 
 
@@ -2243,6 +2243,8 @@ async def save_check_results_multi(rule, user, psql, sxh):
 
 async def check_mysql_ddl(p_dbid, p_cdb, p_sql, p_user, p_type):
     await del_check_results(p_user)
+    p_sql = clean_sql_comments(p_sql)
+    print('clean_sql_comments=',clean_sql_comments)
     # TYPE: FUNC\PROC\TRI\EVENT
     if p_type == '4':
         print('process_single_ddl....')

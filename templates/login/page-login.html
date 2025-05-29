@@ -165,44 +165,7 @@
         }
     });
 
-    $(document).ajaxError(function (event, request, options) {
-        if (request.status == 403) {
-            swal("登陆信息已过期，请重新登陆!", "", "error")
-            window.location.href = '/login'
-        } else if (request.status == 502) {
-            swal("用户无权访问权限此功能!(" + options.url + ")", "", "error")
-        } else if (request.status == 503) {
-            swal("系统不可用,请联系管理员!", "", "error")
-        } else {
-            swal("系统不可用,请稍后重试!", "", "error")
-        }
-    });
-
-    $.ajaxSetup({
-        timeout: 6000000,
-        // headers: {
-        //  'token': window.localStorage.getItem("token"),
-        // },
-        data: {
-            'token': window.localStorage.getItem("token"),
-        }
-    });
-
     $(document).ready(function () {
-        //设置ajax超时时间为3s
-        $.ajaxSetup({
-            timeout: 3000,
-            headers: {
-                'Authorization': window.localStorage.getItem("Authorization")
-            }
-        });
-        //可以实现统计增加遮照功能
-        $(document).ajaxStart(function () {
-            start_Loader('account-pages')
-        }).ajaxStop(function () {
-            end_Loader('account-pages')
-        })
-
         $("#verify-img").click(function () {
             $.ajax({
                 url: "/get_verify",
@@ -228,34 +191,18 @@
                     verify_code: $('#verify_code').val()
                 },
                 success: function (dataSet) {
-                    console.log('logon_check=', dataSet)
                     if (dataSet.code == '-1') {
                         $('#prompt').text(dataSet.message)
                         $('#prompt').css('color', 'red')
                     } else {
-                        //将token这写入localStorage
                         window.localStorage['token'] = dataSet.token
-
-                        //如何记住登陆选中，则将用户、密码写入本地库
                         if ($('#checkbox-signup').attr('checked') == 'checked') {
                             if ($('#username').val() != '' && $('#password') != '') {
                                 window.localStorage['easebase_user'] = $('#username').val()
                                 window.localStorage['easebase_pass'] = $('#password').val()
                             }
                         }
-
-                        // $.ajax({
-                        //      url: "/",
-                        //      type: "get",
-                        //       headers: {
-                        //         'token': window.localStorage.getItem("token")
-                        //       },
-                        //       success: function (dataSet) {
-                        //             console.log('xxxx=',dataSet)
-                        //       },
-                        // });
-                        window.location.href = '/?token=' + window.localStorage.getItem("token")
-
+                        window.location.href = dataSet.redirect
                     }
                 },
             });

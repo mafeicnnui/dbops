@@ -37,6 +37,7 @@
     <link href="{{static_url('plugins/multiselect/css/multi-select.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{static_url('plugins/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet"/>
     <link href="{{static_url('plugins/jquery.ztree/css/zTreeStyle/zTreeStyle.css')}}" rel="stylesheet"/>
+    <link href="{{static_url('assets/css/jstree/jstree.min.css')}}" rel="stylesheet" type="text/css"/>
 
     <style>
         .modal-lg {
@@ -127,13 +128,18 @@
         .panel-body {
             padding: 5px;
         }
+
+        .test123 {
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
     </style>
 </head>
 <body class="fixed-left">
 <div id="wrapper">
     <div class="topbar">
-        <div class="topbar-left">
-            <a id="windows_main" href="#" class="logo" style="size:4px;"><span
+        <div class="topbar-left test123">
+            <a id="windows_main" href="javascript:void(0);" class="logo" style="size:4px;"><span
                     class="logo_span ion-coffee"></span><span>&nbsp;Ease<span>Base</span></span></a>
         </div>
         <div class="navbar navbar-default" role="navigation">
@@ -196,7 +202,7 @@
     </div>
 
     <div class="left side-menu">
-        <span class="menu-title">数据库自动化运维平台</span>
+        <span class="menu-title" style="font-size: 15px;">数据库自动化运维平台</span>
         <div class="sidebar-inner slimscrollleft">
             <div id="sidebar-menu">
                 <ul id="ul-menu">
@@ -712,6 +718,7 @@
 <script src="{{static_url('assets/js/jquery.core.js')}}"></script>
 <script src="{{static_url('assets/js/jquery.app.js')}}"></script>
 <script src="{{static_url('plugins/jquery.ztree/js/jquery.ztree.core-3.5.js')}}"></script>
+<script src="{{static_url('assets/js/jstree.min.js')}}"></script>
 
 <script>
     var tabStatus = new Array;
@@ -915,13 +922,14 @@
         if (tabStatus[tabId] == true) {
             $('#' + tabId).parent().addClass("active")
         } else {
-            $('#ul_tabs').append('<li class="active"><a href="#"  id="' + tabId + '" data-toggle="tab" aria-expanded="false">' + $(this).text() + '<button id="close_' + tabId + '" type="button" class="close" >×</button></a></li>')
+            $('#ul_tabs').append('<li class="active"><a href="javascript:void(0);"  id="' + tabId + '" data-toggle="tab" aria-expanded="false">' + $(this).text() + '<button id="close_' + tabId + '" type="button" class="close" >×</button></a></li>')
             if (tabStatus[tabId] == undefined) {
                 tabStatus[tabId] = true;
             }
         }
 
         $('#main-container-div').load(url);
+        // console.log("main-container-div:",url)
 
         $('#' + tabId).on('show.bs.tab', function (e) {
             id = $(e.target).attr('id')

@@ -25,7 +25,7 @@ from web.model.t_sql_online import check_online
 from web.model.t_user import get_user_by_loginame
 from web.model.t_user import get_user_by_userid, get_user_by_loginame_sync
 from web.utils.common import current_time, send_message, send_message_sync, current_rq, send_message_qw, \
-    send_message_qw_sync, send_message_qw_mobiles
+    send_message_qw_sync, send_message_qw_mobiles, clean_sql_comments
 from web.utils.common import format_sql as fmt_sql
 from web.utils.common import send_mail, send_mail_param, get_sys_settings, get_sys_settings_sync
 from web.utils.mysql_async import async_processer
@@ -632,7 +632,7 @@ def get_run_params(p_dbid, p_db_name, p_sql_id, p_username, p_host):
     """
     p_ds = get_ds_by_dsid_sync(p_dbid)
     p_ds['service'] = p_db_name
-    sql = get_sql_by_sqlid_sync(p_sql_id)
+    sql = clean_sql_comments(get_sql_by_sqlid_sync(p_sql_id))
     email = get_user_by_loginame_sync(p_username)['email']
     settings = get_sys_settings_sync()
     wkno = get_sql_release_sync(p_sql_id)
@@ -710,7 +710,7 @@ async def save_sql(p_dbid, p_cdb, p_sql, desc, p_user, type, time, p_username, p
                                           p_sqlid)
 
         # send mail
-        send_release_mail(params)
+        # send_release_mail(params)
 
         # send to wx
         await send_wx(params)
@@ -743,7 +743,7 @@ async def upd_sql(p_sqlid, p_user, p_status, p_message, p_host):
         await async_processer.exec_sql(sql)
         params = await get_audit_params(p_sqlid, p_user, p_status, p_message, p_host)
         # send audit mail
-        send_audit_mail(params)
+        # send_audit_mail(params)
 
         # send to wx
         await send_wx(params)
@@ -1196,7 +1196,7 @@ def exe_sql_sync(p_dbid, p_db_name, p_sql_id, p_username, p_host):
                 write_rollback(p_sql_id, params['p_ds'], binlog_file, start_position, stop_position)
         params = get_run_params(p_dbid, p_db_name, p_sql_id, p_username, p_host)
         # send mail
-        send_run_mail(params)
+        # send_run_mail(params)
         # send to wx
         send_wx_sync(params)
         # send to qywx
