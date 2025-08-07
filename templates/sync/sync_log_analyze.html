@@ -8,10 +8,10 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon"><i class="ion-ios7-home"></i></span>
-                <select class="form-control select" id="market_id">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id">
                     <option value='' selected="selected">请选择项目...</option>
                     {% for var in dm_proj_type %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                       <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -19,7 +19,7 @@
         <div class="col-md-3">
             <div class="input-group">
                 <span class="input-group-addon"><i class="mdi mdi-chemical-weapon"></i></span>
-                <select class="form-control select" id="tagname">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="tagname" data-none-selected-text="请选择任务...">
                     <option value='' selected="selected">请选择任务..</option>
                 </select>
             </div>
@@ -94,6 +94,8 @@
 
 <script>
     $(document).ready(function () {
+        $('.selectpicker').selectpicker({size: 10});
+
         $('#backup-container').hide();
 
         $('#begin_date').attr("readonly", "readonly");
@@ -198,12 +200,13 @@
             },
             success: function (dataSet) {
                 $("#tagname").empty();
-                $("#tagname").append("<option value=''>请选择任务...</option>");
+                $("#tagname").append("<option value='' title=''>请选择任务...</option>");
                 for (i = 0; i < dataSet['data'].length; i++) {
                     var val = dataSet['data'][i][0];
                     var text = dataSet['data'][i][1];
-                    $("#tagname").append("<option value='" + val + "'>" + text + "</option>");
+                    $("#tagname").append("<option value='" + val + "' title='"+text+"'>" + text + "</option>");
                 }
+                $("#tagname").selectpicker('refresh')
             },
         });
     });

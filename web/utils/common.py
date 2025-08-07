@@ -1088,3 +1088,33 @@ def clean_sql_comments(sql):
     # 2. 去除空行（只保留非空白行）
     clean_sql = '\n'.join([line for line in clean_sql.splitlines() if line.strip()])
     return clean_sql
+
+def format_value(value):
+    if isinstance(value, str):  # For string values, add single quotes around the value
+        return f"'{value}'"
+    elif isinstance(value, datetime.datetime):  # For datetime values, format as 'YYYY-MM-DD'
+        return f"'{value.strftime('%Y-%m-%d')}'"
+    else:  # For numerical values, don't add quotes
+        return str(value)
+
+def infer_data_type(value):
+    if isinstance(value, int):
+        return 'BIGINT'  # For integers, use BIGINT
+    elif isinstance(value, float):
+        return 'FLOAT'  # For float values, use FLOAT
+    elif isinstance(value, str):
+        return 'VARCHAR(1000)'  # For string, use VARCHAR with length 1000
+    elif isinstance(value, datetime):
+        return 'DATE'  # For datetime values, use DATE
+    else:
+        return 'TEXT'  # Default to TEXT for unknown types
+
+
+def generate_temp_table(data,table_name):
+    create_table_statement = f"create table if not exists  {table_name} (\n"
+    for key, value in data[0].items():
+        data_type = infer_data_type(value)
+        create_table_statement += f"    {key} {data_type},\n"
+    create_table_statement = create_table_statement.rstrip(',\n')
+    create_table_statement += "\n);"
+    return create_table_statement

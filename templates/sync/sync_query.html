@@ -27,10 +27,10 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">项目名</span>
-                <select class="form-control select" id="market_id">
-                    <option value='' selected="selected">.....</option>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id" data-none-selected-text="请选择...">
+                    <option value='' title='' selected="selected">.....</option>
                     {% for var in dm_proj_type %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                      <option value={{var[0]}} title={{var[1]}} >{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -38,10 +38,10 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">业务类型</span>
-                <select class="form-control select" id="sync_ywlx">
-                    <option value='' selected="selected">.....</option>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_ywlx" data-none-selected-text="请选择...">
+                    <option value='' title='' selected="selected">.....</option>
                     {% for var in dm_sync_ywlx %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -49,10 +49,10 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">数据方向</span>
-                <select class="form-control select" id="sync_type">
-                    <option value='' selected="selected">.....</option>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_type" data-none-selected-text="请选择...">
+                    <option value='' title='' selected="selected">.....</option>
                     {% for var in dm_sync_data_type %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -60,10 +60,9 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">任务状态</span>
-                <select class="form-control select" id="task_status">
-                    <option value="1">启用</option>
-                    <option value="0">禁用</option>
-                </select>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="task_status" data-none-selected-text="启用">
+                    <option value="1" title='启用'>启用</option>
+                    <option value="0" title='禁用'>禁用</option>
                 </select>
             </div>
         </div>
@@ -76,7 +75,7 @@
             </div>
         </div>
     </div>
-    <p>
+    <br>
     <div class="row">
         <div class="col-md-12">
             <div id="div-tab">
@@ -111,6 +110,10 @@
     });
 
     $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            size: 10
+        });
+
         $("#query_btn").click(function () {
             $.ajax({
                 url: "/sync/_query",

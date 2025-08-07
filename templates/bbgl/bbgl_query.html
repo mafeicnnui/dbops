@@ -10,6 +10,24 @@
         #div-table {
             height: 600px;
         }
+        .modal-log-detail {
+            margin-left: 20%;
+            width: 75%;
+            height: 400px;
+        }
+        #query-params,#query-headers{
+            height:100px;
+        }
+        #query-pre-process,#query-statement{
+            height:250px;
+        }
+
+        .bootstrap-select .dropdown-toggle {
+            width: 100% !important;        /* 固定宽度 */
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
     </style>
 </head>
 <body>
@@ -31,10 +49,14 @@
             </div>
         </div>
         <div class="col-md-1">
-                 <span class="input-group-btn">
+             <span class="input-group-btn">
                    <button type="button" id='query_btn' class="btn waves-effect waves-light btn-primary"><i
                            class="fa fa-search"></i></button>
-                </span>
+            </span>
+             <span class="input-group-btn">
+                   <button type="button" id='log_btn' class="btn waves-effect waves-light btn-primary"><i
+                           class="mdi mdi-message-text-outline"></i></button>
+            </span>
         </div>
         <div class="col-md-2">
             <span id="query_time"></span>
@@ -50,9 +72,56 @@
 <input type="hidden" id="notnull_filter">
 <input type="hidden" id="rq_range_filter">
 
-<script>
-    var table;
+<div id="con-logs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-log-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">查询日志</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <label id="query-params-label">查询参数</label>&nbsp;<span id="span-query-params"><i class="ion-arrow-down-b"></i></span>
+                    <div id='query-params' class="col-md-12"></div>
+                </div><br>
+                <div class="row">
+                    <label id="query-headers-label">查询表头</label>&nbsp;<span id="span-query-headers"><i class="ion-arrow-down-b"></i></span>
+                     <div id='query-headers' class="col-md-12"></div>
+                </div><br>
+                <div class="row">
+                    <label id="query-pre-process-label">预处理块</label>&nbsp;<span id="span-query-pre-process"><i class="ion-arrow-down-b"></i></span>
+                    <div id='query-pre-process' class="col-md-12"></div>
+                </div><br>
+                <div class="row">
+                    <label id="query-statement-label">查询语句</label>&nbsp;<span id="span-query-statement"><i class="ion-arrow-down-b"></i></span>
+                    <div id='query-statement' class="col-md-12"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
 
+<div id="con-logs-err-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+      <div class="modal-dialog modal-log-detail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">查询日志</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <label id="query-error-label">查询日志</label>&nbsp;<span id="span-error-message"><i class="ion-arrow-down-b"></i></span>
+                    <div id='query-errlog' class="col-md-12"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div><!-- /.modal -->
+
+
+<script>
+    let table;
+    let logs;
     function downloads_data(p_id) {
         $.ajax({
             url: "/bbgl/download/files",
@@ -62,7 +131,6 @@
                 id: p_id,
             },
             success: function (dataSet) {
-                // console.log('downloads_data=',downloads_data)
                 var link = $("<a/>")
                 link.html('　');
                 link.attr('href', dataSet.file);
@@ -84,7 +152,6 @@
                     bbdm: $('#bbdm').val(),
                 },
                 success: function (filter) {
-                    console.log('filter=', filter)
                     if (filter.length > 0) {
                         var notnull_filter = ''
                         var rq_range_filter = ''
@@ -105,16 +172,157 @@
                 },
             });
         }
+    function set_selected(){
+        $("span:contains('*')").each(function(){
+            $(this).children().css('color','red')
+        })
+    }
+
+    function set_editor_json(p_editor) {
+            var editor = ace.edit(p_editor);
+            editor.setTheme("ace/theme/xcode");
+            editor.getSession().setMode("ace/mode/json");
+            editor.getSession().setUseSoftTabs(true);
+            editor.getSession().setUseWrapMode(true);
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(14);
+            editor.setOption("wrap", "free");
+            ace.require("ace/ext/language_tools");
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true,
+                wrapBehavioursEnabled: false
+            });
+            editor.setHighlightActiveLine(true);
+        }
+
+    function set_editor_sql(p_editor) {
+            var editor = ace.edit(p_editor);
+            editor.setTheme("ace/theme/xcode");
+            editor.getSession().setMode("ace/mode/sql");
+            editor.getSession().setUseSoftTabs(true);
+            editor.getSession().setUseWrapMode(true);
+            editor.setShowPrintMargin(false);
+            editor.setFontSize(14);
+            editor.setOption("wrap", "free");
+            ace.require("ace/ext/language_tools");
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true,
+                wrapBehavioursEnabled: false
+            });
+            editor.setHighlightActiveLine(true);
+        }
+
+    function set_log_values(logs) {
+        if (typeof logs !== "undefined") {
+            var query_params = ace.edit("query-params");
+            var query_headers = ace.edit("query-headers");
+            var query_pre_process = ace.edit("query-pre-process");
+            var query_statement = ace.edit("query-statement");
+            query_params.setValue('')
+            query_params.insert(JSON.stringify(logs['params'], null, 2));
+            query_params.setReadOnly(true);
+            query_headers.setValue('');
+            query_headers.insert(JSON.stringify(logs['columns'], null, 2));
+            query_headers.setReadOnly(true);
+            query_pre_process.setValue('')
+            query_pre_process.insert(logs['pre_statement']);
+            query_pre_process.setReadOnly(true);
+            query_statement.setValue('')
+            query_statement.insert(logs['statement']);
+            query_statement.setReadOnly(true);
+        }  else {
+            showtips('info', '请先查询后再查看日志!');
+        }
+    }
+
+    function set_log_error(logs) {
+        if (typeof logs !== "undefined") {
+            var query_errlog = ace.edit("query-errlog")
+            query_errlog.setValue('')
+            query_errlog.insert(logs['msg']);
+            query_errlog.setReadOnly(true);
+        }  else {
+            showtips('info', '请先查询后再查看日志!');
+        }
+    }
+
+    $('#log_btn').on('click', function() {
+           $(window).on('resize', centerModals);
+           console.log('log_btn=',logs);
+           if (logs.status == "0") {
+               $('#con-logs-modal').modal({
+                   keyboard: false,
+                   backdrop: false
+               })
+           } else {
+               $('#con-logs-err-modal').modal({
+                   keyboard: false,
+                   backdrop: false
+               })
+           }
+     });
+
+    $('#query-params-label').click(function () {
+        if ($('#query-params').css('display') == 'none') {
+            $('#query-params').css("display", "block");
+            $('#span-query-params').html('<i class="ion-arrow-up-b"></i>');
+        } else {
+            $('#query-params').css("display", "none");
+            $('#span-query-params').html('<i class="ion-arrow-down-b"></i>');
+        }
+    })
+
+    $('#query-headers-label').click(function () {
+        if ($('#query-headers').css('display') == 'none') {
+            $('#query-headers').css("display", "block");
+            $('#span-query-headers').html('<i class="ion-arrow-up-b"></i>');
+        } else {
+            $('#query-headers').css("display", "none");
+            $('#span-query-headers').html('<i class="ion-arrow-down-b"></i>');
+        }
+    })
+
+    $('#query-pre-process-label').click(function () {
+        if ($('#query-pre-process').css('display') == 'none') {
+            $('#query-pre-process').css("display", "block");
+            $('#span-query-pre-process').html('<i class="ion-arrow-up-b"></i>');
+        } else {
+            $('#query-pre-process').css("display", "none");
+            $('#span-query-pre-process').html('<i class="ion-arrow-down-b"></i>');
+        }
+    })
+
+    $('#query-statement-label').click(function () {
+        if ($('#query-statement').css('display') == 'none') {
+            $('#query-statement').css("display", "block");
+            $('#span-query-statement').html('<i class="ion-arrow-up-b"></i>');
+        } else {
+            $('#query-statement').css("display", "none");
+            $('#span-query-statement').html('<i class="ion-arrow-down-b"></i>');
+        }
+    })
+
+    $('#query-error-label').click(function () {
+        if ($('#query-errlog').css('display') == 'none') {
+            $('#query-errlog').css("display", "block");
+            $('#span-error-message').html('<i class="ion-arrow-up-b"></i>');
+        } else {
+            $('#query-errlog').css("display", "none");
+            $('#span-error-message').html('<i class="ion-arrow-down-b"></i>');
+        }
+    })
 
     $("#query_btn").click(function () {
-            // $('#example').show();
             $('#query_time').text('');
 
             if ($('#bbdm').val() == '') {
                 showtips('error', '请选择报表!');
                 return false;
             }
-
             check_bbgl();
 
             //检测条件是否为空值
@@ -144,17 +352,13 @@
             //检测日期范围是否超过配置值
             var rq_range = $('#rq_range_filter').val()
             var rq_range2 = $('#rq_range_filter').val().split(',')
-            console.log('rq_range=', rq_range)
-            console.log('rq_range2=', rq_range2)
             if (rq_range != '') {
                 for (var i in rq_range2) {
                     var c = rq_range2[i].split('#')[0]
                     var n = rq_range2[i].split('#')[1]
                     var d = rq_range2[i].split('#')[2]
-                    console.log(c, n, d)
                     var rqq = $('#' + c + '_begin').val()
                     var rqz = $('#' + c + '_end').val()
-                    console.log('rqq=', rqq, 'rqz=', rqz)
                     if (rqq != undefined && rqz != undefined) {
                         if (GetDateDiff(rqq, rqz, "day") > parseInt(d)) {
                             showtips('error', n + '查询范围不能超过' + d + '天');
@@ -170,7 +374,6 @@
 
             $('#example_bbgl').empty();
 
-
             obj = $('#form_bbgl_filter').serializeObject()
             $.ajax({
                 url: "/bbgl/query/data",
@@ -182,9 +385,14 @@
                     param: JSON.stringify(obj),
                 },
                 success: function (dataSet) {
+                    console.log('query_btn=',dataSet)
+                    logs = dataSet
+                    $('#log_btn').prop('disabled', false);
                     if (dataSet.status == "1") {
-                        showtips('error', dataSet.msg);
+                        set_log_error(dataSet.logs)
+                        showtips('error', '查询出错，详见日志');
                     } else {
+                        set_log_values(dataSet.logs)
                         table = $('#example_bbgl').DataTable({
                             dom: '<"top"<"clear">>rt<"bottom"ip<"clear">>',
                             destroy: true,
@@ -223,13 +431,28 @@
         }
     });
 
-    function set_selected(){
-        $("span:contains('*')").each(function(){
-            $(this).children().css('color','red')
-        })
-    }
-
     $(document).ready(function () {
+        let uuri = "{{ uuri }}";
+        if (uuri.includes('/bbgl/query/logs')) {
+            $('#log_btn').show()
+        } else {
+            $('#log_btn').hide()
+        }
+        set_editor_json('query-params')
+        set_editor_json('query-headers')
+        set_editor_sql('query-pre-process')
+        set_editor_sql('query-statement')
+        set_editor_sql('query-errlog')
+        $('.modal').on('shown.bs.modal', centerModals);
+
+        $('#query-params').css("display", "none");
+        $('#span-query-params').html('<i class="ion-arrow-down-b"></i>');
+        $('#query-headers').css("display", "none");
+        $('#span-query-params').html('<i class="ion-arrow-down-b"></i>');
+        $('#query-pre-process').css("display", "none");
+        $('#span-query-pre-process').html('<i class="ion-arrow-down-b"></i>');
+        $('#log_btn').prop('disabled', true);
+
         function set_notnull_flag(is_notnull,obj){
             if (is_notnull=='Y') {
                 return "<span>*</span>"+obj
@@ -237,6 +460,7 @@
                 return obj
             }
         }
+
         $('#bbdm').change(function () {
             $.ajax({
                 url: "/bbgl/filter",
@@ -252,6 +476,7 @@
                     var rowFilter = '<div class="row">'
                     var filter_number = 0;
                     for (i = 0; i < filter.length; i++) {
+                        console.log('filter=',filter[i])
                         filter_number = filter_number + 1
                         if (filter[i].filter_type == '1') {
                             if (filter[i].is_item == 'Y') {
@@ -272,15 +497,27 @@
                                     },
                                 });
 
-                                rowFilter = rowFilter +
-                                    '<div class="col-md-3">\n' +
-                                    '       <div class="input-group">\n' +
-                                    '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
-                                    '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '">\n' +
-                                    '                <option value="">...</option>\n' + options +
-                                    '            </select> ' +
-                                    '      </div>\n' +
-                                    '</div>'
+                                if (filter[i].item_type == '2' || filter[i].item_type == '3') {
+                                   rowFilter = rowFilter +
+                                        '<div class="col-md-3">\n' +
+                                        '       <div class="input-group">\n' +
+                                        '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
+                                        '            <select class="selectpicker"  data-live-search="true" multiple data-style="btn-default" data-selected-text-format="count > 1" data-count-selected-text="已选 {0} 项" style="width: 100%;" id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '">\n' +
+                                        '                <option value="">...</option>\n' + options +
+                                        '            </select> ' +
+                                        '      </div>\n' +
+                                        '</div>'
+                                } else {
+                                     rowFilter = rowFilter +
+                                        '<div class="col-md-3">\n' +
+                                        '       <div class="input-group">\n' +
+                                        '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
+                                        '            <select class="selectpicker"  data-live-search="true" data-style="btn-default" id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '">\n' +
+                                        '                <option value="">...</option>\n' + options +
+                                        '            </select> ' +
+                                        '      </div>\n' +
+                                        '</div>'
+                               }
 
                             } else {
                                 rowFilter = rowFilter +
@@ -317,7 +554,6 @@
                                     '      </div>\n' +
                                     '</div>'
                                 filter_number = filter_number + 1
-                                console.log('range.....')
                             } else {
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
@@ -352,7 +588,6 @@
                                     '      </div>\n' +
                                     '</div>'
                                 filter_number = filter_number + 1
-                                console.log('range.....')
                             } else {
                                 rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
@@ -417,11 +652,24 @@
                         minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
                     });
 
+                    $('.selectpicker').selectpicker({
+                          noneSelectedText: '请选择',
+                          noneResultsText: '没有找到匹配的内容'
+                    });
+
                     $('.selectpicker').selectpicker('refresh');
 
                 },
             });
         })
+
+        // 强制设置selectpicker的宽度
+        $(".selectpicker").css("width", "100%");
+
+        // 在每次选项更改时，重新设置宽度
+        $(".selectpicker").on('changed.bs.select', function () {
+            $(this).css("width", "100%");
+        });
 
         $('.selectpicker').selectpicker({
               noneSelectedText: '请选择',

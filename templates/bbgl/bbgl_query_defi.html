@@ -236,19 +236,6 @@
                                     </select>
                                 </div>
                             </div>
-                             <div class="form-group">
-                                <div>
-                                    <label class="col-md-3 control-label"><span>*</span>列表项类型：</label>
-                                </div>
-                                <div class="col-md-9">
-                                    <select class="form-control select" id="add_select_type2" name="add_select_type2">
-                                        <option value='' selected="selected">请选择类型</option>
-                                        <option value='1'>单选</option>
-                                        <option value='2'>多选数值</option>
-                                        <option value='3'>多选字符</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="form-group">
                                 <div>
                                     <label class="col-md-3 control-label"><span>*</span>列表项配置：</label>
@@ -503,19 +490,6 @@
                             </div>
                             <div class="form-group">
                                 <div>
-                                    <label class="col-md-3 control-label"><span>*</span>列表项类型：</label>
-                                </div>
-                                <div class="col-md-9">
-                                    <select class="form-control select" id="upd_select_type2" name="upd_select_type2">
-                                        <option value='' selected="selected">请选择类型</option>
-                                        <option value='1'>单选</option>
-                                        <option value='2'>多选数值</option>
-                                        <option value='3'>多选字符</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div>
                                     <label class="col-md-3 control-label"><span>*</span>列表项配置：</label>
                                 </div>
                                 <div class="col-md-9">
@@ -763,7 +737,7 @@
                     iDisplayLength: 10,
                     data: dataSet,
                     columns: [
-                        {"title": "序号", "sWidth": "50px"},
+                      {"title": "序号", "sWidth": "50px"},
                         {"title": "名称", "sWidth": "50px"},
                         {"title": "代码", "sWidth": "100px"},
                         {"title": "类型代码", "visible": false},
@@ -771,7 +745,6 @@
                         {"title": "是否列表项", "sWidth": "50px"},
                         {"title": "列表项值", "sWidth": "50px"},
                         {"title": "列表项名", "sWidth": "100px"},
-                        {"title": "列表项类型", "sWidth": "100px"},
                         {"title": "是否非空", "sWidth": "50px"},
                         {"title": "是否范围", "sWidth": "50px"},
                         {"title": "日期范围", "sWidth": "50px"},
@@ -913,18 +886,16 @@
 
     function edit_filter(p_row) {
         row = unescape(p_row).split(',')
-        console.log('edit_filter .row = ',row)
         $('#upd_filter_xh').val(row[0])
         $('#upd_filter_name').val(row[1])
         $('#upd_filter_code').val(row[2])
         $('#upd_filter_type').val(row[3])
         $('#upd_select_type').val(row[5])
         $('#upd_select_cfg').val(row[6])
-        $('#upd_select_type2').val(row[8])
-        $('#upd_notnull_type').val(row[9])
-        $('#upd_range_type').val(row[10])
-        $('#upd_max_rq_range_name').val(row[11])
-        $('#upd_like_type').val(row[12])
+        $('#upd_notnull_type').val(row[8])
+        $('#upd_range_type').val(row[9])
+        $('#upd_max_rq_range_name').val(row[10])
+        $('#upd_like_type').val(row[11])
         set_filter_status()
         open_model('modal-upd-filter')
     }
@@ -1206,7 +1177,6 @@
                 is_range: $('#upd_range_type').val(),
                 rq_range: $('#upd_max_rq_range_name').val(),
                 is_like: $('#upd_like_type').val(),
-                item_type: $('#upd_select_type2').val(),
             },
             success: function (dataSet) {
                 if (dataSet.code == '0') {
@@ -1348,7 +1318,6 @@
                 is_range: $('#add_range_type').val(),
                 rq_range: $('#add_max_rq_range_name').val(),
                 is_like: $('#add_like_type').val(),
-                item_type: $('#upd_select_type2').val(),
 
             },
             success: function (dataSet) {
@@ -1509,6 +1478,7 @@
     })
 
     $(document).ready(function () {
+        console.log("readonly=",$('#readonly').val())
         set_selected();
         $('#cur_tab').val('表头定义')
         set_editor('add_pre_process_state')

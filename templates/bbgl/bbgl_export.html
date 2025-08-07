@@ -25,6 +25,13 @@
             height: 600px;
         }
 
+        .bootstrap-select .dropdown-toggle {
+            width: 100% !important;        /* 固定宽度 */
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
     </style>
 </head>
 <body>
@@ -343,12 +350,24 @@
                                     },
                                     success: function (dataSet) {
                                         for (dm = 0; dm < dataSet.length; dm++) {
-                                            options = options + "<option value='" + dataSet[dm][0] + "'>" + dataSet[dm][1] + "</option>\n"
+                                            //options = options +"<option value='"+dataSet[dm][0]+"'>"+dataSet[dm][1]+"</option>\n"
+                                            options = options + "<option value='" + dataSet[dm][0] + "' title='" + dataSet[dm][1] + "'>" + dataSet[dm][1] + "</option>\n"
                                         }
                                     },
                                 });
 
-                                rowFilter = rowFilter +
+                                if (filter[i].item_type == '2' || filter[i].item_type == '3') {
+                                   rowFilter = rowFilter +
+                                        '<div class="col-md-3">\n' +
+                                        '       <div class="input-group">\n' +
+                                        '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
+                                        '            <select class="selectpicker"  data-live-search="true" multiple data-style="btn-default" data-selected-text-format="count > 1" data-count-selected-text="已选 {0} 项" style="width: 100%;" id="' + filter[i].filter_code + '" name="' + filter[i].filter_code + '">\n' +
+                                        '                <option value="">...</option>\n' + options +
+                                        '            </select> ' +
+                                        '      </div>\n' +
+                                        '</div>'
+                                } else {
+                                     rowFilter = rowFilter +
                                     '<div class="col-md-3">\n' +
                                     '       <div class="input-group">\n' +
                                     '            <span class="input-group-addon">' + set_notnull_flag(filter[i].is_null,filter[i].filter_name) + '</span>\n' +
@@ -357,6 +376,7 @@
                                     '            </select> ' +
                                     '      </div>\n' +
                                     '</div>'
+                               }
 
                             } else {
                                 rowFilter = rowFilter +
@@ -491,6 +511,20 @@
                         minuteStep: 1           //用于构建小时视图。就是最小的视图是每1分钟可选一次。是以分钟为单位的
                     });
 
+                    $('.selectpicker').selectpicker({
+                          noneSelectedText: '请选择',
+                          noneResultsText: '没有找到匹配的内容'
+                    });
+
+                    // 强制设置selectpicker的宽度
+                    $(".selectpicker").css("width", "100%");
+
+                    // 在每次选项更改时，重新设置宽度
+                    $(".selectpicker").on('changed.bs.select', function () {
+                        $(this).css("width", "100%");
+                    });
+
+
                     $('.selectpicker').selectpicker('refresh');
 
                     $('#cur_bbdm').val($('#bbdm').val())
@@ -619,6 +653,15 @@
     $(document).ready(function () {
         $("#query_btn").click();
         $('.selectpicker').selectpicker();
+
+        // 强制设置selectpicker的宽度
+        $(".selectpicker").css("width", "100%");
+
+        // 在每次选项更改时，重新设置宽度
+        $(".selectpicker").on('changed.bs.select', function () {
+            $(this).css("width", "100%");
+        });
+
         $('.selectpicker').selectpicker('refresh');
 
     });

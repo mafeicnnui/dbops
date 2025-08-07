@@ -5,7 +5,7 @@
 # @File : logon.py.py
 # @Software: PyCharm
 
-from web.services.backup import backup_case
+from web.services.backup import backup_case, sales_case
 from web.services.sync import db_active_num, db_slow_num, sys_stats_num, sys_stats_idx, db_order_num, db_real_sync
 from web.services.sync import get_sync_flow_device, get_sync_park_charge, get_sync_bi, sync_case, sync_case_log
 from web.services.sync import get_sync_park, get_sync_park_real_time, get_sync_flow, get_sync_flow_real_time
@@ -28,5 +28,6 @@ main = [
     (r"/get/sys/stats/num", sys_stats_num),
     (r"/get/sys/stats/idx", sys_stats_idx),
     (r"/get/db/real/sync", db_real_sync),
+    (r"/sales_case", sales_case),
 
 ]

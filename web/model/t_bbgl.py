@@ -15,10 +15,10 @@ import openpyxl
 import requests
 import xlwt
 
-from web.model.t_ds import get_ds_by_dsid
+from web.model.t_ds import get_ds_by_dsid, get_ds_by_dsid_by_cdb
 from web.model.t_sql import exe_query_exp
 from web.utils.common import current_rq
-from web.utils.common import format_sql
+from web.utils.common import format_sql,format_value,generate_temp_table
 from web.utils.common import format_sql as fmt_sql, get_seconds
 from web.utils.mysql_async import async_processer
 
@@ -32,7 +32,7 @@ async def get_config(p_bbdm):
 
 
 async def get_preprocess(p_bbdm):
-    st = "select statement,description from t_bbgl_preproccess where bbdm='{}' ORDER BY xh".format(p_bbdm)
+    st = "select * from t_bbgl_preproccess where bbdm='{}' ORDER BY xh".format(p_bbdm)
     return await async_processer.query_dict_list(st)
 
 
@@ -105,12 +105,12 @@ async def save_bbgl_header(bbdm, name, width):
 
 
 async def save_bbgl_filter(bbdm, filter_name, filter_code, filter_type, item, p_item_value, p_notnull, p_is_range,
-                           p_rq_range, p_is_like):
+                           p_rq_range, p_is_like,p_item_type):
     try:
-        st = "insert into t_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,is_item,item_value,is_null,is_range,rq_range,is_like) \
-                 values('{}',{},'{}','{}','{}','{}','{}','{}','{}','{}','{}')". \
+        st = "insert into t_bbgl_filter(bbdm,xh,filter_name,filter_code,filter_type,is_item,item_value,is_null,is_range,rq_range,is_like,item_type) \
+                 values('{}',{},'{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')". \
             format(bbdm, (await get_filter_xh(bbdm)), filter_name, filter_code, filter_type, item, p_item_value,
-                   p_notnull, p_is_range, p_rq_range, p_is_like)
+                   p_notnull, p_is_range, p_rq_range, p_is_like,p_item_type)
         print(st)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '保存成功!'}
@@ -119,11 +119,15 @@ async def save_bbgl_filter(bbdm, filter_name, filter_code, filter_type, item, p_
         return {'code': -1, 'message': '保存失败!'}
 
 
-async def save_bbgl_preprocess(bbdm, statement, description):
+async def save_bbgl_preprocess(bbdm, statement, description,sqltype,dbid,db):
     try:
-        st = "insert into t_bbgl_preproccess(bbdm,xh,statement,description) \
-                 values('{}',{},'{}','{}')".format(bbdm, (await get_preprocess_xh(bbdm)), fmt_sql(statement),
-                                                   description)
+        st = ("""insert into t_bbgl_preproccess(bbdm,xh,statement,description,sqltype,dbid,db)
+                 values('{}',{},'{}','{}',{},'{}','{}')"""
+                .format(bbdm,
+                        (await get_preprocess_xh(bbdm)),
+                        fmt_sql(statement),
+                        description,
+                        sqltype,dbid,db))
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '保存成功!'}
     except Exception as e:
@@ -154,8 +158,12 @@ async def query_bbgl_filter(p_bbdm):
                    b.dmmc,
                    a.is_item,
                    a.item_value,
-                   (select mc from t_bbgl_dmlx c where c.dm=a.item_value) as  item_name,
-                   a.is_null,a.is_range,a.rq_range,a.is_like 
+                   (select mc from t_dmlx c where c.dm=a.item_value) as  item_name,
+                   a.item_type,
+                   a.is_null,
+                   a.is_range,
+                   a.rq_range,
+                   a.is_like 
             from t_bbgl_filter a,t_dmmx b 
              where a.filter_type=b.dmm and b.dm='42'              
               and a.bbdm='{}' order by a.bbdm,a.xh""".format(p_bbdm)
@@ -163,8 +171,13 @@ async def query_bbgl_filter(p_bbdm):
 
 
 async def query_bbgl_preprocess(p_bbdm):
-    st = "select xh,substr(statement,1,50) as statement,description from t_bbgl_preproccess where bbdm='{}' order by bbdm,xh".format(
-        p_bbdm)
+    st = """select p.xh,
+                   substr(p.statement,1,50) as statement,
+                   p.description,
+                   s.db_desc,
+                   p.db 
+             from t_bbgl_preproccess p left join t_db_source s on p.dbid=s.id 
+             where p.bbdm='{}' order by bbdm,xh""".format(p_bbdm)
     return await async_processer.query_list(st)
 
 
@@ -190,19 +203,25 @@ async def get_bbgl_bbdm(p_userid):
     return await async_processer.query_list(st)
 
 
-async def query_bbgl_data(bbdm, param):
+async def query_bbgl_data(bbdm, param,userid):
+    logs = {}
     try:
         # 1.通过bbdm获取报表定义相关数据
         cfg = await get_config(bbdm)
         preprocess = await get_preprocess(bbdm)
         headers = await get_headers(bbdm)
+        for f in await get_filter(bbdm):
+            if f['item_type'] == '2' :
+                param[f['filter_code']] = ','.join(param[f['filter_code']])
+            if f['item_type'] == '3':
+                param[f['filter_code']] = "'" + "','".join(param[f['filter_code']])
 
         ds = await get_ds_by_dsid(cfg['dsid'])
-
-        print('param=', param)
-
+        logs.update({
+            'params':param
+        })
         # 2.预处理
-        if preprocess != []:
+        if preprocess:
             # 3.获取预处理脚本，替换变量为实参
             for s in preprocess:
                 s['replace_statement'] = s['statement']
@@ -218,13 +237,18 @@ async def query_bbgl_data(bbdm, param):
 
             # 2023.5.6 optimize pre sql one session execute
             batch_pre_statement = '\n'.join(
-                [s['replace_statement'] if s['replace_statement'][-1] == ';' else s['replace_statement'] + ';' for s in
-                 preprocess])
-            print('batch_pre_statement=', batch_pre_statement)
+                [s['replace_statement'] if s['replace_statement'][-1] == ';' else s['replace_statement'] + ';'
+                 for s in preprocess])
+            logs.update({
+                'pre_statement':batch_pre_statement,
+            })
             await async_processer.exec_sql_by_ds_multi(ds, batch_pre_statement)
             preProcessTime = get_seconds(start_time)
         else:
             preProcessTime = 0
+            logs.update({
+                'pre_statement': '',
+            })
 
         # 5. 处理查询定义中占位符
         cfg['replace_statement'] = cfg['statement']
@@ -233,16 +257,22 @@ async def query_bbgl_data(bbdm, param):
                 cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
 
         # 执行查询
-        print('replace_statement=', cfg['replace_statement'])
+        logs.update({
+            'statement':cfg['replace_statement']
+        })
         result = await exe_query_exp(cfg['dsid'], cfg['replace_statement'], cfg['db'])
 
         # 替换表头
-        if headers != []:
+        if headers:
             xh = 0
             for i in result['column']:
                 i['title'] = headers[xh]['header_name']
                 i['sWidth'] = '{}px'.format(headers[xh]['header_width'])
-                xh = xh + 1
+                xh += 1
+
+        logs.update({
+            'columns': result['column']
+        })
 
         file_time = current_rq()
         if len(param) > 0:
@@ -253,15 +283,165 @@ async def query_bbgl_data(bbdm, param):
             else:
                 pass
 
-        result = {"data": result['data'], "column": result['column'], "status": result['status'], "msg": result['msg'],
-                  "preTime": str(preProcessTime), "file_time": file_time}
+        result = {
+                  "data": result['data'],
+                  "column": result['column'],
+                  "status": result['status'],
+                  "msg": result['msg'],
+                  "preTime": str(preProcessTime),
+                  "file_time": file_time,
+                  "logs":logs
+        }
         return result
 
-    except:
-        error = traceback.format_exc()[traceback.format_exc().find('pymysql.err.ProgrammingError'):]
-        result = {"data": '', "column": '', "status": '1', "msg": error}
+    except :
+        traceback.print_exc()
+        result = {"data": '', "column": '', "status": '1', "msg": traceback.format_exc(),"logs":logs}
         return result
 
+async def query_bbgl_data_optimize(bbdm, param,userid):
+    logs = {}
+    try:
+        # 1.通过bbdm获取报表定义相关数据
+        cfg = await get_config(bbdm)
+        preprocess = await get_preprocess(bbdm)
+        headers = await get_headers(bbdm)
+        param.update({
+            'user_id' : userid
+        })
+        for f in await get_filter(bbdm):
+            print('f=',f)
+            if f['item_type'] == '2' :
+                if isinstance(param[f['filter_code']], list):
+                   param[f['filter_code']] = ','.join(param[f['filter_code']])
+            if f['item_type'] == '3':
+                if isinstance(param[f['filter_code']], list):
+                    param[f['filter_code']] = "'" + "','".join(param[f['filter_code']])
+
+        ds = await get_ds_by_dsid(cfg['dsid'])
+        logs.update({
+            'params':param
+        })
+
+        # 2.预处理
+        if preprocess:
+            for s in preprocess:
+                s['replace_statement'] = s['statement']
+                if len(param) > 0:
+                    for key, value in param.items():
+                        s['replace_statement'] = s['replace_statement'].replace('$$' + key + '$$', value)
+
+            # 4.执行预处理代码
+            start_time = datetime.datetime.now()
+            for pre in preprocess:
+                if pre['sqltype'] == '1':
+                    pds = await get_ds_by_dsid_by_cdb(pre['dbid'],pre['db'])
+                    data = await async_processer.query_dict_list_by_ds(pds,pre['replace_statement'])
+                    data = [{**item, 'user_id': userid} for item in data]
+                    values_list = []
+                    table_name='{}_{}'.format(pre['bbdm'],pre['xh'])
+                    for record in data:
+                        formatted_values = ", ".join(
+                            format_value(value) for value in record.values())
+                        values_list.append(f"({formatted_values})")
+                    values_str = ", ".join(values_list)
+                    insert_statement = f"INSERT INTO {table_name} ({', '.join(data[0].keys())}) VALUES {values_str};"
+                    param.update({
+                       '$${}$$'.format(pre['xh']) : json.dumps(data, indent=4, ensure_ascii=False)
+                    })
+                    create_table =generate_temp_table(data,table_name)
+                    delete_table = f'delete from {table_name} where user_id={userid}'
+                    rds = await get_ds_by_dsid_by_cdb(cfg['dsid'],cfg['db'])
+                    await async_processer.exec_sql_by_ds(rds, create_table)
+                    await async_processer.exec_sql_by_ds(rds, delete_table)
+                    await async_processer.exec_sql_by_ds(rds, insert_statement)
+                elif pre['sqltype'] == '2':
+                    await async_processer.exec_sql_by_ds(ds,pre['replace_statement'])
+                elif pre['sqltype'] == '3':
+                    pass # call proc
+                else:
+                    pass
+
+            # 2023.5.6 optimize pre sql one session execute
+            batch_pre_statement = '\n\n'.join(
+                [s['replace_statement'] if s['replace_statement'][-1] == ';' else s['replace_statement'] + ';'
+                 for s in preprocess])
+
+            logs.update({
+                'pre_statement':batch_pre_statement,
+            })
+            preProcessTime = get_seconds(start_time)
+        else:
+            preProcessTime = 0
+            logs.update({
+                'pre_statement': '',
+            })
+
+        # 5. 处理查询定义中占位符
+        cfg['replace_statement'] = cfg['statement']
+        if len(param) > 0:
+            for key, value in param.items():
+                print(key,value)
+                cfg['replace_statement'] = cfg['replace_statement'].replace('$$' + key + '$$', value)
+
+        # 执行查询
+        logs.update({
+            'statement':cfg['replace_statement']
+        })
+        result = await exe_query_exp(cfg['dsid'], cfg['replace_statement'], cfg['db'])
+
+        # 替换表头
+        if headers:
+            xh = 0
+            for i in result['column']:
+                i['title'] = headers[xh]['header_name']
+                i['sWidth'] = '{}px'.format(headers[xh]['header_width'])
+                xh += 1
+
+        file_time = current_rq()
+        if len(param) > 0:
+            if param.get('bbrq_begin') and param.get('bbrq_end'):
+                file_time = '{}-{}'.format(param.get('bbrq_begin'), param.get('bbrq_end'))
+            elif param.get('bbrq'):
+                file_time = param.get('bbrq')
+            else:
+                pass
+
+        for k,v in param.items():
+            if k.count('$$')>0:
+                param.update({
+                    k: json.loads(v)
+                })
+
+        logs.update({
+            'columns': result['column'],
+            'msg': result['msg'],
+        })
+
+        result = {
+                  "data": result['data'],
+                  "column": result['column'],
+                  "status": result['status'],
+                  "msg": result['msg'],
+                  "preTime": str(preProcessTime),
+                  "file_time": file_time,
+                  "logs":logs
+        }
+        return result
+
+    except :
+        traceback.print_exc()
+        logs.update({
+            'msg': traceback.format_exc(),
+        })
+        result = {"data": '',
+                  "column": '',
+                  "status": '1',
+                  "msg": '',
+                  "preTime": 0,
+                  "file_time":'',
+                  "logs":logs}
+        return result
 
 async def update_bbgl_header(p_bbdm, p_xh, p_name, p_width):
     try:
@@ -286,13 +466,14 @@ async def delete_bbgl_header(p_bbdm, p_xh):
 
 
 async def update_bbgl_filter(p_bbdm, p_xh, p_name, p_code, p_type, p_item, p_item_value, p_notnull, p_is_range,
-                             p_rq_range, p_is_like):
+                             p_rq_range, p_is_like,p_item_type):
     try:
         st = "update t_bbgl_filter " \
              " set filter_name='{}',filter_code='{}',filter_type='{}',is_item='{}'," \
-             "item_value='{}',is_null='{}',is_range='{}',rq_range='{}',is_like='{}' " \
+             "item_value='{}',is_null='{}',is_range='{}',rq_range='{}',is_like='{}',item_type='{}' " \
              "  where bbdm='{}' and xh={}".format(p_name, p_code, p_type, p_item, p_item_value,
-                                                  p_notnull, p_is_range, p_rq_range, p_is_like, p_bbdm, p_xh)
+                                                  p_notnull, p_is_range, p_rq_range, p_is_like, p_item_type,p_bbdm, p_xh)
+        print(st)
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '更新成功!'}
     except Exception as e:
@@ -316,11 +497,23 @@ async def query_bbgl_preprocess_detail(p_bbdm, p_xh):
     return await async_processer.query_dict_one(st)
 
 
-async def update_bbgl_preprocess(p_bbdm, p_xh, p_statement, p_description):
+async def update_bbgl_preprocess(p_bbdm, p_xh, p_statement, p_description,p_sqltype,p_dbid,p_db):
     try:
-        st = "update t_bbgl_preproccess " \
-             " set statement='{}',`description`='{}' " \
-             "  where bbdm='{}' and xh={}".format(fmt_sql(p_statement), p_description, p_bbdm, p_xh)
+        st = ("""update t_bbgl_preproccess 
+                  set statement='{}',
+                     `description`='{}',
+                     `sqltype`='{}',
+                     `dbid`='{}',
+                     `db`='{}'
+                 where bbdm='{}'
+                   and xh={}"""
+              .format(fmt_sql(p_statement),
+                       p_description,
+                       p_sqltype,
+                       p_dbid,
+                       p_db,
+                       p_bbdm,
+                      p_xh))
         await async_processer.exec_sql(st)
         return {'code': 0, 'message': '更新成功!'}
     except Exception as e:
@@ -602,7 +795,8 @@ async def exp_data_xlsx(static_path, p_bbdm, p_data, p_id):
 async def export_bbgl_data(bbdm, param, userid, path):
     try:
         id = await export_insert(bbdm, param, userid)
-        res = await query_bbgl_data(bbdm, param)
+        # res = await query_bbgl_data(bbdm, param,userid)
+        res = await query_bbgl_data_optimize(bbdm, param,userid)
         if res['status'] == '1':
             return {"code": -1, "message": res['msg']}
         await update_export(id, '2', '20%')

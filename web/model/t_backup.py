@@ -9,6 +9,7 @@ import traceback
 
 import requests
 
+from web.model.t_ds import get_ds_by_dsid
 from web.utils.common import format_sql
 from web.utils.mysql_async import async_processer
 
@@ -358,3 +359,28 @@ def stop_backup_task(p_tag, p_api):
     res = requests.post(url, data=data)
     jres = res.json()
     return jres
+
+
+async def query_sales_case():
+    ds =  await get_ds_by_dsid(19)
+    st = """ SELECT
+                 m.id as '项目编码',
+                 m.market_name AS '项目名称',
+                 date_format(sr.trade_date,'%Y-%m-%d') AS '交易日期',
+                 round(SUM(sd.adjust_tax_sales_amount_day)/100,2) AS '含税销售额',
+                 SUM(sd.adjust_trade_count_day) AS '销售笔数',
+                 date_format(MAX(sr.lock_time),'%Y-%m-%d %H:%i:%s') AS '锁定时间',
+                 date_format(MAX(sr.update_time),'%Y-%m-%d %H:%i:%s') AS '更新时间'
+              FROM `shop_side_operation_real_time`.sales_report_day sr
+               LEFT JOIN `shop_side_operation_real_time`.sales_report_details sd ON sr.trade_no = sd.trade_no
+               LEFT JOIN `merchant_entity`.`market` m ON sr.market_id=m.id
+               WHERE report_status = 1 AND lock_status = 2
+                 AND sr.trade_date = DATE_SUB(CURDATE(),INTERVAL 1 DAY) 
+               GROUP BY m.market_name
+            ORDER BY 3 DESC"""
+
+    res = {
+        'data': await async_processer.query_list_by_ds(ds,st)
+    }
+    print('res=',res)
+    return res

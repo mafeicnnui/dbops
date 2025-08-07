@@ -7,7 +7,8 @@
 
 import json
 
-from web.model.t_backup import push_backup_task, run_backup_task, stop_backup_task, query_backup_log_analyze
+from web.model.t_backup import push_backup_task, run_backup_task, stop_backup_task, query_backup_log_analyze, \
+    query_sales_case
 from web.model.t_backup import query_backup, query_backup_case, save_backup, get_backup_by_backupid, upd_backup, \
     del_backup, query_backup_log, query_backup_log_detail
 from web.model.t_dmmx import get_dmm_from_dm, get_backup_server, get_db_backup_tags, \
@@ -44,7 +45,12 @@ class backup_case(base_handler.TokenHandler):
         v_json = json.dumps(v_list)
         self.write(v_json)
 
-
+class sales_case(base_handler.TokenHandler):
+    async def post(self):
+        self.set_header("Content-Type", "application/json; charset=UTF-8")
+        v_list = await query_sales_case()
+        v_json = json.dumps(v_list, default=str)
+        self.write(v_json)
 class backupadd(base_handler.TokenHandler):
     async def get(self):
         self.render("./backup/backup_add.html",

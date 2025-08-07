@@ -678,20 +678,6 @@ async def get_tree_by_dbid_bbgl(dbid, msg):
         sql1 = """SELECT schema_name 
                   FROM information_schema.SCHEMATA 
                   WHERE INSTR(schema_name,'{}')>0 
-                     AND schema_name NOT IN(
-                         'mysql','performance_schema','information_schema','otter','xxl-job','sync',
-                         'apolloconfigdb','apolloconfigdb_v2','mall_canal_tsdb',
-                         'apolloportaldb','apolloportaldb_v2',
-                         'asset','canal_tsdb','devops','encrypt','encrypt_process','gt_fund',
-                         'gt_xx','heart_beat','hopsonone_bill_b_110','hopsonone_bill_b_110_0',
-                         'hopsonone_bill_b_110_1','hopsonone_coupons')
-                     AND schema_name NOT LIKE 'hopsonone_flow%'
-                     AND schema_name NOT LIKE 'hopsonone_ipva_flow%'
-                     AND schema_name NOT LIKE 'hopsonone_park_bj%'
-                     AND schema_name NOT LIKE 'hopsonone_park_gz%'
-                     AND schema_name NOT LIKE 'hopsonone_park_cd%'
-                     AND schema_name NOT LIKE 'hopsonone_park_sh%'
-                     AND schema_name NOT LIKE '%real_time'
                     ORDER BY 1""".format(msg.lower())
 
         sql2 = "SELECT table_name FROM information_schema.tables WHERE table_schema='{0}' order by 1"

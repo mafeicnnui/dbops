@@ -27,6 +27,21 @@
           width: 100%; /* 确保表格宽度自动调整 */
         }
 
+        #add_pre_process_state,#upd_pre_process_state{
+              height: 200px;
+              width: 100%;
+        }
+
+        #modal-add-pre-process,#modal-upd-pre-process{
+            margin:0px;
+            padding:0px;
+        }
+
+        .modal-dialog, .modal-body, .modal-content {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -71,7 +86,6 @@
                 </select>
             </div>
         </div>
-
 
         <div class="form-group col-md-2" style="text-align:center">
             <button id="save_btn" type="button" class="btn btn-custom waves-effect waves-light btn-md">保存</button>
@@ -235,6 +249,19 @@
                             </div>
                             <div class="form-group">
                                 <div>
+                                    <label class="col-md-3 control-label"><span>*</span>列表项类型：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="add_select_type2" name="add_select_type">
+                                        <option value='' selected="selected">请选择类型</option>
+                                        <option value='1'>单选</option>
+                                        <option value='2'>多选数值</option>
+                                        <option value='3'>多选字符</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
                                     <label class="col-md-3 control-label"><span>*</span>列表项配置：</label>
                                 </div>
                                 <div class="col-md-9">
@@ -315,38 +342,102 @@
                 <h4 class="modal-title">预处理定义</h4>
             </div>
             <div class="modal-body">
-                <div class="panel panel-flat">
                     <div class="panel-body">
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
+                                   <div class="panel panel-border panel-pink">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">注意事项</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                <li>sql查询中如果列是表达式必须配置别名。</li>
+                                                <li>sql更新支持(create table,create index,truncate,insert,update,delete)</li>
+                                                <li>存储过程私支持主数据源。</li>
+                                            </ul>
+                                        </div>
+                                   </div>
+                            </div>
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-2 control-label"><span>*</span>描述：</label>
+                                    <label class="col-md-1 control-label"><span>*</span>类型:</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_pre_sql_type">
+                                        <option value='' selected="selected">...</option>
+                                        <option value='1' title='sql查询'>sql查询</option>
+                                        <option value='2' title='sql更新'>sql更新</option>
+                                        <option value='3' title='存储过程'>存储过程</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-1 control-label"><span>*</span>描述:</label>
                                 </div>
                                 <div class="col-md-10">
                                     <input type="text" id="add_pre_process_desc" class="form-control">
                                 </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <div>
-                                    <label class="col-md-2 control-label"><span>*</span>语句:</label>
+                                    <label class="col-md-1 control-label"><span>*</span>数据源:</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_pre_dbid">
+                                         <option value='' selected="selected">...</option>
+                                         {% for var in db_server %}
+                                           <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                                         {% end %}
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                             </div>
+                             <div class="form-group">
+                                <div>
+                                    <label class="col-md-1 control-label"><span>*</span>数据库:</label>
+                                </div>
+                                <div class="col-md-10">
+                                   <select class="selectpicker" data-live-search="true" data-style="btn-default" id="add_pre_db">
+                                        <option value='' selected="selected">...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-1 control-label"><span>*</span>语句:</label>
                                 </div>
                                 <div class="col-md-10">
                                     <div id="add_pre_process_state"></div>
                                 </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
                             </div>
+                            <hr/>
+                            <div class="form-group">
+                                  <div align="center">
+                                     <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                            id="save_pre_process_btn">保存
+                                    </button>
+                                    <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                            data-dismiss="modal">关闭
+                                    </button>
+                                 </div>
+                             </div>
                         </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
-                                id="save_pre_process_btn">保存
-                        </button>
-                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
-                                data-dismiss="modal">关闭
-                        </button>
-                    </div>
-                </div>
+                  </div>
             </div>
         </div>
     </div>
@@ -487,6 +578,19 @@
                             </div>
                             <div class="form-group">
                                 <div>
+                                    <label class="col-md-3 control-label"><span>*</span>列表项类型：</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <select class="form-control select" id="upd_select_type2" name="upd_select_type2">
+                                        <option value='' selected="selected">请选择类型</option>
+                                        <option value='1'>单选</option>
+                                        <option value='2'>多选数值</option>
+                                        <option value='3'>多选字符</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
                                     <label class="col-md-3 control-label"><span>*</span>列表项配置：</label>
                                 </div>
                                 <div class="col-md-9">
@@ -571,32 +675,98 @@
                     <div class="panel-body">
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
+                                   <div class="panel panel-border panel-pink">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">注意事项</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                <li>sql查询中如果列是表达式必须配置别名。</li>
+                                                <li>sql更新支持(create table,create index,truncate,insert,update,delete)</li>
+                                                <li>存储过程私支持主数据源。</li>
+                                            </ul>
+                                        </div>
+                                   </div>
+                            </div>
+                            <div class="form-group">
                                 <div>
-                                    <label class="col-md-2 control-label"><span>*</span>描述：</label>
+                                    <label class="col-md-1 control-label"><span>*</span>类型:</label>
                                 </div>
                                 <div class="col-md-10">
-                                    <input type="text" id="upd_pre_process_desc" class="form-control">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_pre_sql_type">
+                                        <option value='' selected="selected">...</option>
+                                        <option value='1' title='sql查询'>sql查询</option>
+                                        <option value='2' title='sql更新'>sql更新</option>
+                                        <option value='3' title='存储过程'>存储过程</option>
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div>
-                                    <label class="col-md-2 control-label"><span>*</span>语句:</label>
+                                    <label class="col-md-1 control-label"><span>*</span>描述：</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" id="upd_pre_process_desc" class="form-control">
+                                </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-1 control-label"><span>*</span>数据源:</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_pre_dbid">
+                                         <option value='' selected="selected">...</option>
+                                         {% for var in db_server %}
+                                           <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                                         {% end %}
+                                    </select>
+                                </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                             </div>
+                             <div class="form-group">
+                                <div>
+                                    <label class="col-md-1 control-label"><span>*</span>数据库:</label>
+                                </div>
+                                <div class="col-md-10">
+                                   <select class="selectpicker" data-live-search="true" data-style="btn-default" id="upd_pre_db">
+                                        <option value='' selected="selected">...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-md-1 control-label"><span>*</span>语句:</label>
                                 </div>
                                 <div class="col-md-10">
                                     <div id="upd_pre_process_state"></div>
                                 </div>
+                                 <div>
+                                    <label class="col-md-1 control-label"></label>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="form-group">
+                                  <div align="center">
+                                     <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                             id="upd_preprocess_btn">保存
+                                     </button>
+                                     <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
+                                             data-dismiss="modal">关闭
+                                     </button>
+                                 </div>
                             </div>
                         </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="col-sm-offset-3 col-sm-4">
-                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
-                                id="upd_preprocess_btn">保存
-                        </button>
-                        <button type="button" class="btn btn-custom waves-effect waves-light btn-md"
-                                data-dismiss="modal">关闭
-                        </button>
                     </div>
                 </div>
             </div>
@@ -605,7 +775,6 @@
 </div>
 
 <script>
-
     function initAddValue(flag) {
         if (flag == 'header') {
 
@@ -614,7 +783,8 @@
             $('#add_filter_name').val('')
             $('#add_filter_code').val('')
             $('#add_filter_type').val('')
-            $('#add_select_typ').val('N')
+            $('#add_select_type').val('N')
+            $('#add_select_type2').val('')
             $('#add_select_cfg').val('')
             $('#add_notnull_type').val('N')
             $('#add_like_type').val('N')
@@ -673,7 +843,6 @@
                 bbdm: $('#bbdm').val(),
             },
             success: function (dataSet) {
-                console.log('query_header=', dataSet)
                 $('#tab-bbgl-header').DataTable({
                     "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
                     "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -719,7 +888,6 @@
                 bbdm: $('#bbdm').val(),
             },
             success: function (dataSet) {
-                console.log('query_filter=', dataSet)
                 $('#tab-bbgl-filter').DataTable({
                     "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
                     "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -742,6 +910,7 @@
                         {"title": "是否列表项", "sWidth": "50px"},
                         {"title": "列表项值", "sWidth": "50px"},
                         {"title": "列表项名", "sWidth": "100px"},
+                        {"title": "列表项类型", "sWidth": "100px"},
                         {"title": "是否非空", "sWidth": "50px"},
                         {"title": "是否范围", "sWidth": "50px"},
                         {"title": "日期范围", "sWidth": "50px"},
@@ -773,7 +942,6 @@
                 bbdm: $('#bbdm').val(),
             },
             success: function (dataSet) {
-                console.log('query_pre_process=', dataSet)
                 $('#tab-bbgl-pre-proccess').DataTable({
                     "stripeClasses": ['cell-border', 'cell-border', 'cell-border'],
                     "dom": '<"top"<"clear">>rt<"bottom"ip<"clear">>',
@@ -791,6 +959,8 @@
                         {"title": "序号", "width": "50px"},
                         {"title": "语句", "width": "400px"},
                         {"title": "描述", "width": "100px"},
+                        {"title": "数据源", "width": "200px"},
+                        {"title": "数据库", "width": "100px"},
                         {
                             "title": "功能",
                             "width": "25px",
@@ -819,7 +989,6 @@
                 bbdm: $('#bbdm').val(),
             },
             success: function (dataSet) {
-                console.log('query_pre_process=', dataSet)
                 var editor = ace.edit("editor_bbgl_query");
                 editor.setValue('')
                 editor.insert(dataSet.statement);
@@ -889,10 +1058,11 @@
         $('#upd_filter_type').val(row[3])
         $('#upd_select_type').val(row[5])
         $('#upd_select_cfg').val(row[6])
-        $('#upd_notnull_type').val(row[8])
-        $('#upd_range_type').val(row[9])
-        $('#upd_max_rq_range_name').val(row[10])
-        $('#upd_like_type').val(row[11])
+        $('#upd_select_type2').val(row[8])
+        $('#upd_notnull_type').val(row[9])
+        $('#upd_range_type').val(row[10])
+        $('#upd_max_rq_range_name').val(row[11])
+        $('#upd_like_type').val(row[12])
         set_filter_status()
         open_model('modal-upd-filter')
     }
@@ -980,6 +1150,11 @@
                 $('#upd_pre_process_desc').val(dataSet.description)
                 $('#upd_pre_process_desc').attr("readonly", false);
                 $('#upd_preprocess_btn').removeAttr("disabled");
+                $('#upd_pre_sql_type').val(dataSet.sqltype);
+                $("#upd_pre_sql_type").selectpicker('refresh')
+                $('#upd_pre_dbid').val(dataSet.dbid);
+                $("#upd_pre_dbid").selectpicker('refresh')
+                upd_pre_upd_db(dataSet.db);
                 open_model('modal-upd-pre-process')
             }
         });
@@ -1108,6 +1283,62 @@
         }
     }
 
+    function upd_pre_add_db(p_val) {
+        if ($('#add_pre_dbid').val() != '') {
+            $.ajax({
+                url: "/get_tree",
+                type: "post",
+                datatype: "json",
+                data: {
+                    dbid: $('#add_pre_dbid').val(),
+                    msg: $('#add_pre_db').val(),
+                    flag: 'bbgl'
+                },
+                success: function (dataSet) {
+                    $("#add_pre_db").empty();
+                    $("#add_pre_db").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i].id;
+                        var text = dataSet['message'][i].id;
+                        $("#add_pre_db").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    if (p_val != '') {
+                        $("#add_pre_db").val(p_val)
+                    }
+                    $("#add_pre_db").selectpicker('refresh')
+                }
+            })
+        }
+    }
+
+    function upd_pre_upd_db(p_val) {
+        if ($('#upd_pre_dbid').val() != '') {
+            $.ajax({
+                url: "/get_tree",
+                type: "post",
+                datatype: "json",
+                data: {
+                    dbid: $('#upd_pre_dbid').val(),
+                    msg: '',
+                    flag: 'bbgl'
+                },
+                success: function (dataSet) {
+                    $("#upd_pre_db").empty();
+                    $("#upd_pre_db").append("<option value=''>...</option>");
+                    for (i = 0; i < dataSet['message'].length; i++) {
+                        var val = dataSet['message'][i].id;
+                        var text = dataSet['message'][i].id;
+                        $("#upd_pre_db").append("<option value='" + val + "' title='" + text + "'>" + text + "</option>");
+                    }
+                    if (p_val != '') {
+                        $("#upd_pre_db").val(p_val)
+                    }
+                    $("#upd_pre_db").selectpicker('refresh')
+                }
+            })
+        }
+    }
+
     function set_filter_status() {
         if ($('#upd_filter_type').val() == '1') {
             $('#upd_select_type').attr("disabled", false);
@@ -1175,6 +1406,7 @@
                 is_range: $('#upd_range_type').val(),
                 rq_range: $('#upd_max_rq_range_name').val(),
                 is_like: $('#upd_like_type').val(),
+                item_type: $('#upd_select_type2').val(),
             },
             success: function (dataSet) {
                 if (dataSet.code == '0') {
@@ -1202,6 +1434,9 @@
                 xh: $('#upd_preprocess_xh').val(),
                 statement: editor.getValue(),
                 description: $('#upd_pre_process_desc').val(),
+                sqltype:$('#upd_pre_sql_type').val(),
+                dbid:$('#upd_pre_dbid').val(),
+                db:$('#upd_pre_db').val(),
             },
             success: function (dataSet) {
                 if (dataSet.code == '0') {
@@ -1220,8 +1455,6 @@
         }
 
         var editor = ace.edit("editor_bbgl_query")
-        console.log('editor.getValue()=', editor.getValue())
-
         $.ajax({
             url: "/bbgl/update/statement",
             type: "post",
@@ -1296,7 +1529,7 @@
         });
     });
 
-    $('#save_filter_btn').click(function () {
+    $('#save_filter_btn').click(function ()     {
         if (!check_valid('add_filter')) {
             return false;
         }
@@ -1316,7 +1549,7 @@
                 is_range: $('#add_range_type').val(),
                 rq_range: $('#add_max_rq_range_name').val(),
                 is_like: $('#add_like_type').val(),
-
+                item_type: $('#add_select_type2').val(),
             },
             success: function (dataSet) {
                 if (dataSet.code == 0) {
@@ -1344,6 +1577,9 @@
                 bbdm: $('#bbdm').val(),
                 statement: editor.getValue(),
                 description: $('#add_pre_process_desc').val(),
+                sqltype:$('#add_pre_sql_type').val(),
+                dbid:$('#add_pre_dbid').val(),
+                db:$('#add_pre_db').val(),
             },
             success: function (dataSet) {
                 if (dataSet.code == 0) {
@@ -1461,16 +1697,30 @@
         upd_db('');
     })
 
+    $('#add_pre_dbid').change(function () {
+        upd_pre_add_db('');
+    })
+
+    $('#upd_pre_dbid').change(function () {
+        upd_pre_upd_db('');
+    })
+
     $(document).ready(function () {
         set_selected();
-        $('#cur_tab').val('表头定义')
-        set_editor('add_pre_process_state')
-        set_editor('add_query_statement')
-        set_editor('editor_bbgl_query')
-        set_editor('upd_pre_process_state')
+        $('#cur_tab').val('表头定义');
+        set_editor('add_pre_process_state');
+        set_editor('add_query_statement');
+        set_editor('editor_bbgl_query');
+        set_editor('upd_pre_process_state');
         $('#add_tab_btn').removeAttr('onclick');
-        $("#curr_db").selectpicker('refresh')
-        $("#dsid").selectpicker('refresh')
+        $("#curr_db").selectpicker('refresh');
+        $("#dsid").selectpicker('refresh');
+        $("#add_pre_sql_type").selectpicker('refresh');
+        $("#add_pre_dbid").selectpicker('refresh');
+        $("#add_pre_db").selectpicker('refresh');
+        $("#upd_pre_sql_type").selectpicker('refresh');
+        $("#upd_pre_dbid").selectpicker('refresh');
+        // $("#upd_pre_db").selectpicker('refresh');
     });
 
 </script>

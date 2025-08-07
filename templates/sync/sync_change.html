@@ -23,6 +23,15 @@
             color: #d54c15;
         }
 
+        .ellipsis {
+            white-space: nowrap;       /* 不换行 */
+            overflow: hidden;          /* 超出隐藏 */
+            text-overflow: ellipsis;   /* 超出显示省略号 */
+            max-width: 250px;          /* 最大宽度，可以根据需要调整 */
+            display: inline-block;     /* 使 max-width 生效 */
+            vertical-align: middle;    /* 文字垂直居中 */
+        }
+
     </style>
 </head>
 <body>
@@ -38,7 +47,7 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">项目名</span>
-                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id">
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="market_id" data-none-selected-text="请选择...">
                     <option value='' selected="selected">.....</option>
                     {% for var in dm_proj_type %}
                     <option value={{var[0]}}>{{var[1]}}</option>
@@ -49,10 +58,10 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">业务类型</span>
-                <select class="form-control select" id="sync_ywlx">
-                    <option value='' selected="selected">.....</option>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_ywlx" data-none-selected-text="请选择...">
+                    <option value='' title='' selected="selected">.....</option>
                     {% for var in dm_sync_ywlx %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -60,10 +69,10 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">数据方向</span>
-                <select class="form-control select" id="sync_type">
-                    <option value='' selected="selected">.....</option>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_type" data-none-selected-text="请选择...">
+                    <option value='' title='' selected="selected">.....</option>
                     {% for var in dm_sync_data_type %}
-                    <option value={{var[0]}}>{{var[1]}}</option>
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                     {% end %}
                 </select>
             </div>
@@ -71,10 +80,9 @@
         <div class="col-md-2">
             <div class="input-group">
                 <span class="input-group-addon">任务状态</span>
-                <select class="form-control select" id="task_status">
-                    <option value="1">启用</option>
-                    <option value="0">禁用</option>
-                </select>
+                <select class="selectpicker" data-live-search="true" data-style="btn-default" id="task_status" data-none-selected-text="启用">
+                    <option value="1" title='启用'>启用</option>
+                    <option value="0" title='禁用'>禁用</option>
                 </select>
             </div>
         </div>
@@ -262,6 +270,26 @@
                                 //return '<input type="radio"  name="sync_selec_id"  onclick=isSelect("' + escape(row) + '")>'
                                 return '<input type="radio"  name="sync_selec_id"  onclick=isSelect2("' + row[0] + '")>'
                             }
+                        },
+                    ],
+                     columnDefs: [
+                        {
+                            targets: 1,
+                             render: function(data, type, row, meta) {
+                                    if(type === 'display' || type === 'filter'){
+                                        return '<div class="ellipsis" title="' + data + '">' + data + '</div>';
+                                    }
+                                    return data;
+                             }
+                        },
+                        {
+                            targets: 3,
+                             render: function(data, type, row, meta) {
+                                    if(type === 'display' || type === 'filter'){
+                                        return '<div class="ellipsis" title="' + data + '">' + data + '</div>';
+                                    }
+                                    return data;
+                             }
                         },
                     ],
                     "language": get_languages()

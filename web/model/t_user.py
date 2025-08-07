@@ -1069,7 +1069,10 @@ async def save_dict_grant_grants(p_dict):
 async def query_dict_grant(p_name):
     v_where = ''
     if p_name != "":
-        v_where = """and b.dmmc like '%{}%'""".format(p_name)
+        v_where = """and ( b.dmmc like '%{}%' 
+                       or  (SELECT NAME FROM t_user WHERE id=a.user_id) like '%{}%'   
+                        or  (SELECT mc FROM t_dmlx WHERE dm=a.dm) like '%{}%'                   
+                    )""".format(p_name,p_name,p_name)
 
     st = """SELECT 
               a.id,

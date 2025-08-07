@@ -107,19 +107,30 @@
         var bbdm = p_row.split(',')[0]
         var dsid = p_row.split(',')[2]
         var db = p_row.split(',')[4]
-        $.ajax({
-            url: "/bbgl/edit",
-            type: "get",
-            datatype: "html",
-            data: {
-                bbdm: bbdm,
-                dsid: dsid,
-                db: db
-            },
-            success: function () {
-                $('#main-container-div').load("/bbgl/edit?bbdm=" + bbdm + '&dsid=' + dsid + '&db=' + db);
-            },
-        })
+        $('#main-container-div').load("/bbgl/edit?bbdm=" + bbdm + '&dsid=' + dsid + '&db=' + db);
+
+        // $.ajax({
+        //     url: "/bbgl/edit",
+        //     type: "get",
+        //     datatype: "html",
+        //     data: {
+        //         bbdm: bbdm,
+        //         dsid: dsid,
+        //         db: db
+        //     },
+        //     success: function () {
+        //         $('#main-container-div').load("/bbgl/edit?bbdm=" + bbdm + '&dsid=' + dsid + '&db=' + db+'&readonly=N');
+        //     },
+        // })
+    }
+
+     function query_config(p_row) {
+        console.log('edit_config=', p_row)
+        var bbdm = p_row.split(',')[0]
+        var dsid = p_row.split(',')[2]
+        var db = p_row.split(',')[4]
+        $('#main-container-div').load("/bbgl/query/defi?bbdm=" + bbdm + '&dsid=' + dsid + '&db=' + db);
+
     }
 
     $(document).ready(function () {
@@ -159,24 +170,39 @@
                                 "render": function (data, type, row) {
                                     bbdm = row[0]
                                     var query_btn;
+                                    var query_cfg_btn;
                                     var update_btn;
                                     var delete_btn;
+
                                     if (dataSet.uuri.includes('/bbgl/query')) {
                                         query_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="查询" onclick="query_data(\'' + bbdm + '\');"/>' + '&nbsp;'
                                     } else {
                                         query_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="查询" onclick="query_data(\'' + bbdm + '\');"/>' + '&nbsp;'
                                     }
+
+                                    if (dataSet.uuri.includes('/bbgl/config')
+                                        && dataSet.uuri.includes('/bbgl/header/query')
+                                        && dataSet.uuri.includes('/bbgl/filter/query')
+                                        && dataSet.uuri.includes('/bbgl/preprocess/query')
+                                        && dataSet.uuri.includes('/bbgl/statement/query')
+                                        && dataSet.uuri.includes('/bbgl/query/preprocess')) {
+                                        query_cfg_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="定义" onclick="query_config(\'' + row + '\');"/>' + '&nbsp;'
+                                    } else {
+                                        query_cfg_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="定义"" onclick="query_config(\'' + row + '\');"/>' + '&nbsp;'
+                                    }
+
                                     if (dataSet.uuri.includes('/bbgl/edit')) {
                                         update_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="变更" onclick="edit_config(\'' + row + '\');"/>' + '&nbsp;'
                                     } else {
                                         update_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="变更" onclick="edit_config(\'' + row + '\');"/>' + '&nbsp;'
                                     }
+
                                     if (dataSet.uuri.includes('/bbgl/delete')) {
                                         delete_btn = '<input class="btn btn-xs btn-primary"  type="button"  value="删除" onclick="del_config(\'' + bbdm + '\');"/>'
                                     } else {
                                         delete_btn = '<input class="btn btn-xs btn-primary"  type="button"  disabled value="删除" onclick="del_config(\'' + bbdm + '\');"/>'
                                     }
-                                     msg = '&nbsp;' +query_btn+update_btn+delete_btn;
+                                     msg = '&nbsp;' +query_btn+query_cfg_btn+update_btn+delete_btn;
                                     return msg;
                                 }
                             },

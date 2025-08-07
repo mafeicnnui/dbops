@@ -14,6 +14,15 @@
             margin-top: 80px;
         }
 
+        .ellipsis {
+            white-space: nowrap;       /* 不换行 */
+            overflow: hidden;          /* 超出隐藏 */
+            text-overflow: ellipsis;   /* 超出显示省略号 */
+            max-width: 250px;          /* 最大宽度，可以根据需要调整 */
+            display: inline-block;     /* 使 max-width 生效 */
+            vertical-align: middle;    /* 文字垂直居中 */
+        }
+
     </style>
 </head>
 
@@ -216,6 +225,24 @@
                         {"title": "操作"},
                     ],
                     columnDefs: [
+                        {
+                            targets: 1,
+                             render: function(data, type, row, meta) {
+                                    if(type === 'display' || type === 'filter'){
+                                        return '<div class="ellipsis" title="' + data + '">' + data + '</div>';
+                                    }
+                                    return data;
+                             }
+                        },
+                        {
+                            targets: 2,
+                             render: function(data, type, row, meta) {
+                                    if(type === 'display' || type === 'filter'){
+                                        return '<div class="ellipsis" title="' + data + '">' + data + '</div>';
+                                    }
+                                    return data;
+                             }
+                        },
                         {
                             targets: 6,
                             render: function (data, type, row, meta) {

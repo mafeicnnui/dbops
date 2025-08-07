@@ -37,13 +37,13 @@
                     <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="sync_server">
+                     <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_server" data-none-selected-text="请选择...">
                         {% for var in sync_server %}
-                        {% if var[0]==server_id %}
-                        <option value={{var[0]}} selected="selected">{{var[1]}}</option>
-                        {% else %}
-                        <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
+                            {% if var[0]==server_id %}
+                              <option value={{var[0]}} title={{var[1]}} selected="selected">{{var[1]}}</option>
+                            {% else %}
+                              <option value={{var[0]}} title={{var[1]}} >{{var[1]}}</option>
+                            {% end %}
                         {% end %}
                     </select>
                 </div>
@@ -58,15 +58,15 @@
                     <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源端数据库</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="sour_db_server">
-                        {% for var in db_server %}
-                        {% if var[0]==sour_db_server %}
-                        <option value={{var[0]}} selected="selected">{{var[1]}}</option>
-                        {% else %}
-                        <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
-                        {% end %}
-                    </select>
+                   <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_server" data-none-selected-text="请选择...">
+                    {% for var in db_server %}
+                    {% if var[0]==sour_db_server %}
+                    <option value={{var[0]}} title={{var[1]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
                 </div>
             </div>
         </div>
@@ -79,15 +79,15 @@
                     <label class="col-md-2 control-label"><span id="s_desc_db_server">*</span>目标数据库</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="desc_db_server">
-                        {% for var in db_server %}
-                        {% if var[0]==desc_db_server %}
-                        <option value={{var[0]}} selected="selected">{{var[1]}}</option>
-                        {% else %}
-                        <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
-                        {% end %}
-                    </select>
+                  <select class="selectpicker" data-live-search="true" data-style="btn-default" id="desc_db_server" data-none-selected-text="请选择...">
+                    {% for var in db_server %}
+                    {% if var[0]==desc_db_server %}
+                    <option value={{var[0]}} title={{var[1]}} selected="selected">{{var[1]}}</option>
+                    {% else %}
+                    <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                    {% end %}
+                    {% end %}
+                </select>
                 </div>
             </div>
         </div>
@@ -1191,6 +1191,7 @@
 
     $(document).ready(function () {
         set_selected();
+        $('.selectpicker').selectpicker({size: 10});
     });
 
 </script>

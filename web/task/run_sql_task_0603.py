@@ -9,29 +9,57 @@
 import datetime
 import logging
 import time
+import json
 import pymysql
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
 from web.model.t_sql_release import exe_sql_sync
 from web.utils.common import get_sys_settings_sync
-from web.utils.mysql_sync import sync_processer
+from web.utils.mysql_sync import read_json,capital_to_lower
 
 host = get_sys_settings_sync()['WX_HOST']
-def get_tasks():
+
+def get_tasks(cr):
+    """
+       获取待执行的任务，增加行锁
+       返回任务列表，不释放行锁，待任务执行完成再释放
+    """
     st = """SELECT dbid AS db_id, db AS db_name,
                 id AS sql_id,executor AS user_name,run_time,message
-                 FROM t_sql_release  WHERE status in('7') """
-    return sync_processer.query_dict_list(st)
+                 FROM t_sql_release  WHERE status in('7') for update """
+    cr.execute(st)
+    v_list = []
+    rs = cr.fetchall()
+    for r in rs:
+        v_list.append(capital_to_lower(r))
+    return v_list
+
+def get_db(db):
+    """
+       通过配置文件获取数据库连接和游标对象
+       返回数据库连接及游标对象
+    """
+    db = pymysql.connect(host=db['db_ip'],
+                         port=int(db['db_port']),
+                         user=db['db_user'],
+                         passwd=db['db_pass'],
+                         db=db['db_service'],
+                         charset=db['db_charset'])
+    cr = db.cursor()
+    return db,cr
 
 def main():
+    """
+      主执行函数
+    """
     logging.basicConfig(filename='./logs/run_sql_task.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")),
                         format='[%(asctime)s-%(levelname)s:%(message)s]',
                         level=logging.INFO, filemode='a', datefmt='%Y-%m-%d %I:%M:%S')
-
+    cfg = read_json('./config/config.json')
+    db,cr = get_db(cfg)
     with ProcessPoolExecutor(max_workers=10) as executor:
         while True:
-            tasks = get_tasks()
-            if tasks != []:
+            tasks = get_tasks(cr)
+            if tasks:
                 logging.info(str(tasks))
                 future_to_task  = {
                           executor.submit(exe_sql_sync, t['db_id'], t['db_name'], t['sql_id'], t['user_name'], host): t
@@ -42,6 +70,7 @@ def main():
                     logging.info(str(res))
                     task_params = future_to_task[future]  # 获取任务的参数
                     logging.info(f"Task {task_params} → Result: {res}")
+                    db.commit()
             else:
                 time.sleep(1)
                 print('\rSleepping...'.format(), end='')

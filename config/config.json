@@ -3,6 +3,6 @@
     "db_port"      : "3306",
     "db_user"      : "puppet",
     "db_pass"      : "Puppet@123",
-    "db_service"   : "puppet_dev",
+    "db_service"   : "puppet",
     "db_charset"   : "utf8"
 }

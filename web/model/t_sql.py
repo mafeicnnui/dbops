@@ -644,6 +644,7 @@ async def get_mysql_result_exp(p_ds, p_sql, curdb):
             result['column'] = ''
             return result
     except:
+        traceback.print_exc()
         print('get_mysql_result_exp=', traceback.format_exc())
         result['status'] = '1'
         result['msg'] = format_mysql_error(p_env, exception_info_mysql())

@@ -11,7 +11,7 @@ import traceback
 import pandas as pd
 
 from web.model.t_bbgl import query_bbgl_data, get_bbgl_bbdm, get_filter, get_config, get_download_files, \
-    get_download_files_new
+    get_download_files_new, query_bbgl_data_optimize
 from web.model.t_bbgl import query_bbgl_preprocess_detail, update_bbgl_preprocess, delete_bbgl_preprocess
 from web.model.t_bbgl import save_bbgl, save_bbgl_header, query_bbgl_header, save_bbgl_task, query_bbgl_task, \
     upd_bbgl_task, push_bbgl_task, run_bbgl_task, stop_bbgl_task, del_bbgl_task, get_bbgl_task_by_tag, get_bbgl_id, \
@@ -40,8 +40,10 @@ class bbgl_query(base_handler.TokenHandler):
            bbdm = self.get_argument("bbdm")
         except:
            bbdm = ''
+        uuri = await get_url_by_userid(self.userid)
+        print('uuri=', uuri)
         self.render("./bbgl/bbgl_query.html",
-                    dm_bbdm=await get_bbgl_bbdm(self.userid),bbdm=bbdm)
+                    dm_bbdm=await get_bbgl_bbdm(self.userid),bbdm=bbdm,uuri=uuri)
 
 
 class bbgl_query_data(base_handler.TokenHandler):
@@ -51,7 +53,8 @@ class bbgl_query_data(base_handler.TokenHandler):
         param = self.get_argument("param")
         param = json.loads(param)
         print('param=', param)
-        v_list = await query_bbgl_data(bbdm, param)
+        # v_list = await query_bbgl_data(bbdm, param,self.userid)
+        v_list = await query_bbgl_data_optimize(bbdm, param,self.userid)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -130,8 +133,9 @@ class bbgl_add_filter_save(base_handler.TokenHandler):
         is_range = self.get_argument("is_range")
         rq_range = self.get_argument("rq_range")
         is_like = self.get_argument("is_like")
+        item_type = self.get_argument("item_type")
         v_list = await save_bbgl_filter(bbdm, filter_name, filter_code, filter_type, item, cfg, notnull, is_range,
-                                        rq_range, is_like)
+                                        rq_range, is_like,item_type)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -142,12 +146,10 @@ class bbgl_add_preprocess_save(base_handler.TokenHandler):
         bbdm = self.get_argument("bbdm")
         statement = self.get_argument("statement")
         description = self.get_argument("description")
-
-        print('bbgl_add_preprocess_save=', bbdm, statement, description)
-        print('bbgl_add_preprocess_save2=', bbdm)
-        print('bbgl_add_preprocess_save3=', statement)
-        print('bbgl_add_preprocess_save=4', description)
-        v_list = await save_bbgl_preprocess(bbdm, statement, description)
+        sqltype = self.get_argument("sqltype")
+        dbid = self.get_argument("dbid")
+        db = self.get_argument("db")
+        v_list = await save_bbgl_preprocess(bbdm, statement, description,sqltype,dbid,db)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -234,8 +236,10 @@ class bbgl_update_filter(base_handler.TokenHandler):
         is_range = self.get_argument("is_range")
         rq_range = self.get_argument("rq_range")
         is_like = self.get_argument("is_like")
+        item_type = self.get_argument("item_type")
+
         v_list = await update_bbgl_filter(bbdm, xh, filter_name, filter_code, filter_type, item, cfg, notnull, is_range,
-                                          rq_range, is_like)
+                                          rq_range, is_like,item_type)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -267,7 +271,10 @@ class bbgl_update_preprocess(base_handler.TokenHandler):
         xh = self.get_argument("xh")
         statement = self.get_argument("statement")
         description = self.get_argument("description")
-        v_list = await update_bbgl_preprocess(bbdm, xh, statement, description)
+        sqltype = self.get_argument("sqltype")
+        dbid = self.get_argument("dbid")
+        db = self.get_argument("db")
+        v_list = await update_bbgl_preprocess(bbdm, xh, statement, description,sqltype,dbid,db)
         v_json = json.dumps(v_list)
         self.write(v_json)
 
@@ -328,8 +335,21 @@ class bbgl_edit(base_handler.TokenHandler):
         bbdm = self.get_argument("bbdm")
         dsid = self.get_argument("dsid")
         db = self.get_argument("db")
-        print('bbgl_edit=', bbdm)
         self.render("./bbgl/bbgl_edit.html",
+                    bbdm=bbdm,
+                    dsid=int(dsid),
+                    db=db,
+                    db_server=await get_bbtj_db_server(),
+                    dm_filter=await get_dmm_from_dm('42'),
+                    dm_select_cfg=await get_dmlx_from_dm_bbgl(),
+                    )
+
+class bbgl_query_defi(base_handler.TokenHandler):
+    async def get(self):
+        bbdm = self.get_argument("bbdm")
+        dsid = self.get_argument("dsid")
+        db = self.get_argument("db")
+        self.render("./bbgl/bbgl_query_defi.html",
                     bbdm=bbdm,
                     dsid=int(dsid),
                     db=db,

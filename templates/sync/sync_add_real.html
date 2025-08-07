@@ -28,12 +28,12 @@
                     <label class="col-md-2 control-label"><span id="s_sync_server">*</span>同步服务器</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="sync_server">
-                        <option value='' selected="selected">......</option>
+                     <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sync_server" data-none-selected-text="请选择...">
+                        <option value='' title='' >请选择...</option>
                         {% for var in sync_server %}
-                        <option value={{var[0]}}>{{var[1]}}</option>
+                             <option value={{var[0]}} title={{var[1]}} >{{var[1]}}</option>
                         {% end %}
-                    </select>
+                     </select>
                 </div>
             </div>
         </div>
@@ -45,12 +45,12 @@
                     <label class="col-md-2 control-label"><span id="s_sour_db_server">*</span>源端数据库</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="sour_db_server">
-                        <option value='' selected="selected">......</option>
-                        {% for var in db_mysql_server %}
-                        <option value={{var[0]}}>{{var[1]}}</option>
-                        {% end %}
-                    </select>
+                     <select class="selectpicker" data-live-search="true" data-style="btn-default" id="sour_db_server" data-none-selected-text="请选择...">
+                         <option value='' title='' >请选择...</option>
+                         {% for var in db_mysql_server %}
+                          <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
+                         {% end %}
+                      </select>
                 </div>
             </div>
         </div>
@@ -62,12 +62,12 @@
                     <label class="col-md-2 control-label"><span>*</span>目标数据库</label>
                 </div>
                 <div class="col-md-10">
-                    <select class="form-control select" id="desc_db_server">
-                        <option value='' selected="selected">......</option>
+                    <select class="selectpicker" data-live-search="true" data-style="btn-default" id="desc_db_server" data-none-selected-text="请选择...">
+                        <option value='' title='' >请选择...</option>
                         {% for var in db_server_doris %}
-                        <option value={{var[0]}}>{{var[1]}}</option>
+                          <option value={{var[0]}} title={{var[1]}}>{{var[1]}}</option>
                         {% end %}
-                    </select>
+                   </select>
                 </div>
             </div>
         </div>
@@ -1008,6 +1008,7 @@
 
     $(document).ready(function () {
         set_selected();
+        $('.selectpicker').selectpicker({size: 10});
         $("#div-add-panal").css("height", $("#div-tab-panal").height());
 
         $("#add").click(function () {
